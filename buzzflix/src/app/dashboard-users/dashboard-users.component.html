@@ -1,0 +1,9 @@
+<div *ngIf="!usuarios">
+    <h4>No hemos encontrado ningún usuario</h4>
+  </div>
+  <div *ngIf="usuarios">
+    <h3 class="text-center"></h3>
+    <div *ngFor="let usuario of usuarios">
+        <app-usuario [usuario]="usuario"></app-usuario>
+
+  </div>

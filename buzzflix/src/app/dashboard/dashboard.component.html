@@ -1,0 +1,9 @@
+<div *ngIf="!quizzs && this.isLoaded">
+  <h4>Mmm, no hay quizzs de la gente que sigues, ¡Prueba a seguir a más usuarios!</h4>
+</div>
+<div *ngIf="quizzs  && this.isLoaded">
+  <h3 class="text-center"></h3>
+  <div *ngFor="let quizz of quizzs">
+    <app-quizz [quizz]="quizz"></app-quizz>
+  </div>
+  </div>

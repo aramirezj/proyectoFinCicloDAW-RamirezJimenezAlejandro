@@ -1,0 +1,44 @@
+<div class="col-md-12 box" *ngIf="usuario">
+  <div class="panel panel-default">
+    <div class="panel-heading">
+      Editar perfil
+    </div>
+    <div class="panel-body">
+      <form class="example-form" (ngSubmit)="editProfile()">
+        <mat-form-field class="example-full-width">
+          <input matInput [(ngModel)]="usuario.name" placeholder="Nombre" [formControl]="nombreFC"
+            [errorStateMatcher]="matcher">
+          <mat-hint></mat-hint>
+          <mat-error *ngIf="nombreFC.hasError('required')">
+            El nombre es <strong>obligatorio</strong>
+          </mat-error>
+          <mat-error *ngIf="!nombreFC.hasError('required')  && nombreFC.hasError('minlength')">
+              El nombre debe tener un mínimo de  <strong>3 caracteres</strong>
+            </mat-error>
+        </mat-form-field>
+        <mat-form-field class="example-full-width">
+          <input matInput [value]="usuario.email" [(ngModel)]="usuario.email" placeholder="Correo electronico"
+            [formControl]="emailFC" [errorStateMatcher]="matcher">
+          <mat-hint></mat-hint>
+          <mat-error *ngIf="emailFC.hasError('email') && !emailFC.hasError('required')">
+            Por favor, que el correo sea valido
+          </mat-error>
+          <mat-error *ngIf="emailFC.hasError('required')">
+            El email es <strong>obligatorio</strong>
+          </mat-error>
+        </mat-form-field>
+        <div class="input-group">
+          <input type="text" [(ngModel)]="usuario.avatar" [ngModelOptions]="{standalone:true}" class="form-control"
+            readonly>
+          <div class="input-group-btn">
+            <span class="fileUpload btn btn-success">
+              <span class="upl" id="upload">Subir imagen</span>
+              <input type="file" class="upload up" (change)="onFileChanged($event)" id="up" />
+            </span>
+          </div>
+        </div>
+        <button mat-raised-button color="primary">Guardar cambios</button>
+      </form>
+    </div>
+  </div>
+</div>

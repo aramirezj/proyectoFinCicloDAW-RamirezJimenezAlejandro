@@ -1,0 +1,40 @@
+<ng-progress [color]="'orange'"></ng-progress>
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+  integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+
+
+
+
+
+<nav class="navbar navbar-inverse">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" class="navbar-brand" routerLink="dashboard">Quizzflix</a>
+    </div>
+    <ul class="nav navbar-nav">
+      <li *ngIf="isLoggedIn() && this.authService.getAuthUser()" [routerLink]="['ver/todos']"><a role="button">Todos los
+          tests</a></li>
+      <li *ngIf="isLoggedIn() && this.authService.getAuthUser()"
+        [routerLink]="['usuario/perfil',this.authService.getAuthUserId()]"><a role="button">Mi perfil</a></li>
+      <li *ngIf="isLoggedIn() && this.authService.getAuthUser()" [routerLink]="['crear/quizz']"><a role="button">Crear
+          Quizz</a></li>
+      <form class="form-inline" *ngIf="isLoggedIn() && this.authService.getAuthUser()" [formGroup]="miniForm">
+        <input class="form-control mr-sm-2" formControlName="nombre" type="search" placeholder="Buscar usuarios"
+          aria-label="Search">
+        <button type="submit" class="btn btn-default" (click)="onSubmit()">Buscar</button>
+      </form>
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+      <li *ngIf="isLoggedIn()" (click)="logout()"><a role="button">Cerrar sesión</a> </li>
+      <li *ngIf="!isLoggedIn()"><a role="button" routerLink="/auth/register">Registrarse</a></li>
+      <li *ngIf="!isLoggedIn()"><a role="button" routerLink="/auth/login">Iniciar Sesión</a></li>
+    </ul>
+  </div>
+</nav>
+
+
+
+<div class="container">
+  <app-notify></app-notify>
+  <router-outlet></router-outlet>
+</div>

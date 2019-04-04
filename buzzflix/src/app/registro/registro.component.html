@@ -1,0 +1,45 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-10 col-md-offset-1 box">
+      <div class="panel panel-default">
+        <div class="panel-heading">Registro</div>
+        <div class="panel-body">
+          <form class="example-form">
+            <mat-form-field class="example-full-width">
+              <input matInput placeholder="Nombre" [formControl]="nombreFC" [errorStateMatcher]="matcher">
+              <mat-hint></mat-hint>
+              <mat-error *ngIf="nombreFC.hasError('required')">
+                El nombre es <strong>obligatorio</strong>
+              </mat-error>
+              <mat-error *ngIf="!nombreFC.hasError('required') && nombreFC.hasError('minlength')">
+                  El nombre tiene un mínimo de  <strong>3 caracteres</strong>
+                </mat-error>
+            </mat-form-field>
+            <mat-form-field class="example-full-width">
+              <input matInput placeholder="Correo electronico" [formControl]="emailFC" [errorStateMatcher]="matcher">
+              <mat-hint></mat-hint>
+              <mat-error *ngIf="emailFC.hasError('email') && !emailFC.hasError('required')">
+                Por favor, que el correo sea valido
+              </mat-error>
+              <mat-error *ngIf="emailFC.hasError('required')">
+                El email es <strong>obligatorio</strong>
+              </mat-error>
+            </mat-form-field>
+            <mat-form-field class="example-full-width">
+              <input type="password" matInput placeholder="Contraseña" [formControl]="passFC"
+                [errorStateMatcher]="matcher">
+              <mat-hint></mat-hint>
+              <mat-error *ngIf="passFC.hasError('minlength')">
+                  La contraseña debe tener <strong>6 caracteres como mínimo</strong>
+                </mat-error>
+              <mat-error *ngIf="passFC.hasError('required')">
+                La contraseña es <strong>obligatoria</strong>
+              </mat-error>
+            </mat-form-field>
+            <button mat-raised-button color="primary" (click)="onSubmit()">Registrarse</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

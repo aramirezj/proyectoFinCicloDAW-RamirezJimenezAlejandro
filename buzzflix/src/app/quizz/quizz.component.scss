@@ -1,0 +1,29 @@
+.checked {
+    color: #e14705;
+  }
+  img{
+    height: 20em;
+    border-radius: 2%;
+  }
+.fa-star{
+  width: 1.5em;
+  font-size: 1.5em;
+}
+div{
+  background: linear-gradient(to left, #529f82,#46317c);
+  color:white;
+  padding: 2%;
+  border-radius: 3%;
+  text-transform: capitalize;
+}
+a{
+}
+p{
+  margin-top: 2%;
+}
+.card{
+  box-shadow: 2px 7px 4px rgb(104, 100, 100);
+}
+.card:hover{
+  box-shadow: 4px 14px 8px rgb(68, 65, 65);
+}

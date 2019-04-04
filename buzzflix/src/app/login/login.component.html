@@ -1,0 +1,68 @@
+<div class="container">
+  <div class="row">
+    <div class="col-md-10 col-md-offset-1 box">
+      <div class="panel panel-default">
+        <div class="panel-heading">Inicio de sesión</div>
+        <div class="panel-body">
+          <form class="example-form">
+            <mat-form-field class="example-full-width">
+              <input matInput placeholder="Correo electronico" [formControl]="emailFC"
+                [errorStateMatcher]="matcher">
+              <mat-hint></mat-hint>
+              <mat-error *ngIf="emailFC.hasError('email') && !emailFC.hasError('required')">
+                Por favor, que el correo sea valido
+              </mat-error>
+              <mat-error *ngIf="emailFC.hasError('required')">
+                El email es <strong>obligatorio</strong>
+              </mat-error>
+            </mat-form-field>
+            <mat-form-field class="example-full-width">
+              <input type="password" matInput placeholder="Contraseña" [formControl]="passFC"
+                [errorStateMatcher]="matcher">
+              <mat-hint></mat-hint>
+              <mat-error *ngIf="passFC.hasError('required')">
+                La contraseña es <strong>obligatoria</strong>
+              </mat-error>
+            </mat-form-field>
+            <button mat-raised-button color="primary" (click)="onSubmit()">Iniciar sesión</button>
+          </form>
+
+
+
+
+          <!--<form class="form-horizontal" #form="ngForm" novalidate (ngSubmit)="onSubmit(form)">
+              <ul class="list-group">
+                  <li class="list-group-item text-danger" *ngIf="userEmail.errors?.required && userEmail.touched">
+                    El email es obligatorio.
+                  </li>
+                  <li class="list-group-item text-danger" *ngIf="userPassword.errors?.required && userPassword.touched">
+                    La contraseña es obligatoria.
+                  </li>
+                </ul>
+            <div class="form-group">
+              <label for="email" class="control-label col-md-4">Correo</label>
+
+              <div class="col-md-6">
+                <input id="email" type="email" name="email" class="form-control" required #userEmail="ngModel" ngModel autofocus>
+              </div>
+            </div>
+            <div class="form-group">
+              <label for="password" class="col-md-4 control-label">Contraseña</label>
+
+              <div class="col-md-6">
+                <input type="password" name="password" class="form-control" required #userPassword="ngModel" ngModel required>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="col-md-8 col-md-offset-4">
+                <button type="submit" class="btn btn-primary" [disabled]="form.invalid">
+                  Iniciar sesión
+                </button>
+              </div>
+            </div>
+          </form>-->
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

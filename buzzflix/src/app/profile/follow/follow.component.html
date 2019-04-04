@@ -1,0 +1,2 @@
+<button button mat-raised-button *ngIf="!isLoading && !isFollowing"   (click)="follow()">Seguir</button>
+<button button mat-raised-button class="unf" *ngIf="!isLoading && isFollowing"  (click)="unfollow()">Dejar de seguir</button>

@@ -1,0 +1,30 @@
+<mat-card class="example-card" *ngIf="usuario">
+  <mat-card-header>
+    <div class="mat-card-header-text">
+        <mat-card-title class="top">{{usuario.name}} </mat-card-title>
+        <mat-card-subtitle><span class="little">Principiante</span><span class="pull-right ft">Quizzs: <span class="number">{{this.cantidad}}</span></span></mat-card-subtitle>
+    </div>
+    
+  </mat-card-header>
+  <div class="text-center">
+    <img class="example-header-image" src="assets/img/{{usuario.avatar}}" alt="">
+  </div>
+  <mat-card-content>
+    <p>
+      <span class="ft">Seguidos:
+        <span class="number">{{this.follows}}</span>
+      </span>
+      <span class="pull-right ft"> Seguidores: 
+        <span class="number">{{this.followers}}</span>
+      </span>
+    </p>
+  </mat-card-content>
+  <mat-card-actions class="text-center">
+    <button mat-raised-button color="accent" *ngIf="isAuthUserProfile()" routerLink="edit">Editar</button>
+    <app-follow *ngIf="!isAuthUserProfile()" (notify)='onNotify($event)' [currentProfileId]="id"></app-follow>
+    <button mat-raised-button color="warn" disabled>Logros</button>
+  </mat-card-actions>
+</mat-card>
+
+
+<router-outlet></router-outlet>

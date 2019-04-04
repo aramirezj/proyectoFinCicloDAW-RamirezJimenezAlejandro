@@ -1,0 +1,8 @@
+<div *ngIf="!quizzs && this.isLoaded">
+</div>
+<div *ngIf="quizzs && this.isLoaded">
+  <h3 class="text-center"></h3>
+  <div *ngFor="let quizz of quizzs">
+    <app-quizz [quizz]="quizz"></app-quizz>
+  </div>
+</div>

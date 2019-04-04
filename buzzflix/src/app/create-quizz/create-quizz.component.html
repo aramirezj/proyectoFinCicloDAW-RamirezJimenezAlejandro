@@ -1,0 +1,160 @@
+<div class="row">
+  <div class="col-md-8 col-md-offset-1 box">
+    <div class="panel panel-default">
+      <div class="panel-heading">
+        Crear Quizz
+      </div>
+      <div class="panel-body">
+        <form enctype="multipart/form-data" [formGroup]="quizzForm" (ngSubmit)="onSubmit()">
+          <div class="top-form">
+          <ul class="list-group">
+            <li class="list-group-item text-danger"
+              *ngIf="quizzForm.get('titulo').hasError('required') && quizzForm.get('titulo').touched">
+              El titulo es requerido
+            </li>
+            <li class="list-group-item text-danger"
+              *ngIf="quizzForm.get('cp').hasError('required') && quizzForm.get('cp').touched">
+              La cantidad de preguntas es requerida
+            </li>
+            <li class="list-group-item text-danger"
+              *ngIf="quizzForm.get('cs').hasError('required') && quizzForm.get('cs').touched">
+              La cantidad de soluciones es requerida
+            </li>
+            <li class="list-group-item text-danger"
+              *ngIf="quizzForm.get('cp').hasError('min') && quizzForm.get('cp').dirty">
+              La cantidad de preguntas minima son 4
+            </li>
+            <li class="list-group-item text-danger"
+              *ngIf="quizzForm.get('cp').hasError('max') && quizzForm.get('cp').dirty">
+              La cantidad de preguntas maxima son 10
+            </li>
+            <li class="list-group-item text-danger"
+              *ngIf="quizzForm.get('cs').hasError('min') && quizzForm.get('cs').dirty">
+              La cantidad de soluciones minima son 2
+            </li>
+            <li class="list-group-item text-danger"
+              *ngIf="quizzForm.get('cs').hasError('max') && quizzForm.get('cs').dirty">
+              La cantidad de soluciones maxima son 5
+            </li>
+
+
+          </ul>
+
+          <div class="form-group">
+            <label>Titulo del Quizz</label>
+            <input type="text" class="form-control" formControlName="titulo" placeholder="Titulo del Quizz">
+          </div>
+          <div class="form-group">
+            <div class="input-group">
+              <input type="text" class="form-control" placeholder="Banner del Quizz"readonly>
+              <div class="input-group-btn">
+                <span class="fileUpload btn btn-success">
+                  <span class="upl" id="upload">Subir imagen</span>
+                  <input type="file" class="upload up" (change)="onFileChanged($event,69)"
+                    formControlName="banner" id="up" />
+                </span>
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Cantidad soluciones</label>
+            <input type="number" class="form-control" formControlName="cs"
+              placeholder="Cantidad de soluciones a generar">
+          </div>
+          <div class="form-group">
+            <label>Cantidad preguntas</label>
+            <input type="number" class="form-control" formControlName="cp"
+              placeholder="Cantidad de preguntas a generar">
+          </div>
+          <div class="form-group text-center">
+            <button *ngIf="firstStep" type="button" class="btn btn-info" (click)="generaSoluciones()">Generar
+              Soluciones</button>
+            <button *ngIf="!firstStep" type="button" class="btn btn-info" (click)="generaSoluciones()"
+              [disabled]="quizzForm.invalid">Generar Soluciones</button>
+          </div>
+        </div>
+          <!-- FORMULARIO DE SOLUCIONES -->
+          <div *ngIf="firstStep" class="solu-box">
+            <p class="text-center seccion">Soluciones</p>
+            <!-- Soluciones -->
+            <div class="solu-apar" *ngFor="let item of [].constructor(this.max); let i = index">
+              <p class="text-center apartado">Solución Nº {{i+1}}</p>
+              <div class="form-group">
+                <input type="text" class="form-control" [formControlName]="generaId('st',i)"
+                  placeholder="Nombre de la solución">
+              </div>
+              <div class="form-group">
+                <input type="text" class="form-control" [formControlName]="generaId('sd',i)"
+                  placeholder="Explicación de la solución">
+              </div>
+
+
+
+              <div class="form-group">
+                <div class="input-group">
+                  <input type="text" class="form-control" placeholder="Imagen de la solución" readonly>
+                  <div class="input-group-btn">
+                    <span class="fileUpload btn btn-success">
+                      <span class="upl" id="upload">Subir imagen</span>
+                      <input type="file" class="upload up" (change)="onFileChanged($event,i)"
+                        [formControlName]="generaId('si',i)" id="up" />
+                    </span>
+                  </div>
+                </div>
+              </div>
+
+
+            </div>
+            <div class="form-group text-center">
+                <button *ngIf="firstStep" type="button" class="btn btn-danger" (click)="generaPreguntas()"
+                  [disabled]="!firstStep">Generar Preguntas</button>
+              </div>
+          </div>
+          
+          <!-- PREGUNTAS -->
+          <div *ngIf="secondStep" class="preg-box">
+            <p class="text-center">Preguntas</p>
+            <div class="preg-apar" *ngFor="let item of [].constructor(this.maxp); let i = index">
+              <p class="text-center apartado">Pregunta Nº {{i+1}}</p>
+              <div class="form-group">
+                <input type="text" class="form-control" placeholder="Titulo pregunta" [formControlName]="generaId('pt',i)">
+              </div>
+              <div class="form-group">
+                <input type="number" class="form-control"  placeholder="Cantidad respuestas" [formControlName]="generaId('pcr',i)" max="20">
+              </div>
+              <div class="form-group text-center">
+                <button type="button" class="btn btn-danger" (click)="generaRespuestas(i+1)">Generar respuestas</button>
+              </div>
+              <!-- RESPUESTAS -->
+              <div *ngIf="this.verdades[i].creada" class="resp-box">
+                <div  *ngFor="let n of this.learray[i];let j = index">
+                  <div class="resp-apar" *ngIf="this.verdades[i].respuestas[n-1].mostrado">
+                    <p class="text-center apartado">Respuesta Nº {{n}}</p>
+                    <div class="form-group">
+                      <input type="text" class="form-control" placeholder="Titulo respuesta"   [formControlName]="generaIdR('r',n,'p',i)">
+                      <div class="select-box">
+                        <div *ngFor="let x of [].constructor(this.maxs); let p = index">
+                          <p>Afinidad {{p+1}} ({{quizzForm.get('st'+(p+1)).value}})</p>
+                          <select [formControlName]="generaIdRR('p',i,'rs',n,'a',p)">
+                            <option *ngFor="let q of [0,1,2,3,4,5,6,7,8,9,10]; let l = index">{{q}}</option>
+                          </select>
+
+                        </div>
+                      </div>
+                      <div class="clear"></div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+        </form>
+      </div>
+    </div>
+    <div class="form-group text-center">
+        <button *ngIf="thirdStep" type="button" class="btn btn-success" (click)="compruebaValidaciones()">Guardar
+          Quizz</button>
+      </div>
+  </div>
+</div>
