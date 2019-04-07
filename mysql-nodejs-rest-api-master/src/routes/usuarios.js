@@ -40,7 +40,6 @@ function verificaToken(headers) {
     const bearerToken = bearer[1];
     try {
       let decoded = jwt.verify(bearerToken, secretWord)
-      console.log(decoded);
       console.log("Token correcto")
       return decoded.id;
     } catch (err) {
@@ -513,7 +512,6 @@ router.post('/unfollow', cors(), (req, res, next) => {
   let permiso = verificaToken(req.headers);
   if (permiso != false) {
     const { origen, destino } = req.body;
-    console.log(origen+"--"+destino)
     if (permiso == origen) {
       const query = "delete from follows where origen = ? AND destino = ?";
       mysqlConnection.query(query, [origen, destino], (err, rows, fields) => {
