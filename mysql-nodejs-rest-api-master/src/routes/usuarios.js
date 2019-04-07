@@ -4,11 +4,10 @@ const router = express.Router();
 const app = express();
 app.use(cors())
 var multer = require("multer");
-
 var jwt = require('jsonwebtoken');
 var bcrypt = require('bcryptjs');
-
-let secretWord = "a670711037";
+var tokenService = require('../tokenService');
+let secretWord = tokenService;
 
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -22,63 +21,181 @@ const upload = multer({
   storage: storage
 })
 
-/*function generaToken(){
-  require('crypto').randomBytes(48, function(err, buffer) {
-    var token = buffer.toString('hex');
-    console.log(token)
-  });
-}
-console.log(generaToken())*/
-
-
-
-
 const mysqlConnection = require('../database.js');
 
 
 
-// Obtener un usuario
-router.get('/usuario/:id', (req, res) => {
-  console.log("OBTENER POR ID??????")
-  const { id } = req.params;
-  console.log(id);
-  mysqlConnection.query('SELECT id,name,email,avatar FROM users WHERE id = ?', [id], (err, rows, fields) => {
+function creaToken(id) {
+  var token = jwt.sign({ id: id }, secretWord, {
+    expiresIn: 86400 // expires in 24 hours
+  });
+  return token;
+}
+
+function verificaToken(headers) {
+  let bearerHeader = headers["authorization"];
+  console.log(typeof bearerHeader);
+  if (typeof bearerHeader !== 'undefined') {
+    const bearer = bearerHeader.split(" ");
+    const bearerToken = bearer[1];
+    try {
+      let decoded = jwt.verify(bearerToken, secretWord)
+      console.log(decoded);
+      console.log("Token correcto")
+      return decoded.id;
+    } catch (err) {
+      console.log("Es un token erroneo");
+      return false;
+    }
+  } else {
+    console.log("Es un token erroneo");
+    return false;
+  }
+}
+
+//Petición para registrar un usuario .
+router.post('/register', cors(), (req, res, next) => {
+  console.log("PETICION REGISTRO")
+  console.log("PARAMETROS")
+  const { name, email, password } = req.body;
+  console.log(name, email, password);
+  const query = "insert into users (name,email,password) VALUES(?,?,?)";
+  mysqlConnection.query(query, [name, email, password], (err, rows, fields) => {
     if (!err) {
-      console.log(rows[0])
-      res.json(rows[0]);
+      var token = creaToken(rows.insertId);
+      console.log(token);
+      res.status(200).send({ auth: true, token: token, id: rows.insertId });
     } else {
       console.log(err);
     }
   });
+
 });
-// Obtener varios usuarios
-router.get('/usuarios/:nombre', (req, res) => {
-  console.log("OBTENER POR nombre")
-  let { nombre } = req.params;
-  console.log(nombre);
-  if (nombre == "EVERYTHINGPLEASE") {
-    mysqlConnection.query('SELECT id,name,email,avatar FROM users order by name', null, (err, rows, fields) => {
+//Petición para iniciar sesión
+router.post('/authenticate', cors(), (req, res, next) => {
+  console.log("PETICION LOGIN(authenticate)")
+  console.log("PARAMETROS")
+  const { email, password } = req.body;
+  console.log("Parametros:" + email, password);
+  const query = "select id,name,email,avatar from users where email = ? AND password = ?";
+  mysqlConnection.query(query, [email, password], (err, rows, fields) => {
+    if (!err) {
+      if (rows.length < 1) {
+        res.json({
+          status: 'FAIL',
+          usuario: null
+        });
+      } else {
+        var token = creaToken(rows[0].id);
+        res.status(200).send({ auth: true, token: token, usuario: rows[0] });
+      }
+    } else {
+      console.log(err);
+    }
+  });
+
+});
+
+//Actualizar perfil de un usuario (PROTECTED)
+router.put('/usuario/actualizar/:id', cors(), (req, res, next) => {
+  console.log("PETICION PUT ACTUALIZAR")
+  console.log("PARAMETROS")
+
+  let permiso = verificaToken(req.headers);
+  if (permiso != false) {
+    const { name, email, avatar } = req.body;
+    const { id } = req.params;
+    let query = "UPDATE users set name = ? , email =?, avatar=? WHERE id = ?"
+    mysqlConnection.query(query, [name, email, avatar, id], (err, rows, fields) => {
       if (!err) {
-        console.log(rows)
-        res.json(rows);
+        res.send({
+          status: '200'
+        })
+      } else {
+        res.send({
+          status: 'Error sql'
+        })
+      }
+    });
+  } else {
+    res.send({
+      status: 'Token invalido'
+    })
+  }
+
+});
+
+
+
+// Obtener un usuario (PROTECTED)
+router.get('/usuario/:id', (req, res) => {
+  console.log("Obtener un usuario mediante una id")
+  let permiso = verificaToken(req.headers);
+  console.log(permiso)
+  if (permiso) {
+    const { id } = req.params;
+    mysqlConnection.query('SELECT id,name,email,avatar FROM users WHERE id = ?', [id], (err, rows, fields) => {
+      if (!err) {
+        res.send({
+          status: '200',
+          usuario: rows[0]
+        })
       } else {
         console.log(err);
       }
     });
   } else {
-    mysqlConnection.query('SELECT id,name,email,avatar FROM users WHERE name LIKE ? order by name', [nombre + "%"], (err, rows, fields) => {
-      if (!err) {
-        console.log(rows)
-        res.json(rows);
-      } else {
-        console.log(err);
-      }
-    });
+    res.send({
+      status: 'Token invalido'
+    })
   }
 
+
 });
-//usuario/:id/wall
-//Obtener todos los quizz de alguien
+// Obtener varios usuarios según nombre (PROTECTED)
+router.get('/usuarios/:nombre', (req, res) => {
+  console.log("Obtener usuarios por nombre");
+  let permiso = verificaToken(req.headers);
+  if (permiso) {
+    let { nombre } = req.params;
+    if (nombre == "EVERYTHINGPLEASE") {
+      mysqlConnection.query('SELECT id,name FROM users order by name', null, (err, rows, fields) => {
+        if (!err) {
+          res.send({
+            status: '200',
+            usuarios: rows
+          })
+          //res.json(rows);
+        } else {
+          res.send({
+            status: 'Error sql'
+          })
+        }
+      });
+    } else {
+      mysqlConnection.query('SELECT id,name FROM users WHERE name LIKE ? order by name', [nombre + "%"], (err, rows, fields) => {
+        if (!err) {
+          res.send({
+            status: '200',
+            usuarios: rows
+          })
+        } else {
+          res.send({
+            status: 'Error sql'
+          })
+        }
+      });
+    }
+  } else {
+    res.send({
+      status: 'Token invalido'
+    })
+  }
+
+
+
+});
+//Obtener todos los quizz de alguien (UNPROTECTED)
 router.get('/usuario/:id/wall', (req, res) => {
   console.log("Obtener quizz por id")
   const { id } = req.params;
@@ -101,7 +218,7 @@ router.get('/usuario/:id/wall', (req, res) => {
     }
   });
 });
-//Obtener los quizzes de todos los seguidos
+//Obtener los quizzes de todos los seguidos (UNPROTECTED)
 router.get('/quizz/:id/seguidos', (req, res) => {
   console.log("Obtener quizz de los seguidos")
   const { id } = req.params;
@@ -125,7 +242,7 @@ router.get('/quizz/:id/seguidos', (req, res) => {
     }
   });
 });
-//Obtener los quizzes d
+//Obtener los quizzes de la web (UNPROTECTED)
 router.get('/quizz/todos', (req, res) => {
   console.log("Obtener quizz de todos")
   let query = "SELECT * FROM quizz order by estrellas DESC"
@@ -148,7 +265,7 @@ router.get('/quizz/todos', (req, res) => {
     }
   });
 });
-//Obtener un solo quizz
+//Obtener un solo quizz (UNPROTECTED)
 router.get('/quizz/:id', (req, res) => {
   console.log("Obtener quizz del id")
   const { id } = req.params;
@@ -173,18 +290,16 @@ router.get('/quizz/:id', (req, res) => {
   });
 });
 
-//Obtener cantidad de quizzes creados
+//Obtener cantidad de quizzes creados (UNPROTECTED)
 router.get('/quizz/:id/cantidad', (req, res) => {
   console.log("Obtener cantidad de quizzes por un usuario")
   const { id } = req.params;
   let cantidad = 0;
   let query = "SELECT count(id) as c FROM quizz WHERE creador = ?"
   mysqlConnection.query(query, [id], (err, rows, fields) => {
-    console.log("cantidad " + rows[0].c)
     if (!err) {
       if (rows.length == 0) {
       } else {
-        console.log(rows[0].c)
         cantidad = rows[0].c
       }
       return res.json({ resultado: cantidad });
@@ -194,18 +309,16 @@ router.get('/quizz/:id/cantidad', (req, res) => {
   });
 });
 
-//Obtener cantidad de votos recibidos x personas
+//Obtener cantidad de votos recibidos x personas (UNPROTECTED)
 router.get('/quizz/:id/media', (req, res) => {
   console.log("Obtener cantidad de votos, (no cantidad)")
   const { id } = req.params;
   let cantidad = 0;
   let query = "SELECT count(quizz) as m FROM votaciones WHERE quizz = ?"
   mysqlConnection.query(query, [id], (err, rows, fields) => {
-    console.log("cantidad " + rows[0].m)
     if (!err) {
       if (rows.length == 0) {
       } else {
-        console.log(rows[0].m)
         cantidad = rows[0].m
       }
       return res.json({ resultado: cantidad });
@@ -215,7 +328,7 @@ router.get('/quizz/:id/media', (req, res) => {
   });
 });
 
-//Obtener número de seguidores
+//Obtener número de seguidores (UNPROTECTED)
 router.get('/usuario/:id/followers', (req, res) => {
   let resultados = [];
   console.log("Obtener número de seguidores")
@@ -248,58 +361,17 @@ router.get('/usuario/:id/followers', (req, res) => {
   });
 });
 
-/*
-// DELETE An Employee
-router.delete('/:id', (req, res) => {
-   console.log("BORRAR POR ID")
-  const { id } = req.params;
-  mysqlConnection.query('DELETE FROM employee WHERE id = ?', [id], (err, rows, fields) => {
-    if(!err) {
-      res.json({status: 'Employee Deleted'});
-    } else {
-      console.log(err);
-    }
-  });
-});
-
-*/
 
 
-router.post('/register', cors(), (req, res, next) => {
-  console.log("PETICION REGISTRO")
-  console.log("PARAMETROS")
-  const { name, email, password } = req.body;
-  console.log(name, email, password);
-  const query = "insert into users (name,email,password) VALUES(?,?,?)";
-  mysqlConnection.query(query, [name, email, password], (err, rows, fields) => {
-    if (!err) {
-      var token = jwt.sign({ id: rows.insertId }, secretWord, {
-        expiresIn: 86400 // expires in 24 hours
-      });
-      console.log(token);
-      res.status(200).send({ auth: true, token: token, id: rows.insertId });
-      // res.json({ id: rows.insertId });
-    } else {
-      console.log(err);
-    }
-  });
-
-});
+//Petición de subida de archivo (VER COMO PROTEGER)
 router.post('/file', upload.any('file'), (req, res, next) => {
   console.log("PETICION SUBIR IMAGENES")
   console.log("PARAMETROS")
   console.log(req.files)
-  /*mysqlConnection.query(query, [name, email, password], (err, rows, fields) => {
-    if(!err) {
-      console.log(rows.insertId);
-      res.json({id: rows.insertId});
-    } else {
-      console.log(err);
-    }
-  });*/
 
 });
-//Peticion para crear un quizz
+
+//Peticion para crear un quizz (UNPROTECTED)
 router.post('/creaQuizz', cors(), (req, res, next) => {
   console.log("PETICION subir un quizz")
   console.log("PARAMETROS")
@@ -316,88 +388,68 @@ router.post('/creaQuizz', cors(), (req, res, next) => {
   });
 
 });
-//Peticion para puntuar un test
+
+//Peticion para puntuar un test (PROTECTED)
 router.post('/vota', cors(), (req, res, next) => {
   console.log("PETICION votar")
   console.log("PARAMETROS")
-  let estrellas = 0;
-  const { origen, quizz, cantidad } = req.body;
-  console.log(origen + "--" + quizz + "--" + cantidad);
-  const query = "insert into votaciones (origen,quizz,cantidad) VALUES(?,?,?)";
-  mysqlConnection.query(query, [origen, quizz, cantidad], (err, rows, fields) => {
-    if (!err) {
+  let permiso = verificaToken(req.headers);
+  if (permiso != false) {
+    const { origen, quizz, cantidad } = req.body;
+    if (permiso == origen) {
+      let estrellas = 0;
+      const query = "insert into votaciones (origen,quizz,cantidad) VALUES(?,?,?)";
+      mysqlConnection.query(query, [origen, quizz, cantidad], (err, rows, fields) => {
+        if (err) {
+          res.send({
+            status: 'Error sql'
+          })
+        }
+      });
+      const query2 = "select estrellas as e from quizz where id = ?";
+      mysqlConnection.query(query2, [quizz], (err, rows, fields) => {
+        if (!err) {
+          estrellas = rows[0].e
+        } else {
+          res.send({
+            status: 'Error sql'
+          })
+        }
+      });
+      setTimeout(() => {
+        estrellas += cantidad;
+        console.log("LAS ESTRELLAS SOOON " + estrellas)
+        const query3 = "update quizz set estrellas = ? where id = ?";
+        mysqlConnection.query(query3, [estrellas, quizz], (err, rows, fields) => {
+          if (!err) {
+            res.send({
+              status: '200'
+            })
+          } else {
+            res.send({
+              status: 'Error sql'
+            })
+          }
+        });
+      }, 1000);
     } else {
-      //console.log(err);
+      res.send({
+        status: 'Usuario sin permiso'
+      })
     }
-  });
-  console.log("INSERCION VOTACIONES OK")
-  const query2 = "select estrellas as e from quizz where id = ?";
-  mysqlConnection.query(query2, [quizz], (err, rows, fields) => {
-    if (!err) {
-      console.log("ENCONTRADO ESTO " + rows[0].e)
-      estrellas = rows[0].e
-    } else {
-      //console.log(err);
-    }
-  });
-
-  setTimeout(() => {
-    console.log("SELECCION  ESTRELLAS OK-" + estrellas)
-    estrellas += cantidad;
-    console.log("LAS ESTRELLAS SOOON " + estrellas)
-    const query3 = "update quizz set estrellas = ? where id = ?";
-    mysqlConnection.query(query3, [estrellas, quizz], (err, rows, fields) => {
-      if (!err) {
-        console.log("update OK-")
-        res.json({ status: "OK" });
-      } else {
-        console.log(err);
-      }
-    });
-  }, 500);
+  } else {
+    res.send({
+      status: 'Token invalido'
+    })
+  }
 
 
 
 
 });
 
-router.post('/authenticate', cors(), (req, res, next) => {
-  console.log("PETICION LOGIN(authenticate)")
-  console.log("PARAMETROS")
 
-
-
-
-  const { email, password } = req.body;
-  console.log("Parametros:" + email, password);
-  const query = "select id,name,email,avatar from users where email = ? AND password = ?";
-  mysqlConnection.query(query, [email, password], (err, rows, fields) => {
-    if (!err) {
-      if (rows.length < 1) {
-        res.json({
-          status: 'FAIL',
-          usuario: null
-        });
-      }else {
-        //console.log(rows[0])
-        console.log("OK")
-        var token = jwt.sign({ id: rows[0].id }, secretWord, {
-          expiresIn: 86400 // expires in 24 hours
-        });
-        res.status(200).send({ auth: true, token: token,usuario:rows[0] });
-        /*res.json({
-          status: 'OK',
-          usuario: rows[0]
-        });*/
-      }
-      //res.json({rows});
-    } else {
-      console.log(err);
-    }
-  });
-
-});
-//Peticion post para ver si sigue a x persona
+//Peticion post para ver si sigue a x persona (UNPROTECTED)
 router.post('/is/following', cors(), (req, res, next) => {
   console.log("PETICION PARA VER SI HAY SEGUIMIENTO")
   console.log("PARAMETROS")
@@ -424,58 +476,86 @@ router.post('/is/following', cors(), (req, res, next) => {
 
 });
 
-//Peticion post para comenzar a seguir
+//Peticion post para comenzar a seguir (PROTECTED)
 router.post('/follow', cors(), (req, res, next) => {
   console.log("PETICION para INTRODUCIR UN SEGUIMIENTO")
-  console.log("PARAMETROS")
-  const { origen, destino } = req.body;
-  console.log("Parametros:" + origen + "-" + destino);
-  const query = "insert into follows values(?,?)";
-  mysqlConnection.query(query, [origen, destino], (err, rows, fields) => {
-    if (!err) {
-      res.json({ status: "OK" });
-    }
-    else {
-      console.log(err);
-    }
-  });
 
+  let permiso = verificaToken(req.headers);
+  if (permiso != false) {
+    const { origen, destino } = req.body;
+    if (permiso == origen) {
+      const query = "insert into follows values(?,?)";
+      mysqlConnection.query(query, [origen, destino], (err, rows, fields) => {
+        if (!err) {
+          res.send({
+            status: '200'
+          })
+        }
+        else {
+          console.log(err)
+          res.send({
+            status: 'Error sql'
+          })
+          
+        }
+      });
+    }else{
+      res.send({
+        status: 'No tienes permiso'
+      })
+    }
+  }
 });
-//Peticion post para borrar un seguimiento
+
+//Peticion post para borrar un seguimiento (PROTECTED)
 router.post('/unfollow', cors(), (req, res, next) => {
   console.log("PETICION para borrar un seguimiento")
-  console.log("PARAMETROS")
-  const { origen, destino } = req.body;
-  console.log("Parametros:" + origen + "-" + destino);
-  const query = "delete from follows where origen = ? AND destino = ?";
-  mysqlConnection.query(query, [origen, destino], (err, rows, fields) => {
-    if (!err) {
-      res.json({ status: "OK" });
+  let permiso = verificaToken(req.headers);
+  if (permiso != false) {
+    const { origen, destino } = req.body;
+    console.log(origen+"--"+destino)
+    if (permiso == origen) {
+      const query = "delete from follows where origen = ? AND destino = ?";
+      mysqlConnection.query(query, [origen, destino], (err, rows, fields) => {
+        if (!err) {
+          res.send({
+            status: '200'
+          })
+        }
+        else {
+          console.log(err)
+          res.send({
+            status: 'Error sql'
+          })
+          
+        }
+      });
+    }else{
+      res.send({
+        status: 'No tienes permiso'
+      })
     }
-    else {
-      console.log(err);
-    }
-  });
+  }
 
 });
 
 
 
-
-router.put('/usuario/actualizar/:id', cors(), (req, res, next) => {
-  console.log("PETICION PUT ACTUALIZAR")
-  console.log("PARAMETROS")
-  const { name, email, avatar } = req.body;
+/*
+// DELETE An Employee
+router.delete('/:id', (req, res) => {
+   console.log("BORRAR POR ID")
   const { id } = req.params;
-  console.log(name, email)
-  let query = "UPDATE users set name = ? , email =?, avatar=? WHERE id = ?"
-  mysqlConnection.query(query, [name, email, avatar, id], (err, rows, fields) => {
-    if (!err) {
-      res.json({ status: 'OK' });
+  mysqlConnection.query('DELETE FROM employee WHERE id = ?', [id], (err, rows, fields) => {
+    if(!err) {
+      res.json({status: 'Employee Deleted'});
     } else {
       console.log(err);
     }
   });
 });
+
+*/
+
 
 module.exports = router;

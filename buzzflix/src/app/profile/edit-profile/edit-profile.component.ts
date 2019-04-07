@@ -39,18 +39,17 @@ export class EditProfileComponent implements OnInit {
     }else{
       aux = new Usuario(this.usuario.id,this.usuario.name,this.usuario.email,this.file.name);
     }
-    console.log(aux)
     this.userService.updateProfile(this.usuario,this.file)
     .then((usuario)=>{
+      console.log(usuario);
       if(usuario!=null){
         if(usuario.avatar==null || usuario.avatar==""){
           usuario.avatar="hehexd.png";
         }
-        console.log("USUARIOO");
-        console.log(usuario)
         this.usuario=usuario;
-        this.notifyService.notify("Usuario actualizado con exito","success");
+       
       }else{
+        console.log("mando error")
         this.notifyService.notify("Ha ocurrido un error","danger");
       }
     })

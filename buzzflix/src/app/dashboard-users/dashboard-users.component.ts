@@ -27,7 +27,6 @@ export class DashboardUsersComponent implements OnInit {
 
 
   initialiseInvites() {
-    this.notifyService.notify("Busqueda realizada con exito","success");
     this.getUsuarios();
   }
 
@@ -35,7 +34,6 @@ export class DashboardUsersComponent implements OnInit {
     this.router.params.subscribe((params) => {
       this.nombre = params['nombre'];})
       this.getUsuarios();
-      this.notifyService.notify("Busqueda realizada con exito","success");
   }
 
   ngOnDestroy() {
@@ -48,9 +46,6 @@ export class DashboardUsersComponent implements OnInit {
     this.userService.getUsuarios(this.nombre)
     .then(resp=>{
       this.usuarios=resp;
-      if(this.usuarios.length==0){
-        this.usuarios=null;
-      }
     })
   }
 

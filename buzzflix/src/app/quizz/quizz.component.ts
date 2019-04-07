@@ -34,7 +34,7 @@ export class QuizzComponent implements OnInit {
    })
    this.quizz.image = JSON.parse(this.quizz.contenido).image;
    if(this.quizz.image==null){
-     this.quizz.image="8lZak7yO.jpg";
+     this.quizz.image="koala.jpg";
    }
     
 }

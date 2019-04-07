@@ -36,8 +36,8 @@ export class AuthService{
         return this.http.post(`${CONFIG.apiUrl}register`,{name:name,email:email,password:password})
         .toPromise()
         .then((response)=>{
-            console.log(response);
             let aux:Usuario = new Usuario(response.json().id,name,email,null);
+            localStorage.setItem("token",response.json().token);
             this.bar.done();
             return aux;
         })
@@ -50,8 +50,8 @@ export class AuthService{
         .then((response)=>{
             console.log(response)
             if(response.status==200){
-                console.log(response.json().usuario)
                 let aux:Usuario = response.json().usuario;
+                localStorage.setItem("token",response.json().token);
                 this.bar.done();
                 return aux; 
             }else{
@@ -84,6 +84,7 @@ export class AuthService{
 
     logout(){
         localStorage.removeItem("usuario");
+        localStorage.removeItem("token");
         this.notifyService.notify("Has cerrado la sesión correctamente","success");
         this.router.navigate(['/auth/login']);
     }

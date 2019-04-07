@@ -18,33 +18,48 @@ export class QuizzService{
         private bar:NgProgressService,
         private notifyService:NotifyService
     ){
-       this.headers = new Headers();
+        this.headers = new Headers({ 'Authorization': `Bearer ${this.getToken()}` });
     }
 
 
+
+
+    getToken(): string {
+        return localStorage.getItem('token');
+    }
 
     votaQuizz(quizz:number,n:number){
         this.bar.start();
         let id = this.authService.getAuthUserId();
         let fecha = new Date();
         let url=`${CONFIG.apiUrl}vota`;
-        let body = {origen:id, quizz: quizz,cantidad:n};
+        let body = {origen:id,quizz: quizz,cantidad:n};
         let options = new RequestOptions({headers:this.headers});
         return this.http.post(url,body,options)
         .toPromise()
         .then(resp=>{
             this.bar.done();
-            this.notifyService.notify("Has votado correctamente, ¡Gracias!","success");
+            if(resp.json().status=="200"){
+                this.notifyService.notify("Has votado correctamente, ¡Gracias!","success");
+            }else if(resp.json().status=="Usuario sin permiso"){
+                this.notifyService.notify("No tienes permiso","error");
+            }else if(resp.json().status=="Error sql"){
+                this.notifyService.notify("Error en el servidor","error");
+            }else{
+                this.notifyService.notify("Error de autenticación, cierra sesión, vuelve a iniciar y recarga la página","error");
+            }
+            
             return resp.json();
         })
     }
 
-    sendFile(files:Array<File>){
+    sendFile(files:Array<File>){ //NO SE COMO PROTEGERLO BIEN
+        let options = new RequestOptions({ headers: this.headers });
         let fd = new FormData();
         for(let i=0;i<files.length;i++){
             fd.append('file'+i, files[i], files[i].name);
         }
-        this.http.post(`${CONFIG.apiUrl}file`,fd)
+        this.http.post(`${CONFIG.apiUrl}file`,fd,options)
         .toPromise()
         .then((response)=>{
         })

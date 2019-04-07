@@ -2,7 +2,7 @@ import { Injectable } from '@angular/core';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { UserService } from '../services/user.service';
-import { Usuario } from '../modelo/usuario';
+import { Usuario } from '../modelo/Usuario';
 import { AuthService } from '../services/auth.service';
 import { Http } from '@angular/http';
 import { QuizzService } from '../services/quizz.service';
@@ -34,7 +34,6 @@ export class ProfileComponent implements OnInit {
 
 
   ngOnInit() {
-    console.log("??")
     this.router.params.subscribe((params) => {
       this.id = +params['id'];
       this.userService.getUserById(this.id)
@@ -63,7 +62,6 @@ export class ProfileComponent implements OnInit {
     this.quizzService.getCantidad(this.id)
       .then((resp)=>{
         this.cantidad=resp;
-        console.log("la cantidad es "+this.cantidad)
       });
   }
 
