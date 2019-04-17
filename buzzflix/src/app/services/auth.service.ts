@@ -69,6 +69,7 @@ export class AuthService{
             localStorage.setItem("usuario",JSON.stringify(aux));
             this.notifyService.notify("Has iniciado sesión correctamente","success");
             this.router.navigate(['/dashboard']);
+            //location.reload();
         }
         
     }

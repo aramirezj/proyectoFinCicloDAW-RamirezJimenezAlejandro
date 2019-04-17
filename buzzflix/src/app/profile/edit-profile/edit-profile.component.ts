@@ -5,6 +5,7 @@ import { UserService } from 'src/app/services/user.service';
 import { NotifyService } from 'src/app/services/notify.service';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/forms';
+import { NgProgressService } from 'ng2-progressbar';
 import * as $ from 'jquery';
 @Component({
   selector: 'app-edit-profile',
@@ -25,7 +26,9 @@ export class EditProfileComponent implements OnInit {
   constructor(
     private authService:AuthService,
     private userService:UserService,
-    private notifyService:NotifyService
+    private notifyService:NotifyService,
+    private bar: NgProgressService
+    
   ) { }
 
   ngOnInit() {
@@ -39,19 +42,17 @@ export class EditProfileComponent implements OnInit {
     }else{
       aux = new Usuario(this.usuario.id,this.usuario.name,this.usuario.email,this.file.name);
     }
+    this.bar.start();
     this.userService.updateProfile(this.usuario,this.file)
     .then((usuario)=>{
-      console.log(usuario);
       if(usuario!=null){
         if(usuario.avatar==null || usuario.avatar==""){
-          usuario.avatar="hehexd.png";
+          usuario.avatar="assets/img/hehexd.png";
         }
-        this.usuario=usuario;
-       
+        this.usuario=usuario;  
       }else{
-        console.log("mando error")
-        this.notifyService.notify("Ha ocurrido un error","danger");
       }
+     
     })
   }
 
@@ -64,7 +65,6 @@ export class EditProfileComponent implements OnInit {
       writable:false
     })
     this.file = file;
-    console.log(this.file)
   }
 
   makeId(length) {

@@ -35,6 +35,7 @@ function creaToken(id) {
 function verificaToken(headers) {
   let bearerHeader = headers["authorization"];
   console.log(typeof bearerHeader);
+  console.log(bearerHeader);
   if (typeof bearerHeader !== 'undefined') {
     const bearer = bearerHeader.split(" ");
     const bearerToken = bearer[1];
@@ -405,7 +406,7 @@ router.post('/vota', cors(), (req, res, next) => {
           })
         }
       });
-      const query2 = "select estrellas as e from quizz where id = ?";
+     /* const query2 = "select estrellas as e from quizz where id = ?";
       mysqlConnection.query(query2, [quizz], (err, rows, fields) => {
         if (!err) {
           estrellas = rows[0].e
@@ -414,11 +415,11 @@ router.post('/vota', cors(), (req, res, next) => {
             status: 'Error sql'
           })
         }
-      });
+      });*/
       setTimeout(() => {
-        estrellas += cantidad;
+        estrellas = cantidad;
         console.log("LAS ESTRELLAS SOOON " + estrellas)
-        const query3 = "update quizz set estrellas = ? where id = ?";
+        const query3 = "update quizz set estrellas = estrellas + ? where id = ?";
         mysqlConnection.query(query3, [estrellas, quizz], (err, rows, fields) => {
           if (!err) {
             res.send({

@@ -9,14 +9,14 @@
 <nav class="navbar navbar-inverse">
   <div class="container-fluid">
     <div class="navbar-header">
-      <a class="navbar-brand" class="navbar-brand" routerLink="dashboard">Quizzflix</a>
+      <a class="navbar-brand" class="navbar-brand navlink" routerLink="dashboard">Quizzflix</a>
     </div>
     <ul class="nav navbar-nav">
-      <li *ngIf="isLoggedIn() && this.authService.getAuthUser()" [routerLink]="['ver/todos']"><a role="button">Todos los
+      <li *ngIf="isLoggedIn() && this.authService.getAuthUser()" [routerLink]="['ver/todos']"><a class="navlink" role="button">Todos los
           tests</a></li>
       <li *ngIf="isLoggedIn() && this.authService.getAuthUser()"
-        [routerLink]="['usuario/perfil',this.authService.getAuthUserId()]"><a role="button">Mi perfil</a></li>
-      <li *ngIf="isLoggedIn() && this.authService.getAuthUser()" [routerLink]="['crear/quizz']"><a role="button">Crear
+        [routerLink]="['usuario/perfil',this.authService.getAuthUserId()]"><a class="navlink" role="button">Mi perfil</a></li>
+      <li *ngIf="isLoggedIn() && this.authService.getAuthUser()" [routerLink]="['crear/quizz']"><a class="navlink" role="button">Crear
           Quizz</a></li>
       <form class="form-inline" *ngIf="isLoggedIn() && this.authService.getAuthUser()" [formGroup]="miniForm">
         <input class="form-control mr-sm-2" formControlName="nombre" type="search" placeholder="Buscar usuarios"
@@ -25,9 +25,9 @@
       </form>
     </ul>
     <ul class="nav navbar-nav navbar-right">
-      <li *ngIf="isLoggedIn()" (click)="logout()"><a role="button">Cerrar sesión</a> </li>
-      <li *ngIf="!isLoggedIn()"><a role="button" routerLink="/auth/register">Registrarse</a></li>
-      <li *ngIf="!isLoggedIn()"><a role="button" routerLink="/auth/login">Iniciar Sesión</a></li>
+      <li *ngIf="isLoggedIn()" (click)="logout()"><a class="navlink" role="button">Cerrar sesión</a> </li>
+      <li *ngIf="!isLoggedIn()"><a class="navlink" role="button" routerLink="/auth/register">Registrarse</a></li>
+      <li *ngIf="!isLoggedIn()"><a class="navlink" role="button" routerLink="/auth/login">Iniciar Sesión</a></li>
     </ul>
   </div>
 </nav>

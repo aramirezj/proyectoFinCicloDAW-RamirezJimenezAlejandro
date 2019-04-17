@@ -2,7 +2,6 @@ import { Component, OnInit, Input } from '@angular/core';
 import { Usuario } from '../modelo/Usuario';
 import { UserService } from '../services/user.service';
 import { QuizzService } from '../services/quizz.service';
-
 @Component({
   selector: 'app-usuario',
   templateUrl: './usuario.component.html',
@@ -11,13 +10,16 @@ import { QuizzService } from '../services/quizz.service';
 export class UsuarioComponent implements OnInit {
   id:number
   cantidad:number
+  
   @Input() usuario
   constructor(
-    private quizzService:QuizzService
+    private quizzService:QuizzService,
+    
   ) { }
 
   ngOnInit() {
-    this.getCantidad()
+    this.getCantidad();
+   
   }
 
   getCantidad(){

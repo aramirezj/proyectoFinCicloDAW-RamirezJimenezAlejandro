@@ -1,3 +1,4 @@
+<div *ngIf="isLoaded">
 <div *ngIf="!usuarios" class="panel" style="padding:1%">
     <h4>No hemos encontrado ningún usuario</h4>
   </div>
@@ -7,3 +8,4 @@
         <app-usuario [usuario]="usuario"></app-usuario>
 
   </div>
+</div>

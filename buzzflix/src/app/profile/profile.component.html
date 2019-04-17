@@ -1,30 +1,52 @@
-<mat-card class="example-card" *ngIf="usuario">
-  <mat-card-header>
-    <div class="mat-card-header-text">
-        <mat-card-title class="top">{{usuario.name}} </mat-card-title>
-        <mat-card-subtitle><span class="little">Principiante</span><span class="pull-right ft">Quizzs: <span class="number">{{this.cantidad}}</span></span></mat-card-subtitle>
+<div class="wrapper" *ngIf="usuario">
+  <div class="profile-card js-profile-card">
+    <div *ngIf="this.usuario.avatar!='assets/img/hehexd.png'; else default" class="profile-card__img">
+      <img *ngIf="this.usuario.avatar | async; let url"  [src]="url" alt="profile card">
     </div>
-    
-  </mat-card-header>
-  <div class="text-center">
-    <img class="example-header-image" src="assets/img/{{usuario.avatar}}" alt="">
-  </div>
-  <mat-card-content>
-    <p>
-      <span class="ft">Seguidos:
-        <span class="number">{{this.follows}}</span>
-      </span>
-      <span class="pull-right ft"> Seguidores: 
-        <span class="number">{{this.followers}}</span>
-      </span>
-    </p>
-  </mat-card-content>
-  <mat-card-actions class="text-center">
-    <button mat-raised-button color="accent" *ngIf="isAuthUserProfile()" routerLink="edit">Editar</button>
-    <app-follow *ngIf="!isAuthUserProfile()" (notify)='onNotify($event)' [currentProfileId]="id"></app-follow>
-    <button mat-raised-button color="warn" disabled>Logros</button>
-  </mat-card-actions>
-</mat-card>
+    <ng-template #default>
+      <div class="profile-card__img">
+        <img *ngIf="this.usuario.avatar" [src]="this.usuario.avatar" alt="profile card">
+      </div>
+    </ng-template>
 
+    <div class="profile-card__cnt js-profile-cnt">
+      <div class="profile-card__name">{{usuario.name}}</div>
+      <div class="profile-card__txt">Principiante</div>
+      <div class="profile-card-inf">
+        <div class="profile-card-inf__item">
+          <div class="profile-card-inf__title">{{this.followers}}</div>
+          <div class="profile-card-inf__txt">Seguidores</div>
+        </div>
+
+        <div class="profile-card-inf__item">
+          <div class="profile-card-inf__title">{{this.follows}}</div>
+          <div class="profile-card-inf__txt">Seguidos</div>
+        </div>
+
+        <div class="profile-card-inf__item">
+          <div class="profile-card-inf__title">{{this.cantidad}}</div>
+          <div class="profile-card-inf__txt">Quizzs</div>
+        </div>
+
+        <div class="profile-card-inf__item">
+          <div class="profile-card-inf__title">0</div>
+          <div class="profile-card-inf__txt">Logros</div>
+        </div>
+      </div>
+
+
+
+      <div class="profile-card-ctr">
+          <app-follow class="profile-card__button button--orange" *ngIf="!isAuthUserProfile()" (notify)='onNotify($event)'
+          [currentProfileId]="id"></app-follow>
+        <button class="profile-card__button button--blue js-message-btn" *ngIf="isAuthUserProfile()"
+          routerLink="edit">Editar</button>
+        <button class="profile-card__button button--yellow js-message-btn">Logros</button>
+        
+      </div>
+    </div>
+  </div>
+
+</div>
 
 <router-outlet></router-outlet>

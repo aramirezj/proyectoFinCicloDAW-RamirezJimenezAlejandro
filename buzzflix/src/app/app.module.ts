@@ -38,6 +38,13 @@ import {MatInputModule} from '@angular/material/input';
 import {MatButtonModule} from '@angular/material/button';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatCardModule} from '@angular/material/card';
+import {MatDialogModule} from '@angular/material/dialog';
+
+import { AngularFirestore } from '@angular/fire/firestore';
+import { AngularFireModule } from '@angular/fire';
+import { AngularFireDatabaseModule } from '@angular/fire/database';
+import { environment } from '../environments/environment';
+import { AngularFireStorage } from 'angularfire2/storage';
 
 @NgModule({
   declarations: [
@@ -75,10 +82,13 @@ import {MatCardModule} from '@angular/material/card';
     MatInputModule,
     MatButtonModule,
     MatSnackBarModule ,
-    MatCardModule  
+    MatCardModule ,
+    MatDialogModule,
+    AngularFireModule.initializeApp(environment.firebaseConfig),
+    AngularFireDatabaseModule 
   ],
   exports: [RouterModule,MatSelectModule],
-  providers: [AuthService,AuthGuard,AuthedGuard,QuizzService,NotifyService,UserService,FollowService],
+  providers: [AuthService,AuthGuard,AuthedGuard,QuizzService,NotifyService,UserService,FollowService,AngularFirestore,AngularFireStorage],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

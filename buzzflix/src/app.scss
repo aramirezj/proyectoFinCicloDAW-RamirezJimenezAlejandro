@@ -1,13 +1,28 @@
+@font-face {
+  font-family: 'retroFont';
+  src: 
+       url('assets/SEASRN__.ttf')  format('truetype'), /* Safari, Android, iOS */
+}
+@font-face {
+    font-family: 'retroFont2';
+    src: 
+         url('assets/Limelight.ttf')  format('truetype'), /* Safari, Android, iOS */
+  }
+
 body{
     background-color:#b5beca!important;
+}
+.navlink{
+    font-family:'retroFont'!important;
 }
 a{
     color:white!important;
     font-weight: bold;
     text-transform: capitalize;
     font-size: 1em;
-    letter-spacing: 0.1em;
+    letter-spacing: 0.02em;
 }
+
 @import url(https://fonts.googleapis.com/css?family=Raleway:300,400,600);
 /*!
  * Bootstrap v3.3.7 (http://getbootstrap.com)

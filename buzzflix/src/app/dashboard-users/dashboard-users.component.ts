@@ -12,12 +12,14 @@ export class DashboardUsersComponent implements OnInit {
   usuarios
   nombre:string
   navigationSubscription;
+  isLoaded:boolean=false
   constructor(
     private router2: Router,
     private router: ActivatedRoute,
     private userService:UserService,
     private notifyService:NotifyService
   ) { 
+    this.isLoaded=false;
     this.navigationSubscription = this.router2.events.subscribe((e: any) => {
       if (e instanceof NavigationEnd) {
         this.initialiseInvites();
@@ -27,13 +29,17 @@ export class DashboardUsersComponent implements OnInit {
 
 
   initialiseInvites() {
+    this.router.params.subscribe((params) => {
+      this.nombre = params['nombre'];})
+    //console.log("INITIAL SERVISES"+this.nombre);
     this.getUsuarios();
   }
 
   ngOnInit() {
     this.router.params.subscribe((params) => {
       this.nombre = params['nombre'];})
-      this.getUsuarios();
+      //console.log("ON INIT"+this.nombre);
+      //this.getUsuarios();
   }
 
   ngOnDestroy() {
@@ -46,6 +52,11 @@ export class DashboardUsersComponent implements OnInit {
     this.userService.getUsuarios(this.nombre)
     .then(resp=>{
       this.usuarios=resp;
+      //console.log(this.usuarios);
+      if(this.usuarios!=null){
+        this.notifyService.notify("Busqueda realizada","success");
+      }
+      this.isLoaded=true;
     })
   }
 

@@ -6,6 +6,9 @@ import { Usuario } from '../modelo/Usuario';
 import { AuthService } from '../services/auth.service';
 import { Http } from '@angular/http';
 import { QuizzService } from '../services/quizz.service';
+import * as $ from 'jquery';
+import { AngularFireStorage } from 'angularfire2/storage';
+import { NgProgressService } from 'ng2-progressbar';
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
@@ -17,14 +20,23 @@ export class ProfileComponent implements OnInit {
   followers: number
   follows: number
   cantidad:number
+  downloadURL:any
   constructor(
     private router: ActivatedRoute,
     private userService: UserService,
     private authService: AuthService,
-    private quizzService:QuizzService
+    private quizzService:QuizzService,
+    private afStorage: AngularFireStorage,
+    private bar: NgProgressService
   ) {
+    
     this.userService.userProfileUpdated.subscribe((usuario) => {
       this.usuario = usuario;
+      this.bar.done();
+      if(this.usuario.avatar!='assets/img/hehexd.png"' && this.usuario.avatar!= null){
+        this.usuario.avatar = this.afStorage.ref(this.usuario.avatar).getDownloadURL();
+      }
+      //this.usuario.avatar = this.afStorage.ref(this.usuario.avatar).getDownloadURL();
     })
   }
 
@@ -40,7 +52,9 @@ export class ProfileComponent implements OnInit {
         .then((usuario) => { 
           this.usuario = usuario;
           if(this.usuario.avatar==null || this.usuario.avatar ==""){
-            this.usuario.avatar="hehexd.png";
+            this.usuario.avatar="assets/img/hehexd.png";
+          }else{
+            this.usuario.avatar = this.afStorage.ref(this.usuario.avatar).getDownloadURL();
           }
           this.cargaFollows();
           this.cargaCantidad();
@@ -78,3 +92,7 @@ export class ProfileComponent implements OnInit {
 
 
 }
+
+
+
+

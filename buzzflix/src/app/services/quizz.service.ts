@@ -22,7 +22,7 @@ export class QuizzService{
     }
 
 
-
+    
 
     getToken(): string {
         return localStorage.getItem('token');
@@ -106,6 +106,8 @@ export class QuizzService{
         })
     }
     obtenerQuizzSeguidos():Promise<Array<Quizz>>{
+        this.headers = new Headers({ 'Authorization': `Bearer ${this.getToken()}` });
+        console.log(this.headers);
         let id = this.authService.getAuthUserId();
         return this.http.get(`${CONFIG.apiUrl}quizz/${id}/seguidos`)
         .toPromise()

@@ -7,6 +7,7 @@
             <span class="{{generaEstrella(3)}}"></span>
             <span class="{{generaEstrella(4)}}"></span>
             <span class="{{generaEstrella(5)}}"></span>({{quizz.estrellas}})
-      <p class="card-text"><small class="">Autor: </small><a [routerLink]="['/usuario/perfil',usuario.id]">{{this.usuario.name}}</a><span class="pull-right">Fecha: {{this.quizz.fechacreacion | PrettyDate}}</span></p>
+      <p class="card-text" *ngIf="this.usuario.id!=this.quizz.creador"><small class="">Autor: </small><a [routerLink]="['/usuario/perfil',usuario.id]">{{this.usuario.name}}</a><span class="pull-right">Fecha: {{this.quizz.fechacreacion | PrettyDate}}</span></p>
+      <button class="card-text" *ngIf="this.usuario.id==this.quizz.creador" mat-raised-button (click)="openDialog()">Eliminar</button>
     </div>
   </div>
