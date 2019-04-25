@@ -1,1 +1,4 @@
 # proyectoFinCicloDAW-RamirezJimenezAlejandro
+Esta aplicación estará basada en Nodejs, Express, Angular 7, API REST y Mysql y Firebase.
+Consistirá en una aplicación que te permitirá crear tus propios test tan populares hoy en día como los de BuzzFeed (aunque no dan la posibilidad de hacerlos tú mismo). Los explicaré brevemente, son test bastante particulares con títulos atrayentes, por ejemplo: “Descubre como de cerca estas de ser un mendigo según tu forma de ducharte “o un gran clásico como “Descubre tu nivel de perroflauta con estas preguntas de mi Españita” o por supuesto “Responde estas 5 preguntas y sabrás con que Supernena tienes más afinidad”.
+Son test cuyo propósito principal es ser absurdo y no tener una relación y veracidad demasiado grande, pero igualmente algo tiene además de que consiguen ser adictivos.
