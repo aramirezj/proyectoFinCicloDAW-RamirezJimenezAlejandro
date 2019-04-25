@@ -1,0 +1,82 @@
+<ng-progress [color]="'orange'"></ng-progress>
+<link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
+  integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+
+
+
+<div>
+  <mat-toolbar color="primary">
+    <mat-toolbar-row>
+      <button mat-icon-button (click)="sidenav.toggle()" fxShow="true" fxHide.gt-sm>
+        <mat-icon>menu</mat-icon>
+      </button>
+      <span role="button" routerLink="dashboard">Quizzflix</span>
+      <span class="menu-spacer"></span>
+      <div fxShow="true" fxHide.lt-md>
+        <form class="form-inline" *ngIf="isLoggedIn() && this.authService.getAuthUser()" [formGroup]="miniForm">
+          <input class="form-control mr-sm-2" formControlName="nombre" type="search" placeholder="Buscar usuarios"
+            aria-label="Search">
+          <button type="submit" class="btn btn-default" (click)="onSubmit()">Buscar</button>
+        </form>
+        <a role="button" mat-button *ngIf="isLoggedIn() && this.authService.getAuthUser()" [routerLink]="['ver/todos']">Todos los tests</a>
+        <a role="button" mat-button *ngIf="isLoggedIn() && this.authService.getAuthUser()" [routerLink]="['usuario/perfil',this.authService.getAuthUserId()]">Mi perfil</a>
+        <a role="button" mat-button *ngIf="isLoggedIn() && this.authService.getAuthUser()" [routerLink]="['crear/quizz']">Crear Quizz</a>
+        <a role="button" mat-button *ngIf="isLoggedIn()" (click)="logout()">Cerrar sesión</a>
+        <a role="button" mat-button *ngIf="!isLoggedIn()"routerLink="/auth/register">Registrarse</a>
+        <a role="button" mat-button *ngIf="!isLoggedIn()" routerLink="/auth/login">Iniciar Sesión</a>
+
+      </div>
+    </mat-toolbar-row>
+  </mat-toolbar>
+
+  <mat-sidenav-container fxFlexFill>
+    <mat-sidenav #sidenav>
+      <mat-nav-list>
+        <!--a (click)="sidenav.toggle()" href="" mat-list-item>Close</a>-->
+        <a href="#" mat-list-item>Todos los tests</a>
+        <form class="form-inline" *ngIf="isLoggedIn() && this.authService.getAuthUser()" [formGroup]="miniForm">
+          <input class="form-control mr-sm-2" formControlName="nombre" type="search" placeholder="Buscar usuarios"
+            aria-label="Search">
+          <button type="submit" class="btn btn-default" (click)="onSubmit()">Buscar</button>
+        </form>
+        <a href="#" mat-list-item>Mi perfil</a>
+        <a href="#" mat-list-item>Crear Quizz</a>
+        <a href="#" mat-list-item>Cerrar sesión</a>
+      </mat-nav-list>
+    </mat-sidenav>
+    <mat-sidenav-content fxFlexFill>
+      <div class="container">
+        <app-notify></app-notify>
+        <router-outlet></router-outlet>
+      </div>
+    </mat-sidenav-content>
+  </mat-sidenav-container>
+</div>
+
+<!--
+<nav class="navbar navbar-inverse navbar-fixed-top">
+  <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" class="navbar-brand navlink" routerLink="dashboard">Quizzflix</a>
+    </div>
+    <ul class="nav navbar-nav">
+      <li *ngIf="isLoggedIn() && this.authService.getAuthUser()" [routerLink]="['ver/todos']"><a class="navlink" role="button">Todos los
+          tests</a></li>
+      <li *ngIf="isLoggedIn() && this.authService.getAuthUser()"
+        [routerLink]="['usuario/perfil',this.authService.getAuthUserId()]"><a class="navlink" role="button">Mi perfil</a></li>
+      <li *ngIf="isLoggedIn() && this.authService.getAuthUser()" [routerLink]="['crear/quizz']"><a class="navlink" role="button">Crear
+          Quizz</a></li>
+      <form class="form-inline" *ngIf="isLoggedIn() && this.authService.getAuthUser()" [formGroup]="miniForm">
+        <input class="form-control mr-sm-2" formControlName="nombre" type="search" placeholder="Buscar usuarios"
+          aria-label="Search">
+        <button type="submit" class="btn btn-default" (click)="onSubmit()">Buscar</button>
+      </form>
+    </ul>
+    <ul class="nav navbar-nav navbar-right">
+      <li *ngIf="isLoggedIn()" (click)="logout()"><a class="navlink" role="button">Cerrar sesión</a> </li>
+      <li *ngIf="!isLoggedIn()"><a class="navlink" role="button" routerLink="/auth/register">Registrarse</a></li>
+      <li *ngIf="!isLoggedIn()"><a class="navlink" role="button" routerLink="/auth/login">Iniciar Sesión</a></li>
+    </ul>
+  </div>
+</nav>-->
+<div class="separator"></div>

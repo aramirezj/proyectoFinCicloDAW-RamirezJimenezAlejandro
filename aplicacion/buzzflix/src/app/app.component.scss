@@ -1,0 +1,49 @@
+form {
+  margin-top: 5px;
+  display: inline;
+}
+input {
+  margin-top: 0.5%;
+}
+i {
+  vertical-align: sub;
+  margin-left: 0.5%;
+}
+ul {
+  display: inline;
+}
+a {
+  font-size: 1.5em;
+  font-weight: bold;
+  color: White !important;
+  text-decoration:none;
+}
+a:hover {
+  color: #e14705 !important;
+}
+
+
+.mat-toolbar {
+  background-color: #271553 !important;
+}
+button {
+  vertical-align: bottom;
+}
+
+
+
+.menu-spacer {
+  flex: 1 1 auto;
+}
+mat-sidenav-content{
+  background:none;
+}
+mat-sidenav-container, mat-sidenav{
+background: transparent
+}
+.container{
+  margin-top:5%;
+}
+mat-nav-list{
+  background-color: #271553!important;
+}
