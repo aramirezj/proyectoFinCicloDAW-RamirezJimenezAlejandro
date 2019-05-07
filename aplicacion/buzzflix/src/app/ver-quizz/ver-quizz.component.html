@@ -38,7 +38,7 @@
         {{this.solucionado.titulo}}
       </h3>
 
-      <img src="assets/img/{{this.solucionado.image}}" width="200px" />
+      <img *ngIf="this.solucionado.image | async; let url"  [src]="url" width="200px" />
     </div>
     <div class="panel-body">
       {{this.solucionado.descripcion}}

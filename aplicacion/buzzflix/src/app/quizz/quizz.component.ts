@@ -8,6 +8,7 @@ import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import { MatDialog, MatDialogConfig } from "@angular/material";
 import { DialogboxComponent } from '../dialogbox/dialogbox.component';
 import { AuthService } from '../services/auth.service';
+import { AngularFireStorage } from 'angularfire2/storage';
 import * as $ from 'jquery';
 @Component({
   selector: 'app-quizz',
@@ -21,10 +22,12 @@ export class QuizzComponent implements OnInit {
   @Input() quizz
   usuario: Usuario
   isCreador: boolean
+  downloadURL:any
   constructor(
     private userService: UserService,
     private quizzService: QuizzService,
     private authService: AuthService,
+    private afStorage: AngularFireStorage,
     public dialog: MatDialog
   ) { }
 
@@ -41,7 +44,9 @@ export class QuizzComponent implements OnInit {
       })
     this.quizz.image = JSON.parse(this.quizz.contenido).image;
     if (this.quizz.image == null) {
-      this.quizz.image = "koala.jpg";
+      this.quizz.image = "hehexd.jpg";
+    }else{
+      this.quizz.image = this.afStorage.ref(this.quizz.image).getDownloadURL();
     }
     
   }
@@ -75,7 +80,7 @@ export class QuizzComponent implements OnInit {
 
   borrar(accion){
     if(accion){
-      this.quizzService.borraQuizz(this.quizz.id);
+      this.quizzService.borraQuizz(this.quizz);
     }
   }
 

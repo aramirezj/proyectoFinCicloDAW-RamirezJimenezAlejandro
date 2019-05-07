@@ -41,7 +41,7 @@ export class UserService {
         return localStorage.getItem('token');
     }
 
-    uploadAvatar(avatar: File, randomId: string) {
+    /*uploadAvatar(avatar: File, randomId: string) {
         let fd = new FormData();
         fd.append('file', avatar, randomId);
         let ref = this.afStorage.ref(randomId);
@@ -49,9 +49,8 @@ export class UserService {
             .toPromise()
             .then((response) => {
             })
-        //console.log(this.firestore.collection('imagenes').add(image));
         ref.put(avatar);
-    }
+    }*/
 
     getUserWall(id: number): Promise<Array<Quizz>> | any {
         return this.http.get(`${CONFIG.apiUrl}usuario/${id}/wall`)
@@ -107,15 +106,13 @@ export class UserService {
     }
 
     updateProfile(old: Usuario, file: File): Promise<Usuario> { //PROTECTED
+        console.log(old);
+        console.log(file);
         let id = +this.authService.getAuthUserId();
         let url = `${CONFIG.apiUrl}usuario/actualizar/${id}`;
-        let avatar = null;
-        if (file != null) {
+        let avatar = old.avatar;
+        if (file != null || file != undefined) {
             avatar = file.name
-            let randomId = Math.random().toString(36).substring(2);
-            let ext = avatar.split(".")[1];
-            randomId = randomId + "." + ext;
-            avatar = randomId;
         }
 
         let body = { name: old.name, email: old.email, avatar: avatar };
@@ -132,14 +129,18 @@ export class UserService {
 
                     localStorage.setItem("usuario", JSON.stringify(aux));
                     if (file != null || file != undefined) {
-                        let ref = this.afStorage.ref(avatar);
+                        console.log("preparo subida")
+                        let ref = this.afStorage.ref(file.name);
                         const uploadTask = ref.put(file);
                         uploadTask.snapshotChanges().pipe(
                             finalize(() => {
-                                if (old.avatar != null) {
-                                    this.borraImagen(old.avatar);
+                                if (old.avatar != null && old.avatar != undefined && old.avatar != "null" && old.avatar != "") {
+                                    if (old.avatar != avatar) {
+                                        console.log("preparo borrado")
+                                        this.borraImagen(old.avatar);
+                                    }
                                 }
-                                console.log("Peticion realizada correctamente");
+                                console.log("Peticion de subida realizada correctamente");
                                 this.userProfileUpdated.emit(aux);
                                 this.notifyService.notify("¡Usuario actualizado con exito!", "success");
                                 return aux;
@@ -147,7 +148,6 @@ export class UserService {
                         ).subscribe()
                     } else {
                         this.notifyService.notify("¡Usuario actualizado con exito!", "success");
-                        aux.avatar = null;
                         this.userProfileUpdated.emit(aux);
                         return aux;
                     }

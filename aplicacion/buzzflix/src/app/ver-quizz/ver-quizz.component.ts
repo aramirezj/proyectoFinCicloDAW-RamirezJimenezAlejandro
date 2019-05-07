@@ -9,6 +9,7 @@ import { Pregunta } from '../modelo/Pregunta';
 import { Solucion } from '../modelo/Solucion';
 import { NotifyService } from '../services/notify.service';
 import {MatSelectModule} from '@angular/material/select';
+import { AngularFireStorage } from 'angularfire2/storage';
 import 'hammerjs';
 
 @Component({
@@ -22,6 +23,7 @@ export class VerQuizzComponent implements OnInit {
   resultado: boolean
   cargado: boolean
   solucionado: Solucion
+  downloadURL:any
   public quizzForm: FormGroup
 
   constructor(
@@ -29,7 +31,8 @@ export class VerQuizzComponent implements OnInit {
     private router: ActivatedRoute,
     private fb: FormBuilder,
     private bar: NgProgressService,
-    private notifyService: NotifyService
+    private notifyService: NotifyService,
+    private afStorage: AngularFireStorage
   ) {
     this.resultado = false;
     this.cargado = false;
@@ -113,10 +116,11 @@ export class VerQuizzComponent implements OnInit {
       }
       id--;
       this.solucionado = this.quizz.soluciones[id];
-      
+      this.solucionado.image = this.afStorage.ref(this.solucionado.image).getDownloadURL();
       if(this.solucionado.image== null){
         this.solucionado.image="hehexd.png"
       }
+
       this.resultado = true;
       this.cargado = false;
     } else {

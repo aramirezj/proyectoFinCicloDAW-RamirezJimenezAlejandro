@@ -51,11 +51,10 @@ export class ProfileComponent implements OnInit {
       this.userService.getUserById(this.id)
         .then((usuario) => { 
           this.usuario = usuario;
-          if(this.usuario.avatar==null || this.usuario.avatar ==""){
-            this.usuario.avatar="assets/img/hehexd.png";
-          }else{
-            this.usuario.avatar = this.afStorage.ref(this.usuario.avatar).getDownloadURL();
+          if(this.usuario.avatar==null || this.usuario.avatar =="" || this.usuario.avatar =="null"){
+            this.usuario.avatar="hehexd.PNG";
           }
+            this.usuario.avatar = this.afStorage.ref(this.usuario.avatar).getDownloadURL();
           this.cargaFollows();
           this.cargaCantidad();
          })

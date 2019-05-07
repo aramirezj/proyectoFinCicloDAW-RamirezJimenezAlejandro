@@ -76,7 +76,7 @@ export class CreateQuizzComponent implements OnInit {
     const file = event.target.files[0];
     let formato = file.name.split(".")[1];
     Object.defineProperty(file,"name",{
-      value:this.makeId(8)+"."+formato,
+      value:this.makeId()+"."+formato,
       writable:false
     })
     this.files[n] = file;
@@ -354,13 +354,8 @@ export class CreateQuizzComponent implements OnInit {
     this.ref.detectChanges();
   }
 
-  makeId(length) {
-    var text = "";
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  
-    for (var i = 0; i < length; i++)
-      text += possible.charAt(Math.floor(Math.random() * possible.length));
-  
+  makeId() {
+    var text = Math.random().toString(36).substring(2);
     return text;
   }
 
@@ -431,8 +426,7 @@ export class CreateQuizzComponent implements OnInit {
     let titulo = this.quizzForm.value.titulo;
     this.quizz = new Quizz(null, this.authService.getAuthUserId(), titulo,this.files[0].name, this.preparaSoluciones(), this.preparaPreguntas(), 0, null);
     console.log(this.quizz);
-    this.quizzService.sendFile(this.files);
-   this.quizzService.createQuizz(this.quizz)
+   this.quizzService.createQuizz(this.quizz,this.files)
       .then(resp => {
         this.router.navigate(['/usuario/perfil', this.authService.getAuthUserId()])
       })
