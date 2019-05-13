@@ -108,9 +108,7 @@ export class QuizzService {
 
     
     obtenerQuizzSeguidos(): Promise<Array<Quizz>> {
-
         this.headers = new Headers({ 'Authorization': `Bearer ${this.getToken()}` });
-        console.log(this.headers);
         let id = this.authService.getAuthUserId();
         return this.http.get(`${CONFIG.apiUrl}quizz/${id}/seguidos`)
             .toPromise()
@@ -183,7 +181,8 @@ export class QuizzService {
                 } else if (resp.json().status == "Error sql") {
                     this.notifyService.notify("Error en el servidor", "error");
                 } else {
-                    this.notifyService.notify("Error de autenticación, cierra sesión, vuelve a iniciar y recarga la página", "error");
+                    this.authService.logout();
+                    return null;
                 }
 
                 return resp.json();
@@ -193,7 +192,6 @@ export class QuizzService {
     deleteImages(quizz:Quizz){
         let files:string[] = [];
         files.push(quizz.image);
-        console.log(quizz)
         for(let i=0;i<quizz.soluciones.length;i++){
             files.push(quizz.soluciones[i].image);
         }
@@ -201,4 +199,47 @@ export class QuizzService {
             this.afStorage.ref(files[j]).delete();
         }
     }
+
+    listaModeracion(): Promise<Array<Quizz>> {
+        let id = this.authService.getAuthUserId();
+        let url = `${CONFIG.apiUrl}quizz/moderacion`;
+        let body = { id:id };
+        let options = new RequestOptions({ headers: this.headers });
+        return this.http.post(url, body, options)
+            .toPromise()
+            .then(resp => {
+                if (resp.json().status == '200') {
+                    return resp.json().cont;
+                } else {
+                    return null;
+                }
+            })
+            .catch(function (e) {
+                console.log("Error ", e)
+            })
+    }
+
+    moderaQuizz(id:number,accion:boolean){
+        let url = `${CONFIG.apiUrl}modera`;
+        let body = { quizz: id,votante:this.authService.getAuthUserId(),accion:accion };
+        console.log(body)
+        let options = new RequestOptions({ headers: this.headers });
+        return this.http.post(url, body, options)
+            .toPromise()
+            .then(resp => {
+                this.bar.done();
+                if (resp.json().status == "200") {
+                    this.notifyService.notify("Acción registrada", "success");
+                    return true;
+                } else if (resp.json().status == "Error sql") {
+                    this.notifyService.notify("Error en el servidor", "error");
+                } else {
+                    this.authService.logout();
+                    return null;
+                }
+                return resp.json();
+            })
+    }
+
+
 }

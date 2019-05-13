@@ -47,6 +47,7 @@ import { AngularFireDatabaseModule } from '@angular/fire/database';
 import { environment } from '../environments/environment';
 import { AngularFireStorage } from 'angularfire2/storage';
 import { DialogboxComponent } from './dialogbox/dialogbox.component';
+import { ModeracionComponent } from './moderacion/moderacion.component';
 
 @NgModule({
   declarations: [
@@ -70,6 +71,7 @@ import { DialogboxComponent } from './dialogbox/dialogbox.component';
     DashboardUsersComponent,
     VotarComponent,
     DialogboxComponent,
+    ModeracionComponent,
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,13 @@
+<div style="background-color: white">
+  <p>
+    moderacion works!
+  </p>
+</div>
+
+
+
+<div *ngIf="this.isLoaded && this.quizzs!=null" style="background-color: white">
+  <p>Quizz {{this.quizzs[this.indice].titulo | json}} </p>
+  <button type="button" class="btn btn-danger" (click)="juzga(false)">Rechazar</button>
+  <button type="button" class="btn btn-success" (click)="juzga(true)">Aprobar</button>
+</div>

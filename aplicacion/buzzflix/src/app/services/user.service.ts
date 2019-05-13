@@ -41,16 +41,6 @@ export class UserService {
         return localStorage.getItem('token');
     }
 
-    /*uploadAvatar(avatar: File, randomId: string) {
-        let fd = new FormData();
-        fd.append('file', avatar, randomId);
-        let ref = this.afStorage.ref(randomId);
-        this.http.post(`${CONFIG.apiUrl}file`, fd)
-            .toPromise()
-            .then((response) => {
-            })
-        ref.put(avatar);
-    }*/
 
     getUserWall(id: number): Promise<Array<Quizz>> | any {
         return this.http.get(`${CONFIG.apiUrl}usuario/${id}/wall`)
@@ -58,9 +48,22 @@ export class UserService {
             .then((response) => response.json());
     }
     getUserFollowers(id: number): Promise<number> {
-        return this.http.get(`${CONFIG.apiUrl}usuario/${id}/followers`)
+
+        let url = `${CONFIG.apiUrl}usuario/followers`;
+        let body = { origen: this.authService.getAuthUserId(),destino:id };
+        let options = new RequestOptions({ headers: this.headers });
+        return this.http.post(url, body, options)
             .toPromise()
-            .then((response) => response.json().cont);
+            .then(resp => {
+                this.bar.done();
+                if (resp.json().status == "200") {
+                    return resp.json().cont;
+                } else if (resp.json().status == "Usuario sin permiso") {
+                    this.notifyService.notify("No tienes permiso", "error");
+                } else if (resp.json().status == "Error sql") {
+                    this.notifyService.notify("Error en el servidor", "error");
+                }
+            })
     }
 
     getUserById(id: number): Promise<Usuario> {  //PROTEGIDO

@@ -21,6 +21,8 @@ export class ProfileComponent implements OnInit {
   follows: number
   cantidad:number
   downloadURL:any
+  mutual:any
+  mutualaux:boolean
   constructor(
     private router: ActivatedRoute,
     private userService: UserService,
@@ -66,8 +68,12 @@ export class ProfileComponent implements OnInit {
   cargaFollows(){
     this.userService.getUserFollowers(this.id)
       .then((resp) => {
-        this.follows = resp[0];
-        this.followers = resp[1];
+        this.follows = resp[1];
+        this.followers = resp[2];
+        this.mutual = resp[0];
+        if(this.mutual.length==2){
+          this.mutualaux = true;
+        }
       })
   }
 
@@ -81,8 +87,12 @@ export class ProfileComponent implements OnInit {
   onNotify(n:number):void {
     if(n==-1){
       this.followers--;
+      this.mutualaux=false;
     }else{
       this.followers++;
+      if(this.mutual[0].origen==this.id){
+        this.mutualaux=true;
+      }
     }
   }
 

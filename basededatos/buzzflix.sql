@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 07-04-2019 a las 23:51:24
--- Versión del servidor: 10.1.38-MariaDB
--- Versión de PHP: 7.3.2
+-- Tiempo de generación: 13-05-2019 a las 14:35:59
+-- Versión del servidor: 10.1.39-MariaDB
+-- Versión de PHP: 7.3.5
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -40,13 +40,45 @@ CREATE TABLE `follows` (
 INSERT INTO `follows` (`origen`, `destino`) VALUES
 (19, 18),
 (20, 18),
-(18, 19),
 (18, 20),
 (32, 19),
 (32, 18),
 (34, 19),
+(19, 21),
 (19, 27),
-(19, 21);
+(18, 19);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `moderacion`
+--
+
+CREATE TABLE `moderacion` (
+  `id` int(50) NOT NULL,
+  `creador` int(50) NOT NULL,
+  `positivos` int(50) NOT NULL,
+  `negativos` int(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Volcado de datos para la tabla `moderacion`
+--
+
+INSERT INTO `moderacion` (`id`, `creador`, `positivos`, `negativos`) VALUES
+(30, 18, 1, 0);
+
+-- --------------------------------------------------------
+
+--
+-- Estructura de tabla para la tabla `mod_acciones`
+--
+
+CREATE TABLE `mod_acciones` (
+  `id` int(50) NOT NULL,
+  `votante` int(50) NOT NULL,
+  `quizz` int(50) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
@@ -60,15 +92,17 @@ CREATE TABLE `quizz` (
   `titulo` varchar(100) NOT NULL,
   `contenido` varchar(20000) DEFAULT NULL,
   `estrellas` int(50) NOT NULL,
-  `fechacreacion` date NOT NULL
+  `fechacreacion` date NOT NULL,
+  `publicado` tinyint(1) NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
 -- Volcado de datos para la tabla `quizz`
 --
 
-INSERT INTO `quizz` (`id`, `creador`, `titulo`, `contenido`, `estrellas`, `fechacreacion`) VALUES
-(8, 25, '¿Qué personaje de Dragon Ball eres?', '{\"id\":null,\"creador\":25,\"titulo\":\"¿Qué personaje de Dragon Ball eres?\",\"soluciones\":[{\"id\":1,\"titulo\":\"Goku\",\"descripcion\":\"Eres un luchador bobo pero admirable.\",\"image\":null},{\"id\":2,\"titulo\":\"Vegeta\",\"descripcion\":\"Eres un luchador excepcional pero tu ego está en las nubes\",\"image\":null},{\"id\":3,\"titulo\":\"Piccolo\",\"descripcion\":\"Eres un luchador malvado pero con corazón blando, nenaza.\",\"image\":null},{\"id\":4,\"titulo\":\"Mr. Satán\",\"descripcion\":\"Eres un luchador de pacotilla y crees que el mundo gira a tu alrededor.\",\"image\":null}],\"preguntas\":[{\"id\":1,\"enunciado\":\"¿Qué arma usarías en un combate?\",\"respuestas\":[{\"id\":1,\"enunciado\":\"Cuchillo de combate\",\"madre\":1,\"afinidades\":[{\"idr\":1,\"ids\":1,\"cantidad\":\"2\"},{\"idr\":1,\"ids\":2,\"cantidad\":0},{\"idr\":1,\"ids\":3,\"cantidad\":\"7\"},{\"idr\":1,\"ids\":4,\"cantidad\":\"10\"}]},{\"id\":2,\"enunciado\":\"Ninguna, no me hacen falta\",\"madre\":1,\"afinidades\":[{\"idr\":2,\"ids\":1,\"cantidad\":\"8\"},{\"idr\":2,\"ids\":2,\"cantidad\":\"10\"},{\"idr\":2,\"ids\":3,\"cantidad\":\"5\"},{\"idr\":2,\"ids\":4,\"cantidad\":0}]},{\"id\":3,\"enunciado\":\"Puños\",\"madre\":1,\"afinidades\":[{\"idr\":3,\"ids\":1,\"cantidad\":\"10\"},{\"idr\":3,\"ids\":2,\"cantidad\":\"8\"},{\"idr\":3,\"ids\":3,\"cantidad\":\"5\"},{\"idr\":3,\"ids\":4,\"cantidad\":0}]},{\"id\":4,\"enunciado\":\"Trampas\",\"madre\":1,\"afinidades\":[{\"idr\":4,\"ids\":1,\"cantidad\":0},{\"idr\":4,\"ids\":2,\"cantidad\":\"2\"},{\"idr\":4,\"ids\":3,\"cantidad\":\"10\"},{\"idr\":4,\"ids\":4,\"cantidad\":\"7\"}]}],\"eleccion\":null},{\"id\":2,\"enunciado\":\"Tienes un sueño, tu mejor amigo está en peligro rodeado de unos extraños. Te despiertas a las 5 am. ¿Qué haces?\",\"respuestas\":[{\"id\":1,\"enunciado\":\"Ir lo más rápido posible en su busca a comprobar si está en peligro o no.\",\"madre\":2,\"afinidades\":[{\"idr\":1,\"ids\":1,\"cantidad\":\"5\"},{\"idr\":1,\"ids\":2,\"cantidad\":\"2\"},{\"idr\":1,\"ids\":3,\"cantidad\":\"0\"},{\"idr\":1,\"ids\":4,\"cantidad\":\"7\"}]},{\"id\":2,\"enunciado\":\"Sabes que era un sueño y sigues durmiendo\",\"madre\":2,\"afinidades\":[{\"idr\":2,\"ids\":1,\"cantidad\":0},{\"idr\":2,\"ids\":2,\"cantidad\":\"10\"},{\"idr\":2,\"ids\":3,\"cantidad\":\"7\"},{\"idr\":2,\"ids\":4,\"cantidad\":0}]},{\"id\":3,\"enunciado\":\"Lo llamas por telefono pero como no te lo coge, sigues durmiendo \",\"madre\":2,\"afinidades\":[{\"idr\":3,\"ids\":1,\"cantidad\":0},{\"idr\":3,\"ids\":2,\"cantidad\":\"2\"},{\"idr\":3,\"ids\":3,\"cantidad\":0},{\"idr\":3,\"ids\":4,\"cantidad\":\"10\"}]},{\"id\":4,\"enunciado\":\"Vas al lugar donde ocurria el sueño y esperas durante horas\",\"madre\":2,\"afinidades\":[{\"idr\":4,\"ids\":1,\"cantidad\":\"10\"},{\"idr\":4,\"ids\":2,\"cantidad\":0},{\"idr\":4,\"ids\":3,\"cantidad\":0},{\"idr\":4,\"ids\":4,\"cantidad\":\"5\"}]}],\"eleccion\":null},{\"id\":3,\"enunciado\":\"Estás herido en combate, pero te quedan fuerzas para luchar. Tu único compañero de combate ha caído y vuestros dos enemigos siguen en pie riéndose de lo débiles que sois. ¿Qué haces?\",\"respuestas\":[{\"id\":1,\"enunciado\":\"Declaras la guerra a muerte y te enfureces hasta alcanzar un nivel de fuerza descomunal\",\"madre\":3,\"afinidades\":[{\"idr\":1,\"ids\":1,\"cantidad\":\"10\"},{\"idr\":1,\"ids\":2,\"cantidad\":\"8\"},{\"idr\":1,\"ids\":3,\"cantidad\":\"2\"},{\"idr\":1,\"ids\":4,\"cantidad\":0}]},{\"id\":2,\"enunciado\":\"Sales corriendo a buscar ayuda porque sabes que sólo no tienes nada que hacer.\",\"madre\":3,\"afinidades\":[{\"idr\":2,\"ids\":1,\"cantidad\":0},{\"idr\":2,\"ids\":2,\"cantidad\":\"5\"},{\"idr\":2,\"ids\":3,\"cantidad\":\"8\"},{\"idr\":2,\"ids\":4,\"cantidad\":\"10\"}]},{\"id\":3,\"enunciado\":\"Huyes cuando están distraidos y reflexionas cómo vencerlos\",\"madre\":3,\"afinidades\":[{\"idr\":3,\"ids\":1,\"cantidad\":\"2\"},{\"idr\":3,\"ids\":2,\"cantidad\":\"8\"},{\"idr\":3,\"ids\":3,\"cantidad\":\"10\"},{\"idr\":3,\"ids\":4,\"cantidad\":\"5\"}]},{\"id\":4,\"enunciado\":\"Te escondes para recuperarte y poder hacerles frente de nuevo\",\"madre\":3,\"afinidades\":[{\"idr\":4,\"ids\":1,\"cantidad\":\"8\"},{\"idr\":4,\"ids\":2,\"cantidad\":\"10\"},{\"idr\":4,\"ids\":3,\"cantidad\":\"2\"},{\"idr\":4,\"ids\":4,\"cantidad\":0}]}],\"eleccion\":null},{\"id\":4,\"enunciado\":\"Vas paseando por la calle de noche. Un asesino saca su arma y acaba con la vida de una anciana. Eres el único que lo ha visto desde lejos¿Qué haces?\",\"respuestas\":[{\"id\":1,\"enunciado\":\"Te escondes y llamas a la policía\",\"madre\":4,\"afinidades\":[{\"idr\":1,\"ids\":1,\"cantidad\":0},{\"idr\":1,\"ids\":2,\"cantidad\":0},{\"idr\":1,\"ids\":3,\"cantidad\":0},{\"idr\":1,\"ids\":4,\"cantidad\":\"10\"}]},{\"id\":2,\"enunciado\":\"No es tu problema, sigues paseando\",\"madre\":4,\"afinidades\":[{\"idr\":2,\"ids\":1,\"cantidad\":0},{\"idr\":2,\"ids\":2,\"cantidad\":\"10\"},{\"idr\":2,\"ids\":3,\"cantidad\":\"8\"},{\"idr\":2,\"ids\":4,\"cantidad\":0}]},{\"id\":3,\"enunciado\":\"Corres hasta el asesino para darle su merecido\",\"madre\":4,\"afinidades\":[{\"idr\":3,\"ids\":1,\"cantidad\":\"10\"},{\"idr\":3,\"ids\":2,\"cantidad\":0},{\"idr\":3,\"ids\":3,\"cantidad\":0},{\"idr\":3,\"ids\":4,\"cantidad\":\"2\"}]},{\"id\":4,\"enunciado\":\"Sacas tu arma y acabas con él\",\"madre\":4,\"afinidades\":[{\"idr\":4,\"ids\":1,\"cantidad\":0},{\"idr\":4,\"ids\":2,\"cantidad\":\"5\"},{\"idr\":4,\"ids\":3,\"cantidad\":\"10\"},{\"idr\":4,\"ids\":4,\"cantidad\":\"2\"}]}],\"eleccion\":null}],\"estrellas\":0,\"fechacreacion\":\"2019-03-29T11:18:15.877Z\"}', 11, '2019-03-29');
+INSERT INTO `quizz` (`id`, `creador`, `titulo`, `contenido`, `estrellas`, `fechacreacion`, `publicado`) VALUES
+(8, 25, '¿Qué personaje de Dragon Ball eres?', '{\"id\":null,\"creador\":25,\"titulo\":\"¿Qué personaje de Dragon Ball eres?\",\"soluciones\":[{\"id\":1,\"titulo\":\"Goku\",\"descripcion\":\"Eres un luchador bobo pero admirable.\",\"image\":null},{\"id\":2,\"titulo\":\"Vegeta\",\"descripcion\":\"Eres un luchador excepcional pero tu ego está en las nubes\",\"image\":null},{\"id\":3,\"titulo\":\"Piccolo\",\"descripcion\":\"Eres un luchador malvado pero con corazón blando, nenaza.\",\"image\":null},{\"id\":4,\"titulo\":\"Mr. Satán\",\"descripcion\":\"Eres un luchador de pacotilla y crees que el mundo gira a tu alrededor.\",\"image\":null}],\"preguntas\":[{\"id\":1,\"enunciado\":\"¿Qué arma usarías en un combate?\",\"respuestas\":[{\"id\":1,\"enunciado\":\"Cuchillo de combate\",\"madre\":1,\"afinidades\":[{\"idr\":1,\"ids\":1,\"cantidad\":\"2\"},{\"idr\":1,\"ids\":2,\"cantidad\":0},{\"idr\":1,\"ids\":3,\"cantidad\":\"7\"},{\"idr\":1,\"ids\":4,\"cantidad\":\"10\"}]},{\"id\":2,\"enunciado\":\"Ninguna, no me hacen falta\",\"madre\":1,\"afinidades\":[{\"idr\":2,\"ids\":1,\"cantidad\":\"8\"},{\"idr\":2,\"ids\":2,\"cantidad\":\"10\"},{\"idr\":2,\"ids\":3,\"cantidad\":\"5\"},{\"idr\":2,\"ids\":4,\"cantidad\":0}]},{\"id\":3,\"enunciado\":\"Puños\",\"madre\":1,\"afinidades\":[{\"idr\":3,\"ids\":1,\"cantidad\":\"10\"},{\"idr\":3,\"ids\":2,\"cantidad\":\"8\"},{\"idr\":3,\"ids\":3,\"cantidad\":\"5\"},{\"idr\":3,\"ids\":4,\"cantidad\":0}]},{\"id\":4,\"enunciado\":\"Trampas\",\"madre\":1,\"afinidades\":[{\"idr\":4,\"ids\":1,\"cantidad\":0},{\"idr\":4,\"ids\":2,\"cantidad\":\"2\"},{\"idr\":4,\"ids\":3,\"cantidad\":\"10\"},{\"idr\":4,\"ids\":4,\"cantidad\":\"7\"}]}],\"eleccion\":null},{\"id\":2,\"enunciado\":\"Tienes un sueño, tu mejor amigo está en peligro rodeado de unos extraños. Te despiertas a las 5 am. ¿Qué haces?\",\"respuestas\":[{\"id\":1,\"enunciado\":\"Ir lo más rápido posible en su busca a comprobar si está en peligro o no.\",\"madre\":2,\"afinidades\":[{\"idr\":1,\"ids\":1,\"cantidad\":\"5\"},{\"idr\":1,\"ids\":2,\"cantidad\":\"2\"},{\"idr\":1,\"ids\":3,\"cantidad\":\"0\"},{\"idr\":1,\"ids\":4,\"cantidad\":\"7\"}]},{\"id\":2,\"enunciado\":\"Sabes que era un sueño y sigues durmiendo\",\"madre\":2,\"afinidades\":[{\"idr\":2,\"ids\":1,\"cantidad\":0},{\"idr\":2,\"ids\":2,\"cantidad\":\"10\"},{\"idr\":2,\"ids\":3,\"cantidad\":\"7\"},{\"idr\":2,\"ids\":4,\"cantidad\":0}]},{\"id\":3,\"enunciado\":\"Lo llamas por telefono pero como no te lo coge, sigues durmiendo \",\"madre\":2,\"afinidades\":[{\"idr\":3,\"ids\":1,\"cantidad\":0},{\"idr\":3,\"ids\":2,\"cantidad\":\"2\"},{\"idr\":3,\"ids\":3,\"cantidad\":0},{\"idr\":3,\"ids\":4,\"cantidad\":\"10\"}]},{\"id\":4,\"enunciado\":\"Vas al lugar donde ocurria el sueño y esperas durante horas\",\"madre\":2,\"afinidades\":[{\"idr\":4,\"ids\":1,\"cantidad\":\"10\"},{\"idr\":4,\"ids\":2,\"cantidad\":0},{\"idr\":4,\"ids\":3,\"cantidad\":0},{\"idr\":4,\"ids\":4,\"cantidad\":\"5\"}]}],\"eleccion\":null},{\"id\":3,\"enunciado\":\"Estás herido en combate, pero te quedan fuerzas para luchar. Tu único compañero de combate ha caído y vuestros dos enemigos siguen en pie riéndose de lo débiles que sois. ¿Qué haces?\",\"respuestas\":[{\"id\":1,\"enunciado\":\"Declaras la guerra a muerte y te enfureces hasta alcanzar un nivel de fuerza descomunal\",\"madre\":3,\"afinidades\":[{\"idr\":1,\"ids\":1,\"cantidad\":\"10\"},{\"idr\":1,\"ids\":2,\"cantidad\":\"8\"},{\"idr\":1,\"ids\":3,\"cantidad\":\"2\"},{\"idr\":1,\"ids\":4,\"cantidad\":0}]},{\"id\":2,\"enunciado\":\"Sales corriendo a buscar ayuda porque sabes que sólo no tienes nada que hacer.\",\"madre\":3,\"afinidades\":[{\"idr\":2,\"ids\":1,\"cantidad\":0},{\"idr\":2,\"ids\":2,\"cantidad\":\"5\"},{\"idr\":2,\"ids\":3,\"cantidad\":\"8\"},{\"idr\":2,\"ids\":4,\"cantidad\":\"10\"}]},{\"id\":3,\"enunciado\":\"Huyes cuando están distraidos y reflexionas cómo vencerlos\",\"madre\":3,\"afinidades\":[{\"idr\":3,\"ids\":1,\"cantidad\":\"2\"},{\"idr\":3,\"ids\":2,\"cantidad\":\"8\"},{\"idr\":3,\"ids\":3,\"cantidad\":\"10\"},{\"idr\":3,\"ids\":4,\"cantidad\":\"5\"}]},{\"id\":4,\"enunciado\":\"Te escondes para recuperarte y poder hacerles frente de nuevo\",\"madre\":3,\"afinidades\":[{\"idr\":4,\"ids\":1,\"cantidad\":\"8\"},{\"idr\":4,\"ids\":2,\"cantidad\":\"10\"},{\"idr\":4,\"ids\":3,\"cantidad\":\"2\"},{\"idr\":4,\"ids\":4,\"cantidad\":0}]}],\"eleccion\":null},{\"id\":4,\"enunciado\":\"Vas paseando por la calle de noche. Un asesino saca su arma y acaba con la vida de una anciana. Eres el único que lo ha visto desde lejos¿Qué haces?\",\"respuestas\":[{\"id\":1,\"enunciado\":\"Te escondes y llamas a la policía\",\"madre\":4,\"afinidades\":[{\"idr\":1,\"ids\":1,\"cantidad\":0},{\"idr\":1,\"ids\":2,\"cantidad\":0},{\"idr\":1,\"ids\":3,\"cantidad\":0},{\"idr\":1,\"ids\":4,\"cantidad\":\"10\"}]},{\"id\":2,\"enunciado\":\"No es tu problema, sigues paseando\",\"madre\":4,\"afinidades\":[{\"idr\":2,\"ids\":1,\"cantidad\":0},{\"idr\":2,\"ids\":2,\"cantidad\":\"10\"},{\"idr\":2,\"ids\":3,\"cantidad\":\"8\"},{\"idr\":2,\"ids\":4,\"cantidad\":0}]},{\"id\":3,\"enunciado\":\"Corres hasta el asesino para darle su merecido\",\"madre\":4,\"afinidades\":[{\"idr\":3,\"ids\":1,\"cantidad\":\"10\"},{\"idr\":3,\"ids\":2,\"cantidad\":0},{\"idr\":3,\"ids\":3,\"cantidad\":0},{\"idr\":3,\"ids\":4,\"cantidad\":\"2\"}]},{\"id\":4,\"enunciado\":\"Sacas tu arma y acabas con él\",\"madre\":4,\"afinidades\":[{\"idr\":4,\"ids\":1,\"cantidad\":0},{\"idr\":4,\"ids\":2,\"cantidad\":\"5\"},{\"idr\":4,\"ids\":3,\"cantidad\":\"10\"},{\"idr\":4,\"ids\":4,\"cantidad\":\"2\"}]}],\"eleccion\":null}],\"estrellas\":0,\"fechacreacion\":\"2019-03-29T11:18:15.877Z\"}', 11, '2019-03-29', 1),
+(30, 18, 'Vamoos', '{\"id\":null,\"creador\":18,\"titulo\":\"Vamoos\",\"image\":\"yxsxwiux7u.jpg\",\"soluciones\":[{\"id\":1,\"titulo\":\"daw\",\"descripcion\":\"daw\",\"image\":\"k26menlcme7.jpg\"},{\"id\":2,\"titulo\":\"daw\",\"descripcion\":\"daw\",\"image\":\"dpg8qq41ar.jpg\"}],\"preguntas\":[{\"id\":1,\"enunciado\":\"daw\",\"respuestas\":[{\"id\":1,\"enunciado\":\"daw\",\"madre\":1,\"afinidades\":[{\"idr\":1,\"ids\":1,\"cantidad\":0},{\"idr\":1,\"ids\":2,\"cantidad\":0}]},{\"id\":2,\"enunciado\":\"daw\",\"madre\":1,\"afinidades\":[{\"idr\":2,\"ids\":1,\"cantidad\":0},{\"idr\":2,\"ids\":2,\"cantidad\":0}]}],\"eleccion\":null},{\"id\":2,\"enunciado\":\"daw\",\"respuestas\":[{\"id\":1,\"enunciado\":\"daw\",\"madre\":2,\"afinidades\":[{\"idr\":1,\"ids\":1,\"cantidad\":0},{\"idr\":1,\"ids\":2,\"cantidad\":0}]},{\"id\":2,\"enunciado\":\"daw\",\"madre\":2,\"afinidades\":[{\"idr\":2,\"ids\":1,\"cantidad\":0},{\"idr\":2,\"ids\":2,\"cantidad\":0}]}],\"eleccion\":null},{\"id\":3,\"enunciado\":\"daw\",\"respuestas\":[{\"id\":1,\"enunciado\":\"dwa\",\"madre\":3,\"afinidades\":[{\"idr\":1,\"ids\":1,\"cantidad\":0},{\"idr\":1,\"ids\":2,\"cantidad\":0}]},{\"id\":2,\"enunciado\":\"dwa\",\"madre\":3,\"afinidades\":[{\"idr\":2,\"ids\":1,\"cantidad\":0},{\"idr\":2,\"ids\":2,\"cantidad\":0}]}],\"eleccion\":null},{\"id\":4,\"enunciado\":\"awd\",\"respuestas\":[{\"id\":1,\"enunciado\":\"daw\",\"madre\":4,\"afinidades\":[{\"idr\":1,\"ids\":1,\"cantidad\":0},{\"idr\":1,\"ids\":2,\"cantidad\":0}]},{\"id\":2,\"enunciado\":\"daw\",\"madre\":4,\"afinidades\":[{\"idr\":2,\"ids\":1,\"cantidad\":0},{\"idr\":2,\"ids\":2,\"cantidad\":0}]}],\"eleccion\":null}],\"estrellas\":0,\"fechacreacion\":\"2019-05-13T11:25:22.327Z\"}', 0, '2019-05-13', 0);
 
 -- --------------------------------------------------------
 
@@ -124,6 +158,18 @@ CREATE TABLE `votaciones` (
 --
 
 --
+-- Indices de la tabla `moderacion`
+--
+ALTER TABLE `moderacion`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indices de la tabla `mod_acciones`
+--
+ALTER TABLE `mod_acciones`
+  ADD PRIMARY KEY (`id`);
+
+--
 -- Indices de la tabla `quizz`
 --
 ALTER TABLE `quizz`
@@ -146,10 +192,16 @@ ALTER TABLE `votaciones`
 --
 
 --
+-- AUTO_INCREMENT de la tabla `mod_acciones`
+--
+ALTER TABLE `mod_acciones`
+  MODIFY `id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+
+--
 -- AUTO_INCREMENT de la tabla `quizz`
 --
 ALTER TABLE `quizz`
-  MODIFY `id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
 
 --
 -- AUTO_INCREMENT de la tabla `users`

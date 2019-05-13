@@ -199,7 +199,7 @@ router.get('/usuarios/:nombre', (req, res) => {
 router.get('/usuario/:id/wall', (req, res) => {
   console.log("Obtener quizz por id")
   const { id } = req.params;
-  mysqlConnection.query('SELECT * FROM quizz WHERE creador = ?', [id], (err, rows, fields) => {
+  mysqlConnection.query('SELECT * FROM quizz WHERE creador = ? AND publicado = 1', [id], (err, rows, fields) => {
     if (!err) {
       if (rows.length == 0) {
         res.json({
@@ -222,12 +222,12 @@ router.get('/usuario/:id/wall', (req, res) => {
 router.get('/quizz/:id/seguidos', (req, res) => {
   console.log("Obtener quizz de los seguidos")
   const { id } = req.params;
-  let query = "SELECT * FROM quizz WHERE creador in ( SELECT destino from follows where origen = ? ) order by fechacreacion DESC"
+  let query = "SELECT * FROM quizz WHERE creador in ( SELECT destino from follows where origen = ? ) AND publicado = 1 order by fechacreacion DESC"
   mysqlConnection.query(query, [id], (err, rows, fields) => {
     if (!err) {
       if (rows.length == 0) {
         res.json({
-          status: "EMPTY",
+          status: "200",
           cont: null
         })
       } else {
@@ -245,7 +245,7 @@ router.get('/quizz/:id/seguidos', (req, res) => {
 //Obtener los quizzes de la web (UNPROTECTED)
 router.get('/quizz/todos', (req, res) => {
   console.log("Obtener quizz de todos")
-  let query = "SELECT * FROM quizz order by estrellas DESC"
+  let query = "SELECT * FROM quizz where publicado = 1 order by estrellas DESC"
   mysqlConnection.query(query, null, (err, rows, fields) => {
     if (!err) {
       if (rows.length == 0) {
@@ -265,11 +265,62 @@ router.get('/quizz/todos', (req, res) => {
     }
   });
 });
+//Obtener los quizzes a moderar (UNPROTECTED)
+router.post('/quizz/moderacion', (req, res) => {
+  console.log("obtener quizz a moderar")
+  const { id } = req.body;
+  let query = "SELECT * FROM quizz where publicado = 0 AND creador != ? AND id not in "+
+  "(select quizz from mod_acciones where votante = ? ) order by estrellas DESC"
+  mysqlConnection.query(query, [id,id], (err, rows, fields) => {
+    if (!err) {
+      if (rows.length == 0) {
+        res.json({
+          status: "200",
+          cont: null
+        })
+      } else {
+        res.json({
+          status: "200",
+          cont: rows
+        });
+      }
+      return res;
+    } else {
+      console.log(err);
+    }
+  });
+});
+//guarda una accion de moderacion (UNPROTECTED)
+router.post('/modera', (req, res) => {
+  console.log("guarda una accón de moderar")
+  const { quizz, votante, accion } = req.body;
+  console.log(quizz+"--"+votante+"---"+accion)
+  const query = "insert into mod_acciones (votante,quizz) VALUES(?,?)";
+  mysqlConnection.query(query, [votante, quizz], (err, rows, fields) => {
+    if (!err) {
+      let query2 = "";
+      if (accion) {
+        query2 = "update moderacion set positivos = positivos + 1 where id = ?";
+      }else{
+        query2 = "update moderacion set negativos = negativos + 1 where id = ?";
+      }
+        mysqlConnection.query(query2, [quizz], (err, rows, fields) => {
+        if (!err) {
+          res.json({ status: "200"});
+        } else {
+          console.log(err);
+        }
+      });
+    } else {
+      console.log(err);
+    }
+  });
+});
 //Obtener un solo quizz (UNPROTECTED)
 router.get('/quizz/:id', (req, res) => {
   console.log("Obtener quizz del id")
   const { id } = req.params;
-  let query = "SELECT * FROM quizz WHERE id = ?"
+  let query = "SELECT * FROM quizz WHERE id = ? and publicado = 1"
   mysqlConnection.query(query, [id], (err, rows, fields) => {
     if (!err) {
       if (rows.length == 0) {
@@ -295,7 +346,7 @@ router.get('/quizz/:id/cantidad', (req, res) => {
   console.log("Obtener cantidad de quizzes por un usuario")
   const { id } = req.params;
   let cantidad = 0;
-  let query = "SELECT count(id) as c FROM quizz WHERE creador = ?"
+  let query = "SELECT count(id) as c FROM quizz WHERE creador = ? and publicado = 1"
   mysqlConnection.query(query, [id], (err, rows, fields) => {
     if (!err) {
       if (rows.length == 0) {
@@ -329,32 +380,48 @@ router.get('/quizz/:id/media', (req, res) => {
 });
 
 //Obtener número de seguidores (UNPROTECTED)
-router.get('/usuario/:id/followers', (req, res) => {
+router.post('/usuario/followers', (req, res) => {
   let resultados = [];
+  const { origen, destino } = req.body;
   console.log("Obtener número de seguidores")
-  const { id } = req.params;
-  let query = "SELECT count(origen) as followers FROM follows WHERE origen = ?";
-  mysqlConnection.query(query, [id], (err, rows, fields) => {
+  //const { id } = req.params;
+
+  let query0 = "SELECT *  FROM follows WHERE origen = ? AND destino = ? OR destino = ? AND origen = ?";
+  mysqlConnection.query(query0, [origen, destino, origen, destino], (err, rows, fields) => {
     if (!err) {
-      if (rows.length == 0) {
-        resultados[0] = 0;
+      console.log("TOTAL " + rows);
+      if (rows.length < 2) {
+        resultados[0] = rows;
       } else {
-        resultados[0] = rows[0].followers
+        resultados[0] = rows;
       }
-      //let query ="SELECT count(destino) as followers FROM follows WHERE destino = ?"
     } else {
       console.log(err);
     }
   });
-  let query2 = "SELECT count(destino) as followers FROM follows WHERE destino = ?"
-  mysqlConnection.query(query2, [id], (err, rows, fields) => {
+
+  let query = "SELECT count(origen) as followers FROM follows WHERE origen = ?";
+  mysqlConnection.query(query, [destino], (err, rows, fields) => {
     if (!err) {
       if (rows.length == 0) {
         resultados[1] = 0;
       } else {
         resultados[1] = rows[0].followers
       }
-      res.json({ cont: resultados });
+    } else {
+      console.log(err);
+    }
+  });
+  let query2 = "SELECT count(destino) as followers FROM follows WHERE destino = ?"
+  mysqlConnection.query(query2, [destino], (err, rows, fields) => {
+    if (!err) {
+      if (rows.length == 0) {
+        resultados[2] = 0;
+      } else {
+        resultados[2] = rows[0].followers
+      }
+
+      res.json({ status: "200", cont: resultados });
     } else {
       console.log(err);
     }
@@ -377,15 +444,25 @@ router.post('/creaQuizz', cors(), (req, res, next) => {
   console.log("PARAMETROS")
   const { creador, titulo, contenido, fecha } = req.body;
   console.log(creador + "--" + titulo);
-  const query = "insert into quizz (creador,titulo,contenido,fechacreacion,estrellas) VALUES(?,?,?,?,0)";
+  const query = "insert into quizz (creador,titulo,contenido,fechacreacion,estrellas,publicado) VALUES(?,?,?,?,0,0)";
   mysqlConnection.query(query, [creador, titulo, contenido, fecha], (err, rows, fields) => {
     if (!err) {
-      console.log(rows.insertId);
+      const query2 = "insert into moderacion (id,creador,positivos,negativos) VALUES(?,?,0,0)";
+      mysqlConnection.query(query2, [rows.insertId, creador], (err, rows, fields) => {
+        if (!err) {
+          
+        } else {
+          console.log(err);
+        }
+      });
+
+
       res.json({ id: rows.insertId });
     } else {
       console.log(err);
     }
   });
+
 
 });
 
@@ -396,9 +473,9 @@ router.post('/borraQuizz', cors(), (req, res, next) => {
   if (permiso != false) {
     console.log(permiso);
     console.log("PARAMETROS")
-    const {quizz} = req.body;
+    const { quizz } = req.body;
     console.log(req.body);
-    mysqlConnection.query('DELETE FROM quizz WHERE id = ? AND creador = ?', [quizz,permiso], (err, rows, fields) => {
+    mysqlConnection.query('DELETE FROM quizz WHERE id = ? AND creador = ?', [quizz, permiso], (err, rows, fields) => {
       if (!err) {
         res.send({
           status: '200'
@@ -409,7 +486,7 @@ router.post('/borraQuizz', cors(), (req, res, next) => {
         })
       }
     });
-  }else{
+  } else {
     res.send({
       status: 'Token invalido'
     })
@@ -514,10 +591,10 @@ router.post('/follow', cors(), (req, res, next) => {
           res.send({
             status: 'Error sql'
           })
-          
+
         }
       });
-    }else{
+    } else {
       res.send({
         status: 'No tienes permiso'
       })
@@ -544,10 +621,10 @@ router.post('/unfollow', cors(), (req, res, next) => {
           res.send({
             status: 'Error sql'
           })
-          
+
         }
       });
-    }else{
+    } else {
       res.send({
         status: 'No tienes permiso'
       })

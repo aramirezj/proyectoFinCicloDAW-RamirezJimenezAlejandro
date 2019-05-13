@@ -21,6 +21,7 @@
         <a role="button" mat-button *ngIf="isLoggedIn() && this.authService.getAuthUser()" [routerLink]="['ver/todos']">Todos los tests</a>
         <a role="button" mat-button *ngIf="isLoggedIn() && this.authService.getAuthUser()" [routerLink]="['usuario/perfil',this.authService.getAuthUserId()]">Mi perfil</a>
         <a role="button" mat-button *ngIf="isLoggedIn() && this.authService.getAuthUser()" [routerLink]="['crear/quizz']">Crear Quizz</a>
+        <a role="button" mat-button *ngIf="isLoggedIn() && this.authService.getAuthUser()" [routerLink]="['moderacion']">Moderación</a>
         <a role="button" mat-button *ngIf="isLoggedIn()" (click)="logout()">Cerrar sesión</a>
         <a role="button" mat-button *ngIf="!isLoggedIn()"routerLink="/auth/register">Registrarse</a>
         <a role="button" mat-button *ngIf="!isLoggedIn()" routerLink="/auth/login">Iniciar Sesión</a>

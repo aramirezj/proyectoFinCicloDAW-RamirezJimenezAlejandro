@@ -12,6 +12,7 @@ import { CreateQuizzComponent } from '../create-quizz/create-quizz.component';
 import { VerQuizzComponent } from '../ver-quizz/ver-quizz.component';
 import { ExploradorComponent } from '../explorador/explorador.component';
 import { DashboardUsersComponent } from '../dashboard-users/dashboard-users.component';
+import { ModeracionComponent } from '../moderacion/moderacion.component';
 export const ROUTES = [
     {
         path:'auth/register',
@@ -58,6 +59,11 @@ export const ROUTES = [
     {
         path:'ver/todos',
         component:ExploradorComponent,
+        CanActivate:[AuthGuard]
+    },
+    {
+        path:'moderacion',
+        component:ModeracionComponent,
         CanActivate:[AuthGuard]
     }
     
