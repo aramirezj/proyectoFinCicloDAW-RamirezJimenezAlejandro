@@ -8,7 +8,7 @@ import { Respuesta } from '../modelo/Respuesta';
 import { Pregunta } from '../modelo/Pregunta';
 import { Solucion } from '../modelo/Solucion';
 import { NotifyService } from '../services/notify.service';
-import {MatSelectModule} from '@angular/material/select';
+import { MatSelectModule } from '@angular/material/select';
 import { AngularFireStorage } from 'angularfire2/storage';
 import * as $ from 'jquery';
 import 'hammerjs';
@@ -24,7 +24,7 @@ export class VerQuizzComponent implements OnInit {
   resultado: boolean
   cargado: boolean
   solucionado: Solucion
-  downloadURL:any
+  downloadURL: any
   public quizzForm: FormGroup
 
   constructor(
@@ -54,7 +54,7 @@ export class VerQuizzComponent implements OnInit {
       }, 500);
 
     });
-   
+
   }
 
   generaFormulario() {
@@ -65,58 +65,58 @@ export class VerQuizzComponent implements OnInit {
       this.quizzForm.addControl(name, new FormControl(null, []));
       this.quizzForm.controls[name].setValidators([Validators.required]);
     }
-    this.quizz.id=this.id
-    
+    this.quizz.id = this.id
+
   }
 
 
   onSubmit() {
-      let totales: Array<number> = [];
-      let id = 0;
-      let ganador = 0;
-      let cp = this.quizz.preguntas.length;
+    let totales: Array<number> = [];
+    let id = 0;
+    let ganador = 0;
+    let cp = this.quizz.preguntas.length;
 
-      let prerespondidas = $(".activado");
-      for (let x = 1; x <= cp; x++) {
-        totales[x] = 0;
-      }
-      let preguntas: Array<Pregunta> = this.quizz.preguntas;
-      for (let i = 0; i < cp; i++) {
-        for (let j = 0; j < preguntas[i].respuestas.length; j++) {
-          let p1 = preguntas[i].respuestas[j].enunciado.trim();
-          let p2 = prerespondidas[i].childNodes[0].textContent;
-          if (p1 == p2) {
-            preguntas[i].eleccion = preguntas[i].respuestas[j];
-          }
+    let prerespondidas = $(".activado");
+    for (let x = 1; x <= cp; x++) {
+      totales[x] = 0;
+    }
+    let preguntas: Array<Pregunta> = this.quizz.preguntas;
+    for (let i = 0; i < cp; i++) {
+      for (let j = 0; j < preguntas[i].respuestas.length; j++) {
+        let p1 = preguntas[i].respuestas[j].enunciado.trim();
+        let p2 = prerespondidas[i].childNodes[0].textContent;
+        if (p1 == p2) {
+          preguntas[i].eleccion = preguntas[i].respuestas[j];
         }
       }
+    }
 
-      let respondidas: Array<Respuesta> = []
-      for (let pregunta of preguntas) {
-        respondidas.push(pregunta.eleccion);
+    let respondidas: Array<Respuesta> = []
+    for (let pregunta of preguntas) {
+      respondidas.push(pregunta.eleccion);
+    }
+    console.log(respondidas)
+    for (let respuesta of respondidas) {
+      for (let afinidad of respuesta.afinidades) {
+        totales[afinidad.ids] = +afinidad.cantidad + +totales[afinidad.ids]
       }
-      console.log(respondidas)
-      for (let respuesta of respondidas) {
-        for (let afinidad of respuesta.afinidades) {
-          totales[afinidad.ids] = +afinidad.cantidad + +totales[afinidad.ids]
-        }
+    }
+    for (let q = 1; q <= totales.length; q++) {
+      if (totales[q] > ganador) {
+        ganador = totales[q];
+        id = q;
       }
-      for (let q = 1; q <= totales.length; q++) {
-        if (totales[q] > ganador) {
-          ganador = totales[q];
-          id = q;
-        }
-      }
-      id--;
-      this.solucionado = this.quizz.soluciones[id];
-      this.solucionado.image = this.afStorage.ref(this.solucionado.image).getDownloadURL();
-      if(this.solucionado.image== null){
-        this.solucionado.image="hehexd.png"
-      }
+    }
+    id--;
+    this.solucionado = this.quizz.soluciones[id];
+    this.solucionado.image = this.afStorage.ref(this.solucionado.image).getDownloadURL();
+    if (this.solucionado.image == null) {
+      this.solucionado.image = "hehexd.png"
+    }
 
-      this.resultado = true;
-      this.cargado = false;
-    
+    this.resultado = true;
+    this.cargado = false;
+
 
 
   }
@@ -127,26 +127,37 @@ export class VerQuizzComponent implements OnInit {
       .then(resp => {
         this.quizz = resp;
         console.log(this.quizz)
-        
+
       })
   }
-  seleccion(id){
+  seleccion(id) {
     let long = this.quizz.preguntas[id[0]].respuestas.length;
-    console.log(long);
-    for(let i=0;i<long;i++){
-      let ele = "#"+id[0]+i;
+    for (let i = 0; i < long; i++) {
+      let ele = "#" + id[0] + i;
       $(ele).addClass("desactivado");
     }
-    $("#"+id).removeClass("desactivado");
-    $("#"+id).addClass("activado");
+    $("#" + id).removeClass("desactivado");
+    $("#" + id).addClass("activado");
     let totalRespondidas = $(".activado").length;
-    if(totalRespondidas == this.quizz.preguntas.length){
+    if (totalRespondidas == this.quizz.preguntas.length) {
       this.onSubmit();
-    }else{
-      let nextId:number = id[0];
+    } else {
+      let nextId: number = id[0];
+      let elemento = null
       nextId++;
-      let elemento = document.getElementById(nextId+""+0);
+      nextId++;
+      if (nextId >= this.quizz.preguntas.length) {
+        let lastP = this.quizz.preguntas.length;
+        lastP--;
+        let lastR = this.quizz.preguntas[lastP].respuestas.length;
+        lastR--;
+        elemento = document.getElementById(lastP + "" + lastR);
+      } else {
+        elemento = document.getElementById('p' + nextId);
+      }
       elemento.scrollIntoView(false);
+
+
     }
 
   }

@@ -50,15 +50,15 @@ mat-form-field{
 .textRespuesta{
     font-weight: bold;
     color:white;
-    font-size: 2em;
+    font-size:2vw;
     margin:auto;
     text-transform: initial;
     padding: 5%;
     margin-right: 1%;
-    transition: width 0.5s, height 0.5s, transform 0.5s;
+    transition: width 0.2s, height 0.2s, transform 0.2s;
 }
 .textRespuesta:hover{
-    transform : scale(1.2);
+    transform : scale(1.05);
 }
 .textRespuesta::first-letter{
     text-transform: uppercase;
