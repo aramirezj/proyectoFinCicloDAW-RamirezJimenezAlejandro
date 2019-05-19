@@ -10,6 +10,7 @@ import { Solucion } from '../modelo/Solucion';
 import { NotifyService } from '../services/notify.service';
 import {MatSelectModule} from '@angular/material/select';
 import { AngularFireStorage } from 'angularfire2/storage';
+import * as $ from 'jquery';
 import 'hammerjs';
 
 @Component({
@@ -70,29 +71,20 @@ export class VerQuizzComponent implements OnInit {
 
 
   onSubmit() {
-    console.log(this.quizzForm.value)
-    var verdad = true;
-    for (let r = 1; r <= this.quizz.preguntas.length; r++) {
-      if (this.quizzForm.value[r] == "Seleccione una respuesta") {
-        verdad = false;
-      }
-    }
-    if (verdad) {
       let totales: Array<number> = [];
       let id = 0;
       let ganador = 0;
       let cp = this.quizz.preguntas.length;
+
+      let prerespondidas = $(".activado");
       for (let x = 1; x <= cp; x++) {
         totales[x] = 0;
       }
       let preguntas: Array<Pregunta> = this.quizz.preguntas;
       for (let i = 0; i < cp; i++) {
         for (let j = 0; j < preguntas[i].respuestas.length; j++) {
-         // let aux = i;
-          //aux++;
           let p1 = preguntas[i].respuestas[j].enunciado.trim();
-        
-          let p2 = this.quizzForm.value[i + 1].enunciado.trim();
+          let p2 = prerespondidas[i].childNodes[0].textContent;
           if (p1 == p2) {
             preguntas[i].eleccion = preguntas[i].respuestas[j];
           }
@@ -103,6 +95,7 @@ export class VerQuizzComponent implements OnInit {
       for (let pregunta of preguntas) {
         respondidas.push(pregunta.eleccion);
       }
+      console.log(respondidas)
       for (let respuesta of respondidas) {
         for (let afinidad of respuesta.afinidades) {
           totales[afinidad.ids] = +afinidad.cantidad + +totales[afinidad.ids]
@@ -123,9 +116,7 @@ export class VerQuizzComponent implements OnInit {
 
       this.resultado = true;
       this.cargado = false;
-    } else {
-      this.notifyService.notify("No dejes ninguna sin responder", "error");
-    }
+    
 
 
   }
@@ -138,7 +129,27 @@ export class VerQuizzComponent implements OnInit {
         console.log(this.quizz)
         
       })
+  }
+  seleccion(id){
+    let long = this.quizz.preguntas[id[0]].respuestas.length;
+    console.log(long);
+    for(let i=0;i<long;i++){
+      let ele = "#"+id[0]+i;
+      $(ele).addClass("desactivado");
+    }
+    $("#"+id).removeClass("desactivado");
+    $("#"+id).addClass("activado");
+    let totalRespondidas = $(".activado").length;
+    if(totalRespondidas == this.quizz.preguntas.length){
+      this.onSubmit();
+    }else{
+      let nextId:number = id[0];
+      nextId++;
+      let elemento = document.getElementById(nextId+""+0);
+      elemento.scrollIntoView(false);
+    }
 
   }
+
 
 }

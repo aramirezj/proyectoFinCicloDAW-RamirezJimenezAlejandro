@@ -19,26 +19,26 @@ export class ProfileComponent implements OnInit {
   usuario: Usuario
   followers: number
   follows: number
-  cantidad:number
-  downloadURL:any
-  mutual:any
-  mutualaux:boolean
+  cantidad: number
+  downloadURL: any
+  mutual: any
+  mutualaux: boolean
   constructor(
     private router: ActivatedRoute,
     private userService: UserService,
     private authService: AuthService,
-    private quizzService:QuizzService,
+    private quizzService: QuizzService,
     private afStorage: AngularFireStorage,
     private bar: NgProgressService
   ) {
     
     this.userService.userProfileUpdated.subscribe((usuario) => {
       this.usuario = usuario;
-      this.bar.done();
-      if(this.usuario.avatar!='assets/img/hehexd.png"' && this.usuario.avatar!= null){
+      if (this.usuario.avatar == "" || this.usuario.avatar==null) {
+        this.usuario.avatar = this.afStorage.ref("hehexd.PNG").getDownloadURL();
+      } else if (this.usuario.avatar != null) {
         this.usuario.avatar = this.afStorage.ref(this.usuario.avatar).getDownloadURL();
       }
-      //this.usuario.avatar = this.afStorage.ref(this.usuario.avatar).getDownloadURL();
     })
   }
 
@@ -51,52 +51,54 @@ export class ProfileComponent implements OnInit {
     this.router.params.subscribe((params) => {
       this.id = +params['id'];
       this.userService.getUserById(this.id)
-        .then((usuario) => { 
+        .then((usuario) => {
           this.usuario = usuario;
-          if(this.usuario.avatar==null || this.usuario.avatar =="" || this.usuario.avatar =="null"){
-            this.usuario.avatar="hehexd.PNG";
+          if (this.usuario.avatar == "" || this.usuario.avatar == null) {
+            this.usuario.avatar = "hehexd.PNG";
           }
-            this.usuario.avatar = this.afStorage.ref(this.usuario.avatar).getDownloadURL();
+          this.usuario.avatar = this.afStorage.ref(this.usuario.avatar).getDownloadURL();
           this.cargaFollows();
           this.cargaCantidad();
-         })
+        })
     })
   }
 
-  
-
-  cargaFollows(){
+  cargaFollows() {
     this.userService.getUserFollowers(this.id)
       .then((resp) => {
         this.follows = resp[1];
         this.followers = resp[2];
         this.mutual = resp[0];
-        if(this.mutual.length==2){
+        if (this.mutual.length == 2) {
           this.mutualaux = true;
         }
       })
   }
 
-  cargaCantidad(){
+  cargaCantidad() {
     this.quizzService.getCantidad(this.id)
-      .then((resp)=>{
-        this.cantidad=resp;
+      .then((resp) => {
+        this.cantidad = resp;
       });
   }
 
-  onNotify(n:number):void {
-    if(n==-1){
+  onNotify(n: number): void {
+    if (n == -1) {
       this.followers--;
-      this.mutualaux=false;
-    }else{
+      this.mutualaux = false;
+    } else {
       this.followers++;
-      if(this.mutual[0].origen==this.id){
-        this.mutualaux=true;
+      console.log(this.mutual)
+      if(this.mutual[0]!=null){
+        if (this.mutual[0].origen == this.id) {
+          this.mutualaux = true;
+        }
       }
+      
     }
   }
 
-  
+
 
 
 

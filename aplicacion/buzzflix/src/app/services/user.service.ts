@@ -50,7 +50,7 @@ export class UserService {
     getUserFollowers(id: number): Promise<number> {
 
         let url = `${CONFIG.apiUrl}usuario/followers`;
-        let body = { origen: this.authService.getAuthUserId(),destino:id };
+        let body = { origen: this.authService.getAuthUserId(), destino: id };
         let options = new RequestOptions({ headers: this.headers });
         return this.http.post(url, body, options)
             .toPromise()
@@ -95,7 +95,6 @@ export class UserService {
             .toPromise()
             .then((response) => {
                 if (response.json().status == "200") {
-                    //this.notifyService.notify("Busqueda realizada","success");
                     return response.json().usuarios;
                 } else if (response.json().status == "Error sql") {
                     this.notifyService.notify("Hubo un error con el servidor.", "error");
@@ -108,44 +107,49 @@ export class UserService {
 
     }
 
-    updateProfile(old: Usuario, file: File): Promise<Usuario> { //PROTECTED
-        console.log(old);
-        console.log(file);
+    updateProfile(datos: any): Promise<Usuario> { //PROTECTED
+        const OLDUSUARIO = this.authService.getAuthUser();
         let id = +this.authService.getAuthUserId();
         let url = `${CONFIG.apiUrl}usuario/actualizar/${id}`;
-        let avatar = old.avatar;
-        if (file != null || file != undefined) {
-            avatar = file.name
+
+        let file = datos["file"];
+        let avatar = undefined;
+        if (file != undefined) {
+            avatar = file.name;
+        } else {
+            avatar = OLDUSUARIO.avatar
         }
+        if (datos["nombre"] == undefined) {
+            datos["nombre"] = OLDUSUARIO.name;
+        }
+        let body = {
+            name: datos["nombre"],
+            oldpass: datos["oldpass"],
+            newpass: datos["newpass"],
+            avatar: avatar
+        };
 
-        let body = { name: old.name, email: old.email, avatar: avatar };
         let options = new RequestOptions({ headers: this.headers });
-
         return this.http.put(url, body, options)
             .toPromise()
             .then((response) => {
                 if (response.json().status == "200") {
                     let aux = this.authService.getAuthUser();
-                    aux.name = old.name;
-                    aux.email = old.email;
+                    aux.name = datos["nombre"];
                     aux.avatar = avatar;
-
                     localStorage.setItem("usuario", JSON.stringify(aux));
-                    if (file != null || file != undefined) {
-                        console.log("preparo subida")
-                        let ref = this.afStorage.ref(file.name);
+                    if (file != undefined) {
+                        console.log("Preparo subida")
+                        let ref = this.afStorage.ref(avatar);
                         const uploadTask = ref.put(file);
                         uploadTask.snapshotChanges().pipe(
                             finalize(() => {
-                                if (old.avatar != null && old.avatar != undefined && old.avatar != "null" && old.avatar != "") {
-                                    if (old.avatar != avatar) {
-                                        console.log("preparo borrado")
-                                        this.borraImagen(old.avatar);
-                                    }
+                                if (datos["oldfile"] != undefined && datos["oldfile"]!="") {
+                                    console.log("Preparo borrado")
+                                    this.borraImagen(datos["oldfile"]);
                                 }
-                                console.log("Peticion de subida realizada correctamente");
-                                this.userProfileUpdated.emit(aux);
                                 this.notifyService.notify("¡Usuario actualizado con exito!", "success");
+                                this.userProfileUpdated.emit(aux);
                                 return aux;
                             })
                         ).subscribe()
@@ -154,10 +158,15 @@ export class UserService {
                         this.userProfileUpdated.emit(aux);
                         return aux;
                     }
-                } else {
-                    let aux = this.authService.getAuthUser();
-                    this.notifyService.notify("Hubo un error, los cambios no se han guardado.", "error");
-                    return aux;
+
+                } else if (response.json().status == "Token invalido") {
+                    this.authService.logout();
+                } else if (response.json().status == "Wrong password") {
+                    this.notifyService.notify("La contraseña antigua es erronea.", "error");
+                    return this.authService.getAuthUser();
+                } else if (response.json().status == "Error SQL") {
+                    this.notifyService.notify("El servidor no se encuentra disponible.", "error");
+                    return this.authService.getAuthUser();
                 }
             })
     }

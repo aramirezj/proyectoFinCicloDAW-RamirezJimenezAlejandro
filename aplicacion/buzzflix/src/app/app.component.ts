@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
-import {AuthService} from './services/auth.service';
+import { AuthService } from './services/auth.service';
 import { Usuario } from './modelo/usuario';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserService } from './services/user.service';
+import * as $ from 'jquery';
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -11,13 +12,13 @@ import { UserService } from './services/user.service';
 })
 export class AppComponent {
   public miniForm: FormGroup
-  usuario:Usuario
+  usuario: Usuario
   constructor(
     private fb: FormBuilder,
-    private authService:AuthService,
-    private userService:UserService,
+    private authService: AuthService,
+    private userService: UserService,
     private router: Router,
-  ){
+  ) {
     this.miniForm = this.fb.group({
       nombre: ['', [
       ]]
@@ -27,25 +28,32 @@ export class AppComponent {
     })
   }
 
-//this.router.navigate(['/auth/login']);
 
-  ngOnInit(){
+  ngOnInit() {
     this.usuario = this.authService.getAuthUser();
   }
 
-  onSubmit(){
+  onSubmit() {
     let nombre = this.miniForm.get('nombre').value;
-    if(nombre==""){
-      nombre="EVERYTHINGPLEASE";
+
+    if (nombre != "") {
+      $("form").addClass("hidden");
+      $("i").removeClass("hidden");
+      this.router.navigate(['ver/usuarios/' + nombre]);
     }
-    this.router.navigate(['ver/usuarios/'+nombre]);
   }
 
-  isLoggedIn():boolean{
+  isLoggedIn(): boolean {
     return this.authService.isLoggedIn();
   }
 
-  logout(){
+  logout() {
     this.authService.logout();
+  }
+
+  muestraForm() {
+    $("form").removeClass("hidden");
+    $("i").addClass("hidden");
+
   }
 }

@@ -221,7 +221,7 @@ export class QuizzService {
 
     moderaQuizz(id:number,accion:boolean){
         let url = `${CONFIG.apiUrl}modera`;
-        let body = { quizz: id,votante:this.authService.getAuthUserId(),accion:accion };
+        let body = { quizz: id,usuario:this.authService.getAuthUserId(),decision:accion };
         console.log(body)
         let options = new RequestOptions({ headers: this.headers });
         return this.http.post(url, body, options)

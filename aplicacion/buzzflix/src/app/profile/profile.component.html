@@ -1,13 +1,8 @@
 <div class="wrapper" *ngIf="usuario">
   <div class="profile-card js-profile-card">
-    <div *ngIf="this.usuario.avatar!='assets/img/hehexd.png'; else default" class="profile-card__img">
+    <div class="profile-card__img">
       <img *ngIf="this.usuario.avatar | async; let url"  [src]="url" alt="profile card">
     </div>
-    <ng-template #default>
-      <div class="profile-card__img">
-        <img *ngIf="this.usuario.avatar" [src]="this.usuario.avatar" alt="profile card">
-      </div>
-    </ng-template>
 
     <div class="profile-card__cnt js-profile-cnt">
       <div class="profile-card__name">{{usuario.name}}</div>

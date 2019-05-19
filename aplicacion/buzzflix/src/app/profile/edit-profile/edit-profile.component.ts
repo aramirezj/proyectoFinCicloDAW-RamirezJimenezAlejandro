@@ -7,6 +7,7 @@ import { ErrorStateMatcher } from '@angular/material/core';
 import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/forms';
 import { NgProgressService } from 'ng2-progressbar';
 import * as $ from 'jquery';
+import { AngularFireStorage } from 'angularfire2/storage';
 @Component({
   selector: 'app-edit-profile',
   templateUrl: './edit-profile.component.html',
@@ -15,20 +16,23 @@ import * as $ from 'jquery';
 export class EditProfileComponent implements OnInit {
   usuario: Usuario
   file: File
-  emailFC = new FormControl('', [
-    Validators.required,
-    Validators.email,
-  ])
   nombreFC = new FormControl('', [
     Validators.required,
     Validators.minLength(3)
+  ])
+  oldPassFC = new FormControl('', [
+    Validators.minLength(6)
+  ])
+  newPassFC = new FormControl('', [
+    Validators.minLength(6)
   ])
   textInput: String
   constructor(
     private authService: AuthService,
     private userService: UserService,
     private notifyService: NotifyService,
-    private bar: NgProgressService
+    private bar: NgProgressService,
+    private afStorage: AngularFireStorage
 
   ) {
     this.textInput = "Sube aquí tu nuevo avatar.";
@@ -39,21 +43,39 @@ export class EditProfileComponent implements OnInit {
   }
 
   editProfile(form) {
-    let aux: Usuario;
-    aux = new Usuario(this.usuario.id, this.usuario.name, this.usuario.email, this.usuario.avatar);
-    this.bar.start();
-    this.userService.updateProfile(this.usuario, this.file)
-      .then((usuario) => {
-        if (usuario != null) {
-          if (usuario.avatar == null || usuario.avatar == "") {
-            usuario.avatar = "assets/img/hehexd.png";
-          }
-          console.log(this.usuario)
-          this.usuario = usuario;
-        } else {
-        }
+    let datos: any = [];
+    let cambios=false;
+    if (this.authService.getAuthUser().name != this.nombreFC.value) {
+      datos["nombre"] = this.nombreFC.value;
+      cambios=true;
+    }
+    if (this.oldPassFC.value != "" && this.newPassFC.value != "") {
+      datos["oldpass"] = this.oldPassFC.value;
+      datos["newpass"] = this.newPassFC.value;
+      cambios=true;
+    }
+    if (this.file != null || this.file != undefined) {
+      datos["file"] = this.file;
+      cambios=true;
+      if (this.usuario.avatar != null || this.usuario.avatar != undefined) {
+        datos["oldfile"] = this.usuario.avatar;
+      }
+    }
 
-      })
+    
+    if (cambios) {
+      this.bar.start();
+      this.userService.updateProfile(datos)
+        .then((usuario) => {
+          if (usuario != null) {
+            this.usuario = usuario;
+          }else{
+            this.usuario.avatar="";
+          }
+          this.bar.done();
+        })
+    }
+
   }
 
 
@@ -70,18 +92,6 @@ export class EditProfileComponent implements OnInit {
     this.file = file;
 
   }
-
-  /*makeId(length) {
-    var text = "";
-    var possible = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-    for (var i = 0; i < length; i++)
-      text += possible.charAt(Math.floor(Math.random() * possible.length));
-
-    return text;
-  }*/
-
-
-
 }
 
 
@@ -91,7 +101,6 @@ $(document).on('change', '.up', function () {
   for (var i = 0; i < $(this).get(0).files.length; ++i) {
     names.push($(this).get(0).files[i].name);
   }
-  // $("input[name=file]").val(names);
   if (length > 2) {
     var fileName = names.join(', ');
     $(this).closest('.form-group').find('.form-control').attr("value", length + " files selected");

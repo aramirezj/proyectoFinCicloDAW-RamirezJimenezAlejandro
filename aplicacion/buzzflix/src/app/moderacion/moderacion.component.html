@@ -1,13 +1,14 @@
-<div style="background-color: white">
-  <p>
-    moderacion works!
-  </p>
-</div>
+<div class="box">
 
+  <div class="mensaje">
+    <h1>Moderar Quizzs</h1>
+  </div>
 
+  <div *ngIf="this.isLoaded && this.quizzs!=null" class="text-center">
+    <p>Quizz {{this.quizzs[this.indice].titulo | json}} </p>
+    <button type="button" class="btn btn-danger" (click)="juzga(false)">Rechazar</button>
+    <button type="button" class="btn btn-success" (click)="juzga(true)">Aprobar</button>
+  </div>
 
-<div *ngIf="this.isLoaded && this.quizzs!=null" style="background-color: white">
-  <p>Quizz {{this.quizzs[this.indice].titulo | json}} </p>
-  <button type="button" class="btn btn-danger" (click)="juzga(false)">Rechazar</button>
-  <button type="button" class="btn btn-success" (click)="juzga(true)">Aprobar</button>
-</div>
+  <div *ngIf="this.isLoaded && this.quizzs==null" style="background-color: white">
+    <p>¡Vaya, no hay ningún Quizz por moderar! Vuelve más tarde o crea el tuyo propio <3</p> </div> </div>

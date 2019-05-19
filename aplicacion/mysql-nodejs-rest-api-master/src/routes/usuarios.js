@@ -103,20 +103,55 @@ router.put('/usuario/actualizar/:id', cors(), (req, res, next) => {
 
   let permiso = verificaToken(req.headers);
   if (permiso != false) {
-    const { name, email, avatar } = req.body;
+
+
+
+    const { name, oldpass, newpass, avatar } = req.body;
     const { id } = req.params;
-    let query = "UPDATE users set name = ? , email =?, avatar=? WHERE id = ?"
-    mysqlConnection.query(query, [name, email, avatar, id], (err, rows, fields) => {
-      if (!err) {
-        res.send({
-          status: '200'
-        })
-      } else {
-        res.send({
-          status: 'Error sql'
-        })
-      }
-    });
+    console.log(oldpass)
+    if (oldpass == undefined || newpass == undefined) {
+      let query = "UPDATE users set name = ?, avatar=? WHERE id = ?";
+      mysqlConnection.query(query, [name, avatar, id], (err, rows, fields) => {
+        if (!err) {
+          res.send({
+            status: '200'
+          })
+        } else {
+          res.send({
+            status: 'Error sql'
+          })
+        }
+      });
+    } else {
+      let boolean = false;
+      let query = "SELECT password from users where password = ? AND id = ?";
+      mysqlConnection.query(query, [oldpass, id], (err, rows, fields) => {
+        if (!err) {
+          if (rows.length > 0) {
+            let query = "UPDATE users set name = ? , password =?, avatar = ? WHERE id = ?";
+            mysqlConnection.query(query, [name, newpass, avatar, id], (err, rows, fields) => {
+              if (!err) {
+                res.send({
+                  status: '200'
+                })
+              } else {
+                res.send({
+                  status: 'Error sql'
+                })
+              }
+            });
+          }else{
+            res.send({
+              status:'Wrong password'
+            })
+          }
+        } else {
+          res.send({
+            status: 'Error sql'
+          })
+        }
+      });
+    }
   } else {
     res.send({
       status: 'Token invalido'
@@ -269,9 +304,9 @@ router.get('/quizz/todos', (req, res) => {
 router.post('/quizz/moderacion', (req, res) => {
   console.log("obtener quizz a moderar")
   const { id } = req.body;
-  let query = "SELECT * FROM quizz where publicado = 0 AND creador != ? AND id not in "+
-  "(select quizz from mod_acciones where votante = ? ) order by estrellas DESC"
-  mysqlConnection.query(query, [id,id], (err, rows, fields) => {
+  let query = "SELECT * FROM quizz where publicado = 0 AND creador != ? AND id not in " +
+    "(select quizz from moderacion where usuario = ? ) order by estrellas DESC"
+  mysqlConnection.query(query, [id, id], (err, rows, fields) => {
     if (!err) {
       if (rows.length == 0) {
         res.json({
@@ -293,24 +328,11 @@ router.post('/quizz/moderacion', (req, res) => {
 //guarda una accion de moderacion (UNPROTECTED)
 router.post('/modera', (req, res) => {
   console.log("guarda una accón de moderar")
-  const { quizz, votante, accion } = req.body;
-  console.log(quizz+"--"+votante+"---"+accion)
-  const query = "insert into mod_acciones (votante,quizz) VALUES(?,?)";
-  mysqlConnection.query(query, [votante, quizz], (err, rows, fields) => {
+  const { quizz, usuario, decision } = req.body;
+  console.log(quizz + "--" + usuario + "---" + decision)
+  const query = "insert into moderacion (quizz,usuario,decision) VALUES(?,?,?)";
+  mysqlConnection.query(query, [quizz,usuario,decision], (err, rows, fields) => {
     if (!err) {
-      let query2 = "";
-      if (accion) {
-        query2 = "update moderacion set positivos = positivos + 1 where id = ?";
-      }else{
-        query2 = "update moderacion set negativos = negativos + 1 where id = ?";
-      }
-        mysqlConnection.query(query2, [quizz], (err, rows, fields) => {
-        if (!err) {
-          res.json({ status: "200"});
-        } else {
-          console.log(err);
-        }
-      });
     } else {
       console.log(err);
     }
@@ -450,7 +472,7 @@ router.post('/creaQuizz', cors(), (req, res, next) => {
       const query2 = "insert into moderacion (id,creador,positivos,negativos) VALUES(?,?,0,0)";
       mysqlConnection.query(query2, [rows.insertId, creador], (err, rows, fields) => {
         if (!err) {
-          
+
         } else {
           console.log(err);
         }
@@ -475,6 +497,9 @@ router.post('/borraQuizz', cors(), (req, res, next) => {
     console.log("PARAMETROS")
     const { quizz } = req.body;
     console.log(req.body);
+
+    
+
     mysqlConnection.query('DELETE FROM quizz WHERE id = ? AND creador = ?', [quizz, permiso], (err, rows, fields) => {
       if (!err) {
         res.send({
