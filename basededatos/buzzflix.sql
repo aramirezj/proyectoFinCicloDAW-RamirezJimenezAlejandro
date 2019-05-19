@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 13-05-2019 a las 14:35:59
--- Versión del servidor: 10.1.39-MariaDB
--- Versión de PHP: 7.3.5
+-- Tiempo de generación: 19-05-2019 a las 22:21:33
+-- Versión del servidor: 10.1.38-MariaDB
+-- Versión de PHP: 7.3.2
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -29,8 +29,8 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `follows` (
-  `origen` int(10) NOT NULL,
-  `destino` int(10) NOT NULL
+  `origen` int(11) NOT NULL,
+  `destino` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 --
@@ -38,15 +38,19 @@ CREATE TABLE `follows` (
 --
 
 INSERT INTO `follows` (`origen`, `destino`) VALUES
-(19, 18),
-(20, 18),
+(18, 19),
 (18, 20),
-(32, 19),
-(32, 18),
-(34, 19),
+(18, 36),
+(19, 18),
 (19, 21),
+(19, 25),
 (19, 27),
-(18, 19);
+(20, 18),
+(32, 18),
+(32, 19),
+(34, 19),
+(37, 19),
+(37, 27);
 
 -- --------------------------------------------------------
 
@@ -55,29 +59,9 @@ INSERT INTO `follows` (`origen`, `destino`) VALUES
 --
 
 CREATE TABLE `moderacion` (
-  `id` int(50) NOT NULL,
-  `creador` int(50) NOT NULL,
-  `positivos` int(50) NOT NULL,
-  `negativos` int(50) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
---
--- Volcado de datos para la tabla `moderacion`
---
-
-INSERT INTO `moderacion` (`id`, `creador`, `positivos`, `negativos`) VALUES
-(30, 18, 1, 0);
-
--- --------------------------------------------------------
-
---
--- Estructura de tabla para la tabla `mod_acciones`
---
-
-CREATE TABLE `mod_acciones` (
-  `id` int(50) NOT NULL,
-  `votante` int(50) NOT NULL,
-  `quizz` int(50) NOT NULL
+  `quizz` int(50) NOT NULL,
+  `usuario` int(11) NOT NULL,
+  `decision` int(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
@@ -101,8 +85,7 @@ CREATE TABLE `quizz` (
 --
 
 INSERT INTO `quizz` (`id`, `creador`, `titulo`, `contenido`, `estrellas`, `fechacreacion`, `publicado`) VALUES
-(8, 25, '¿Qué personaje de Dragon Ball eres?', '{\"id\":null,\"creador\":25,\"titulo\":\"¿Qué personaje de Dragon Ball eres?\",\"soluciones\":[{\"id\":1,\"titulo\":\"Goku\",\"descripcion\":\"Eres un luchador bobo pero admirable.\",\"image\":null},{\"id\":2,\"titulo\":\"Vegeta\",\"descripcion\":\"Eres un luchador excepcional pero tu ego está en las nubes\",\"image\":null},{\"id\":3,\"titulo\":\"Piccolo\",\"descripcion\":\"Eres un luchador malvado pero con corazón blando, nenaza.\",\"image\":null},{\"id\":4,\"titulo\":\"Mr. Satán\",\"descripcion\":\"Eres un luchador de pacotilla y crees que el mundo gira a tu alrededor.\",\"image\":null}],\"preguntas\":[{\"id\":1,\"enunciado\":\"¿Qué arma usarías en un combate?\",\"respuestas\":[{\"id\":1,\"enunciado\":\"Cuchillo de combate\",\"madre\":1,\"afinidades\":[{\"idr\":1,\"ids\":1,\"cantidad\":\"2\"},{\"idr\":1,\"ids\":2,\"cantidad\":0},{\"idr\":1,\"ids\":3,\"cantidad\":\"7\"},{\"idr\":1,\"ids\":4,\"cantidad\":\"10\"}]},{\"id\":2,\"enunciado\":\"Ninguna, no me hacen falta\",\"madre\":1,\"afinidades\":[{\"idr\":2,\"ids\":1,\"cantidad\":\"8\"},{\"idr\":2,\"ids\":2,\"cantidad\":\"10\"},{\"idr\":2,\"ids\":3,\"cantidad\":\"5\"},{\"idr\":2,\"ids\":4,\"cantidad\":0}]},{\"id\":3,\"enunciado\":\"Puños\",\"madre\":1,\"afinidades\":[{\"idr\":3,\"ids\":1,\"cantidad\":\"10\"},{\"idr\":3,\"ids\":2,\"cantidad\":\"8\"},{\"idr\":3,\"ids\":3,\"cantidad\":\"5\"},{\"idr\":3,\"ids\":4,\"cantidad\":0}]},{\"id\":4,\"enunciado\":\"Trampas\",\"madre\":1,\"afinidades\":[{\"idr\":4,\"ids\":1,\"cantidad\":0},{\"idr\":4,\"ids\":2,\"cantidad\":\"2\"},{\"idr\":4,\"ids\":3,\"cantidad\":\"10\"},{\"idr\":4,\"ids\":4,\"cantidad\":\"7\"}]}],\"eleccion\":null},{\"id\":2,\"enunciado\":\"Tienes un sueño, tu mejor amigo está en peligro rodeado de unos extraños. Te despiertas a las 5 am. ¿Qué haces?\",\"respuestas\":[{\"id\":1,\"enunciado\":\"Ir lo más rápido posible en su busca a comprobar si está en peligro o no.\",\"madre\":2,\"afinidades\":[{\"idr\":1,\"ids\":1,\"cantidad\":\"5\"},{\"idr\":1,\"ids\":2,\"cantidad\":\"2\"},{\"idr\":1,\"ids\":3,\"cantidad\":\"0\"},{\"idr\":1,\"ids\":4,\"cantidad\":\"7\"}]},{\"id\":2,\"enunciado\":\"Sabes que era un sueño y sigues durmiendo\",\"madre\":2,\"afinidades\":[{\"idr\":2,\"ids\":1,\"cantidad\":0},{\"idr\":2,\"ids\":2,\"cantidad\":\"10\"},{\"idr\":2,\"ids\":3,\"cantidad\":\"7\"},{\"idr\":2,\"ids\":4,\"cantidad\":0}]},{\"id\":3,\"enunciado\":\"Lo llamas por telefono pero como no te lo coge, sigues durmiendo \",\"madre\":2,\"afinidades\":[{\"idr\":3,\"ids\":1,\"cantidad\":0},{\"idr\":3,\"ids\":2,\"cantidad\":\"2\"},{\"idr\":3,\"ids\":3,\"cantidad\":0},{\"idr\":3,\"ids\":4,\"cantidad\":\"10\"}]},{\"id\":4,\"enunciado\":\"Vas al lugar donde ocurria el sueño y esperas durante horas\",\"madre\":2,\"afinidades\":[{\"idr\":4,\"ids\":1,\"cantidad\":\"10\"},{\"idr\":4,\"ids\":2,\"cantidad\":0},{\"idr\":4,\"ids\":3,\"cantidad\":0},{\"idr\":4,\"ids\":4,\"cantidad\":\"5\"}]}],\"eleccion\":null},{\"id\":3,\"enunciado\":\"Estás herido en combate, pero te quedan fuerzas para luchar. Tu único compañero de combate ha caído y vuestros dos enemigos siguen en pie riéndose de lo débiles que sois. ¿Qué haces?\",\"respuestas\":[{\"id\":1,\"enunciado\":\"Declaras la guerra a muerte y te enfureces hasta alcanzar un nivel de fuerza descomunal\",\"madre\":3,\"afinidades\":[{\"idr\":1,\"ids\":1,\"cantidad\":\"10\"},{\"idr\":1,\"ids\":2,\"cantidad\":\"8\"},{\"idr\":1,\"ids\":3,\"cantidad\":\"2\"},{\"idr\":1,\"ids\":4,\"cantidad\":0}]},{\"id\":2,\"enunciado\":\"Sales corriendo a buscar ayuda porque sabes que sólo no tienes nada que hacer.\",\"madre\":3,\"afinidades\":[{\"idr\":2,\"ids\":1,\"cantidad\":0},{\"idr\":2,\"ids\":2,\"cantidad\":\"5\"},{\"idr\":2,\"ids\":3,\"cantidad\":\"8\"},{\"idr\":2,\"ids\":4,\"cantidad\":\"10\"}]},{\"id\":3,\"enunciado\":\"Huyes cuando están distraidos y reflexionas cómo vencerlos\",\"madre\":3,\"afinidades\":[{\"idr\":3,\"ids\":1,\"cantidad\":\"2\"},{\"idr\":3,\"ids\":2,\"cantidad\":\"8\"},{\"idr\":3,\"ids\":3,\"cantidad\":\"10\"},{\"idr\":3,\"ids\":4,\"cantidad\":\"5\"}]},{\"id\":4,\"enunciado\":\"Te escondes para recuperarte y poder hacerles frente de nuevo\",\"madre\":3,\"afinidades\":[{\"idr\":4,\"ids\":1,\"cantidad\":\"8\"},{\"idr\":4,\"ids\":2,\"cantidad\":\"10\"},{\"idr\":4,\"ids\":3,\"cantidad\":\"2\"},{\"idr\":4,\"ids\":4,\"cantidad\":0}]}],\"eleccion\":null},{\"id\":4,\"enunciado\":\"Vas paseando por la calle de noche. Un asesino saca su arma y acaba con la vida de una anciana. Eres el único que lo ha visto desde lejos¿Qué haces?\",\"respuestas\":[{\"id\":1,\"enunciado\":\"Te escondes y llamas a la policía\",\"madre\":4,\"afinidades\":[{\"idr\":1,\"ids\":1,\"cantidad\":0},{\"idr\":1,\"ids\":2,\"cantidad\":0},{\"idr\":1,\"ids\":3,\"cantidad\":0},{\"idr\":1,\"ids\":4,\"cantidad\":\"10\"}]},{\"id\":2,\"enunciado\":\"No es tu problema, sigues paseando\",\"madre\":4,\"afinidades\":[{\"idr\":2,\"ids\":1,\"cantidad\":0},{\"idr\":2,\"ids\":2,\"cantidad\":\"10\"},{\"idr\":2,\"ids\":3,\"cantidad\":\"8\"},{\"idr\":2,\"ids\":4,\"cantidad\":0}]},{\"id\":3,\"enunciado\":\"Corres hasta el asesino para darle su merecido\",\"madre\":4,\"afinidades\":[{\"idr\":3,\"ids\":1,\"cantidad\":\"10\"},{\"idr\":3,\"ids\":2,\"cantidad\":0},{\"idr\":3,\"ids\":3,\"cantidad\":0},{\"idr\":3,\"ids\":4,\"cantidad\":\"2\"}]},{\"id\":4,\"enunciado\":\"Sacas tu arma y acabas con él\",\"madre\":4,\"afinidades\":[{\"idr\":4,\"ids\":1,\"cantidad\":0},{\"idr\":4,\"ids\":2,\"cantidad\":\"5\"},{\"idr\":4,\"ids\":3,\"cantidad\":\"10\"},{\"idr\":4,\"ids\":4,\"cantidad\":\"2\"}]}],\"eleccion\":null}],\"estrellas\":0,\"fechacreacion\":\"2019-03-29T11:18:15.877Z\"}', 11, '2019-03-29', 1),
-(30, 18, 'Vamoos', '{\"id\":null,\"creador\":18,\"titulo\":\"Vamoos\",\"image\":\"yxsxwiux7u.jpg\",\"soluciones\":[{\"id\":1,\"titulo\":\"daw\",\"descripcion\":\"daw\",\"image\":\"k26menlcme7.jpg\"},{\"id\":2,\"titulo\":\"daw\",\"descripcion\":\"daw\",\"image\":\"dpg8qq41ar.jpg\"}],\"preguntas\":[{\"id\":1,\"enunciado\":\"daw\",\"respuestas\":[{\"id\":1,\"enunciado\":\"daw\",\"madre\":1,\"afinidades\":[{\"idr\":1,\"ids\":1,\"cantidad\":0},{\"idr\":1,\"ids\":2,\"cantidad\":0}]},{\"id\":2,\"enunciado\":\"daw\",\"madre\":1,\"afinidades\":[{\"idr\":2,\"ids\":1,\"cantidad\":0},{\"idr\":2,\"ids\":2,\"cantidad\":0}]}],\"eleccion\":null},{\"id\":2,\"enunciado\":\"daw\",\"respuestas\":[{\"id\":1,\"enunciado\":\"daw\",\"madre\":2,\"afinidades\":[{\"idr\":1,\"ids\":1,\"cantidad\":0},{\"idr\":1,\"ids\":2,\"cantidad\":0}]},{\"id\":2,\"enunciado\":\"daw\",\"madre\":2,\"afinidades\":[{\"idr\":2,\"ids\":1,\"cantidad\":0},{\"idr\":2,\"ids\":2,\"cantidad\":0}]}],\"eleccion\":null},{\"id\":3,\"enunciado\":\"daw\",\"respuestas\":[{\"id\":1,\"enunciado\":\"dwa\",\"madre\":3,\"afinidades\":[{\"idr\":1,\"ids\":1,\"cantidad\":0},{\"idr\":1,\"ids\":2,\"cantidad\":0}]},{\"id\":2,\"enunciado\":\"dwa\",\"madre\":3,\"afinidades\":[{\"idr\":2,\"ids\":1,\"cantidad\":0},{\"idr\":2,\"ids\":2,\"cantidad\":0}]}],\"eleccion\":null},{\"id\":4,\"enunciado\":\"awd\",\"respuestas\":[{\"id\":1,\"enunciado\":\"daw\",\"madre\":4,\"afinidades\":[{\"idr\":1,\"ids\":1,\"cantidad\":0},{\"idr\":1,\"ids\":2,\"cantidad\":0}]},{\"id\":2,\"enunciado\":\"daw\",\"madre\":4,\"afinidades\":[{\"idr\":2,\"ids\":1,\"cantidad\":0},{\"idr\":2,\"ids\":2,\"cantidad\":0}]}],\"eleccion\":null}],\"estrellas\":0,\"fechacreacion\":\"2019-05-13T11:25:22.327Z\"}', 0, '2019-05-13', 0);
+(32, 19, 'Prueba', '{\"id\":null,\"creador\":19,\"titulo\":\"Prueba\",\"image\":\"a4eu7mko76d.PNG\",\"soluciones\":[{\"id\":1,\"titulo\":\"Sol1\",\"descripcion\":\"exp\",\"image\":\"exmv2ht3ai4.PNG\"},{\"id\":2,\"titulo\":\"sol2\",\"descripcion\":\"exp2\",\"image\":\"x9gtwuxdfam.PNG\"}],\"preguntas\":[{\"id\":1,\"enunciado\":\"p1\",\"respuestas\":[{\"id\":1,\"enunciado\":\"r1\",\"madre\":1,\"afinidades\":[{\"idr\":1,\"ids\":1,\"cantidad\":\"10\"},{\"idr\":1,\"ids\":2,\"cantidad\":0}]},{\"id\":2,\"enunciado\":\"r2\",\"madre\":1,\"afinidades\":[{\"idr\":2,\"ids\":1,\"cantidad\":0},{\"idr\":2,\"ids\":2,\"cantidad\":\"10\"}]}],\"eleccion\":null},{\"id\":2,\"enunciado\":\"p2\",\"respuestas\":[{\"id\":1,\"enunciado\":\"r3\",\"madre\":2,\"afinidades\":[{\"idr\":1,\"ids\":1,\"cantidad\":0},{\"idr\":1,\"ids\":2,\"cantidad\":0}]},{\"id\":2,\"enunciado\":\"r4\",\"madre\":2,\"afinidades\":[{\"idr\":2,\"ids\":1,\"cantidad\":0},{\"idr\":2,\"ids\":2,\"cantidad\":0}]}],\"eleccion\":null},{\"id\":3,\"enunciado\":\"p3\",\"respuestas\":[{\"id\":1,\"enunciado\":\"r5\",\"madre\":3,\"afinidades\":[{\"idr\":1,\"ids\":1,\"cantidad\":0},{\"idr\":1,\"ids\":2,\"cantidad\":0}]},{\"id\":2,\"enunciado\":\"r6\",\"madre\":3,\"afinidades\":[{\"idr\":2,\"ids\":1,\"cantidad\":0},{\"idr\":2,\"ids\":2,\"cantidad\":0}]}],\"eleccion\":null},{\"id\":4,\"enunciado\":\"p4\",\"respuestas\":[{\"id\":1,\"enunciado\":\"r7\",\"madre\":4,\"afinidades\":[{\"idr\":1,\"ids\":1,\"cantidad\":0},{\"idr\":1,\"ids\":2,\"cantidad\":0}]},{\"id\":2,\"enunciado\":\"r8\",\"madre\":4,\"afinidades\":[{\"idr\":2,\"ids\":1,\"cantidad\":0},{\"idr\":2,\"ids\":2,\"cantidad\":0}]}],\"eleccion\":null}],\"estrellas\":0,\"fechacreacion\":\"2019-05-19T16:45:51.815Z\"}', 0, '2019-05-19', 1);
 
 -- --------------------------------------------------------
 
@@ -124,7 +107,7 @@ CREATE TABLE `users` (
 
 INSERT INTO `users` (`id`, `name`, `email`, `password`, `avatar`) VALUES
 (18, 'Manolo3', 'manolo3@gmail.com', 'manolo', NULL),
-(19, 'Alejandro2', 'alejandro@gmail.com', 'alejandro', NULL),
+(19, 'Alejandro Ramírez', 'alejandro@gmail.com', 'alejandro', 'bvhq8bh0zbf.PNG'),
 (20, 'eva', 'eva@gmail.com', 'evaeva', ''),
 (21, 'josemiii', 'josemi', 'josemi', NULL),
 (22, 'pruebaa', 'pruebaa', 'pruebaa', NULL),
@@ -138,7 +121,8 @@ INSERT INTO `users` (`id`, `name`, `email`, `password`, `avatar`) VALUES
 (33, 'pruebatoken3', '', 'pruebatoken', NULL),
 (34, 'tony', 'tony@gmail.com', 'tony12', NULL),
 (35, 'dawdawd', 'awdawda@dwad.com', 'dawdawd', NULL),
-(36, 'dawdawd', 'awdawda@dwad.com', 'dawdawd', NULL);
+(36, 'dawdawd', 'awdawda@dwad.com', 'dawdawd', NULL),
+(37, 'rindamere', 'rindamere@gmail.com', 'rindamere', '');
 
 -- --------------------------------------------------------
 
@@ -147,9 +131,8 @@ INSERT INTO `users` (`id`, `name`, `email`, `password`, `avatar`) VALUES
 --
 
 CREATE TABLE `votaciones` (
-  `id` int(10) NOT NULL,
-  `origen` int(10) NOT NULL,
-  `quizz` int(10) NOT NULL,
+  `origen` int(11) NOT NULL,
+  `quizz` int(50) NOT NULL,
   `cantidad` int(10) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -158,16 +141,19 @@ CREATE TABLE `votaciones` (
 --
 
 --
+-- Indices de la tabla `follows`
+--
+ALTER TABLE `follows`
+  ADD PRIMARY KEY (`origen`,`destino`),
+  ADD KEY `fk_users_has_users_users2_idx` (`destino`),
+  ADD KEY `fk_users_has_users_users1_idx` (`origen`);
+
+--
 -- Indices de la tabla `moderacion`
 --
 ALTER TABLE `moderacion`
-  ADD PRIMARY KEY (`id`);
-
---
--- Indices de la tabla `mod_acciones`
---
-ALTER TABLE `mod_acciones`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`quizz`,`usuario`),
+  ADD KEY `fk_moderacion_users1_idx` (`usuario`);
 
 --
 -- Indices de la tabla `quizz`
@@ -185,35 +171,50 @@ ALTER TABLE `users`
 -- Indices de la tabla `votaciones`
 --
 ALTER TABLE `votaciones`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`quizz`,`origen`),
+  ADD KEY `fk_votaciones_users1_idx` (`origen`),
+  ADD KEY `fk_votaciones_quizz1_idx` (`quizz`);
 
 --
 -- AUTO_INCREMENT de las tablas volcadas
 --
 
 --
--- AUTO_INCREMENT de la tabla `mod_acciones`
---
-ALTER TABLE `mod_acciones`
-  MODIFY `id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
-
---
 -- AUTO_INCREMENT de la tabla `quizz`
 --
 ALTER TABLE `quizz`
-  MODIFY `id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=31;
+  MODIFY `id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=33;
 
 --
 -- AUTO_INCREMENT de la tabla `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 
 --
--- AUTO_INCREMENT de la tabla `votaciones`
+-- Restricciones para tablas volcadas
+--
+
+--
+-- Filtros para la tabla `follows`
+--
+ALTER TABLE `follows`
+  ADD CONSTRAINT `fk_users_has_users_users1` FOREIGN KEY (`origen`) REFERENCES `users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_users_has_users_users2` FOREIGN KEY (`destino`) REFERENCES `users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Filtros para la tabla `moderacion`
+--
+ALTER TABLE `moderacion`
+  ADD CONSTRAINT `fk_moderacion_quizz1` FOREIGN KEY (`quizz`) REFERENCES `quizz` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_moderacion_users1` FOREIGN KEY (`usuario`) REFERENCES `users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Filtros para la tabla `votaciones`
 --
 ALTER TABLE `votaciones`
-  MODIFY `id` int(10) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=57;
+  ADD CONSTRAINT `fk_votaciones_quizz1` FOREIGN KEY (`quizz`) REFERENCES `quizz` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
+  ADD CONSTRAINT `fk_votaciones_users1` FOREIGN KEY (`origen`) REFERENCES `users` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
