@@ -19,7 +19,7 @@
             aria-label="Search">
           <button type="submit" class="btn btn-default" (click)="onSubmit()">Buscar</button>
         </form>
-        <i class="fas fa-search" (click)="muestraForm()"></i> 
+        <i class="fas fa-search"  *ngIf="isLoggedIn()" (click)="muestraForm()"></i> 
         <a role="button" mat-button *ngIf="isLoggedIn() && this.authService.getAuthUser()" [routerLink]="['ver/todos']">Todos los tests</a>
         <a role="button" mat-button *ngIf="isLoggedIn() && this.authService.getAuthUser()" [routerLink]="['usuario/perfil',this.authService.getAuthUserId()]">Mi perfil</a>
         <a role="button" mat-button *ngIf="isLoggedIn() && this.authService.getAuthUser()" [routerLink]="['crear/quizz']">Crear Quizz</a>

@@ -34,8 +34,6 @@ function creaToken(id) {
 
 function verificaToken(headers) {
   let bearerHeader = headers["authorization"];
-  console.log(typeof bearerHeader);
-  console.log(bearerHeader);
   if (typeof bearerHeader !== 'undefined') {
     const bearer = bearerHeader.split(" ");
     const bearerToken = bearer[1];
@@ -140,9 +138,9 @@ router.put('/usuario/actualizar/:id', cors(), (req, res, next) => {
                 })
               }
             });
-          }else{
+          } else {
             res.send({
-              status:'Wrong password'
+              status: 'Wrong password'
             })
           }
         } else {
@@ -234,7 +232,8 @@ router.get('/usuarios/:nombre', (req, res) => {
 router.get('/usuario/:id/wall', (req, res) => {
   console.log("Obtener quizz por id")
   const { id } = req.params;
-  mysqlConnection.query('SELECT * FROM quizz WHERE creador = ? AND publicado = 1', [id], (err, rows, fields) => {
+  console.log(id);
+  mysqlConnection.query("SELECT q.*,COALESCE(SUM(v.cantidad),0) as estrellas FROM quizz q left JOIN votaciones v on q.id=v.quizz WHERE creador = ? AND publicado = 1", [id], (err, rows, fields) => {
     if (!err) {
       if (rows.length == 0) {
         res.json({
@@ -243,7 +242,7 @@ router.get('/usuario/:id/wall', (req, res) => {
         })
       } else {
         res.json({
-          status: "OK",
+          status: "200",
           cont: rows
         });
       }
@@ -257,7 +256,7 @@ router.get('/usuario/:id/wall', (req, res) => {
 router.get('/quizz/:id/seguidos', (req, res) => {
   console.log("Obtener quizz de los seguidos")
   const { id } = req.params;
-  let query = "SELECT * FROM quizz WHERE creador in ( SELECT destino from follows where origen = ? ) AND publicado = 1 order by fechacreacion DESC"
+  let query = "SELECT q.*,COALESCE(SUM(v.cantidad),0) as estrellas FROM quizz q left JOIN votaciones v on q.id=v.quizz WHERE creador in ( SELECT destino from follows where origen = ? ) AND publicado = 1 order by fechacreacion DESC"
   mysqlConnection.query(query, [id], (err, rows, fields) => {
     if (!err) {
       if (rows.length == 0) {
@@ -280,7 +279,7 @@ router.get('/quizz/:id/seguidos', (req, res) => {
 //Obtener los quizzes de la web (UNPROTECTED)
 router.get('/quizz/todos', (req, res) => {
   console.log("Obtener quizz de todos")
-  let query = "SELECT * FROM quizz where publicado = 1 order by estrellas DESC"
+  let query = "SELECT q.*,SUM(v.cantidad) as estrellas FROM quizz q JOIN votaciones v on q.id=v.quizz where publicado = 1 order by sum(v.cantidad) DESC"
   mysqlConnection.query(query, null, (err, rows, fields) => {
     if (!err) {
       if (rows.length == 0) {
@@ -305,7 +304,7 @@ router.post('/quizz/moderacion', (req, res) => {
   console.log("obtener quizz a moderar")
   const { id } = req.body;
   let query = "SELECT * FROM quizz where publicado = 0 AND creador != ? AND id not in " +
-    "(select quizz from moderacion where usuario = ? ) order by estrellas DESC"
+    "(select quizz from moderacion where usuario = ? )"
   mysqlConnection.query(query, [id, id], (err, rows, fields) => {
     if (!err) {
       if (rows.length == 0) {
@@ -331,7 +330,7 @@ router.post('/modera', (req, res) => {
   const { quizz, usuario, decision } = req.body;
   console.log(quizz + "--" + usuario + "---" + decision)
   const query = "insert into moderacion (quizz,usuario,decision) VALUES(?,?,?)";
-  mysqlConnection.query(query, [quizz,usuario,decision], (err, rows, fields) => {
+  mysqlConnection.query(query, [quizz, usuario, decision], (err, rows, fields) => {
     if (!err) {
     } else {
       console.log(err);
@@ -498,7 +497,7 @@ router.post('/borraQuizz', cors(), (req, res, next) => {
     const { quizz } = req.body;
     console.log(req.body);
 
-    
+
 
     mysqlConnection.query('DELETE FROM quizz WHERE id = ? AND creador = ?', [quizz, permiso], (err, rows, fields) => {
       if (!err) {
@@ -522,40 +521,52 @@ router.post('/borraQuizz', cors(), (req, res, next) => {
 //Peticion para puntuar un test (PROTECTED)
 router.post('/vota', cors(), (req, res, next) => {
   console.log("PETICION votar")
-  console.log("PARAMETROS")
   let permiso = verificaToken(req.headers);
   if (permiso != false) {
     const { origen, quizz, cantidad } = req.body;
-    if (permiso == origen) {
-      let estrellas = 0;
+    console.log("O:"+origen+" Q:"+quizz+" C:"+cantidad)
+    const query = "SELECT * from votaciones where origen = ? and quizz = ?";
+    mysqlConnection.query(query, [origen, quizz], (err, rows, fields) => {
+      if (!err) {
+        if(rows.length==0){
+          console.log("Voy a insertar votación");
+          inserta(origen,quizz,cantidad)
+        }else{
+          console.log("Voy a actualizar votación");
+          updatea(origen,quizz,cantidad);
+        }
+      }
+    });
+
+  
+    function inserta(origen,quizz,cantidad){
       const query = "insert into votaciones (origen,quizz,cantidad) VALUES(?,?,?)";
       mysqlConnection.query(query, [origen, quizz, cantidad], (err, rows, fields) => {
-        if (err) {
+        if (!err) {
+          res.send({
+            status: '200'
+          })
+        } else {
           res.send({
             status: 'Error sql'
           })
         }
       });
-      setTimeout(() => {
-        estrellas = cantidad;
-        const query3 = "update quizz set estrellas = estrellas + ? where id = ?";
-        mysqlConnection.query(query3, [estrellas, quizz], (err, rows, fields) => {
-          console.log(rows);
-          if (!err) {
-            res.send({
-              status: '200'
-            })
-          } else {
-            res.send({
-              status: 'Error sql'
-            })
-          }
-        });
-      }, 1000);
-    } else {
-      res.send({
-        status: 'Usuario sin permiso'
-      })
+    }
+
+    function updatea(origen,quizz,cantidad){
+      const query = "update votaciones set cantidad = ? where origen= ? AND quizz = ?";
+      mysqlConnection.query(query, [cantidad, origen, quizz], (err, rows, fields) => {
+        if (!err) {
+          res.send({
+            status: '200'
+          })
+        } else {
+          res.send({
+            status: 'Error sql'
+          })
+        }
+      });
     }
   } else {
     res.send({

@@ -45,7 +45,9 @@ export class UserService {
     getUserWall(id: number): Promise<Array<Quizz>> | any {
         return this.http.get(`${CONFIG.apiUrl}usuario/${id}/wall`)
             .toPromise()
-            .then((response) => response.json());
+            .then((response) => {
+               return response.json()
+            });
     }
     getUserFollowers(id: number): Promise<number> {
 
