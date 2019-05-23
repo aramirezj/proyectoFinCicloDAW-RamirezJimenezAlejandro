@@ -1,68 +1,79 @@
 @import "~@angular/material/prebuilt-themes/indigo-pink.css";
 .box {
-   
-    border-radius: 1em;
-    padding-left: 1.5em;
-    float: none!important;
-  }
+  border-radius: 1em;
+  padding-left: 1.5em;
+  float: none !important;
+}
 
-.last{
-    padding: 15px;
-    margin-left: 39%;
-    height: 3em;
-    
+.last {
+  padding: 15px;
+  margin-left: 39%;
+  height: 3em;
 }
-h3{
-    font-weight: bold;
+h3 {
+  font-weight: bold;
 }
-.panel-body{
-    text-align: center;
+.panel-body {
+  text-align: center;
 }
-mat-form-field{
-    width: 100%;
+mat-form-field {
+  width: 100%;
 }
-.boxPregunta{
-    width: 100%;
-   
+.boxPregunta {
+  width: 100%;
 }
-.textPregunta{
-    background-color: black;
-    color:white;
-    font-size: 2.2em;
-    padding: 2%;
-    font-weight: bold;
+.textPregunta {
+  background-color: #529f82;
+  color: white;
+  font-size: 2.2em;
+  padding: 2%;
+  font-weight: bold;
 }
-.textPregunta::first-letter{
-    text-transform: uppercase;
+.textPregunta::first-letter {
+  text-transform: uppercase;
 }
-.desactivado{
-    background-color: rgb(88, 87, 87)!important;
+.desactivado {
+  background-color: rgb(88, 87, 87) !important;
 }
-.boxRespuesta{
-    background-color: black;
-    width: 45%;
-    min-height: 100%;
-    float:left;
-    margin-top:1%;
-    margin-right: 2%;
-    margin-left: 2%;
+.boxRespuesta {
+  background-color: #529f82;
+  width: 45%;
+  min-height: 100%;
+  float: left;
+  margin-top: 1%;
+  margin-right: 2%;
+  margin-left: 2%;
 }
-.textRespuesta{
-    font-weight: bold;
-    color:white;
-    font-size:2vw;
-    margin:auto;
-    text-transform: initial;
-    padding: 5%;
-    margin-right: 1%;
-    transition: width 0.2s, height 0.2s, transform 0.2s;
+.textRespuesta {
+  font-weight: bold;
+  color: white;
+  font-size: 2vw;
+  margin: auto;
+  text-transform: initial;
+  padding: 5%;
+  margin-right: 1%;
+  transition: width 0.2s, height 0.2s, transform 0.2s;
 }
-.textRespuesta:hover{
-    transform : scale(1.05);
+.textRespuesta:hover {
+  transform: scale(1.05);
+  color:#dde19c;
 }
-.textRespuesta::first-letter{
-    text-transform: uppercase;
+.textRespuesta::first-letter {
+  text-transform: uppercase;
 }
-.clear{
-    clear:both;
+.clear {
+  clear: both;
+}
+
+.color1 {
+  background-color: #3b2572;
+}
+.color2 {
+  background-color: #529f82;
+}
+.color3 {
+  background-color: #3b2572;
+}
+.color4 {
+  background-color: #529f82;
 }

@@ -12,6 +12,7 @@ import * as $ from 'jquery';
 })
 export class AppComponent {
   public miniForm: FormGroup
+  public miniForm2: FormGroup
   usuario: Usuario
   constructor(
     private fb: FormBuilder,
@@ -21,6 +22,10 @@ export class AppComponent {
   ) {
     this.miniForm = this.fb.group({
       nombre: ['', [
+      ]]
+    })
+    this.miniForm2 = this.fb.group({
+      nombre2: ['', [
       ]]
     })
     this.userService.userProfileUpdated.subscribe((usuario) => {
@@ -35,11 +40,24 @@ export class AppComponent {
 
   onSubmit() {
     let nombre = this.miniForm.get('nombre').value;
-
     if (nombre != "") {
       $("form").addClass("hidden");
       $("i").removeClass("hidden");
       this.router.navigate(['ver/usuarios/' + nombre]);
+    }else{
+      $("form").addClass("hidden");
+      $("i").removeClass("hidden");
+    }
+  }
+  onSubmit2() {
+    let nombre = this.miniForm2.get('nombre2').value;
+    if (nombre != "") {
+      $("form").addClass("hidden");
+      $("i").removeClass("hidden");
+      this.router.navigate(['ver/quizzes/' + nombre]);
+    }else{
+      $("form").addClass("hidden");
+      $("i").removeClass("hidden");
     }
   }
 
@@ -52,8 +70,11 @@ export class AppComponent {
   }
 
   muestraForm() {
-    $("form").removeClass("hidden");
+    $("#form1").removeClass("hidden");
     $("i").addClass("hidden");
-
+  }
+  muestraForm2() {
+    $("#form2").removeClass("hidden");
+    $("i").addClass("hidden");
   }
 }

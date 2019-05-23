@@ -97,7 +97,7 @@ export class CreateQuizzComponent implements OnInit {
       ]],
       cp: ['', [
         Validators.required,
-        Validators.min(4),
+        Validators.min(2),
         Validators.max(10)
 
       ]],
@@ -162,7 +162,7 @@ export class CreateQuizzComponent implements OnInit {
   //Generación de las preguntas por el boton
   generaPreguntas() {
     this.aux = this.quizzForm.get('cp').value;
-    if (this.aux > 3 && this.aux < 11) {
+    if (this.aux > 1 && this.aux < 11) {
       this.reseteaFullRespuestas();
       this.ref.detach();
       this.bar.start();
@@ -191,7 +191,7 @@ export class CreateQuizzComponent implements OnInit {
         this.bar.done();
       }, 500);
     } else {
-      this.notifyService.notify("El máximo de preguntas son 10, y el mínimo son 4", "error");
+      this.notifyService.notify("El máximo de preguntas son 10, y el mínimo son 2", "error");
     }
 
 

@@ -161,6 +161,23 @@ export class QuizzService {
                 console.log("Error ", e)
             })
     }
+    getQuizzes(nombre:string): Promise<Array<Quizz>> {
+        return this.http.get(`${CONFIG.apiUrl}quizzes/${nombre}`)
+            .toPromise()
+            .then(resp => {
+                if (resp.json().status == '200') {
+                    return resp.json().quizzes;
+                } else {
+                    return null;
+                }
+            })
+            .catch(function (e) {
+                console.log("Error ", e)
+            })
+
+    }
+
+    
 
     borraQuizz(quizz: Quizz) {
         this.bar.start();

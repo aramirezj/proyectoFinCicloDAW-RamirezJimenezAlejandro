@@ -74,4 +74,29 @@ export class RegistroComponent implements OnInit {
   
   }
 
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
 }
+
+
+
+
+

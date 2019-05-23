@@ -48,6 +48,7 @@ import { environment } from '../environments/environment';
 import { AngularFireStorage } from 'angularfire2/storage';
 import { DialogboxComponent } from './dialogbox/dialogbox.component';
 import { ModeracionComponent } from './moderacion/moderacion.component';
+import { DashboardQuizComponent } from './dashboard-quiz/dashboard-quiz.component';
 
 @NgModule({
   declarations: [
@@ -72,6 +73,7 @@ import { ModeracionComponent } from './moderacion/moderacion.component';
     VotarComponent,
     DialogboxComponent,
     ModeracionComponent,
+    DashboardQuizComponent,
   ],
   imports: [
     BrowserModule,

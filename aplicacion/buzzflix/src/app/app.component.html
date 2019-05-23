@@ -10,15 +10,21 @@
       <button mat-icon-button (click)="sidenav.toggle()" fxShow="true" fxHide.gt-sm>
         <mat-icon>menu</mat-icon>
       </button>
-      <span role="button" routerLink="dashboard">Quizzflix</span>
+      <span role="button" routerLink="dashboard">Hasquiz</span>
       <span class="menu-spacer"></span>
       
       <div fxShow="true" fxHide.lt-md >
-        <form class="form-inline hidden" *ngIf="isLoggedIn() && this.authService.getAuthUser()" [formGroup]="miniForm">
+        <form class="form-inline hidden" id="form1" *ngIf="isLoggedIn() && this.authService.getAuthUser()" [formGroup]="miniForm">
           <input class="form-control mr-sm-2" formControlName="nombre" type="search" placeholder="Buscar usuarios"
             aria-label="Search">
           <button type="submit" class="btn btn-default" (click)="onSubmit()">Buscar</button>
         </form>
+        <form class="form-inline hidden" id="form2" *ngIf="isLoggedIn() && this.authService.getAuthUser()" [formGroup]="miniForm2">
+          <input class="form-control mr-sm-2" formControlName="nombre2" type="search" placeholder="Buscar quizzes"
+            aria-label="Search">
+          <button type="submit" class="btn btn-default" (click)="onSubmit2()">Buscar</button>
+        </form>
+        <i class="fas fa-search" style="color:orangered;"  *ngIf="isLoggedIn()" (click)="muestraForm2()"></i> 
         <i class="fas fa-search"  *ngIf="isLoggedIn()" (click)="muestraForm()"></i> 
         <a role="button" mat-button *ngIf="isLoggedIn() && this.authService.getAuthUser()" [routerLink]="['ver/todos']">Todos los tests</a>
         <a role="button" mat-button *ngIf="isLoggedIn() && this.authService.getAuthUser()" [routerLink]="['usuario/perfil',this.authService.getAuthUserId()]">Mi perfil</a>

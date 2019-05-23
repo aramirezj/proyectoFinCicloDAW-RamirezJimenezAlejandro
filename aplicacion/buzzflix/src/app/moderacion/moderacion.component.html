@@ -4,10 +4,32 @@
     <h1>Moderar Quizzs</h1>
   </div>
 
-  <div *ngIf="this.isLoaded && this.quizzs!=null" class="text-center">
-    <p>Quizz {{this.quizzs[this.indice].titulo | json}} </p>
-    <button type="button" class="btn btn-danger" (click)="juzga(false)">Rechazar</button>
-    <button type="button" class="btn btn-success" (click)="juzga(true)">Aprobar</button>
+  <div class="boxEnunciado" *ngIf="this.isLoaded && this.quizzs!=null" class="text-center">
+    {{this.controlImagenes(0)}}
+    <p class="textEnunciado">Quiz {{this.quizzs[this.indice].titulo | json}} </p>
+    <p class="textEnunciado">Posibles soluciones</p>
+    <div class="boxSolucion" *ngFor="let solucion of this.quizzs[this.indice].soluciones;let i = index">
+      <h4 [class]="'textSolucion'+' color'+i">{{solucion.titulo}}</h4>
+      <h5 [class]="'textSolucion'+' color'+i">{{solucion.descripcion}}</h5>
+      <img [class]="'textSolucion'+' color'+i" *ngIf="this.imagenes[this.indiceImagenes] | async; let url" [src]="url"
+        width="200px" />
+      {{this.controlImagenes(1)}}
+    </div>
+    <p class="textEnunciado">Preguntas</p>
+    <div class="boxPregunta" *ngFor="let pregunta of this.quizzs[this.indice].preguntas;let i = index">
+      <h4 [class]="'textPregunta'+' color'+i">{{pregunta.enunciado}}</h4>
+      <div class="clear"></div>
+      <div [class]="'boxRespuesta'+' color'+i" *ngFor="let respuesta of pregunta.respuestas;let j=index">
+        <p class="textRespuesta">{{respuesta.enunciado}}</p>
+      </div>
+      <div class="clear"></div>
+    </div>
+
+    <div class="acciones">
+      <button type="button" class="btn btn-danger" (click)="juzga(false)">Rechazar</button>
+      <button type="button" class="btn btn-success" (click)="juzga(true)">Aprobar</button>
+    </div>
+
   </div>
 
   <div *ngIf="this.isLoaded && this.quizzs==null" style="background-color: white">

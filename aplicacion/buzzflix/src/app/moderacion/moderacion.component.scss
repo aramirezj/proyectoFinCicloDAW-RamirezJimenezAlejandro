@@ -1,4 +1,89 @@
-.box{
-    background-color: white;
-    padding: 1%;
-  }
+.box {
+  background-color: white;
+  padding: 1%;
+}
+.boxEnunciado{
+  width: 100%;
+}
+.textEnunciado{
+  background-color: black;
+  color: white;
+  font-size: 1.75em;
+  padding: 2%;
+  font-weight: bold;
+}
+.boxSolucion {
+  width: 100%;
+}
+.textSolucion {
+  background-color: #529f82;
+  color: white;
+  font-size: 2em;
+  padding: 2%;
+  font-weight: bold;
+}
+.boxPregunta {
+  width: 100%;
+}
+.textPregunta {
+  background-color: #529f82;
+  color: white;
+  font-size: 2em;
+  padding: 2%;
+  font-weight: bold;
+}
+.textPregunta::first-letter {
+  text-transform: uppercase;
+}
+.desactivado {
+  background-color: rgb(88, 87, 87) !important;
+}
+.boxRespuesta {
+  background-color: #529f82;
+  width: 45%;
+  min-height: 100%;
+  float: left;
+  margin-top: 1%;
+  margin-right: 2%;
+  margin-left: 2%;
+}
+.textRespuesta {
+  font-weight: bold;
+  color: white;
+  font-size: 1.5vw;
+  margin: auto;
+  text-transform: initial;
+  padding: 5%;
+  margin-right: 1%;
+  transition: width 0.2s, height 0.2s, transform 0.2s;
+}
+.textRespuesta:hover {
+  transform: scale(1.05);
+  color: #dde19c;
+}
+.textRespuesta::first-letter {
+  text-transform: uppercase;
+}
+.clear {
+  clear: both;
+}
+
+.color1 {
+  background-color: #3b2572;
+}
+.color2 {
+  background-color: #529f82;
+}
+.color3 {
+  background-color: #3b2572;
+}
+.color4 {
+  background-color: #529f82;
+}
+img{
+  width: 50%;
+}
+.acciones{
+  margin-top:1%;
+
+}

@@ -13,6 +13,7 @@ import { VerQuizzComponent } from '../ver-quizz/ver-quizz.component';
 import { ExploradorComponent } from '../explorador/explorador.component';
 import { DashboardUsersComponent } from '../dashboard-users/dashboard-users.component';
 import { ModeracionComponent } from '../moderacion/moderacion.component';
+import { DashboardQuizComponent } from '../dashboard-quiz/dashboard-quiz.component';
 export const ROUTES = [
     {
         path:'auth/register',
@@ -53,8 +54,12 @@ export const ROUTES = [
     {
         path:'ver/usuarios/:nombre',
         component: DashboardUsersComponent,
-        canActivate:[AuthGuard],
-        //runGuardsAndResolvers: `paramsChange`
+        canActivate:[AuthGuard]
+    },
+    {
+        path:'ver/quizzes/:nombre',
+        component: DashboardQuizComponent,
+        canActivate:[AuthGuard]
     },
     {
         path:'ver/todos',

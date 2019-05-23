@@ -191,46 +191,27 @@ router.get('/usuarios/:nombre', (req, res) => {
   let permiso = verificaToken(req.headers);
   if (permiso) {
     let { nombre } = req.params;
-    if (nombre == "EVERYTHINGPLEASE") {
-      mysqlConnection.query('SELECT id,name FROM users order by name', null, (err, rows, fields) => {
-        if (!err) {
-          res.send({
-            status: '200',
-            usuarios: rows
-          })
-          //res.json(rows);
-        } else {
-          res.send({
-            status: 'Error sql'
-          })
-        }
-      });
-    } else {
-      mysqlConnection.query('SELECT id,name FROM users WHERE name LIKE ? order by name', [nombre + "%"], (err, rows, fields) => {
-        if (!err) {
-          res.send({
-            status: '200',
-            usuarios: rows
-          })
-        } else {
-          res.send({
-            status: 'Error sql'
-          })
-        }
-      });
-    }
+    mysqlConnection.query('SELECT id,name FROM users WHERE name LIKE ? order by name', [nombre + "%"], (err, rows, fields) => {
+      if (!err) {
+        res.send({
+          status: '200',
+          usuarios: rows
+        })
+      } else {
+        res.send({
+          status: 'Error sql'
+        })
+      }
+    });
   } else {
     res.send({
       status: 'Token invalido'
     })
   }
-
-
-
 });
 //Obtener todos los quizz de alguien (UNPROTECTED)
 router.get('/usuario/:id/wall', (req, res) => {
-  console.log("Obtener quizz por id")
+  console.log("Obtener todos los quizz de un perfil")
   const { id } = req.params;
   console.log(id);
   mysqlConnection.query("SELECT q.*,COALESCE(SUM(v.cantidad),0) as estrellas FROM quizz q left JOIN votaciones v on q.id=v.quizz WHERE creador = ? AND publicado = 1", [id], (err, rows, fields) => {
@@ -256,7 +237,7 @@ router.get('/usuario/:id/wall', (req, res) => {
 router.get('/quizz/:id/seguidos', (req, res) => {
   console.log("Obtener quizz de los seguidos")
   const { id } = req.params;
-  let query = "SELECT q.*,COALESCE(SUM(v.cantidad),0) as estrellas FROM quizz q left JOIN votaciones v on q.id=v.quizz WHERE creador in ( SELECT destino from follows where origen = ? ) AND publicado = 1 order by fechacreacion DESC"
+  let query = "SELECT q.*,COALESCE(SUM(v.cantidad),0) as estrellas FROM quizz q left JOIN votaciones v on q.id=v.quizz WHERE creador in ( SELECT destino from follows where origen = ? ) AND publicado = 1  GROUP BY q.id order by fechacreacion DESC"
   mysqlConnection.query(query, [id], (err, rows, fields) => {
     if (!err) {
       if (rows.length == 0) {
@@ -279,7 +260,8 @@ router.get('/quizz/:id/seguidos', (req, res) => {
 //Obtener los quizzes de la web (UNPROTECTED)
 router.get('/quizz/todos', (req, res) => {
   console.log("Obtener quizz de todos")
-  let query = "SELECT q.*,SUM(v.cantidad) as estrellas FROM quizz q JOIN votaciones v on q.id=v.quizz where publicado = 1 order by sum(v.cantidad) DESC"
+  let query = "SELECT q.*,COALESCE(SUM(v.cantidad),0) as estrellas FROM quizz q LEFT JOIN votaciones v on q.id=v.quizz"
+    + " where publicado = 1 GROUP BY q.id ORDER BY SUM(v.cantidad) DESC"
   mysqlConnection.query(query, null, (err, rows, fields) => {
     if (!err) {
       if (rows.length == 0) {
@@ -299,12 +281,30 @@ router.get('/quizz/todos', (req, res) => {
     }
   });
 });
+// Obtener quizz según nombre 
+router.get('/quizzes/:nombre', (req, res) => {
+  let { nombre } = req.params;
+  console.log("Obtener quizz por nombre " + nombre);
+  mysqlConnection.query('SELECT q.*,COALESCE(SUM(v.cantidad),0) as estrellas FROM quizz q left join votaciones v on q.id=v.quizz WHERE LOWER(q.titulo) LIKE LOWER(?) AND q.publicado=1  GROUP BY q.id order by q.titulo', ['%' + nombre + "%"], (err, rows, fields) => {
+    if (!err) {
+      res.send({
+        status: '200',
+        quizzes: rows
+      })
+    } else {
+      res.send({
+        status: 'Error sql'
+      })
+    }
+  });
+
+});
 //Obtener los quizzes a moderar (UNPROTECTED)
 router.post('/quizz/moderacion', (req, res) => {
   console.log("obtener quizz a moderar")
   const { id } = req.body;
-  let query = "SELECT * FROM quizz where publicado = 0 AND creador != ? AND id not in " +
-    "(select quizz from moderacion where usuario = ? )"
+  let query = "SELECT q.*,COALESCE(SUM(v.cantidad),0) as estrellas FROM quizz q left join votaciones v on q.id=v.quizz where publicado = 0 AND creador != ? AND id not in " +
+    "(select quizz from moderacion where usuario = ? ) group by q.id"
   mysqlConnection.query(query, [id, id], (err, rows, fields) => {
     if (!err) {
       if (rows.length == 0) {
@@ -465,7 +465,7 @@ router.post('/creaQuizz', cors(), (req, res, next) => {
   console.log("PARAMETROS")
   const { creador, titulo, contenido, fecha } = req.body;
   console.log(creador + "--" + titulo);
-  const query = "insert into quizz (creador,titulo,contenido,fechacreacion,estrellas,publicado) VALUES(?,?,?,?,0,0)";
+  const query = "insert into quizz (creador,titulo,contenido,fechacreacion,publicado) VALUES(?,?,?,?,0)";
   mysqlConnection.query(query, [creador, titulo, contenido, fecha], (err, rows, fields) => {
     if (!err) {
       const query2 = "insert into moderacion (id,creador,positivos,negativos) VALUES(?,?,0,0)";
@@ -524,22 +524,22 @@ router.post('/vota', cors(), (req, res, next) => {
   let permiso = verificaToken(req.headers);
   if (permiso != false) {
     const { origen, quizz, cantidad } = req.body;
-    console.log("O:"+origen+" Q:"+quizz+" C:"+cantidad)
+    console.log("O:" + origen + " Q:" + quizz + " C:" + cantidad)
     const query = "SELECT * from votaciones where origen = ? and quizz = ?";
     mysqlConnection.query(query, [origen, quizz], (err, rows, fields) => {
       if (!err) {
-        if(rows.length==0){
+        if (rows.length == 0) {
           console.log("Voy a insertar votación");
-          inserta(origen,quizz,cantidad)
-        }else{
+          inserta(origen, quizz, cantidad)
+        } else {
           console.log("Voy a actualizar votación");
-          updatea(origen,quizz,cantidad);
+          updatea(origen, quizz, cantidad);
         }
       }
     });
 
-  
-    function inserta(origen,quizz,cantidad){
+
+    function inserta(origen, quizz, cantidad) {
       const query = "insert into votaciones (origen,quizz,cantidad) VALUES(?,?,?)";
       mysqlConnection.query(query, [origen, quizz, cantidad], (err, rows, fields) => {
         if (!err) {
@@ -554,7 +554,7 @@ router.post('/vota', cors(), (req, res, next) => {
       });
     }
 
-    function updatea(origen,quizz,cantidad){
+    function updatea(origen, quizz, cantidad) {
       const query = "update votaciones set cantidad = ? where origen= ? AND quizz = ?";
       mysqlConnection.query(query, [cantidad, origen, quizz], (err, rows, fields) => {
         if (!err) {
