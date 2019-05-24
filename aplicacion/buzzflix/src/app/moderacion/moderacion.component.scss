@@ -1,9 +1,10 @@
 .box {
-  background-color: white;
   padding: 1%;
+  
 }
 .boxEnunciado{
   width: 100%;
+  font-weight:bolder;
 }
 .textEnunciado{
   background-color: black;
@@ -85,5 +86,9 @@ img{
 }
 .acciones{
   margin-top:1%;
-
+}
+.empty{
+  font-size: 1.8em;
+  padding: 1%;
+  font-weight: bold;
 }
