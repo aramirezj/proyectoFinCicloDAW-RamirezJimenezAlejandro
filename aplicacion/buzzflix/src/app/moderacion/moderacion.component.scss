@@ -2,6 +2,13 @@
   padding: 1%;
   
 }
+mat-expansion-panel{
+  background-color: #cbddd6!important;
+}
+.mensaje{
+  font-weight: bold;
+  margin-bottom: 5%;
+}
 .boxEnunciado{
   width: 100%;
   font-weight:bolder;
@@ -82,7 +89,6 @@
   background-color: #529f82;
 }
 img{
-  width: 50%;
 }
 .acciones{
   margin-top:1%;
@@ -91,4 +97,21 @@ img{
   font-size: 1.8em;
   padding: 1%;
   font-weight: bold;
+}
+
+
+
+.example-card {
+  max-width: 400px;
+  float:left;
+  margin:2%;
+}
+.mat-card-header-text,mat-card-header,mat-card-title{
+  width: 100%!important;
+  margin-left: 0px!important;
+  text-align: center!important;
+}
+.soluciones{
+  margin:auto;
+  float:left;
 }

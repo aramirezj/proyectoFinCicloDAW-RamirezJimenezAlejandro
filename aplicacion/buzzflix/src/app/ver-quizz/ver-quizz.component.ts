@@ -115,6 +115,12 @@ export class VerQuizzComponent implements OnInit {
     }
 
     this.resultado = true;
+    setTimeout(() => {
+      $(".mat-card-header-text")[0].style.width="100%";
+      $(".mat-card-header-text")[0].style.margin="0";
+
+    }, 100);
+   
     this.cargado = false;
 
 

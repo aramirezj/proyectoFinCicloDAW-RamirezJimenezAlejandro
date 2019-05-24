@@ -39,6 +39,9 @@ import {MatButtonModule} from '@angular/material/button';
 import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatCardModule} from '@angular/material/card';
 import {MatDialogModule} from '@angular/material/dialog';
+import {MatTreeModule} from '@angular/material/tree';
+import {MatExpansionModule} from '@angular/material/expansion';
+import {MatGridListModule} from '@angular/material/grid-list'
 import { MatToolbarModule, MatSidenavModule, MatListModule, MatIconModule } from "@angular/material";
 
 import { AngularFirestore } from '@angular/fire/firestore';
@@ -93,8 +96,11 @@ import { DashboardQuizComponent } from './dashboard-quiz/dashboard-quiz.componen
     MatDialogModule,
     MatToolbarModule,
     MatSidenavModule,
+    MatGridListModule,
     MatListModule, 
     MatIconModule,
+    MatExpansionModule, 
+    
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireDatabaseModule 
   ],

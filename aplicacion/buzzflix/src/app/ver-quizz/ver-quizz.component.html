@@ -16,39 +16,10 @@
 
     </div>
 
-    <!--
-    <form [formGroup]="quizzForm" (ngSubmit)="onSubmit()">
-      <div class="panel-heading">
-        <h3 class="text-center">
-          {{quizz.titulo}}
-        </h3>
-      </div>
-      <div class="panel-body">
-        <div *ngFor="let pregunta of this.quizz.preguntas;let i = index">
-          <h4 class="text-center">{{pregunta.enunciado}}</h4>
-          <div class="text-center">
 
-            <mat-form-field>
-              <mat-label>Seleccione una respuesta</mat-label>
-              <mat-select [formControlName]="i+1" name="respuesta">
-                <mat-option *ngFor="let respuesta of pregunta.respuestas;let j=index" [value]="respuesta">
-                  {{respuesta.enunciado}}
-                </mat-option>
-              </mat-select>
-            </mat-form-field>
-          </div>
-
-        </div>
-      </div>
-      <div class="panel-footer text-center">
-        <button type="submit" class="btn btn-success" [disabled]="quizzForm.invalid">
-          Terminar
-        </button>
-      </div>
-    </form>
-    -->
   </div>
 </div>
+<!--
 <div class="col-md-12 box">
   <div *ngIf="resultado" class="panel panel-default">
     <div class="panel-heading text-center">
@@ -68,4 +39,22 @@
 
   </div>
 </div>
+</div>
+-->
+<div class="text-center">
+<mat-card *ngIf="resultado" class="example-card">
+    <mat-card-header>
+      
+      <mat-card-title class="mat-card-header-text">{{this.solucionado.titulo}}</mat-card-title>
+    </mat-card-header>
+    <img mat-card-image *ngIf="this.solucionado.image | async; let url" [src]="url" width="200px" >
+    <mat-card-content>
+      <p class="descSolu">
+          {{this.solucionado.descripcion}}
+      </p>
+    </mat-card-content>
+    <mat-card-actions>
+        <app-votar [id]="this.quizz.id"></app-votar><i role="button" class="fab fa-twitter pull-right"></i>
+    </mat-card-actions>
+  </mat-card>
 </div>

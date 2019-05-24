@@ -1,11 +1,47 @@
 <div class="box">
   <div class="mensaje">
-    <h1 class="text-center">Moderar Quizzes</h1>
+    <h1>Moderar Quizzes</h1>
+    <mat-accordion>
+      <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+        <mat-expansion-panel-header>
+          <mat-panel-title>
+            ¿Qué criterio debería seguir a la hora de rechazar un Quiz?
+          </mat-panel-title>
+          <mat-panel-description>
+
+          </mat-panel-description>
+        </mat-expansion-panel-header>
+        <mat-list>
+          <!-- <h3 mat-subheader>Folders</h3>-->
+          <mat-list-item *ngFor="let correcta of correctas">
+            <mat-icon mat-list-icon>announcement</mat-icon>
+            <h4 mat-line>{{correcta.name}}</h4>
+          </mat-list-item>
+        </mat-list>
+      </mat-expansion-panel>
+    </mat-accordion>
   </div>
   <div class="boxEnunciado" *ngIf="this.isLoaded && this.quizzs!=null" class="text-center">
     {{this.controlImagenes(0)}}
     <p class="textEnunciado">Quiz {{this.quizzs[this.indice].titulo | json}} </p>
     <p class="textEnunciado">Posibles soluciones</p>
+    <div class="solucionees">
+      <mat-card class="example-card" *ngFor="let solucion of this.quizzs[this.indice].soluciones;let i = index">
+        <mat-card-header>
+          <mat-card-title class="mat-card-header-text">{{solucion.titulo}}</mat-card-title>
+        </mat-card-header>
+        <img mat-card-image *ngIf="this.imagenes[this.indiceImagenes] | async; let url" [src]="url" width="200px">
+        {{this.controlImagenes(1)}}
+        <mat-card-content>
+          <p class="descSolu">
+            {{solucion.descripcion}}
+          </p>
+        </mat-card-content>
+      </mat-card>
+      <br>
+    </div>
+    <div style="clear:both;"></div>
+    <!--
     <div class="boxSolucion" *ngFor="let solucion of this.quizzs[this.indice].soluciones;let i = index">
       <h4 [class]="'textSolucion'+' color'+i">{{solucion.titulo}}</h4>
       <h5 [class]="'textSolucion'+' color'+i">{{solucion.descripcion}}</h5>
@@ -13,11 +49,13 @@
         width="200px" />
       {{this.controlImagenes(1)}}
     </div>
+    -->
     <p class="textEnunciado">Preguntas</p>
     <div class="boxPregunta" *ngFor="let pregunta of this.quizzs[this.indice].preguntas;let i = index">
       <h4 [class]="'textPregunta'+' color'+i">{{pregunta.enunciado}}</h4>
       <div class="clear"></div>
       <div [class]="'boxRespuesta'+' color'+i" *ngFor="let respuesta of pregunta.respuestas;let j=index">
+
         <p class="textRespuesta">{{respuesta.enunciado}}</p>
       </div>
       <div class="clear"></div>
@@ -28,4 +66,5 @@
     </div>
   </div>
   <div *ngIf="this.isLoaded && this.quizzs==null">
-    <p class="empty text-center">¡Vaya, no hay ningún Quiz por moderar! Vuelve más tarde o crea el tuyo propio <3</p> </div> </div>
+    <p class="empty text-center">¡Vaya, no hay ningún Quiz por moderar! Vuelve más tarde o crea el tuyo propio <3</p>
+        </div> </div>
