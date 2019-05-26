@@ -1,5 +1,5 @@
-<div *ngIf="!quizzes && this.isLoaded" class="panel">
-  <h4>No hemos encontrado nada relacionado con lo que quieres.</h4>
+<div *ngIf="!quizzes && this.isLoaded">
+  <p class="empty">No hay resultados para {{this.nombre}}.</p>
 </div>
 <div *ngIf="quizzes && this.isLoaded">
   <h3 class="text-center"></h3>

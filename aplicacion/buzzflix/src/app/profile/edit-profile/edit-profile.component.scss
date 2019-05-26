@@ -45,3 +45,9 @@ button {
   padding: 1%;
   font-size: 1.2em;
 }
+.panel,.panel-heading,input{
+  background-color:#cbddd6!important;
+}
+form,mat-form-field,input{
+  background-color: none!important;
+}

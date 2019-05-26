@@ -1,6 +1,10 @@
 .box {
-  padding: 1%;
-  
+  font-size: 1.75em;
+  padding: 1.5%;
+  font-weight: bold;
+  margin:auto;
+  width: 75%;
+  color: white!important;
 }
 mat-expansion-panel{
   background-color: #cbddd6!important;
@@ -10,15 +14,12 @@ mat-expansion-panel{
   margin-bottom: 5%;
 }
 .boxEnunciado{
+  margin: auto;
   width: 100%;
   font-weight:bolder;
 }
 .textEnunciado{
-  background-color: black;
-  color: white;
-  font-size: 1.75em;
-  padding: 2%;
-  font-weight: bold;
+  background-color: #8999b0;
 }
 .boxSolucion {
   width: 100%;
@@ -51,9 +52,9 @@ mat-expansion-panel{
   width: 45%;
   min-height: 100%;
   float: left;
-  margin-top: 1%;
-  margin-right: 2%;
-  margin-left: 2%;
+}
+.boxRespuesta:nth-child(odd){
+  float: right;
 }
 .textRespuesta {
   font-weight: bold;
@@ -91,20 +92,31 @@ mat-expansion-panel{
 img{
 }
 .acciones{
-  margin-top:1%;
+  width: 50%;
+  min-height:200px;
+  margin:auto;
 }
-.empty{
-  font-size: 1.8em;
-  padding: 1%;
-  font-weight: bold;
+button{
+  margin-top: 5%;
+  font-size: 2em;
+  padding: 3%;
 }
-
-
 
 .example-card {
-  max-width: 400px;
+  background-color: #3b2572;
+  color: white;
+  font-weight: bold;
+  max-width: 500px;
+}
+.example-card:nth-child(even){
   float:left;
-  margin:2%;
+}
+.example-card:nth-child(odd){
+  float:right;
+}
+
+img{
+  max-height: 250px;
 }
 .mat-card-header-text,mat-card-header,mat-card-title{
   width: 100%!important;

@@ -23,6 +23,9 @@ export class ExploradorComponent implements OnInit {
     this.quizzService.obtenerAllQuizz()
     .then(resp=>{
       this.quizzs=resp;
+      if(this.quizzs.length==0){
+        this.quizzs=null;
+      }
       this.isLoaded=true
     })
   }

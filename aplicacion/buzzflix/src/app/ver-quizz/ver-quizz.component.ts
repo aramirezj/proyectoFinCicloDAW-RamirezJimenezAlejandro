@@ -25,6 +25,7 @@ export class VerQuizzComponent implements OnInit {
   cargado: boolean
   solucionado: Solucion
   downloadURL: any
+  urlShare:string
   public quizzForm: FormGroup
 
   constructor(
@@ -109,16 +110,19 @@ export class VerQuizzComponent implements OnInit {
     }
     id--;
     this.solucionado = this.quizz.soluciones[id];
+    
     this.solucionado.image = this.afStorage.ref(this.solucionado.image).getDownloadURL();
     if (this.solucionado.image == null) {
       this.solucionado.image = "hehexd.png"
     }
-
     this.resultado = true;
+    this.urlShare = "https://twitter.com/share?url="+window.location.href+"&amp;text=¡Obtuve%20"+this.solucionado.titulo+"!%20&amp;hashtags=Hasquiz";
+    
+   // $(".shareme").attr("href",this.urlShare);
     setTimeout(() => {
       $(".mat-card-header-text")[0].style.width="100%";
       $(".mat-card-header-text")[0].style.margin="0";
-
+      document.getElementById("shareme").setAttribute("href",this.urlShare);
     }, 100);
    
     this.cargado = false;

@@ -214,7 +214,7 @@ router.get('/usuario/:id/wall', (req, res) => {
   console.log("Obtener todos los quizz de un perfil")
   const { id } = req.params;
   console.log(id);
-  mysqlConnection.query("SELECT q.*,COALESCE(SUM(v.cantidad),0) as estrellas FROM quizz q left JOIN votaciones v on q.id=v.quizz WHERE creador = ? AND publicado = 1", [id], (err, rows, fields) => {
+  mysqlConnection.query("SELECT q.*,COALESCE(SUM(v.cantidad),0) as estrellas FROM quizz q left JOIN votaciones v on q.id=v.quizz WHERE creador = ? AND publicado = 1 GROUP BY q.id order by fechacreacion DESC", [id], (err, rows, fields) => {
     if (!err) {
       if (rows.length == 0) {
         res.json({

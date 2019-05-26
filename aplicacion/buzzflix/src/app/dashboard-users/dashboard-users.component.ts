@@ -52,8 +52,12 @@ export class DashboardUsersComponent implements OnInit {
     this.userService.getUsuarios(this.nombre)
     .then(resp=>{
       this.usuarios=resp;
+      console.log(this.usuarios)
       if(this.usuarios!=null){
         this.notifyService.notify("Búsqueda realizada","success");
+      }
+      if(this.usuarios.length==0){
+        this.usuarios=null;
       }
       this.isLoaded=true;
     })
