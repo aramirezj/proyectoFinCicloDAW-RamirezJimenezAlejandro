@@ -49,8 +49,10 @@ export class QuizzService {
                     this.notifyService.notify("No tienes permiso", "error");
                 } else if (resp.json().status == "Error sql") {
                     this.notifyService.notify("Error en el servidor", "error");
-                } else {
-                    this.notifyService.notify("Error de autenticación, cierra sesión, vuelve a iniciar y recarga la página", "error");
+                } else if(resp.json().status == "Token invalido"){
+                    this.authService.logout();
+                }else{
+                    this.notifyService.notify("Error desconocido", "error");
                 }
 
                 return resp.json();
