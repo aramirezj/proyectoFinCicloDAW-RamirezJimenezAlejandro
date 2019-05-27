@@ -19,6 +19,7 @@ import * as $ from 'jquery';
 })
 export class CreateQuizzComponent implements OnInit {
   //PUNTO DE INFLEXION
+  checked = false;
   private quizz: Quizz;
   private estado: boolean = true;
   private max: number
@@ -108,6 +109,9 @@ export class CreateQuizzComponent implements OnInit {
       ]],
       banner: ['', [
         Validators.required,
+      ]],
+      privado: ['',[
+
       ]]
 
     });

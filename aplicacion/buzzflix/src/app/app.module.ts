@@ -41,6 +41,7 @@ import {MatCardModule} from '@angular/material/card';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatTreeModule} from '@angular/material/tree';
 import {MatExpansionModule} from '@angular/material/expansion';
+import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatGridListModule} from '@angular/material/grid-list'
 import { MatToolbarModule, MatSidenavModule, MatListModule, MatIconModule } from "@angular/material";
 
@@ -98,6 +99,7 @@ import { DashboardQuizComponent } from './dashboard-quiz/dashboard-quiz.componen
     MatSidenavModule,
     MatGridListModule,
     MatListModule, 
+    MatCheckboxModule,
     MatIconModule,
     MatExpansionModule, 
     
