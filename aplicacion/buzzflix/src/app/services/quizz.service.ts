@@ -49,9 +49,9 @@ export class QuizzService {
                     this.notifyService.notify("No tienes permiso", "error");
                 } else if (resp.json().status == "Error sql") {
                     this.notifyService.notify("Error en el servidor", "error");
-                } else if(resp.json().status == "Token invalido"){
+                } else if (resp.json().status == "Token invalido") {
                     this.authService.logout();
-                }else{
+                } else {
                     this.notifyService.notify("Error desconocido", "error");
                 }
 
@@ -81,7 +81,7 @@ export class QuizzService {
             })
     }
 
-    createQuizz(quizz: Quizz, files: File[]): Promise<any> {
+    createQuizz(quizz: Quizz, files: File[], privado: string): Promise<any> {
         this.bar.start();
         let id = this.authService.getAuthUserId();
         let fecha = new Date();
@@ -89,7 +89,7 @@ export class QuizzService {
         quizz.fechacreacion = fecha;
         quizz.creador = id;
         let prep = JSON.stringify(quizz);
-        let body = { creador: this.authService.getAuthUserId(), titulo: quizz.titulo, contenido: prep, fecha: fecha };
+        let body = { creador: this.authService.getAuthUserId(), titulo: quizz.titulo, contenido: prep, fecha: fecha, privado: privado };
         console.log(body);
         let options = new RequestOptions({ headers: this.headers });
         return this.http.post(url, body, options)
@@ -108,7 +108,7 @@ export class QuizzService {
         }
     }
 
-    
+
     obtenerQuizzSeguidos(): Promise<Array<Quizz>> {
         this.headers = new Headers({ 'Authorization': `Bearer ${this.getToken()}` });
         let id = this.authService.getAuthUserId();
@@ -148,7 +148,8 @@ export class QuizzService {
 
     }
 
-    getQuizz(id: number): Promise<Quizz> {
+    getQuizz(id: string): Promise<Quizz> {
+        console.log(id)
         return this.http.get(`${CONFIG.apiUrl}quizz/${id}`)
             .toPromise()
             .then(resp => {
@@ -163,7 +164,7 @@ export class QuizzService {
                 console.log("Error ", e)
             })
     }
-    getQuizzes(nombre:string): Promise<Array<Quizz>> {
+    getQuizzes(nombre: string): Promise<Array<Quizz>> {
         return this.http.get(`${CONFIG.apiUrl}quizzes/${nombre}`)
             .toPromise()
             .then(resp => {
@@ -179,7 +180,7 @@ export class QuizzService {
 
     }
 
-    
+
 
     borraQuizz(quizz: Quizz) {
         this.bar.start();
@@ -208,13 +209,13 @@ export class QuizzService {
             })
     }
 
-    deleteImages(quizz:Quizz){
-        let files:string[] = [];
+    deleteImages(quizz: Quizz) {
+        let files: string[] = [];
         files.push(quizz.image);
-        for(let i=0;i<quizz.soluciones.length;i++){
+        for (let i = 0; i < quizz.soluciones.length; i++) {
             files.push(quizz.soluciones[i].image);
         }
-        for(let j=0;j<files.length;j++){
+        for (let j = 0; j < files.length; j++) {
             this.afStorage.ref(files[j]).delete();
         }
     }
@@ -222,7 +223,7 @@ export class QuizzService {
     listaModeracion(): Promise<Array<Quizz>> {
         let id = this.authService.getAuthUserId();
         let url = `${CONFIG.apiUrl}quizz/moderacion`;
-        let body = { id:id };
+        let body = { id: id };
         let options = new RequestOptions({ headers: this.headers });
         return this.http.post(url, body, options)
             .toPromise()
@@ -238,10 +239,9 @@ export class QuizzService {
             })
     }
 
-    moderaQuizz(id:number,accion:boolean){
+    moderaQuizz(id: number, accion: boolean) {
         let url = `${CONFIG.apiUrl}modera`;
-        let body = { quizz: id,usuario:this.authService.getAuthUserId(),decision:accion };
-        console.log(body)
+        let body = { quizz: id, usuario: this.authService.getAuthUserId(), decision: accion };
         let options = new RequestOptions({ headers: this.headers });
         return this.http.post(url, body, options)
             .toPromise()
@@ -257,6 +257,35 @@ export class QuizzService {
                     return null;
                 }
                 return resp.json();
+            })
+    }
+    cambiaTipo(quiz: Quizz, privado: boolean) {
+        this.bar.start();
+        let url = `${CONFIG.apiUrl}cambiaTipo`;
+        var text
+        if (privado) {
+            text = Math.random().toString(36).substring(2);
+        } else {
+            text = null;
+        }
+        let body = { quizz: quiz.id, privado: text };
+        let options = new RequestOptions({ headers: this.headers });
+        return this.http.post(url, body, options)
+            .toPromise()
+            .then(resp => {
+                this.bar.done();
+                if (resp.json().status == '200') { 
+                    location.reload();
+                } else if (resp.json().status == "Error sql") {
+                    this.notifyService.notify("Error en el servidor", "error");
+                    return null;
+                } else {
+                    this.authService.logout();
+                    return null;
+                }
+            })
+            .catch(function (e) {
+                console.log("Error ", e)
             })
     }
 

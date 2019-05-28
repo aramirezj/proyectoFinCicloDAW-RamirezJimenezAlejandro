@@ -209,12 +209,21 @@ router.get('/usuarios/:nombre', (req, res) => {
     })
   }
 });
-//Obtener todos los quizz de alguien (UNPROTECTED)
+//Obtener todos los quizz de alguien (SEMI-PROTECTED)
 router.get('/usuario/:id/wall', (req, res) => {
   console.log("Obtener todos los quizz de un perfil")
+
+  let permiso = verificaToken(req.headers);
+
   const { id } = req.params;
   console.log(id);
-  mysqlConnection.query("SELECT q.*,COALESCE(SUM(v.cantidad),0) as estrellas FROM quizz q left JOIN votaciones v on q.id=v.quizz WHERE creador = ? AND publicado = 1 GROUP BY q.id order by fechacreacion DESC", [id], (err, rows, fields) => {
+  let query = ""
+  if(permiso==id){
+    query = "SELECT q.*,COALESCE(SUM(v.cantidad),0) as estrellas FROM quizz q left JOIN votaciones v on q.id=v.quizz WHERE creador = ? GROUP BY q.id order by fechacreacion DESC"
+  }else{
+    query="SELECT q.*,COALESCE(SUM(v.cantidad),0) as estrellas FROM quizz q left JOIN votaciones v on q.id=v.quizz WHERE creador = ? AND publicado = 1 GROUP BY q.id order by fechacreacion DESC"
+  }
+  mysqlConnection.query(query, [id], (err, rows, fields) => {
     if (!err) {
       if (rows.length == 0) {
         res.json({
@@ -237,7 +246,7 @@ router.get('/usuario/:id/wall', (req, res) => {
 router.get('/quizz/:id/seguidos', (req, res) => {
   console.log("Obtener quizz de los seguidos")
   const { id } = req.params;
-  let query = "SELECT q.*,COALESCE(SUM(v.cantidad),0) as estrellas FROM quizz q left JOIN votaciones v on q.id=v.quizz WHERE creador in ( SELECT destino from follows where origen = ? ) AND publicado = 1  GROUP BY q.id order by fechacreacion DESC"
+  let query = "SELECT q.*,COALESCE(SUM(v.cantidad),0) as estrellas FROM quizz q left JOIN votaciones v on q.id=v.quizz WHERE creador in ( SELECT destino from follows where origen = ? ) AND publicado = 1 AND privado IS NULL GROUP BY q.id order by fechacreacion DESC"
   mysqlConnection.query(query, [id], (err, rows, fields) => {
     if (!err) {
       if (rows.length == 0) {
@@ -341,7 +350,14 @@ router.post('/modera', (req, res) => {
 router.get('/quizz/:id', (req, res) => {
   console.log("Obtener quizz del id")
   const { id } = req.params;
-  let query = "SELECT * FROM quizz WHERE id = ? and publicado = 1"
+  let query ="";
+  console.log(id);
+  if(!isNaN(id)){
+    query = "SELECT * FROM quizz WHERE id = ? and publicado = 1";
+  }else{
+    query = "SELECT * FROM quizz where privado = ?";
+  }
+  
   mysqlConnection.query(query, [id], (err, rows, fields) => {
     if (!err) {
       if (rows.length == 0) {
@@ -463,21 +479,11 @@ router.post('/file', upload.any('file'), (req, res, next) => {
 router.post('/creaQuizz', cors(), (req, res, next) => {
   console.log("PETICION subir un quizz")
   console.log("PARAMETROS")
-  const { creador, titulo, contenido, fecha } = req.body;
-  console.log(creador + "--" + titulo);
-  const query = "insert into quizz (creador,titulo,contenido,fechacreacion,publicado) VALUES(?,?,?,?,0)";
-  mysqlConnection.query(query, [creador, titulo, contenido, fecha], (err, rows, fields) => {
+  const { creador, titulo, contenido, fecha,privado } = req.body;
+  console.log(creador + "--" + titulo+" "+privado);
+  const query = "insert into quizz (creador,titulo,contenido,fechacreacion,publicado,privado) VALUES(?,?,?,?,0,?)";
+  mysqlConnection.query(query, [creador, titulo, contenido, fecha,privado], (err, rows, fields) => {
     if (!err) {
-      const query2 = "insert into moderacion (id,creador,positivos,negativos) VALUES(?,?,0,0)";
-      mysqlConnection.query(query2, [rows.insertId, creador], (err, rows, fields) => {
-        if (!err) {
-
-        } else {
-          console.log(err);
-        }
-      });
-
-
       res.json({ id: rows.insertId });
     } else {
       console.log(err);
@@ -638,6 +644,55 @@ router.post('/follow', cors(), (req, res, next) => {
   }
 });
 
+//Peticion para privatizar o desprivatizar un quiz (PROTECTED)
+//cambiaTipo
+router.post('/cambiaTipo', cors(), (req, res, next) => {
+  console.log("PETICION para cambiar privacidad")
+
+  let permiso = verificaToken(req.headers);
+  if (permiso != false) {
+    const { quizz,privado } = req.body;
+    console.log(quizz+"--"+privado)
+    let query = "";
+    if(privado==null){
+      query="UPDATE quizz set privado = null where id = ?"
+      mysqlConnection.query(query, [quizz], (err, rows, fields) => {
+        if (!err) {
+          res.send({
+            status: '200',
+            cont:rows
+          })
+        }
+        else {
+          console.log(err)
+          res.send({
+            status: 'Error sql'
+          })
+        }
+      });
+    }else{
+      query="UPDATE quizz set privado = ? where id = ?";
+      mysqlConnection.query(query, [privado,quizz], (err, rows, fields) => {
+        if (!err) {
+          res.send({
+            status: '200'
+          })
+        }
+        else {
+          console.log(err)
+          res.send({
+            status: 'Error sql'
+          })
+        }
+      });
+    }
+      
+  } else {
+    res.send({
+      status: 'Token invalido'
+    })
+  }
+});
 //Peticion post para borrar un seguimiento (PROTECTED)
 router.post('/unfollow', cors(), (req, res, next) => {
   console.log("PETICION para borrar un seguimiento")

@@ -43,7 +43,8 @@ export class UserService {
 
 
     getUserWall(id: number): Promise<Array<Quizz>> | any {
-        return this.http.get(`${CONFIG.apiUrl}usuario/${id}/wall`)
+        let options = new RequestOptions({ headers: this.headers });
+        return this.http.get(`${CONFIG.apiUrl}usuario/${id}/wall`, options)
             .toPromise()
             .then((response) => {
                return response.json()

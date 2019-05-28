@@ -44,7 +44,7 @@ import {MatExpansionModule} from '@angular/material/expansion';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatGridListModule} from '@angular/material/grid-list'
 import { MatToolbarModule, MatSidenavModule, MatListModule, MatIconModule } from "@angular/material";
-
+import {MatMenuModule} from '@angular/material/menu';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireDatabaseModule } from '@angular/fire/database';
@@ -92,11 +92,13 @@ import { DashboardQuizComponent } from './dashboard-quiz/dashboard-quiz.componen
     MatSelectModule,
     MatInputModule,
     MatButtonModule,
+    MatMenuModule,
     MatSnackBarModule ,
     MatCardModule ,
     MatDialogModule,
     MatToolbarModule,
     MatSidenavModule,
+    
     MatGridListModule,
     MatListModule, 
     MatCheckboxModule,

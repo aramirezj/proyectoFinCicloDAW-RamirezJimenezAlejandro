@@ -19,6 +19,7 @@ import 'hammerjs';
   styleUrls: ['./ver-quizz.component.scss']
 })
 export class VerQuizzComponent implements OnInit {
+  rawid:string
   id: number
   quizz: Quizz
   resultado: boolean
@@ -43,7 +44,7 @@ export class VerQuizzComponent implements OnInit {
 
   ngOnInit() {
     this.router.params.subscribe((params) => {
-      this.id = +params['id'];
+      this.rawid = params['id'];
       this.getQuizz();
       this.bar.start();
       setTimeout(() => {
@@ -133,10 +134,11 @@ export class VerQuizzComponent implements OnInit {
 
   getQuizz() {
     let pre: any;
-    this.quizzService.getQuizz(this.id)
+    this.quizzService.getQuizz(this.rawid)
       .then(resp => {
         this.quizz = resp;
         console.log(this.quizz)
+        this.id=this.quizz.id;
 
       })
   }

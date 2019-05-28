@@ -20,6 +20,8 @@ import * as $ from 'jquery';
 export class CreateQuizzComponent implements OnInit {
   //PUNTO DE INFLEXION
   checked = false;
+  labelPosition = 'before';
+  indeterminate = false;
   private quizz: Quizz;
   private estado: boolean = true;
   private max: number
@@ -31,7 +33,6 @@ export class CreateQuizzComponent implements OnInit {
   public preguntas: Array<Object>
   public respuestas: Array<Object>
   public quizzForm: FormGroup
-  public testForm: FormGroup //test
   public firstStep: boolean = false
   public secondStep: boolean = false
   public thirdStep: boolean = false;
@@ -86,11 +87,6 @@ export class CreateQuizzComponent implements OnInit {
 
   createForm() {
 
-    this.testForm = this.fb.group({
-      image: ['', []],
-      image2: ['', []]
-    })
-
     this.quizzForm = this.fb.group({
       titulo: ['', [
         Validators.required,
@@ -125,10 +121,11 @@ export class CreateQuizzComponent implements OnInit {
   //Generación de las soluciones al pulsar el boton
   generaSoluciones() {
     this.aux = this.quizzForm.get('cs').value;
+    console.log(this.quizzForm.value.privado);
     if (this.aux > 1 && this.aux < 6) {
       this.reseteaCondRespuestas();
       this.secondStep=false;
-      this.ref.detach();
+      //this.ref.detach();
       this.bar.start();
       let grupo: any
 
@@ -151,7 +148,7 @@ export class CreateQuizzComponent implements OnInit {
       this.firstStep = true;
       setTimeout(() => {
         this.max = this.quizzForm.get('cs').value;
-        this.ref.detectChanges();
+        //this.ref.detectChanges();
         this.bar.done();
 
       }, 500);
@@ -362,6 +359,7 @@ export class CreateQuizzComponent implements OnInit {
     var text = Math.random().toString(36).substring(2);
     return text;
   }
+ 
 
   //Preparo las soluciones para el modelo Quizz
   preparaSoluciones(): Array<Solucion> {
@@ -428,9 +426,14 @@ export class CreateQuizzComponent implements OnInit {
   //Envio de formulario
   onSubmit() {
     let titulo = this.quizzForm.value.titulo;
+    let privado:string=null;
+    if(this.quizzForm.value.privado){
+      privado = this.makeId();
+    }
     this.quizz = new Quizz(null, this.authService.getAuthUserId(), titulo,this.files[0].name, this.preparaSoluciones(), this.preparaPreguntas(), 0, null);
     console.log(this.quizz);
-   this.quizzService.createQuizz(this.quizz,this.files)
+    
+   this.quizzService.createQuizz(this.quizz,this.files,privado)
       .then(resp => {
         this.router.navigate(['/usuario/perfil', this.authService.getAuthUserId()])
       })

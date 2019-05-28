@@ -67,8 +67,10 @@
                 placeholder="Cantidad de preguntas a generar">
             </div>
             <div class="form-group">
-              <label>Configuración</label>
-              
+              <label>Configuración</label><br>
+              <mat-checkbox formControlName="privado" style="font-weight: normal!important;font-size:0.9em!important;" (ngModel)="indeterminate" [labelPosition]="labelPosition">
+       Quiz privado
+      </mat-checkbox>
             </div>
             <div class="form-group text-center">
               <button *ngIf="firstStep" type="button" class="btn btn-info" (click)="generaSoluciones()">Generar

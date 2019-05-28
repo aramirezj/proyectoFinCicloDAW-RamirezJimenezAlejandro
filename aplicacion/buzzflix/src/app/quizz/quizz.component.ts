@@ -17,12 +17,14 @@ import * as $ from 'jquery';
 })
 export class QuizzComponent implements OnInit {
   id: number
+  idaux:number
   clase: string = "fa fa-star"
   estrellas: number
   @Input() quizz
   usuario: Usuario
   isCreador: boolean
   downloadURL:any
+  privado:boolean
   constructor(
     private userService: UserService,
     private quizzService: QuizzService,
@@ -32,12 +34,13 @@ export class QuizzComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    this.id=this.quizz.id;
+    this.privado=false;
     this.userService.getUserById(this.quizz.creador)
       .then((resp) => {
         this.usuario = resp;
         this.isCreador = this.usuario.id == this.authService.getAuthUserId();
         this.quizzService.getMedia(this.quizz.id)
-
           .then((resp) => {
             this.estrellas = this.quizz.estrellas / resp;
           })
@@ -48,7 +51,11 @@ export class QuizzComponent implements OnInit {
     }else{
       this.quizz.image = this.afStorage.ref(this.quizz.image).getDownloadURL();
     }
-    
+    if(this.quizz.privado!=null){
+      this.quizz.titulo = this.quizz.titulo+" (Quiz privado)";
+      this.quizz.id=this.quizz.privado;
+      this.privado=true;
+    }
   }
 
   generaEstrella(n: number) {
@@ -82,6 +89,15 @@ export class QuizzComponent implements OnInit {
     if(accion){
       this.quizzService.borraQuizz(this.quizz);
     }
+  }
+  cambiar(){
+    let privado:boolean=false;
+    if(this.quizz.privado==null){
+      privado=true;
+    }
+    this.quizz.id=this.id;
+    console.log(this.quizz.id)
+      this.quizzService.cambiaTipo(this.quizz,privado);
   }
 
 }
