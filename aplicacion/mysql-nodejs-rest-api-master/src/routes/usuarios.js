@@ -221,7 +221,7 @@ router.get('/usuario/:id/wall', (req, res) => {
   if(permiso==id){
     query = "SELECT q.*,COALESCE(SUM(v.cantidad),0) as estrellas FROM quizz q left JOIN votaciones v on q.id=v.quizz WHERE creador = ? GROUP BY q.id order by fechacreacion DESC"
   }else{
-    query="SELECT q.*,COALESCE(SUM(v.cantidad),0) as estrellas FROM quizz q left JOIN votaciones v on q.id=v.quizz WHERE creador = ? AND publicado = 1 GROUP BY q.id order by fechacreacion DESC"
+    query="SELECT q.*,COALESCE(SUM(v.cantidad),0) as estrellas FROM quizz q left JOIN votaciones v on q.id=v.quizz WHERE creador = ? AND publicado = 1 AND privado is null GROUP BY q.id order by fechacreacion DESC"
   }
   mysqlConnection.query(query, [id], (err, rows, fields) => {
     if (!err) {
@@ -270,7 +270,7 @@ router.get('/quizz/:id/seguidos', (req, res) => {
 router.get('/quizz/todos', (req, res) => {
   console.log("Obtener quizz de todos")
   let query = "SELECT q.*,COALESCE(SUM(v.cantidad),0) as estrellas FROM quizz q LEFT JOIN votaciones v on q.id=v.quizz"
-    + " where publicado = 1 GROUP BY q.id ORDER BY SUM(v.cantidad) DESC"
+    + " where publicado = 1 and privado is null GROUP BY q.id ORDER BY SUM(v.cantidad) DESC"
   mysqlConnection.query(query, null, (err, rows, fields) => {
     if (!err) {
       if (rows.length == 0) {
@@ -312,7 +312,7 @@ router.get('/quizzes/:nombre', (req, res) => {
 router.post('/quizz/moderacion', (req, res) => {
   console.log("obtener quizz a moderar")
   const { id } = req.body;
-  let query = "SELECT q.*,COALESCE(SUM(v.cantidad),0) as estrellas FROM quizz q left join votaciones v on q.id=v.quizz where publicado = 0 AND creador != ? AND id not in " +
+  let query = "SELECT q.*,COALESCE(SUM(v.cantidad),0) as estrellas FROM quizz q left join votaciones v on q.id=v.quizz where publicado = 0 AND privado is null AND creador != ? AND id not in " +
     "(select quizz from moderacion where usuario = ? ) group by q.id"
   mysqlConnection.query(query, [id, id], (err, rows, fields) => {
     if (!err) {
@@ -648,7 +648,7 @@ router.post('/follow', cors(), (req, res, next) => {
 //cambiaTipo
 router.post('/cambiaTipo', cors(), (req, res, next) => {
   console.log("PETICION para cambiar privacidad")
-
+  console.log(req.headers);
   let permiso = verificaToken(req.headers);
   if (permiso != false) {
     const { quizz,privado } = req.body;

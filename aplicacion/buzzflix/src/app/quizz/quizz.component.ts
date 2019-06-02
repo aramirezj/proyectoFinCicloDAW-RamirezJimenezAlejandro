@@ -10,6 +10,7 @@ import { DialogboxComponent } from '../dialogbox/dialogbox.component';
 import { AuthService } from '../services/auth.service';
 import { AngularFireStorage } from 'angularfire2/storage';
 import * as $ from 'jquery';
+import { NotifyService } from '../services/notify.service';
 @Component({
   selector: 'app-quizz',
   templateUrl: './quizz.component.html',
@@ -17,25 +18,26 @@ import * as $ from 'jquery';
 })
 export class QuizzComponent implements OnInit {
   id: number
-  idaux:number
+  idaux: number
   clase: string = "fa fa-star"
   estrellas: number
   @Input() quizz
   usuario: Usuario
   isCreador: boolean
-  downloadURL:any
-  privado:boolean
+  downloadURL: any
+  privado: boolean
   constructor(
     private userService: UserService,
     private quizzService: QuizzService,
     private authService: AuthService,
     private afStorage: AngularFireStorage,
+    private notifyService: NotifyService,
     public dialog: MatDialog
   ) { }
 
   ngOnInit() {
-    this.id=this.quizz.id;
-    this.privado=false;
+    this.id = this.quizz.id;
+    this.privado = false;
     this.userService.getUserById(this.quizz.creador)
       .then((resp) => {
         this.usuario = resp;
@@ -48,13 +50,13 @@ export class QuizzComponent implements OnInit {
     this.quizz.image = JSON.parse(this.quizz.contenido).image;
     if (this.quizz.image == null) {
       this.quizz.image = "hehexd.jpg";
-    }else{
+    } else {
       this.quizz.image = this.afStorage.ref(this.quizz.image).getDownloadURL();
     }
-    if(this.quizz.privado!=null){
-      this.quizz.titulo = this.quizz.titulo+" (Quiz privado)";
-      this.quizz.id=this.quizz.privado;
-      this.privado=true;
+    if (this.quizz.privado != null) {
+      this.quizz.titulo = this.quizz.titulo + " (Quiz privado)";
+      this.quizz.id = this.quizz.privado;
+      this.privado = true;
     }
   }
 
@@ -81,23 +83,35 @@ export class QuizzComponent implements OnInit {
     const dialogRef = this.dialog.open(DialogboxComponent, dialogConfig);
     dialogRef.afterClosed().subscribe(
       data => this.borrar(data)
-      
+
     );
   }
 
-  borrar(accion){
-    if(accion){
+  borrar(accion) {
+    if (accion) {
       this.quizzService.borraQuizz(this.quizz);
     }
   }
-  cambiar(){
-    let privado:boolean=false;
-    if(this.quizz.privado==null){
-      privado=true;
+  cambiar() {
+    let privado: boolean = false;
+    if (this.quizz.privado == null) {
+      privado = true;
     }
-    this.quizz.id=this.id;
+    this.quizz.id = this.id;
     console.log(this.quizz.id)
-      this.quizzService.cambiaTipo(this.quizz,privado);
+    this.quizzService.cambiaTipo(this.quizz, privado);
+  }
+  obtenerURL() {
+    var url = "localhost:4200/ver/quizz/" + this.quizz.id;
+    var textArea = document.createElement("textarea");
+    textArea.value = url;
+    document.body.appendChild(textArea);
+    textArea.focus();
+    textArea.select();
+    document.execCommand("copy");
+    $(textArea).remove();
+    this.notifyService.notify("¡Enlace copiado!","success");
+    
   }
 
 }
