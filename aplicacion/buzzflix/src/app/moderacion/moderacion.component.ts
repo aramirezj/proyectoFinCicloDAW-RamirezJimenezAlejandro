@@ -10,6 +10,7 @@ import { Solucion } from '../modelo/Solucion';
 import { NotifyService } from '../services/notify.service';
 import { AngularFireStorage } from 'angularfire2/storage';
 import * as $ from 'jquery';
+import { UserService } from '../services/user.service';
 
 export interface Section {
   name: string;
@@ -44,10 +45,12 @@ export class ModeracionComponent implements OnInit {
   isLoaded: boolean = false;
   imagenes: any = [];
   indiceImagenes: number = 0;
+  isAdmin: boolean
   constructor(
     private quizzService: QuizzService,
     private afStorage: AngularFireStorage,
-    private notifyService: NotifyService
+    private notifyService: NotifyService,
+    private userService: UserService
   ) { }
 
   ngOnInit() {
@@ -86,17 +89,20 @@ export class ModeracionComponent implements OnInit {
           }
         }, 200);
       })
+    this.userService.isAdmin()
+    .then((resp) => {
+      this.isAdmin=resp;
+    })
   }
 
   juzga(decision: boolean) {
     this.quizzService.moderaQuizz(this.quizzs[this.indice].id, decision);
     this.indice++;
     $("html, body").animate({ scrollTop: 0 }, "fast");
-    
     if (this.indice == this.quizzs.length) {
       this.notifyService.notify("¡Gracias por contribuir en la web! Ya no quedan más para moderar, ¿Por qué no creas el tuyo propio?", "success")
       this.quizzs = null;
-    }else{
+    } else {
       this.notifyService.notify("¡Gracias por contribuir en la web! ¡A por el siguiente!", "success")
     }
   }

@@ -12,6 +12,7 @@ import { MatSelectModule } from '@angular/material/select';
 import { AngularFireStorage } from 'angularfire2/storage';
 import * as $ from 'jquery';
 import 'hammerjs';
+import { UserService } from '../services/user.service';
 
 @Component({
   selector: 'app-ver-quizz',
@@ -35,7 +36,8 @@ export class VerQuizzComponent implements OnInit {
     private fb: FormBuilder,
     private bar: NgProgressService,
     private notifyService: NotifyService,
-    private afStorage: AngularFireStorage
+    private afStorage: AngularFireStorage,
+    private userService: UserService
   ) {
     this.resultado = false;
     this.cargado = false;

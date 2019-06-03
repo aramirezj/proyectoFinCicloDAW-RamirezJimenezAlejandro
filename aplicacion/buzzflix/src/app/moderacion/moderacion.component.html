@@ -47,8 +47,10 @@
       <div class="clear"></div>
     </div>
     <div class="acciones">
-        <button style="float:left;" mat-raised-button color="warn" (click)="juzga(false)">Rechazar</button>
-        <button style="float:right;" mat-raised-button color="primary" (click)="juzga(true)">Aprobar</button>
+        <button *ngIf="!this.isAdmin" style="float:left;" mat-raised-button color="warn" (click)="juzga(false)">Rechazar</button>
+        <button *ngIf="!this.isAdmin" style="float:right;" mat-raised-button color="primary" (click)="juzga(true)">Aprobar</button>
+        <button *ngIf="this.isAdmin" style="float:left;" mat-raised-button color="warn" (click)="juzga(false)">Rechazar</button>
+        <button *ngIf="this.isAdmin" style="float:right;" mat-raised-button color="primary" (click)="juzga(true)">Publicar</button>
       <!--<button type="button" class="btn btn-danger" (click)="juzga(false)">Rechazar</button>
       <button type="button" class="btn btn-success" (click)="juzga(true)">Aprobar</button>-->
     </div>

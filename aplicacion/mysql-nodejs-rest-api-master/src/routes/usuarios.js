@@ -159,6 +159,35 @@ router.put('/usuario/actualizar/:id', cors(), (req, res, next) => {
 });
 
 
+// Ver si un usuario es admin (PROTECTED)
+router.get('/usuario/admin', (req, res) => {
+  console.log("Preguntar si un usuario es administrador")
+  let permiso = verificaToken(req.headers);
+  console.log(permiso)
+  if (permiso) {
+    mysqlConnection.query('SELECT id FROM users WHERE id = ? and admin is not null', [permiso], (err, rows, fields) => {
+      if (!err) {
+        let respuesta = false;
+        console.log(rows.length);
+        if (rows.length > 0) {
+          respuesta = true;
+        }
+        res.send({
+          status: '200',
+          respuesta: respuesta
+        })
+      } else {
+        res.send({
+          status: 'Error sql'
+        })
+      }
+    });
+  } else {
+    res.send({
+      status: 'Token invalido'
+    })
+  }
+});
 
 // Obtener un usuario (PROTECTED)
 router.get('/usuario/:id', (req, res) => {
@@ -174,7 +203,9 @@ router.get('/usuario/:id', (req, res) => {
           usuario: rows[0]
         })
       } else {
-        console.log(err);
+        res.send({
+          status: 'Error sql'
+        })
       }
     });
   } else {
@@ -182,8 +213,6 @@ router.get('/usuario/:id', (req, res) => {
       status: 'Token invalido'
     })
   }
-
-
 });
 // Obtener varios usuarios según nombre (PROTECTED)
 router.get('/usuarios/:nombre', (req, res) => {
@@ -218,10 +247,10 @@ router.get('/usuario/:id/wall', (req, res) => {
   const { id } = req.params;
   console.log(id);
   let query = ""
-  if(permiso==id){
+  if (permiso == id) {
     query = "SELECT q.*,COALESCE(SUM(v.cantidad),0) as estrellas FROM quizz q left JOIN votaciones v on q.id=v.quizz WHERE creador = ? GROUP BY q.id order by fechacreacion DESC"
-  }else{
-    query="SELECT q.*,COALESCE(SUM(v.cantidad),0) as estrellas FROM quizz q left JOIN votaciones v on q.id=v.quizz WHERE creador = ? AND publicado = 1 AND privado is null GROUP BY q.id order by fechacreacion DESC"
+  } else {
+    query = "SELECT q.*,COALESCE(SUM(v.cantidad),0) as estrellas FROM quizz q left JOIN votaciones v on q.id=v.quizz WHERE creador = ? AND publicado = 1 AND privado is null GROUP BY q.id order by fechacreacion DESC"
   }
   mysqlConnection.query(query, [id], (err, rows, fields) => {
     if (!err) {
@@ -333,31 +362,143 @@ router.post('/quizz/moderacion', (req, res) => {
     }
   });
 });
-//guarda una accion de moderacion (UNPROTECTED)
+//guarda una accion de moderacion (PROTECTED)
 router.post('/modera', (req, res) => {
-  console.log("guarda una accón de moderar")
+  console.log("Guarda una acción de moderar")
   const { quizz, usuario, decision } = req.body;
-  console.log(quizz + "--" + usuario + "---" + decision)
-  const query = "insert into moderacion (quizz,usuario,decision) VALUES(?,?,?)";
-  mysqlConnection.query(query, [quizz, usuario, decision], (err, rows, fields) => {
-    if (!err) {
-    } else {
-      console.log(err);
-    }
-  });
+  let titulo = null;
+  let creador = null;
+  console.log(quizz + "--" + "--" + usuario + "---" + decision)
+  let permiso = verificaToken(req.headers);
+  if (permiso) {
+    let queryDatos = "SELECT creador,titulo from Quizz where id = ?";
+    mysqlConnection.query(queryDatos, [quizz], (err, rows, fields) => {
+      if (!err) {
+        creador = rows[0].creador;
+        titulo = rows[0].titulo;
+        console.log(creador, titulo)
+        mysqlConnection.query('SELECT id FROM users WHERE id = ? and admin is not null', [permiso], (err, rows, fields) => {
+          if (!err) {
+            if (rows.length > 0) {
+              //PUBLICO
+              //TRUE
+              if (decision) {
+                let queryadmin = "UPDATE quizz set publicado =1 where id = ?";
+                mysqlConnection.query(queryadmin, [quizz], (err, rows, fields) => {
+                  if (!err) {
+                    let queryadmin2 = "DELETE FROM moderacion WHERE quizz = ?";
+                    mysqlConnection.query(queryadmin2, [quizz], (err, rows, fields) => {
+                      if (!err) {
+                        if (!err) {
+                          let mensajito = "¡Enhorabuena, su Quiz " + titulo + " ha sido publicado en la web!";
+                          let queryNotify = "insert into notificaciones (usuario,mensaje) values(?,?)";
+                          mysqlConnection.query(queryNotify, [creador, mensajito], (err, rows, fields) => {
+                            if (!err) {
+                              res.send({
+                                status: '200'
+                              })
+                            } else {
+                              console.log(err)
+                              res.send({
+                                status: 'Error sql'
+                              })
+                            }
+                          })
+                        } else {
+                          console.log(err)
+                          res.send({
+                            status: 'Error sql'
+                          })
+                        }
+                      } else {
+                        console.log(err)
+                        res.send({
+                          status: 'Error sql'
+                        })
+                      }
+                    })
+                  } else {
+                    console.log(err);
+                    res.send({
+                      status: 'Error sql'
+                    })
+                  }
+                });
+              } else {
+                //BORRO
+                let queryadmin = "DELETE FROM moderacion WHERE quizz = ?";
+                mysqlConnection.query(queryadmin, [quizz], (err, rows, fields) => {
+                  if (!err) {
+                    let queryadmin2 = "DELETE FROM quizz where id = ?";
+                    mysqlConnection.query(queryadmin2, [quizz], (err, rows, fields) => {
+                      if (!err) {
+                        let mensajito = "Lo sentimos, su Quiz " + titulo + " no ha superado el proceso de moderación, revisa los criterios e intentalo de nuevo.";
+                        let queryNotify = "insert into notificaciones (usuario,mensaje) values(?,?)";
+                        mysqlConnection.query(queryNotify, [creador, mensajito], (err, rows, fields) => {
+                          if (!err) {
+                            res.send({
+                              status: '200'
+                            })
+                          } else {
+                            console.log(err)
+                            res.send({
+                              status: 'Error sql'
+                            })
+                          }
+                        })
+                      } else {
+                        console.log(err)
+                        res.send({
+                          status: 'Error sql'
+                        })
+                      }
+                    })
+                  } else {
+                    console.log(err);
+                    res.send({
+                      status: 'Error sql'
+                    })
+                  }
+                });
+              }
+            } else {
+              //APRUEBO
+              const query2 = "insert into moderacion (quizz,usuario,decision) VALUES(?,?,?)";
+              mysqlConnection.query(query2, [quizz, usuario, decision], (err, rows, fields) => {
+                if (!err) {
+                } else {
+                  console.log(err);
+                }
+              });
+            }
+          }
+        });
+      } else {
+        console.log(err)
+        res.send({
+          status: 'Error sql'
+        })
+      }
+    })
+  } else {
+    res.send({
+      status: 'Token invalido'
+    })
+  }
 });
+
 //Obtener un solo quizz (UNPROTECTED)
 router.get('/quizz/:id', (req, res) => {
   console.log("Obtener quizz del id")
   const { id } = req.params;
-  let query ="";
+  let query = "";
   console.log(id);
-  if(!isNaN(id)){
+  if (!isNaN(id)) {
     query = "SELECT * FROM quizz WHERE id = ? and publicado = 1";
-  }else{
+  } else {
     query = "SELECT * FROM quizz where privado = ?";
   }
-  
+
   mysqlConnection.query(query, [id], (err, rows, fields) => {
     if (!err) {
       if (rows.length == 0) {
@@ -421,8 +562,6 @@ router.post('/usuario/followers', (req, res) => {
   let resultados = [];
   const { origen, destino } = req.body;
   console.log("Obtener número de seguidores")
-  //const { id } = req.params;
-
   let query0 = "SELECT *  FROM follows WHERE origen = ? AND destino = ? OR destino = ? AND origen = ?";
   mysqlConnection.query(query0, [origen, destino, origen, destino], (err, rows, fields) => {
     if (!err) {
@@ -479,10 +618,10 @@ router.post('/file', upload.any('file'), (req, res, next) => {
 router.post('/creaQuizz', cors(), (req, res, next) => {
   console.log("PETICION subir un quizz")
   console.log("PARAMETROS")
-  const { creador, titulo, contenido, fecha,privado } = req.body;
-  console.log(creador + "--" + titulo+" "+privado);
+  const { creador, titulo, contenido, fecha, privado } = req.body;
+  console.log(creador + "--" + titulo + " " + privado);
   const query = "insert into quizz (creador,titulo,contenido,fechacreacion,publicado,privado) VALUES(?,?,?,?,0,?)";
-  mysqlConnection.query(query, [creador, titulo, contenido, fecha,privado], (err, rows, fields) => {
+  mysqlConnection.query(query, [creador, titulo, contenido, fecha, privado], (err, rows, fields) => {
     if (!err) {
       res.json({ id: rows.insertId });
     } else {
@@ -651,16 +790,16 @@ router.post('/cambiaTipo', cors(), (req, res, next) => {
   console.log(req.headers);
   let permiso = verificaToken(req.headers);
   if (permiso != false) {
-    const { quizz,privado } = req.body;
-    console.log(quizz+"--"+privado)
+    const { quizz, privado } = req.body;
+    console.log(quizz + "--" + privado)
     let query = "";
-    if(privado==null){
-      query="UPDATE quizz set privado = null where id = ?"
+    if (privado == null) {
+      query = "UPDATE quizz set privado = null where id = ?"
       mysqlConnection.query(query, [quizz], (err, rows, fields) => {
         if (!err) {
           res.send({
             status: '200',
-            cont:rows
+            cont: rows
           })
         }
         else {
@@ -670,9 +809,9 @@ router.post('/cambiaTipo', cors(), (req, res, next) => {
           })
         }
       });
-    }else{
-      query="UPDATE quizz set privado = ? where id = ?";
-      mysqlConnection.query(query, [privado,quizz], (err, rows, fields) => {
+    } else {
+      query = "UPDATE quizz set privado = ? where id = ?";
+      mysqlConnection.query(query, [privado, quizz], (err, rows, fields) => {
         if (!err) {
           res.send({
             status: '200'
@@ -686,7 +825,7 @@ router.post('/cambiaTipo', cors(), (req, res, next) => {
         }
       });
     }
-      
+
   } else {
     res.send({
       status: 'Token invalido'
@@ -739,7 +878,7 @@ router.delete('/:id', (req, res) => {
     }
   });
 });
-
+ 
 */
 
 

@@ -12,27 +12,58 @@
       </button>
       <span role="button" routerLink="dashboard">Hasquiz</span>
       <span class="menu-spacer"></span>
-      
-      <div fxShow="true" fxHide.lt-md >
-        <form class="form-inline hidden" id="form1" *ngIf="isLoggedIn() && this.authService.getAuthUser()" [formGroup]="miniForm">
+
+      <div fxShow="true" fxHide.lt-md>
+        <form class="form-inline hidden" id="form1" *ngIf="isLoggedIn() && this.authService.getAuthUser()"
+          [formGroup]="miniForm">
           <input class="form-control mr-sm-2" formControlName="nombre" type="search" placeholder="Buscar usuarios"
             aria-label="Search">
           <button type="submit" class="btn btn-default" (click)="onSubmit()">Buscar</button>
         </form>
-        <form class="form-inline hidden" id="form2" *ngIf="isLoggedIn() && this.authService.getAuthUser()" [formGroup]="miniForm2">
+        <form class="form-inline hidden" id="form2" *ngIf="isLoggedIn() && this.authService.getAuthUser()"
+          [formGroup]="miniForm2">
           <input class="form-control mr-sm-2" formControlName="nombre2" type="search" placeholder="Buscar quizzes"
             aria-label="Search">
           <button type="submit" class="btn btn-default" (click)="onSubmit2()">Buscar</button>
         </form>
-        <i class="fas fa-search" style="color:orangered;"  *ngIf="isLoggedIn()" (click)="muestraForm2()"></i> 
-        <i class="fas fa-search"  *ngIf="isLoggedIn()" (click)="muestraForm()"></i> 
-        <a role="button" mat-button *ngIf="isLoggedIn() && this.authService.getAuthUser()" [routerLink]="['ver/todos']">Todos los tests</a>
-        <a role="button" mat-button *ngIf="isLoggedIn() && this.authService.getAuthUser()" [routerLink]="['usuario/perfil',this.authService.getAuthUserId()]">Mi perfil</a>
-        <a role="button" mat-button *ngIf="isLoggedIn() && this.authService.getAuthUser()" [routerLink]="['crear/quizz']">Crear Quizz</a>
-        <a role="button" mat-button *ngIf="isLoggedIn() && this.authService.getAuthUser()" [routerLink]="['moderacion']">Moderación</a>
-        <a role="button" mat-button *ngIf="isLoggedIn()" (click)="logout()">Cerrar sesión</a>
-        <a role="button" mat-button *ngIf="!isLoggedIn()"routerLink="/auth/register">Registrarse</a>
-        <a role="button" mat-button *ngIf="!isLoggedIn()" routerLink="/auth/login">Iniciar Sesión</a>
+        <i class="fas fa-search" style="color:orangered;" *ngIf="isLoggedIn()" (click)="muestraForm2()"></i>
+        <i class="fas fa-search" *ngIf="isLoggedIn()" (click)="muestraForm()"></i>
+        <a role="button" mat-button *ngIf="isLoggedIn() && this.authService.getAuthUser()"
+          [routerLink]="['ver/todos']">Todos los tests</a>
+        <!-- <a role="button" mat-button *ngIf="isLoggedIn() && this.authService.getAuthUser()"
+          [routerLink]="['usuario/perfil',this.authService.getAuthUserId()]">Mi perfil</a>-->
+        <a role="button" mat-button *ngIf="isLoggedIn() && this.authService.getAuthUser()"
+          [routerLink]="['crear/quizz']">Crear Quizz</a>
+        <a role="button" mat-button *ngIf="isLoggedIn() && this.authService.getAuthUser()"
+          [routerLink]="['moderacion']">Moderación</a>
+        <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+          <mat-icon>more_vert</mat-icon>
+        </button>
+        <mat-menu #menu="matMenu">
+
+
+
+          <button mat-menu-item *ngIf="isLoggedIn()" [routerLink]="['usuario/perfil',this.authService.getAuthUserId()]">
+            <mat-icon *ngIf="isLoggedIn()">account_circle</mat-icon>
+            <span role="button" mat-button>Mi perfil</span>
+          </button>
+          <button mat-menu-item *ngIf="isLoggedIn()">
+            <mat-icon>mail_outline</mat-icon>
+            <span>Notificaciones</span>
+          </button>
+          <button mat-menu-item *ngIf="!isLoggedIn()" routerLink="/auth/register">
+            <mat-icon>fiber_new</mat-icon>
+            <span role="button" mat-button >Registrarse</span>
+          </button>
+          <button mat-menu-item *ngIf="!isLoggedIn()" routerLink="/auth/login">
+            <mat-icon>accessibility_new</mat-icon>
+            <span role="button" mat-button >Iniciar sesión</span>
+          </button>
+          <button mat-menu-item *ngIf="isLoggedIn()" (click)="logout()">
+            <mat-icon >directions_run</mat-icon>
+            <span role="button" mat-button  >Cerrar sesión</span>
+          </button>
+        </mat-menu>
 
       </div>
     </mat-toolbar-row>

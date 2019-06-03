@@ -239,7 +239,7 @@ export class QuizzService {
             })
     }
 
-    moderaQuizz(id: number, accion: boolean) {
+    moderaQuizz(id: number, accion: boolean) { //PROTEGIDO
         let url = `${CONFIG.apiUrl}modera`;
         let body = { quizz: id, usuario: this.authService.getAuthUserId(), decision: accion };
         let options = new RequestOptions({ headers: this.headers });

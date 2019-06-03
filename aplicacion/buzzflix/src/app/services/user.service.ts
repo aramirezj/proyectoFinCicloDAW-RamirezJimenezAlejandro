@@ -40,6 +40,23 @@ export class UserService {
     getToken(): string {
         return localStorage.getItem('token');
     }
+    isAdmin(): Promise<boolean>{
+        let options = new RequestOptions({ headers: this.headers });
+        return this.http.get(`${CONFIG.apiUrl}usuario/admin`, options)
+            .toPromise()
+            .then((response) => {
+                if (response.json().status == "200") {
+                    console.log(response.json().respuesta)
+                    return response.json().respuesta;
+                } else if (response.json().status == "Token invalido") {
+                    this.authService.logout();
+                    return response.json().respuesta;
+                } else if(response.json().status == "Error sql"){
+                    this.notifyService.notify("Error en el servidor", "error");
+                    return response.json().respuesta;
+                }
+            });
+    }
 
 
     getUserWall(id: number): Promise<Array<Quizz>> | any {
