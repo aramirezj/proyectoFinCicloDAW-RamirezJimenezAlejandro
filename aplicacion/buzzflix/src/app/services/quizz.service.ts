@@ -32,7 +32,7 @@ export class QuizzService {
         return localStorage.getItem('token');
     }
 
-    votaQuizz(quizz: number, n: number) {
+    votaQuizz(quizz: number|string, n: number) {
         this.bar.start();
         let id = this.authService.getAuthUserId();
         let fecha = new Date();
@@ -154,8 +154,11 @@ export class QuizzService {
             .toPromise()
             .then(resp => {
                 if (resp.json().status == 'OK') {
+                    let rawquiz = resp.json().cont[0];
+                    let quiz = JSON.parse(rawquiz.contenido);
+                    quiz.id = rawquiz.id;
                     let aux = resp.json();
-                    return JSON.parse(aux.cont[0].contenido);
+                    return quiz;
                 } else {
                     return null;
                 }

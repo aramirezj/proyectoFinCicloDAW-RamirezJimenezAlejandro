@@ -6,8 +6,17 @@
   width: 75%;
   color: white!important;
 }
+h1{
+  background: #5a458d ;
+  padding:1%;
+}
+h1,h4,mat-panel-title,mat-icon{
+  
+  color:white
+}
 mat-expansion-panel{
-  background-color: #cbddd6!important;
+  background: #5a458d ;
+  
 }
 .mensaje{
   font-weight: bold;
@@ -78,13 +87,13 @@ mat-expansion-panel{
 }
 
 .color1 {
-  background-color: #3b2572;
+  background: #5a458d ;
 }
 .color2 {
   background-color: #529f82;
 }
 .color3 {
-  background-color: #3b2572;
+  background: #5a458d ;
 }
 .color4 {
   background-color: #529f82;
@@ -103,7 +112,7 @@ button{
 }
 
 .example-card {
-  background-color: #3b2572;
+  background: #5a458d ;
   color: white;
   font-weight: bold;
   max-width: 500px;

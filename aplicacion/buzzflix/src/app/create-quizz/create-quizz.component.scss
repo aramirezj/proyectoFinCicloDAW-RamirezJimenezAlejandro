@@ -42,10 +42,9 @@
     padding: 5%;
 }
 .box {
-    background-color: #3b2572 !important;
+    //background-color: #dde19c !important;
     border-radius: 1em;
     float: none !important;
-    padding: 2%;
     font-weight: bold;
     font-size: 1.5em;
   }
@@ -58,9 +57,11 @@
     background-color: #3b2572;
 }
 .panel{
-    border:0px!important;
+    margin-bottom: 0px!important;
+    border:0.5em solid #dde19c !important;
+    border-radius: 1em;
+    
 }
-.panel-default{}
 .top-form{
     padding:3%;
     background-color: white!important

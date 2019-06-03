@@ -29,14 +29,14 @@
         <i class="fas fa-search" style="color:orangered;" *ngIf="isLoggedIn()" (click)="muestraForm2()"></i>
         <i class="fas fa-search" *ngIf="isLoggedIn()" (click)="muestraForm()"></i>
         <a role="button" mat-button *ngIf="isLoggedIn() && this.authService.getAuthUser()"
-          [routerLink]="['ver/todos']">Todos los tests</a>
+          [routerLink]="['ver/todos']">Todos los quizzes</a>
         <!-- <a role="button" mat-button *ngIf="isLoggedIn() && this.authService.getAuthUser()"
           [routerLink]="['usuario/perfil',this.authService.getAuthUserId()]">Mi perfil</a>-->
         <a role="button" mat-button *ngIf="isLoggedIn() && this.authService.getAuthUser()"
-          [routerLink]="['crear/quizz']">Crear Quizz</a>
+          [routerLink]="['crear/quizz']">Crear Quiz</a>
         <a role="button" mat-button *ngIf="isLoggedIn() && this.authService.getAuthUser()"
           [routerLink]="['moderacion']">Moderación</a>
-        <button mat-icon-button [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+        <button mat-icon-button (click)="changeColor()" [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
           <mat-icon>more_vert</mat-icon>
         </button>
         <mat-menu #menu="matMenu">

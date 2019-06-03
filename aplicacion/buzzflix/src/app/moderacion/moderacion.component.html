@@ -21,7 +21,7 @@
   </div>
   <div class="boxEnunciado" *ngIf="this.isLoaded && this.quizzs!=null" class="text-center">
     {{this.controlImagenes(0)}}
-    <p class="box textEnunciado" style="background-color: #3b2572;width: 100%">Quiz {{this.quizzs[this.indice].titulo | json}} </p>
+  <p class="box textEnunciado" style="background: #5a458d;width: 100%">Quiz {{this.quizzs[this.indice].titulo | json}} </p>
     <p class="box textEnunciado">Soluciones</p>
       <mat-card class="example-card" *ngFor="let solucion of this.quizzs[this.indice].soluciones;let i = index">
         <mat-card-header>

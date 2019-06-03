@@ -117,8 +117,8 @@ a, a:hover {
   margin-top: 10%!important;
   margin-bottom: 2%!important;
   box-shadow: 0px 8px 60px -10px rgba(13,28,39,0.6);
-  background: none;
-  border:13px solid #3b2572;
+  background: #5a458d ;
+  border:1px solid #dde19c!important;
   border-radius: 12px;
   max-width: 700px;
   position: relative;
@@ -151,7 +151,7 @@ a, a:hover {
     overflow: hidden;
     position: relative;
     z-index: 4;
-    box-shadow: 0px 0px 0px 7px #3b2572;
+    box-shadow: 0px 0px 0px 1px #dde19c;
 
     @media screen and (max-width: 576px) {
       width: 120px;
@@ -260,7 +260,7 @@ a, a:hover {
       align-items: center;
       justify-content: center;
       color: #fff;
-      background: #405de6;
+      background: #e5e9fb;
       box-shadow: 0px 7px 30px rgba(43,98,169,0.5);
       position: relative;
       font-size: 21px;
@@ -352,11 +352,12 @@ a, a:hover {
     }
 
     &.button--blue {
-      background: linear-gradient(45deg, #1da1f2, #0e71c8);
-      box-shadow: 0px 4px 30px rgba(19, 127, 212, 0.4);
+      background: linear-gradient(45deg, #6c9c8a, #529f82);
+      box-shadow: 0px 7px 30px #365d4e;
 
       &:hover {
-        box-shadow: 0px 7px 30px rgba(19, 127, 212, 0.75);
+        box-shadow: 0px 4px 30px #529f82;
+        
       }
 
     }
@@ -421,6 +422,9 @@ a, a:hover {
 
 }
 
+*{
+  color:#dde19c!important;
+}
 
 
 

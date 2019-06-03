@@ -24,7 +24,7 @@ a:hover {
 
 
 .mat-toolbar {
-  background-color: #271553 !important;
+  background-color: #5a458d !important;
 }
 button {
   vertical-align: bottom;
@@ -45,6 +45,18 @@ background: transparent
   margin-top:5%;
 }
 mat-nav-list{
-  background-color: #271553!important;
+  background-color: #563f90!important;
 }
 
+
+mat-menu{
+  background-color: #5a458d!important;
+}
+span{
+  color:white!important;
+  font-size:1.5em;
+}
+button>mat-icon{
+  color:white!important;
+  font-size:1.8em;
+}

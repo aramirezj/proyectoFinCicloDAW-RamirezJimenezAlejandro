@@ -38,6 +38,12 @@ export class AppComponent {
     this.usuario = this.authService.getAuthUser();
   }
 
+  changeColor(){
+    
+    $(".mat-menu-content").css("background-color","#5a458d");
+    $(".mat-menu-content").css("color","white");
+  }
+
   onSubmit() {
     let nombre = this.miniForm.get('nombre').value;
     if (nombre != "") {
@@ -77,4 +83,7 @@ export class AppComponent {
     $("#form2").removeClass("hidden");
     $("i").addClass("hidden");
   }
+
+ 
+  
 }
