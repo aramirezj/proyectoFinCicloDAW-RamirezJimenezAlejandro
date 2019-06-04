@@ -51,9 +51,6 @@ export class DashboardQuizComponent implements OnInit {
       if(this.quizzes!=null){
         this.notifyService.notify("Búsqueda realizada","success");
       }
-      if(this.quizzes.length==0){
-        this.quizzes=null;
-      }
       this.isLoaded=true;
     })
   }

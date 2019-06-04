@@ -24,9 +24,6 @@ export class DashboardComponent implements OnInit {
     this.quizzService.obtenerQuizzSeguidos()
     .then(resp=>{
       this.quizzs=resp;
-      if(this.quizzs.length==0){
-        this.quizzs=null;
-      }
       this.isLoaded=true;
     })
   }

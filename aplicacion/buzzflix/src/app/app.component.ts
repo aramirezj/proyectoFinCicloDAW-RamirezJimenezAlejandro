@@ -1,19 +1,28 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { AuthService } from './services/auth.service';
 import { Usuario } from './modelo/usuario';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserService } from './services/user.service';
+import {MatMenuModule, MatMenuTrigger} from '@angular/material/menu';
 import * as $ from 'jquery';
+export interface Section {
+  name: string;
+}
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
+  @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
   public miniForm: FormGroup
   public miniForm2: FormGroup
   usuario: Usuario
+  notificaciones:Section[]
+  panelOpenState = false;
+  correctas: Section[] = [
+  ];
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
@@ -36,12 +45,14 @@ export class AppComponent {
 
   ngOnInit() {
     this.usuario = this.authService.getAuthUser();
+    this.notificaciones=[];
+    this.obtenerNotificaciones();
   }
 
-  changeColor(){
-    
-    $(".mat-menu-content").css("background-color","#5a458d");
-    $(".mat-menu-content").css("color","white");
+  changeColor() {
+
+    $(".mat-menu-content").css("background-color", "#5a458d");
+    $(".mat-menu-content").css("color", "white");
   }
 
   onSubmit() {
@@ -50,7 +61,7 @@ export class AppComponent {
       $("form").addClass("hidden");
       $("i").removeClass("hidden");
       this.router.navigate(['ver/usuarios/' + nombre]);
-    }else{
+    } else {
       $("form").addClass("hidden");
       $("i").removeClass("hidden");
     }
@@ -61,7 +72,7 @@ export class AppComponent {
       $("form").addClass("hidden");
       $("i").removeClass("hidden");
       this.router.navigate(['ver/quizzes/' + nombre]);
-    }else{
+    } else {
       $("form").addClass("hidden");
       $("i").removeClass("hidden");
     }
@@ -74,6 +85,22 @@ export class AppComponent {
   logout() {
     this.authService.logout();
   }
+  abreMenu(){
+    console.log("???")
+    this.trigger.openMenu();
+  }
+  obtenerNotificaciones(){
+    this.authService.getNotificaciones()
+    .then((respuesta =>{
+      for(let resp of respuesta){
+        let section:Section;
+        section={
+          name:resp["mensaje"]
+        }
+        this.notificaciones.push(section);
+      }
+    }))
+  }
 
   muestraForm() {
     $("#form1").removeClass("hidden");
@@ -84,6 +111,8 @@ export class AppComponent {
     $("i").addClass("hidden");
   }
 
- 
   
+
+
+
 }

@@ -36,7 +36,8 @@
           [routerLink]="['crear/quizz']">Crear Quiz</a>
         <a role="button" mat-button *ngIf="isLoggedIn() && this.authService.getAuthUser()"
           [routerLink]="['moderacion']">Moderación</a>
-        <button mat-icon-button (click)="changeColor()" [matMenuTriggerFor]="menu" aria-label="Example icon-button with a menu">
+        <button mat-icon-button (click)="changeColor()" [matMenuTriggerFor]="menu"
+          aria-label="Example icon-button with a menu">
           <mat-icon>more_vert</mat-icon>
         </button>
         <mat-menu #menu="matMenu">
@@ -47,21 +48,53 @@
             <mat-icon *ngIf="isLoggedIn()">account_circle</mat-icon>
             <span role="button" mat-button>Mi perfil</span>
           </button>
+          <mat-accordion (click)="$event.stopPropagation()">
+            <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+              <mat-expansion-panel-header>
+                <mat-panel-title>
+                  Notificaciones
+                </mat-panel-title>
+                <mat-panel-description>
+
+                </mat-panel-description>
+              </mat-expansion-panel-header>
+              <mat-list>
+                <mat-list-item *ngFor="let notificacion of notificaciones">
+                  <mat-icon mat-list-icon>announcement</mat-icon>
+                  <h4 mat-line>{{notificacion.name}}</h4>
+                </mat-list-item>
+              </mat-list>
+            </mat-expansion-panel>
+          </mat-accordion>
+          
           <button mat-menu-item *ngIf="isLoggedIn()">
             <mat-icon>mail_outline</mat-icon>
             <span>Notificaciones</span>
+
+
+
+
+
+
+
+
+
+
+
+
+
           </button>
           <button mat-menu-item *ngIf="!isLoggedIn()" routerLink="/auth/register">
             <mat-icon>fiber_new</mat-icon>
-            <span role="button" mat-button >Registrarse</span>
+            <span role="button" mat-button>Registrarse</span>
           </button>
           <button mat-menu-item *ngIf="!isLoggedIn()" routerLink="/auth/login">
             <mat-icon>accessibility_new</mat-icon>
-            <span role="button" mat-button >Iniciar sesión</span>
+            <span role="button" mat-button>Iniciar sesión</span>
           </button>
           <button mat-menu-item *ngIf="isLoggedIn()" (click)="logout()">
-            <mat-icon >directions_run</mat-icon>
-            <span role="button" mat-button  >Cerrar sesión</span>
+            <mat-icon>directions_run</mat-icon>
+            <span role="button" mat-button>Cerrar sesión</span>
           </button>
         </mat-menu>
 

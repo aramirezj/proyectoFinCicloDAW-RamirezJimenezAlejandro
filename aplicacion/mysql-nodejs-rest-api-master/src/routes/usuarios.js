@@ -188,6 +188,30 @@ router.get('/usuario/admin', (req, res) => {
     })
   }
 });
+// Obtener notificaciones de un usuario (PROTECTED)
+router.get('/usuario/notificaciones', (req, res) => {
+  console.log("Obtener las notificaciones de un usuario")
+  let permiso = verificaToken(req.headers);
+  console.log(permiso)
+  if (permiso) {
+    mysqlConnection.query('SELECT mensaje FROM notificaciones WHERE usuario = ?', [permiso], (err, rows, fields) => {
+      if (!err) {
+        res.send({
+          status: '200',
+          mensajes: rows
+        })
+      } else {
+        res.send({
+          status: 'Error sql'
+        })
+      }
+    });
+  } else {
+    res.send({
+      status: 'Token invalido'
+    })
+  }
+});
 
 // Obtener un usuario (PROTECTED)
 router.get('/usuario/:id', (req, res) => {

@@ -44,14 +44,11 @@ background: transparent
 .container{
   margin-top:5%;
 }
-mat-nav-list{
+mat-nav-list,mat-menu,mat-expansion-panel{
   background-color: #563f90!important;
 }
 
 
-mat-menu{
-  background-color: #5a458d!important;
-}
 span{
   color:white!important;
   font-size:1.5em;

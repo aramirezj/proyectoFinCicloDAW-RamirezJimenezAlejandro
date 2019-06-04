@@ -46,7 +46,6 @@ export class UserService {
             .toPromise()
             .then((response) => {
                 if (response.json().status == "200") {
-                    console.log(response.json().respuesta)
                     return response.json().respuesta;
                 } else if (response.json().status == "Token invalido") {
                     this.authService.logout();

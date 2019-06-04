@@ -1,4 +1,4 @@
-<div *ngIf="!quizzes && this.isLoaded">
+<div *ngIf="!quizzes || quizzes.length==0 && this.isLoaded">
   <p class="empty">No hay resultados para {{this.nombre}}.</p>
 </div>
 <div *ngIf="quizzes && this.isLoaded">

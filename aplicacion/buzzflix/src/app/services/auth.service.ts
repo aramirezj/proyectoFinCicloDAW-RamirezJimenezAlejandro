@@ -1,7 +1,7 @@
 import {Observable} from 'rxjs'; 
 import {Injectable, ɵConsole } from '@angular/core';
 import {CONFIG } from '../config/config';
-import {Http} from '@angular/http';
+import {Http, Headers,RequestOptions} from '@angular/http';
 import {Router} from '@angular/router'
 import {Usuario} from '../modelo/Usuario';
 import { NotifyService } from './notify.service';
@@ -12,16 +12,18 @@ import { HttpModule } from '@angular/http';*/
 
 @Injectable()
 export class AuthService{
-
+    private headers: Headers
     constructor(
         private http: Http,
         private router: Router,
         private notifyService: NotifyService,
         private bar:NgProgressService
     ){
-
+        this.headers = new Headers({ 'Authorization': `Bearer ${this.getToken()}` });
     }
-
+    getToken(): string {
+        return localStorage.getItem('token');
+    }
     getAuthUser(): Usuario{
         return JSON.parse(localStorage.getItem('usuario'))
     }
@@ -88,6 +90,24 @@ export class AuthService{
         localStorage.removeItem("token");
         this.notifyService.notify("Has cerrado la sesión correctamente","success");
         this.router.navigate(['/auth/login']);
+    }
+
+    getNotificaciones():Promise<string[]>{
+        this.headers = new Headers({ 'Authorization': `Bearer ${this.getToken()}` });
+        let options = new RequestOptions({ headers: this.headers });
+        return this.http.get(`${CONFIG.apiUrl}usuario/notificaciones`, options)
+            .toPromise()
+            .then((response) => {
+                if (response.json().status == "200") {
+                    return response.json().mensajes;
+                } else if (response.json().status == "Token invalido") {
+                    this.logout();
+                    return response.json().respuesta;
+                } else if(response.json().status == "Error sql"){
+                    this.notifyService.notify("Error en el servidor", "error");
+                    return response.json().respuesta;
+                }
+            });
     }
 
     
