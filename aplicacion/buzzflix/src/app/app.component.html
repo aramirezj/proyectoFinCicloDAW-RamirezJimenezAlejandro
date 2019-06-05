@@ -50,9 +50,9 @@
           </button>
           <mat-accordion (click)="$event.stopPropagation()">
             <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
-              <mat-expansion-panel-header>
+              <mat-expansion-panel-header style="padding: 16px;">
                 <mat-panel-title>
-                  Notificaciones
+                  <mat-icon style="margin-right: 16px;vertical-align: middle;">mail_outline</mat-icon> <span role="button" mat-button>Notificaciones</span>
                 </mat-panel-title>
                 <mat-panel-description>
 
@@ -60,30 +60,19 @@
               </mat-expansion-panel-header>
               <mat-list>
                 <mat-list-item *ngFor="let notificacion of notificaciones">
-                  <mat-icon mat-list-icon>announcement</mat-icon>
-                  <h4 mat-line>{{notificacion.name}}</h4>
+                  <h4 mat-line>{{notificacion.name}}</h4><mat-icon class="icono" (click)="read(notificacion)">delete_forever</mat-icon>
                 </mat-list-item>
+                <mat-list-item *ngIf="this.vacio || this.notificaciones.length==0">
+                    <h4 mat-line>No tienes ninguna notificación</h4>
+                  </mat-list-item>
               </mat-list>
             </mat-expansion-panel>
           </mat-accordion>
           
-          <button mat-menu-item *ngIf="isLoggedIn()">
+          <!--<button mat-menu-item *ngIf="isLoggedIn()">
             <mat-icon>mail_outline</mat-icon>
             <span>Notificaciones</span>
-
-
-
-
-
-
-
-
-
-
-
-
-
-          </button>
+          </button>-->
           <button mat-menu-item *ngIf="!isLoggedIn()" routerLink="/auth/register">
             <mat-icon>fiber_new</mat-icon>
             <span role="button" mat-button>Registrarse</span>

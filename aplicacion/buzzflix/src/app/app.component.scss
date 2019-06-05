@@ -45,15 +45,34 @@ background: transparent
   margin-top:5%;
 }
 mat-nav-list,mat-menu,mat-expansion-panel{
-  background-color: #563f90!important;
+  background-color: #5a458d !important;
 }
 
 
 span{
   color:white!important;
-  font-size:1.5em;
+  font-size:3vh;
 }
 button>mat-icon{
   color:white!important;
   font-size:1.8em;
+}
+mat-panel-title>mat-icon{
+  color:white!important;
+  font-size:1.8em;
+}
+.icono{
+  height: 100%;
+  color:orange!important;
+  font-size:2.5em;
+}
+mat-menu{
+  min-width: 350px!important;
+}
+mat-list-item{
+  margin-bottom:5%;
+}
+h4{
+  color:white;
+  white-space: normal!important;
 }

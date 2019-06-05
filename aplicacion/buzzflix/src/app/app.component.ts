@@ -4,7 +4,7 @@ import { Usuario } from './modelo/usuario';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserService } from './services/user.service';
-import {MatMenuModule, MatMenuTrigger} from '@angular/material/menu';
+import { MatMenuTrigger } from '@angular/material/menu';
 import * as $ from 'jquery';
 export interface Section {
   name: string;
@@ -16,10 +16,12 @@ export interface Section {
 })
 export class AppComponent {
   @ViewChild(MatMenuTrigger) trigger: MatMenuTrigger;
+
   public miniForm: FormGroup
   public miniForm2: FormGroup
   usuario: Usuario
-  notificaciones:Section[]
+  vacio: boolean = false;
+  notificaciones: Section[]
   panelOpenState = false;
   correctas: Section[] = [
   ];
@@ -45,14 +47,16 @@ export class AppComponent {
 
   ngOnInit() {
     this.usuario = this.authService.getAuthUser();
-    this.notificaciones=[];
+    this.notificaciones = [];
     this.obtenerNotificaciones();
+
   }
 
   changeColor() {
 
     $(".mat-menu-content").css("background-color", "#5a458d");
     $(".mat-menu-content").css("color", "white");
+    $(".mat-menu-panel").css("min-width", "350px");
   }
 
   onSubmit() {
@@ -85,21 +89,30 @@ export class AppComponent {
   logout() {
     this.authService.logout();
   }
-  abreMenu(){
-    console.log("???")
+  abreMenu() {
     this.trigger.openMenu();
   }
-  obtenerNotificaciones(){
+  obtenerNotificaciones() {
     this.authService.getNotificaciones()
-    .then((respuesta =>{
-      for(let resp of respuesta){
-        let section:Section;
-        section={
-          name:resp["mensaje"]
+      .then((respuesta => {
+        for (let resp of respuesta) {
+          let section: Section;
+          section = {
+            name: resp["mensaje"]
+          }
+          this.notificaciones.push(section);
         }
-        this.notificaciones.push(section);
-      }
-    }))
+      }))
+  }
+
+  read(notificacion) {
+    this.authService.readNoti(notificacion.name);
+    let index = this.notificaciones.indexOf(notificacion);
+    this.notificaciones.splice(index, 1);
+    if(this.notificaciones.length==0){
+      this.vacio = true;
+    }
+    
   }
 
   muestraForm() {
@@ -110,9 +123,6 @@ export class AppComponent {
     $("#form2").removeClass("hidden");
     $("i").addClass("hidden");
   }
-
-  
-
 
 
 }

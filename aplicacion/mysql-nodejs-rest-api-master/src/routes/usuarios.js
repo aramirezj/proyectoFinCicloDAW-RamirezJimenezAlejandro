@@ -194,7 +194,7 @@ router.get('/usuario/notificaciones', (req, res) => {
   let permiso = verificaToken(req.headers);
   console.log(permiso)
   if (permiso) {
-    mysqlConnection.query('SELECT mensaje FROM notificaciones WHERE usuario = ?', [permiso], (err, rows, fields) => {
+    mysqlConnection.query('SELECT mensaje FROM notificaciones WHERE usuario = ? and leido is null', [permiso], (err, rows, fields) => {
       if (!err) {
         res.send({
           status: '200',
@@ -804,6 +804,33 @@ router.post('/follow', cors(), (req, res, next) => {
         status: 'No tienes permiso'
       })
     }
+  }
+});
+//Peticion para marcar como leido una notificación
+router.post('/usuario/read', cors(), (req, res, next) => {
+  console.log("PETICION para leer una notificacion")
+  let permiso = verificaToken(req.headers);
+  if (permiso != false) {
+    const { mensaje } = req.body;
+      const query = "UPDATE notificaciones set leido = 1 where usuario = ? AND mensaje = ?";
+      mysqlConnection.query(query, [permiso,mensaje], (err, rows, fields) => {
+        if (!err) {
+          res.send({
+            status: '200'
+          })
+        }
+        else {
+          console.log(err)
+          res.send({
+            status: 'Error sql'
+          })
+
+        }
+      });
+  } else {
+    res.send({
+      status: 'Token invalido'
+    })
   }
 });
 
