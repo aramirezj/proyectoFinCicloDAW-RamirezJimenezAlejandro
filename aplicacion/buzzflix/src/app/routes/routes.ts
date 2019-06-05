@@ -14,6 +14,7 @@ import { ExploradorComponent } from '../explorador/explorador.component';
 import { DashboardUsersComponent } from '../dashboard-users/dashboard-users.component';
 import { ModeracionComponent } from '../moderacion/moderacion.component';
 import { DashboardQuizComponent } from '../dashboard-quiz/dashboard-quiz.component';
+import { NotFoundComponent } from '../not-found/not-found.component';
 export const ROUTES = [
     {
         path:'auth/register',
@@ -24,6 +25,11 @@ export const ROUTES = [
         path:'auth/login',
         component: LoginComponent,
         canActivate: [AuthedGuard]
+    },
+    {
+        path:'',
+        component: DashboardComponent,
+        canActivate: [AuthGuard]
     },
     {
         path:'dashboard',
@@ -70,7 +76,11 @@ export const ROUTES = [
         path:'moderacion',
         component:ModeracionComponent,
         CanActivate:[AuthGuard]
-    }
+    },
+    {
+        path: '**',
+        component: NotFoundComponent
+      }
     
 ]
 

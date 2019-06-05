@@ -1,7 +1,8 @@
 form {
-  margin-top: 5px;
   display: inline;
+  align-items: initial;
 }
+
 input {
   margin-top: 0.5%;
 }
@@ -17,6 +18,7 @@ a {
   font-weight: bold;
   color: White !important;
   text-decoration:none;
+  vertical-align: bottom;
 }
 a:hover {
   color: #e14705 !important;
@@ -58,11 +60,17 @@ button>mat-icon{
   font-size:1.8em;
 }
 mat-panel-title>mat-icon{
+  height: 100%;
   color:white!important;
   font-size:1.8em;
 }
+.lupas{
+  color:white!important;
+  font-size:1.9em;
+  vertical-align:top;
+}
 .icono{
-  height: 100%;
+  
   color:orange!important;
   font-size:2.5em;
 }

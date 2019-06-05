@@ -36,6 +36,7 @@ export class QuizzComponent implements OnInit {
   ) { }
 
   ngOnInit() {
+    
     this.id = this.quizz.id;
     this.privado = false;
     this.userService.getUserById(this.quizz.creador)
@@ -57,6 +58,8 @@ export class QuizzComponent implements OnInit {
       this.quizz.titulo = this.quizz.titulo + " (Quiz privado)";
       this.quizz.id = this.quizz.privado;
       this.privado = true;
+    }else if(this.quizz.publicado==0){
+      this.quizz.titulo = this.quizz.titulo + " (Pendiente de moderación)";
     }
   }
 

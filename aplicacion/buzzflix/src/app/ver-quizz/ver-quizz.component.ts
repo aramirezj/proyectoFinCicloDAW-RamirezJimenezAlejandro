@@ -20,14 +20,14 @@ import { UserService } from '../services/user.service';
   styleUrls: ['./ver-quizz.component.scss']
 })
 export class VerQuizzComponent implements OnInit {
-  rawid:string
+  rawid: string
   id: number
   quizz: Quizz
   resultado: boolean
   cargado: boolean
   solucionado: Solucion
   downloadURL: any
-  urlShare:string
+  urlShare: string
   public quizzForm: FormGroup
 
   constructor(
@@ -48,14 +48,17 @@ export class VerQuizzComponent implements OnInit {
     this.router.params.subscribe((params) => {
       this.rawid = params['id'];
       this.getQuizz();
-      this.bar.start();
-      setTimeout(() => {
 
-        this.generaFormulario();
-        this.cargado = true;
-        this.bar.done();
+      if (this.quizz != null) {
+        this.bar.start();
+        setTimeout(() => {
+          this.generaFormulario();
+          this.cargado = true;
+          this.bar.done();
 
-      }, 500);
+        }, 500);
+      }
+
 
     });
 
@@ -113,21 +116,21 @@ export class VerQuizzComponent implements OnInit {
     }
     id--;
     this.solucionado = this.quizz.soluciones[id];
-    
+
     this.solucionado.image = this.afStorage.ref(this.solucionado.image).getDownloadURL();
     if (this.solucionado.image == null) {
       this.solucionado.image = "hehexd.png"
     }
     this.resultado = true;
-    this.urlShare = "https://twitter.com/share?url="+window.location.href+"&amp;text=¡Obtuve%20"+this.solucionado.titulo+"!%20&amp;hashtags=Hasquiz";
-    
-   // $(".shareme").attr("href",this.urlShare);
+    this.urlShare = "https://twitter.com/share?url=" + window.location.href + "&amp;text=¡Obtuve%20" + this.solucionado.titulo + "!%20&amp;hashtags=Hasquiz";
+
+    // $(".shareme").attr("href",this.urlShare);
     setTimeout(() => {
-      $(".mat-card-header-text")[0].style.width="100%";
-      $(".mat-card-header-text")[0].style.margin="0";
-      document.getElementById("shareme").setAttribute("href",this.urlShare);
+      $(".mat-card-header-text")[0].style.width = "100%";
+      $(".mat-card-header-text")[0].style.margin = "0";
+      document.getElementById("shareme").setAttribute("href", this.urlShare);
     }, 100);
-   
+
     this.cargado = false;
 
 
@@ -139,8 +142,10 @@ export class VerQuizzComponent implements OnInit {
     this.quizzService.getQuizz(this.rawid)
       .then(resp => {
         this.quizz = resp;
-        console.log(this.quizz)
-        this.id=this.quizz.id;
+        if (this.quizz != null) {
+          this.id = this.quizz.id;
+        }
+
 
       })
   }
@@ -149,10 +154,12 @@ export class VerQuizzComponent implements OnInit {
     for (let i = 0; i < long; i++) {
       let ele = "#" + id[0] + i;
       $(ele).addClass("desactivado");
+      $(ele).removeClass("activado");
     }
     $("#" + id).removeClass("desactivado");
     $("#" + id).addClass("activado");
     let totalRespondidas = $(".activado").length;
+
     if (totalRespondidas == this.quizz.preguntas.length) {
       this.onSubmit();
     } else {

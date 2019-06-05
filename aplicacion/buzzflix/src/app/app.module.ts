@@ -53,6 +53,7 @@ import { AngularFireStorage } from 'angularfire2/storage';
 import { DialogboxComponent } from './dialogbox/dialogbox.component';
 import { ModeracionComponent } from './moderacion/moderacion.component';
 import { DashboardQuizComponent } from './dashboard-quiz/dashboard-quiz.component';
+import { NotFoundComponent } from './not-found/not-found.component';
 
 @NgModule({
   declarations: [
@@ -78,6 +79,7 @@ import { DashboardQuizComponent } from './dashboard-quiz/dashboard-quiz.componen
     DialogboxComponent,
     ModeracionComponent,
     DashboardQuizComponent,
+    NotFoundComponent,
   ],
   imports: [
     BrowserModule,

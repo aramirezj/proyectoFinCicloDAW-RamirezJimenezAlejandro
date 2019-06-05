@@ -26,13 +26,13 @@ p{
   margin-top: 2%;
 }
 .card{
-  box-shadow: 2px 7px 4px rgb(104, 100, 100);
+  box-shadow: 1px 3px 2px rgb(104, 100, 100);
   width: 47%;
   float:left;
   margin: 1%;
   transition-delay: 0.1s;
   transition: all .3s;
-  
+  border:0px!important;
 }
 .card:hover{
   

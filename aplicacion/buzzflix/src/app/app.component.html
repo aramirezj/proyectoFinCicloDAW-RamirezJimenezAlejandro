@@ -12,26 +12,35 @@
       </button>
       <span role="button" routerLink="dashboard">Hasquiz</span>
       <span class="menu-spacer"></span>
-
+      <!--Elementos de la barra-->
       <div fxShow="true" fxHide.lt-md>
+        <!--Formulario usuarios-->
         <form class="form-inline hidden" id="form1" *ngIf="isLoggedIn() && this.authService.getAuthUser()"
           [formGroup]="miniForm">
           <input class="form-control mr-sm-2" formControlName="nombre" type="search" placeholder="Buscar usuarios"
-            aria-label="Search">
+            aria-label="Search" />
           <button type="submit" class="btn btn-default" (click)="onSubmit()">Buscar</button>
         </form>
+        <!--Formulario Quizzes-->
         <form class="form-inline hidden" id="form2" *ngIf="isLoggedIn() && this.authService.getAuthUser()"
           [formGroup]="miniForm2">
           <input class="form-control mr-sm-2" formControlName="nombre2" type="search" placeholder="Buscar quizzes"
-            aria-label="Search">
+            aria-label="Search" />
           <button type="submit" class="btn btn-default" (click)="onSubmit2()">Buscar</button>
         </form>
-        <i class="fas fa-search" style="color:orangered;" *ngIf="isLoggedIn()" (click)="muestraForm2()"></i>
-        <i class="fas fa-search" *ngIf="isLoggedIn()" (click)="muestraForm()"></i>
+
+        <!--Apartados de la barra-->
+        <div style="display: inline;margin-right:4%;">
+          <mat-icon class="lupas" *ngIf="isLoggedIn()" (click)="muestraForm2()">image_search</mat-icon>
+        </div>
+        <div style="display: inline;margin-right: 2%;">
+            <mat-icon class="lupas" *ngIf="isLoggedIn()" (click)="muestraForm()">search</mat-icon>
+        </div>
+        
+
         <a role="button" mat-button *ngIf="isLoggedIn() && this.authService.getAuthUser()"
           [routerLink]="['ver/todos']">Todos los quizzes</a>
-        <!-- <a role="button" mat-button *ngIf="isLoggedIn() && this.authService.getAuthUser()"
-          [routerLink]="['usuario/perfil',this.authService.getAuthUserId()]">Mi perfil</a>-->
+
         <a role="button" mat-button *ngIf="isLoggedIn() && this.authService.getAuthUser()"
           [routerLink]="['crear/quizz']">Crear Quiz</a>
         <a role="button" mat-button *ngIf="isLoggedIn() && this.authService.getAuthUser()"
@@ -40,10 +49,9 @@
           aria-label="Example icon-button with a menu">
           <mat-icon>more_vert</mat-icon>
         </button>
+
+        <!--Menú derecha-->
         <mat-menu #menu="matMenu">
-
-
-
           <button mat-menu-item *ngIf="isLoggedIn()" [routerLink]="['usuario/perfil',this.authService.getAuthUserId()]">
             <mat-icon *ngIf="isLoggedIn()">account_circle</mat-icon>
             <span role="button" mat-button>Mi perfil</span>
@@ -52,7 +60,8 @@
             <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
               <mat-expansion-panel-header style="padding: 16px;">
                 <mat-panel-title>
-                  <mat-icon style="margin-right: 16px;vertical-align: middle;">mail_outline</mat-icon> <span role="button" mat-button>Notificaciones</span>
+                  <mat-icon style="margin-right: 16px;vertical-align: middle;">mail_outline</mat-icon> <span
+                    role="button" mat-button>Notificaciones</span>
                 </mat-panel-title>
                 <mat-panel-description>
 
@@ -60,19 +69,16 @@
               </mat-expansion-panel-header>
               <mat-list>
                 <mat-list-item *ngFor="let notificacion of notificaciones">
-                  <h4 mat-line>{{notificacion.name}}</h4><mat-icon class="icono" (click)="read(notificacion)">delete_forever</mat-icon>
+                  <h4 mat-line>{{notificacion.name}}</h4>
+                  <mat-icon class="icono" (click)="read(notificacion)">delete_forever</mat-icon>
                 </mat-list-item>
                 <mat-list-item *ngIf="this.vacio || this.notificaciones.length==0">
-                    <h4 mat-line>No tienes ninguna notificación</h4>
-                  </mat-list-item>
+                  <h4 mat-line>No tienes ninguna notificación</h4>
+                </mat-list-item>
               </mat-list>
             </mat-expansion-panel>
           </mat-accordion>
-          
-          <!--<button mat-menu-item *ngIf="isLoggedIn()">
-            <mat-icon>mail_outline</mat-icon>
-            <span>Notificaciones</span>
-          </button>-->
+
           <button mat-menu-item *ngIf="!isLoggedIn()" routerLink="/auth/register">
             <mat-icon>fiber_new</mat-icon>
             <span role="button" mat-button>Registrarse</span>
@@ -91,6 +97,7 @@
     </mat-toolbar-row>
   </mat-toolbar>
 
+  <!--Menú responsive-->
   <mat-sidenav-container fxFlexFill>
     <mat-sidenav #sidenav>
       <mat-nav-list>
@@ -115,30 +122,5 @@
   </mat-sidenav-container>
 </div>
 
-<!--
-<nav class="navbar navbar-inverse navbar-fixed-top">
-  <div class="container-fluid">
-    <div class="navbar-header">
-      <a class="navbar-brand" class="navbar-brand navlink" routerLink="dashboard">Quizzflix</a>
-    </div>
-    <ul class="nav navbar-nav">
-      <li *ngIf="isLoggedIn() && this.authService.getAuthUser()" [routerLink]="['ver/todos']"><a class="navlink" role="button">Todos los
-          tests</a></li>
-      <li *ngIf="isLoggedIn() && this.authService.getAuthUser()"
-        [routerLink]="['usuario/perfil',this.authService.getAuthUserId()]"><a class="navlink" role="button">Mi perfil</a></li>
-      <li *ngIf="isLoggedIn() && this.authService.getAuthUser()" [routerLink]="['crear/quizz']"><a class="navlink" role="button">Crear
-          Quizz</a></li>
-      <form class="form-inline" *ngIf="isLoggedIn() && this.authService.getAuthUser()" [formGroup]="miniForm">
-        <input class="form-control mr-sm-2" formControlName="nombre" type="search" placeholder="Buscar usuarios"
-          aria-label="Search">
-        <button type="submit" class="btn btn-default" (click)="onSubmit()">Buscar</button>
-      </form>
-    </ul>
-    <ul class="nav navbar-nav navbar-right">
-      <li *ngIf="isLoggedIn()" (click)="logout()"><a class="navlink" role="button">Cerrar sesión</a> </li>
-      <li *ngIf="!isLoggedIn()"><a class="navlink" role="button" routerLink="/auth/register">Registrarse</a></li>
-      <li *ngIf="!isLoggedIn()"><a class="navlink" role="button" routerLink="/auth/login">Iniciar Sesión</a></li>
-    </ul>
-  </div>
-</nav>-->
+
 <div class="separator"></div>

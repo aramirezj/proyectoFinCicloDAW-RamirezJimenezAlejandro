@@ -6,6 +6,12 @@ app.use(cors())
 var multer = require("multer");
 var jwt = require('jsonwebtoken');
 var bcrypt = require('bcryptjs');
+
+
+var crypto = require('crypto')
+const algorithm = 'aes-192-cbc';
+const secretPassword = 'a670711037';
+
 var tokenService = require('../tokenService');
 let secretWord = tokenService;
 
@@ -32,6 +38,8 @@ function creaToken(id) {
   return token;
 }
 
+
+
 function verificaToken(headers) {
   let bearerHeader = headers["authorization"];
   if (typeof bearerHeader !== 'undefined') {
@@ -51,12 +59,23 @@ function verificaToken(headers) {
   }
 }
 
+function encripta(texto){
+  const passwordraw = crypto.scryptSync(secretPassword, texto, 24);
+  const iv = Buffer.alloc(16, 0);
+  const cipher = crypto.createCipheriv(algorithm, passwordraw, iv);
+  let encrypted = cipher.update('some clear text data', 'utf8', 'hex');
+  encrypted += cipher.final('hex');
+  return encrypted;
+}
+
 //Petición para registrar un usuario .
 router.post('/register', cors(), (req, res, next) => {
   console.log("PETICION REGISTRO")
   console.log("PARAMETROS")
-  const { name, email, password } = req.body;
+  let { name, email, password } = req.body;
+  password = encripta(password);
   console.log(name, email, password);
+
   const query = "insert into users (name,email,password) VALUES(?,?,?)";
   mysqlConnection.query(query, [name, email, password], (err, rows, fields) => {
     if (!err) {
@@ -73,7 +92,9 @@ router.post('/register', cors(), (req, res, next) => {
 router.post('/authenticate', cors(), (req, res, next) => {
   console.log("PETICION LOGIN(authenticate)")
   console.log("PARAMETROS")
-  const { email, password } = req.body;
+  let { email, password } = req.body;
+  password = encripta(password);
+
   console.log("Parametros:" + email, password);
   const query = "select id,name,email,avatar from users where email = ? AND password = ?";
   mysqlConnection.query(query, [email, password], (err, rows, fields) => {
@@ -812,21 +833,21 @@ router.post('/usuario/read', cors(), (req, res, next) => {
   let permiso = verificaToken(req.headers);
   if (permiso != false) {
     const { mensaje } = req.body;
-      const query = "UPDATE notificaciones set leido = 1 where usuario = ? AND mensaje = ?";
-      mysqlConnection.query(query, [permiso,mensaje], (err, rows, fields) => {
-        if (!err) {
-          res.send({
-            status: '200'
-          })
-        }
-        else {
-          console.log(err)
-          res.send({
-            status: 'Error sql'
-          })
+    const query = "UPDATE notificaciones set leido = 1 where usuario = ? AND mensaje = ?";
+    mysqlConnection.query(query, [permiso, mensaje], (err, rows, fields) => {
+      if (!err) {
+        res.send({
+          status: '200'
+        })
+      }
+      else {
+        console.log(err)
+        res.send({
+          status: 'Error sql'
+        })
 
-        }
-      });
+      }
+    });
   } else {
     res.send({
       status: 'Token invalido'

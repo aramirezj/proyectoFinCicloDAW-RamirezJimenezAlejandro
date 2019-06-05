@@ -149,7 +149,6 @@ export class QuizzService {
     }
 
     getQuizz(id: string): Promise<Quizz> {
-        console.log(id)
         return this.http.get(`${CONFIG.apiUrl}quizz/${id}`)
             .toPromise()
             .then(resp => {
