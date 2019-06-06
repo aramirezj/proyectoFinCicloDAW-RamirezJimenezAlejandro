@@ -47,16 +47,9 @@ export class VerQuizzComponent implements OnInit {
   ngOnInit() {
     this.router.params.subscribe((params) => {
       this.rawid = params['id'];
-      this.getQuizz();
-
+      this.getQuizz()
       if (this.quizz != null) {
-        this.bar.start();
-        setTimeout(() => {
-          this.generaFormulario();
-          this.cargado = true;
-          this.bar.done();
 
-        }, 500);
       }
 
 
@@ -144,6 +137,10 @@ export class VerQuizzComponent implements OnInit {
         this.quizz = resp;
         if (this.quizz != null) {
           this.id = this.quizz.id;
+          this.bar.start();
+            this.generaFormulario();
+            this.cargado = true;
+            this.bar.done();
         }
 
 
