@@ -38,10 +38,21 @@ export class AuthService {
         return this.http.post(`${CONFIG.apiUrl}register`, { name: name, email: email, password: password })
             .toPromise()
             .then((response) => {
-                let aux: Usuario = new Usuario(response.json().id, name, email, null);
-                localStorage.setItem("token", response.json().token);
                 this.bar.done();
-                return aux;
+                if (response.json().status == "200") {
+                    let aux: Usuario = new Usuario(response.json().id, name, email, null);
+                    localStorage.setItem("token", response.json().token);
+                    return aux;
+                } else if (response.json().status == "Duplicate") {
+                    this.notifyService.notify("Ya existe una cuenta con ese correo", "error");
+                    return null;
+                } else if (response.json().status == "Error sql") {
+                    this.notifyService.notify("Error en el servidor", "error");
+                    return null;
+                }
+
+
+
             })
     }
 

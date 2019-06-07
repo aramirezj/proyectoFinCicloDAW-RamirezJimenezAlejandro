@@ -40,6 +40,7 @@ export class EditProfileComponent implements OnInit {
 
   ngOnInit() {
     this.usuario = this.authService.getAuthUser();
+    $('html,body').animate({scrollTop: document.body.scrollHeight},"medium");
   }
 
   editProfile(form) {
@@ -75,7 +76,7 @@ export class EditProfileComponent implements OnInit {
           this.bar.done();
         })
     }
-
+    $('html,body').animate({scrollBottom: document.body.scrollHeight},"medium");
   }
 
 
