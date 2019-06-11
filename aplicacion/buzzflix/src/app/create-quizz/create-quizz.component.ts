@@ -10,8 +10,9 @@ import { Respuesta } from '../modelo/Respuesta';
 import { Afinidad } from '../modelo/Afinidad';
 import { Quizz } from '../modelo/Quizz';
 import { NotifyService } from '../services/notify.service';
-import {MatSelectModule} from '@angular/material/select';
+import { MatSelectModule } from '@angular/material/select';
 import * as $ from 'jquery';
+import { AngularFireDatabase } from '@angular/fire/database';
 @Component({
   selector: 'app-create-quizz',
   templateUrl: './create-quizz.component.html',
@@ -27,7 +28,7 @@ export class CreateQuizzComponent implements OnInit {
   private max: number
   private maxp: number
   private maxr: number
-  private maxs:number
+  private maxs: number
   private learray: Array<Array<Number>>
   private verdades: any
   public preguntas: Array<Object>
@@ -69,20 +70,27 @@ export class CreateQuizzComponent implements OnInit {
     }
   }
   onFileChanged(event, n: number) {
-    if(n!=69){
+    let nameInput=event.target.getAttribute("ng-reflect-name");
+    if (n != 69) {
       n++;
-    }else{
-      n=0;
+    } else {
+      n = 0;
     }
-    
+
     const file = event.target.files[0];
     let formato = file.name.split(".")[1];
-    Object.defineProperty(file,"name",{
-      value:this.makeId()+"."+formato,
-      writable:false
-    })
-    this.files[n] = file;
-    console.log(this.files)
+    let aux = formato.toUpperCase();
+    if (aux === "JPG" || aux === "JPEG" || aux === "PNG") {
+      Object.defineProperty(file, "name", {
+        value: this.makeId() + "." + formato,
+        writable: false
+      })
+      this.files[n] = file;
+    }else{
+      this.notifyService.notify("Los formatos aceptados son PNG,JPG,JPEG","error");
+      console.log(this.quizzForm.get(nameInput).reset());
+    }
+
   }
 
   createForm() {
@@ -106,7 +114,7 @@ export class CreateQuizzComponent implements OnInit {
       banner: ['', [
         Validators.required,
       ]],
-      privado: ['',[
+      privado: ['', [
 
       ]]
 
@@ -124,7 +132,7 @@ export class CreateQuizzComponent implements OnInit {
     console.log(this.quizzForm.value.privado);
     if (this.aux > 1 && this.aux < 6) {
       this.reseteaCondRespuestas();
-      this.secondStep=false;
+      this.secondStep = false;
       //this.ref.detach();
       this.bar.start();
       let grupo: any
@@ -359,7 +367,7 @@ export class CreateQuizzComponent implements OnInit {
     var text = Math.random().toString(36).substring(2);
     return text;
   }
- 
+
 
   //Preparo las soluciones para el modelo Quizz
   preparaSoluciones(): Array<Solucion> {
@@ -426,14 +434,14 @@ export class CreateQuizzComponent implements OnInit {
   //Envio de formulario
   onSubmit() {
     let titulo = this.quizzForm.value.titulo;
-    let privado:string=null;
-    if(this.quizzForm.value.privado){
+    let privado: string = null;
+    if (this.quizzForm.value.privado) {
       privado = this.makeId();
     }
-    this.quizz = new Quizz(null, this.authService.getAuthUserId(), titulo,this.files[0].name, this.preparaSoluciones(), this.preparaPreguntas(), 0, null);
+    this.quizz = new Quizz(null, this.authService.getAuthUserId(), titulo, this.files[0].name, this.preparaSoluciones(), this.preparaPreguntas(), 0, null);
     console.log(this.quizz);
-    
-   this.quizzService.createQuizz(this.quizz,this.files,privado)
+
+    this.quizzService.createQuizz(this.quizz, this.files, privado)
       .then(resp => {
         this.router.navigate(['/usuario/perfil', this.authService.getAuthUserId()])
       })

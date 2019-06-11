@@ -1,10 +1,10 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, createPlatformFactory } from '@angular/core';
 import { Usuario } from 'src/app/modelo/Usuario';
 import { AuthService } from './../../services/auth.service';
 import { UserService } from 'src/app/services/user.service';
 import { NotifyService } from 'src/app/services/notify.service';
 import { ErrorStateMatcher } from '@angular/material/core';
-import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/forms';
+import { FormControl, FormGroupDirective, NgForm, Validators, FormGroup, FormBuilder } from '@angular/forms';
 import { NgProgressService } from 'ng2-progressbar';
 import * as $ from 'jquery';
 import { AngularFireStorage } from 'angularfire2/storage';
@@ -16,18 +16,10 @@ import { AngularFireStorage } from 'angularfire2/storage';
 export class EditProfileComponent implements OnInit {
   usuario: Usuario
   file: File
-  nombreFC = new FormControl('', [
-    Validators.required,
-    Validators.minLength(3)
-  ])
-  oldPassFC = new FormControl('', [
-    Validators.minLength(6)
-  ])
-  newPassFC = new FormControl('', [
-    Validators.minLength(6)
-  ])
+  profileForm: FormGroup
   textInput: String
   constructor(
+    private fb: FormBuilder,
     private authService: AuthService,
     private userService: UserService,
     private notifyService: NotifyService,
@@ -36,41 +28,61 @@ export class EditProfileComponent implements OnInit {
 
   ) {
     this.textInput = "Sube aquí tu nuevo avatar.";
+    this.creaFormulario();
+
+
   }
 
   ngOnInit() {
     this.usuario = this.authService.getAuthUser();
   }
 
+  creaFormulario() {
+    this.profileForm = this.fb.group({
+      nombreFC: ['', [
+        Validators.required,
+        Validators.minLength(3)
+      ]],
+      oldPassFC: ['', [
+        Validators.minLength(6)
+      ]],
+      newPassFC: ['', [
+        Validators.minLength(6)
+      ]],
+      avatar: ['', []]
+    })
+    console.log(this.profileForm)
+  }
+
   editProfile(form) {
     let datos: any = [];
-    let cambios=false;
-    if (this.authService.getAuthUser().name != this.nombreFC.value) {
-      datos["nombre"] = this.nombreFC.value;
-      cambios=true;
+    let cambios = false;
+    if (this.authService.getAuthUser().name != this.profileForm.get("nombreFC").value) {
+      datos["nombre"] = this.profileForm.get("nombreFC").value;
+      cambios = true;
     }
-    if (this.oldPassFC.value != "" && this.newPassFC.value != "") {
-      datos["oldpass"] = this.oldPassFC.value;
-      datos["newpass"] = this.newPassFC.value;
-      cambios=true;
+    if (this.profileForm.get("(oldPassFC").value != "" && this.profileForm.get("newPassFC").value != "") {
+      datos["oldpass"] = this.profileForm.get("oldPassFC").value;
+      datos["newpass"] = this.profileForm.get("newPassFC").value;
+      cambios = true;
     }
     if (this.file != null || this.file != undefined) {
       datos["file"] = this.file;
-      cambios=true;
+      cambios = true;
       if (this.usuario.avatar != null || this.usuario.avatar != undefined) {
         datos["oldfile"] = this.usuario.avatar;
       }
     }
 
-    
+
     if (cambios) {
       this.bar.start();
       this.userService.updateProfile(datos)
         .then((usuario) => {
           if (usuario != null) {
             this.usuario = usuario;
-          }else{
-            this.usuario.avatar="";
+          } else {
+            this.usuario.avatar = "";
           }
           this.bar.done();
         })
@@ -84,13 +96,19 @@ export class EditProfileComponent implements OnInit {
     this.textInput = file.name;
     let randomId = Math.random().toString(36).substring(2);
     let ext = file.name.split(".")[1];
-    randomId = randomId + "." + ext;
-    Object.defineProperty(file, "name", {
-      value: randomId,
-      writable: false
-    })
-    this.file = file;
-
+    let aux = ext.toUpperCase();
+    if (aux === "JPG" || aux === "JPEG" || aux === "PNG") {
+      randomId = randomId + "." + ext;
+      Object.defineProperty(file, "name", {
+        value: randomId,
+        writable: false
+      })
+      this.file = file;
+    } else {
+      this.notifyService.notify("Los formatos aceptados son PNG,JPG,JPEG", "error");
+      console.log(this.profileForm.get("avatar").reset());
+      console.log(this.profileForm.get("avatar"))
+    }
   }
 }
 
