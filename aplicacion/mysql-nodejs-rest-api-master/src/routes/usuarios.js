@@ -59,7 +59,7 @@ function verificaToken(headers) {
   }
 }
 
-function encripta(texto){
+function encripta(texto) {
   const passwordraw = crypto.scryptSync(secretPassword, texto, 24);
   const iv = Buffer.alloc(16, 0);
   const cipher = crypto.createCipheriv(algorithm, passwordraw, iv);
@@ -77,16 +77,20 @@ router.post('/register', cors(), (req, res, next) => {
   console.log(name, email, password);
 
   const query = "insert into users (name,email,password) VALUES(?,?,?)";
+
   mysqlConnection.query(query, [name, email, password], (err, rows, fields) => {
     if (!err) {
       var token = creaToken(rows.insertId);
       console.log(token);
-      res.status(200).send({ auth: true, token: token, id: rows.insertId });
+      res.send({ status:"200",auth: true, token: token, id: rows.insertId });
     } else {
-      console.log(err);
+      if (err.code == 'ER_DUP_ENTRY') {
+        res.send({ status:"Duplicate" });
+        }else{
+          res.send({ status:"Error sql" });
+        }
     }
   });
-
 });
 //Petición para iniciar sesión
 router.post('/authenticate', cors(), (req, res, next) => {

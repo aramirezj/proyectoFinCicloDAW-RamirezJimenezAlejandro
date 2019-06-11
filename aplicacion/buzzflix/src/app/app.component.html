@@ -56,7 +56,7 @@
             <mat-icon *ngIf="isLoggedIn()">account_circle</mat-icon>
             <span role="button" mat-button>Mi perfil</span>
           </button>
-          <mat-accordion (click)="$event.stopPropagation()">
+          <mat-accordion *ngIf="isLoggedIn()" (click)="$event.stopPropagation()">
             <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
               <mat-expansion-panel-header style="padding: 16px;">
                 <mat-panel-title>

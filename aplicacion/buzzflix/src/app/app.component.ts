@@ -62,22 +62,22 @@ export class AppComponent {
   onSubmit() {
     let nombre = this.miniForm.get('nombre').value;
     if (nombre != "") {
-      $("form").addClass("hidden");
+      $(".form-inline").addClass("hidden");
       $(".lupas").removeClass("hidden");
       this.router.navigate(['ver/usuarios/' + nombre]);
     } else {
-      $("form").addClass("hidden");
+      $(".form-inline").addClass("hidden");
       $(".lupas").removeClass("hidden");
     }
   }
   onSubmit2() {
     let nombre = this.miniForm2.get('nombre2').value;
     if (nombre != "") {
-      $("form").addClass("hidden");
+      $(".form-inline").addClass("hidden");
       $(".lupas").removeClass("hidden");
       this.router.navigate(['ver/quizzes/' + nombre]);
     } else {
-      $("form").addClass("hidden");
+      $(".form-inline").addClass("hidden");
       $(".lupas").removeClass("hidden");
     }
   }

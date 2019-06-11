@@ -68,7 +68,10 @@ export class RegistroComponent implements OnInit {
     if(verdad){
       this.authService.register(this.nombreFC.value,this.emailFC.value,this.passFC.value)
     .then((usuario)=>{
-      this.authService.logUserIn(usuario);
+      if(usuario!=null){
+        this.authService.logUserIn(usuario);
+      }
+      
     })
     }
   
