@@ -15,14 +15,14 @@
       <!--Elementos de la barra-->
       <div fxShow="true" fxHide.lt-md>
         <!--Formulario usuarios-->
-        <form class="form-inline hidden" id="form1" *ngIf="isLoggedIn() && this.authService.getAuthUser()"
+        <form class="form-inline" id="form1" *ngIf="isLoggedIn() && this.authService.getAuthUser() && this.showSU"
           [formGroup]="miniForm">
           <input class="form-control mr-sm-2" formControlName="nombre" type="search" placeholder="Buscar usuarios"
             aria-label="Search" />
           <button type="submit" class="btn btn-default" (click)="onSubmit()">Buscar</button>
         </form>
         <!--Formulario Quizzes-->
-        <form class="form-inline hidden" id="form2" *ngIf="isLoggedIn() && this.authService.getAuthUser()"
+        <form class="form-inline" id="form2" *ngIf="isLoggedIn() && this.authService.getAuthUser()  && this.showSQ"
           [formGroup]="miniForm2">
           <input class="form-control mr-sm-2" formControlName="nombre2" type="search" placeholder="Buscar quizzes"
             aria-label="Search" />
@@ -30,11 +30,11 @@
         </form>
 
         <!--Apartados de la barra-->
-        <div style="display: inline;margin-right:4%;">
-          <mat-icon class="lupas" *ngIf="isLoggedIn()" (click)="muestraForm2()">image_search</mat-icon>
+        <div style="display: inline;margin-right:4%;" *ngIf="isLoggedIn() && (!this.showSQ && !this.showSU)">
+          <mat-icon class="lupas"  (click)="muestraForm2()">image_search</mat-icon>
         </div>
-        <div style="display: inline;margin-right: 2%;">
-            <mat-icon class="lupas" *ngIf="isLoggedIn()" (click)="muestraForm()">search</mat-icon>
+        <div style="display: inline;margin-right: 2%;" *ngIf="isLoggedIn() && (!this.showSQ && !this.showSU)">
+            <mat-icon class="lupas"  (click)="muestraForm()">search</mat-icon>
         </div>
         
 

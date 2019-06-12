@@ -4,7 +4,7 @@ import { AuthService } from './../../services/auth.service';
 import { UserService } from 'src/app/services/user.service';
 import { NotifyService } from 'src/app/services/notify.service';
 import { ErrorStateMatcher } from '@angular/material/core';
-import { FormControl, FormGroupDirective, NgForm, Validators, FormGroup, FormBuilder } from '@angular/forms';
+import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
 import { NgProgressService } from 'ng2-progressbar';
 import * as $ from 'jquery';
 import { AngularFireStorage } from 'angularfire2/storage';
@@ -52,10 +52,9 @@ export class EditProfileComponent implements OnInit {
       ]],
       avatar: ['', []]
     })
-    console.log(this.profileForm)
   }
 
-  editProfile(form) {
+  editProfile() {
     let datos: any = [];
     let cambios = false;
     if (this.authService.getAuthUser().name != this.profileForm.get("nombreFC").value) {

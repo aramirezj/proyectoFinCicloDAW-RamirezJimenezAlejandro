@@ -20,6 +20,8 @@ export class AppComponent {
   public miniForm: FormGroup
   public miniForm2: FormGroup
   usuario: Usuario
+  showSQ:boolean = false;
+  showSU:boolean = false;
   vacio: boolean = false;
   notificaciones: Section[]
   panelOpenState = false;
@@ -62,23 +64,23 @@ export class AppComponent {
   onSubmit() {
     let nombre = this.miniForm.get('nombre').value;
     if (nombre != "") {
-      $(".form-inline").addClass("hidden");
-      $(".lupas").removeClass("hidden");
+      this.showSQ=false;
+      this.showSU=false;
       this.router.navigate(['ver/usuarios/' + nombre]);
     } else {
-      $(".form-inline").addClass("hidden");
-      $(".lupas").removeClass("hidden");
+      this.showSQ=false;
+      this.showSU=false;
     }
   }
   onSubmit2() {
     let nombre = this.miniForm2.get('nombre2').value;
     if (nombre != "") {
-      $(".form-inline").addClass("hidden");
-      $(".lupas").removeClass("hidden");
+      this.showSQ=false;
+      this.showSU=false;
       this.router.navigate(['ver/quizzes/' + nombre]);
     } else {
-      $(".form-inline").addClass("hidden");
-      $(".lupas").removeClass("hidden");
+      this.showSQ=false;
+      this.showSU=false;
     }
   }
 
@@ -93,35 +95,36 @@ export class AppComponent {
     this.trigger.openMenu();
   }
   obtenerNotificaciones() {
-    this.authService.getNotificaciones()
-      .then((respuesta => {
-        for (let resp of respuesta) {
-          let section: Section;
-          section = {
-            name: resp["mensaje"]
+    if (this.authService.isLoggedIn()) {
+      this.authService.getNotificaciones()
+        .then((respuesta => {
+          for (let resp of respuesta) {
+            let section: Section;
+            section = {
+              name: resp["mensaje"]
+            }
+            this.notificaciones.push(section);
           }
-          this.notificaciones.push(section);
-        }
-      }))
+        }))
+    }
+
   }
 
   read(notificacion) {
     this.authService.readNoti(notificacion.name);
     let index = this.notificaciones.indexOf(notificacion);
     this.notificaciones.splice(index, 1);
-    if(this.notificaciones.length==0){
+    if (this.notificaciones.length == 0) {
       this.vacio = true;
     }
-    
+
   }
 
   muestraForm() {
-    $("#form1").removeClass("hidden");
-    $(".lupas").addClass("hidden");
+    this.showSU=true;
   }
   muestraForm2() {
-    $("#form2").removeClass("hidden");
-    $(".lupas").addClass("hidden");
+    this.showSQ=true;
   }
 
 
