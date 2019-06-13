@@ -3,9 +3,9 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 03-06-2019 a las 14:47:29
--- Versión del servidor: 10.1.39-MariaDB
--- Versión de PHP: 7.3.5
+-- Tiempo de generación: 13-06-2019 a las 23:58:38
+-- Versión del servidor: 10.1.38-MariaDB
+-- Versión de PHP: 7.3.2
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET AUTOCOMMIT = 0;
@@ -41,6 +41,7 @@ INSERT INTO `follows` (`origen`, `destino`) VALUES
 (18, 19),
 (18, 20),
 (18, 36),
+(18, 40),
 (19, 18),
 (19, 21),
 (19, 25),
@@ -50,7 +51,8 @@ INSERT INTO `follows` (`origen`, `destino`) VALUES
 (32, 19),
 (34, 19),
 (37, 19),
-(37, 27);
+(37, 27),
+(40, 18);
 
 -- --------------------------------------------------------
 
@@ -82,9 +84,11 @@ CREATE TABLE `notificaciones` (
 --
 
 INSERT INTO `notificaciones` (`id`, `usuario`, `mensaje`, `leido`) VALUES
-(1, 19, 'Lo sentimos, su Quiz Amoderar2 no ha superado el proceso de moderación, revisa los criterios e intentalo de nuevo.', NULL),
+(1, 19, 'Lo sentimos, su Quiz Amoderar2 no ha superado el proceso de moderación, revisa los criterios e intentalo de nuevo.', 1),
 (2, 20, 'Lo sentimos, su Quiz Amoderar1 no ha superado el proceso de moderación, revisa los criterios e intentalo de nuevo.', NULL),
-(3, 20, '¡Enhorabuena, su Quiz PRIV YES ha sido publicado en la web!', NULL);
+(3, 20, '¡Enhorabuena, su Quiz PRIV YES ha sido publicado en la web!', NULL),
+(4, 20, 'Lo sentimos, su Quiz PRIV YES no ha superado el proceso de moderación, revisa los criterios e intentalo de nuevo.', NULL),
+(5, 40, '¡Enhorabuena, su Quiz ¿Tienes Lo Que Hay Que Tener Para Sobrevivir A Un Apocalipsis Zombie? ha sido publicado en la web!', NULL);
 
 -- --------------------------------------------------------
 
@@ -108,7 +112,8 @@ CREATE TABLE `quizz` (
 
 INSERT INTO `quizz` (`id`, `creador`, `titulo`, `contenido`, `fechacreacion`, `publicado`, `privado`) VALUES
 (33, 18, '¿Qué Pokemon inicial eres? (1ª Gen)', '{\"id\":null,\"creador\":18,\"titulo\":\"¿Qué Pokemon inicial eres?(1ª Gen)\",\"image\":\"s1pe0ah16c.jpg\",\"soluciones\":[{\"id\":1,\"titulo\":\"Squirtle\",\"descripcion\":\"Estas lleno de orgullo, pero por que sabes que puedes, tienes coraje y ambición y pocas personas te superan\",\"image\":\"mhwd26mwthp.jpg\"},{\"id\":2,\"titulo\":\"Charmander\",\"descripcion\":\"Amigo de tus amigos, un tío legal, pasional y el motivo del dicho quien tiene un amigo tiene un tesoro\",\"image\":\"wiyanbsxyrk.jpg\"},{\"id\":3,\"titulo\":\"Bulbasaur\",\"descripcion\":\"Eres tranquilo, paciente, de los que piensan todo antes dos veces, aunque muy despistado e inocente\",\"image\":\"qcdg7u4onur.jpeg\"}],\"preguntas\":[{\"id\":1,\"enunciado\":\"Hay una pelea en el patio, ¿Quién eres?\",\"respuestas\":[{\"id\":1,\"enunciado\":\"El que está metido en el fregado, dándole su merecido a un payaso\",\"madre\":1,\"afinidades\":[{\"idr\":1,\"ids\":1,\"cantidad\":\"10\"},{\"idr\":1,\"ids\":2,\"cantidad\":\"6\"},{\"idr\":1,\"ids\":3,\"cantidad\":0}]},{\"id\":2,\"enunciado\":\"El que mete mierda para que se den de hostias\",\"madre\":1,\"afinidades\":[{\"idr\":2,\"ids\":1,\"cantidad\":\"6\"},{\"idr\":2,\"ids\":2,\"cantidad\":\"4\"},{\"idr\":2,\"ids\":3,\"cantidad\":\"3\"}]},{\"id\":3,\"enunciado\":\"El que busca a los profesores para que paren de hacer los tontos\",\"madre\":1,\"afinidades\":[{\"idr\":3,\"ids\":1,\"cantidad\":0},{\"idr\":3,\"ids\":2,\"cantidad\":\"7\"},{\"idr\":3,\"ids\":3,\"cantidad\":\"5\"}]},{\"id\":4,\"enunciado\":\"Al que van a zurrar, mala idea recordar a la profesora que había examen\",\"madre\":1,\"afinidades\":[{\"idr\":4,\"ids\":1,\"cantidad\":0},{\"idr\":4,\"ids\":2,\"cantidad\":\"3\"},{\"idr\":4,\"ids\":3,\"cantidad\":\"10\"}]}],\"eleccion\":null},{\"id\":2,\"enunciado\":\"¿Eres más de...?\",\"respuestas\":[{\"id\":1,\"enunciado\":\"Libro\",\"madre\":2,\"afinidades\":[{\"idr\":1,\"ids\":1,\"cantidad\":0},{\"idr\":1,\"ids\":2,\"cantidad\":0},{\"idr\":1,\"ids\":3,\"cantidad\":\"10\"}]},{\"id\":2,\"enunciado\":\"Pelicula\",\"madre\":2,\"afinidades\":[{\"idr\":2,\"ids\":1,\"cantidad\":0},{\"idr\":2,\"ids\":2,\"cantidad\":\"10\"},{\"idr\":2,\"ids\":3,\"cantidad\":0}]},{\"id\":3,\"enunciado\":\"Para que ver otras historias cuando la mía es mejor\",\"madre\":2,\"afinidades\":[{\"idr\":3,\"ids\":1,\"cantidad\":\"10\"},{\"idr\":3,\"ids\":2,\"cantidad\":0},{\"idr\":3,\"ids\":3,\"cantidad\":0}]}],\"eleccion\":null},{\"id\":3,\"enunciado\":\"¿Qué valoras más en un amigo?\",\"respuestas\":[{\"id\":1,\"enunciado\":\"Su lealtad\",\"madre\":3,\"afinidades\":[{\"idr\":1,\"ids\":1,\"cantidad\":\"6\"},{\"idr\":1,\"ids\":2,\"cantidad\":\"10\"},{\"idr\":1,\"ids\":3,\"cantidad\":\"2\"}]},{\"id\":2,\"enunciado\":\"Que me sea útil\",\"madre\":3,\"afinidades\":[{\"idr\":2,\"ids\":1,\"cantidad\":\"10\"},{\"idr\":2,\"ids\":2,\"cantidad\":\"1\"},{\"idr\":2,\"ids\":3,\"cantidad\":\"1\"}]},{\"id\":3,\"enunciado\":\"Que me aprecie\",\"madre\":3,\"afinidades\":[{\"idr\":3,\"ids\":1,\"cantidad\":0},{\"idr\":3,\"ids\":2,\"cantidad\":\"4\"},{\"idr\":3,\"ids\":3,\"cantidad\":\"8\"}]},{\"id\":4,\"enunciado\":\"Que tenga piscina lol\",\"madre\":3,\"afinidades\":[{\"idr\":4,\"ids\":1,\"cantidad\":\"10\"},{\"idr\":4,\"ids\":2,\"cantidad\":0},{\"idr\":4,\"ids\":3,\"cantidad\":0}]}],\"eleccion\":null},{\"id\":4,\"enunciado\":\"¿Con qué Vengador te defines más?\",\"respuestas\":[{\"id\":1,\"enunciado\":\"Doctor Strange\",\"madre\":4,\"afinidades\":[{\"idr\":1,\"ids\":1,\"cantidad\":\"4\"},{\"idr\":1,\"ids\":2,\"cantidad\":\"4\"},{\"idr\":1,\"ids\":3,\"cantidad\":\"6\"}]},{\"id\":2,\"enunciado\":\"Iron Man\",\"madre\":4,\"afinidades\":[{\"idr\":2,\"ids\":1,\"cantidad\":\"10\"},{\"idr\":2,\"ids\":2,\"cantidad\":0},{\"idr\":2,\"ids\":3,\"cantidad\":\"4\"}]},{\"id\":3,\"enunciado\":\"Capitán América\",\"madre\":4,\"afinidades\":[{\"idr\":3,\"ids\":1,\"cantidad\":\"4\"},{\"idr\":3,\"ids\":2,\"cantidad\":\"10\"},{\"idr\":3,\"ids\":3,\"cantidad\":\"1\"}]},{\"id\":4,\"enunciado\":\"Thor\",\"madre\":4,\"afinidades\":[{\"idr\":4,\"ids\":1,\"cantidad\":0},{\"idr\":4,\"ids\":2,\"cantidad\":\"8\"},{\"idr\":4,\"ids\":3,\"cantidad\":\"2\"}]},{\"id\":5,\"enunciado\":\"Pantera negra\",\"madre\":4,\"afinidades\":[{\"idr\":5,\"ids\":1,\"cantidad\":\"2\"},{\"idr\":5,\"ids\":2,\"cantidad\":0},{\"idr\":5,\"ids\":3,\"cantidad\":\"8\"}]}],\"eleccion\":null},{\"id\":5,\"enunciado\":\"La tortilla...\",\"respuestas\":[{\"id\":1,\"enunciado\":\"Con cebolla\",\"madre\":5,\"afinidades\":[{\"idr\":1,\"ids\":1,\"cantidad\":0},{\"idr\":1,\"ids\":2,\"cantidad\":0},{\"idr\":1,\"ids\":3,\"cantidad\":\"10\"}]},{\"id\":2,\"enunciado\":\"Sin cebolla\",\"madre\":5,\"afinidades\":[{\"idr\":2,\"ids\":1,\"cantidad\":\"10\"},{\"idr\":2,\"ids\":2,\"cantidad\":0},{\"idr\":2,\"ids\":3,\"cantidad\":0}]}],\"eleccion\":null}],\"estrellas\":0,\"fechacreacion\":\"2019-05-19T20:42:05.550Z\"}', '2019-05-19', 1, NULL),
-(37, 20, 'PRIV YES', '{\"id\":null,\"creador\":18,\"titulo\":\"PRIV YES\",\"image\":\"sighpwdj8fg.jpg\",\"soluciones\":[{\"id\":1,\"titulo\":\"SOL1\",\"descripcion\":\"EXP1\",\"image\":\"3y7b72mnpko.jpg\"},{\"id\":2,\"titulo\":\"SOL2\",\"descripcion\":\"EXP2\",\"image\":\"lrqrf00yj4h.jpg\"}],\"preguntas\":[{\"id\":1,\"enunciado\":\"2\",\"respuestas\":[{\"id\":1,\"enunciado\":\"R1\",\"madre\":1,\"afinidades\":[{\"idr\":1,\"ids\":1,\"cantidad\":\"9\"},{\"idr\":1,\"ids\":2,\"cantidad\":0}]},{\"id\":2,\"enunciado\":\"R2\",\"madre\":1,\"afinidades\":[{\"idr\":2,\"ids\":1,\"cantidad\":0},{\"idr\":2,\"ids\":2,\"cantidad\":\"8\"}]}],\"eleccion\":null},{\"id\":2,\"enunciado\":\"P2\",\"respuestas\":[{\"id\":1,\"enunciado\":\"R3\",\"madre\":2,\"afinidades\":[{\"idr\":1,\"ids\":1,\"cantidad\":\"1\"},{\"idr\":1,\"ids\":2,\"cantidad\":0}]},{\"id\":2,\"enunciado\":\"R4\",\"madre\":2,\"afinidades\":[{\"idr\":2,\"ids\":1,\"cantidad\":0},{\"idr\":2,\"ids\":2,\"cantidad\":\"9\"}]}],\"eleccion\":null}],\"estrellas\":0,\"fechacreacion\":\"2019-05-28T10:25:26.108Z\"}', '2019-05-28', 1, NULL);
+(38, 19, 'ISWRONG?', '{\"id\":null,\"creador\":19,\"titulo\":\"ISWRONG?\",\"image\":\"9afi38pbbf.PNG\",\"soluciones\":[{\"id\":1,\"titulo\":\"SOL1\",\"descripcion\":\"EXP1\",\"image\":\"if0apoqxec.jpg\"},{\"id\":2,\"titulo\":\"SOL2\",\"descripcion\":\"EXP\",\"image\":\"0osgsgizydi.jpg\"}],\"preguntas\":[{\"id\":1,\"enunciado\":\"P1\",\"respuestas\":[{\"id\":1,\"enunciado\":\"R1\",\"madre\":1,\"afinidades\":[{\"idr\":1,\"ids\":1,\"cantidad\":\"10\"},{\"idr\":1,\"ids\":2,\"cantidad\":0}]},{\"id\":2,\"enunciado\":\"R2\",\"madre\":1,\"afinidades\":[{\"idr\":2,\"ids\":1,\"cantidad\":0},{\"idr\":2,\"ids\":2,\"cantidad\":\"10\"}]}],\"eleccion\":null},{\"id\":2,\"enunciado\":\"P2\",\"respuestas\":[{\"id\":1,\"enunciado\":\"R3\",\"madre\":2,\"afinidades\":[{\"idr\":1,\"ids\":1,\"cantidad\":\"10\"},{\"idr\":1,\"ids\":2,\"cantidad\":0}]},{\"id\":2,\"enunciado\":\"R4\",\"madre\":2,\"afinidades\":[{\"idr\":2,\"ids\":1,\"cantidad\":0},{\"idr\":2,\"ids\":2,\"cantidad\":\"10\"}]}],\"eleccion\":null}],\"estrellas\":0,\"fechacreacion\":\"2019-06-05T15:49:01.234Z\"}', '2019-06-05', 0, NULL),
+(39, 40, '¿Tienes lo que hay que tener para sobrevivir a un apocalipsis zombie?', '{\"id\":null,\"creador\":40,\"titulo\":\"¿Tienes lo que hay que tener para sobrevivir a un apocalipsis zombie?\",\"image\":\"keax1y47q8.jpg\",\"soluciones\":[{\"id\":1,\"titulo\":\"!Por supuesto que si!\",\"descripcion\":\"Sobrevivirias sin problemas, eres un estratega nato y sabrás desenvolverte llegado el momento.\",\"image\":\"rkxmjxlk32p.jpg\"},{\"id\":2,\"titulo\":\"Nope, que desastre\",\"descripcion\":\"La verdad es que luces pocas, para que nos vamos a engañar, mira el lado positivo, te van a reciclar.\",\"image\":\"xsa1zz7ws4n.jpg\"}],\"preguntas\":[{\"id\":1,\"enunciado\":\"¿Viajarías solo?\",\"respuestas\":[{\"id\":1,\"enunciado\":\"Si\",\"madre\":1,\"afinidades\":[{\"idr\":1,\"ids\":1,\"cantidad\":\"10\"},{\"idr\":1,\"ids\":2,\"cantidad\":0}]},{\"id\":2,\"enunciado\":\"No\",\"madre\":1,\"afinidades\":[{\"idr\":2,\"ids\":1,\"cantidad\":0},{\"idr\":2,\"ids\":2,\"cantidad\":\"10\"}]}],\"eleccion\":null},{\"id\":2,\"enunciado\":\"¿Cuántas personas tendrías en tu equipo de supervivencia?\",\"respuestas\":[{\"id\":1,\"enunciado\":\"1\",\"madre\":2,\"afinidades\":[{\"idr\":1,\"ids\":1,\"cantidad\":0},{\"idr\":1,\"ids\":2,\"cantidad\":\"4\"}]},{\"id\":2,\"enunciado\":\"2\",\"madre\":2,\"afinidades\":[{\"idr\":2,\"ids\":1,\"cantidad\":0},{\"idr\":2,\"ids\":2,\"cantidad\":\"5\"}]},{\"id\":3,\"enunciado\":\"3\",\"madre\":2,\"afinidades\":[{\"idr\":3,\"ids\":1,\"cantidad\":\"6\"},{\"idr\":3,\"ids\":2,\"cantidad\":0}]},{\"id\":4,\"enunciado\":\"4\",\"madre\":2,\"afinidades\":[{\"idr\":4,\"ids\":1,\"cantidad\":\"9\"},{\"idr\":4,\"ids\":2,\"cantidad\":0}]},{\"id\":5,\"enunciado\":\"5\",\"madre\":2,\"afinidades\":[{\"idr\":5,\"ids\":1,\"cantidad\":\"5\"},{\"idr\":5,\"ids\":2,\"cantidad\":\"5\"}]},{\"id\":6,\"enunciado\":\"6\",\"madre\":2,\"afinidades\":[{\"idr\":6,\"ids\":1,\"cantidad\":0},{\"idr\":6,\"ids\":2,\"cantidad\":\"10\"}]}],\"eleccion\":null},{\"id\":3,\"enunciado\":\"Elige un arma\",\"respuestas\":[{\"id\":1,\"enunciado\":\"Escopeta\",\"madre\":3,\"afinidades\":[{\"idr\":1,\"ids\":1,\"cantidad\":\"2\"},{\"idr\":1,\"ids\":2,\"cantidad\":\"6\"}]},{\"id\":2,\"enunciado\":\"Espada\",\"madre\":3,\"afinidades\":[{\"idr\":2,\"ids\":1,\"cantidad\":\"7\"},{\"idr\":2,\"ids\":2,\"cantidad\":0}]},{\"id\":3,\"enunciado\":\"Motosierra\",\"madre\":3,\"afinidades\":[{\"idr\":3,\"ids\":1,\"cantidad\":0},{\"idr\":3,\"ids\":2,\"cantidad\":\"10\"}]},{\"id\":4,\"enunciado\":\"Arco\",\"madre\":3,\"afinidades\":[{\"idr\":4,\"ids\":1,\"cantidad\":\"6\"},{\"idr\":4,\"ids\":2,\"cantidad\":0}]}],\"eleccion\":null},{\"id\":4,\"enunciado\":\"¿Sacrificarías a alguien de tu equipo si eso asegura TU supervivencia?\",\"respuestas\":[{\"id\":1,\"enunciado\":\"Si\",\"madre\":4,\"afinidades\":[{\"idr\":1,\"ids\":1,\"cantidad\":\"10\"},{\"idr\":1,\"ids\":2,\"cantidad\":0}]},{\"id\":2,\"enunciado\":\"No\",\"madre\":4,\"afinidades\":[{\"idr\":2,\"ids\":1,\"cantidad\":0},{\"idr\":2,\"ids\":2,\"cantidad\":\"10\"}]}],\"eleccion\":null},{\"id\":5,\"enunciado\":\"¿Prepararías un campamento o algún tipo de base?\",\"respuestas\":[{\"id\":1,\"enunciado\":\"Si\",\"madre\":5,\"afinidades\":[{\"idr\":1,\"ids\":1,\"cantidad\":\"4\"},{\"idr\":1,\"ids\":2,\"cantidad\":0}]},{\"id\":2,\"enunciado\":\"No, seria más bien nómada\",\"madre\":5,\"afinidades\":[{\"idr\":2,\"ids\":1,\"cantidad\":0},{\"idr\":2,\"ids\":2,\"cantidad\":\"9\"}]}],\"eleccion\":null},{\"id\":6,\"enunciado\":\"Elige un lugar para que sea tu escondite\",\"respuestas\":[{\"id\":1,\"enunciado\":\"Una pequeña tienda\",\"madre\":6,\"afinidades\":[{\"idr\":1,\"ids\":1,\"cantidad\":0},{\"idr\":1,\"ids\":2,\"cantidad\":\"6\"}]},{\"id\":2,\"enunciado\":\"Un hospital\",\"madre\":6,\"afinidades\":[{\"idr\":2,\"ids\":1,\"cantidad\":\"6\"},{\"idr\":2,\"ids\":2,\"cantidad\":0}]},{\"id\":3,\"enunciado\":\"Una casa\",\"madre\":6,\"afinidades\":[{\"idr\":3,\"ids\":1,\"cantidad\":0},{\"idr\":3,\"ids\":2,\"cantidad\":\"8\"}]},{\"id\":4,\"enunciado\":\"Una gasolinera\",\"madre\":6,\"afinidades\":[{\"idr\":4,\"ids\":1,\"cantidad\":\"6\"},{\"idr\":4,\"ids\":2,\"cantidad\":0}]}],\"eleccion\":null}],\"estrellas\":0,\"fechacreacion\":\"2019-06-13T19:51:20.437Z\"}', '2019-06-13', 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -146,7 +151,10 @@ INSERT INTO `users` (`id`, `name`, `email`, `password`, `avatar`, `admin`) VALUE
 (34, 'tony', 'tony@gmail.com', 'tony12', NULL, NULL),
 (35, 'dawdawd', 'awdawda@dwad.com', 'dawdawd', NULL, NULL),
 (36, 'dawdawd', 'awdawda@dwad.com', 'dawdawd', NULL, NULL),
-(37, 'rindamere', 'rindamere@gmail.com', 'rindamere', '', NULL);
+(37, 'rindamere', 'rindamere@gmail.com', 'rindamere', '', NULL),
+(38, 'unpro', 'chaval@gmail.com', '7001de3eb9a48a0d25ee09b889a922ac63e5b6717a37961ff1d72ea36cbd3699', NULL, NULL),
+(39, 'noteolvides', 'noteolvides@gmail.com', '0dbb7629a74c8f47b10184fab7c96736b42f292c14fe632c2bc5746188b9db67', NULL, NULL),
+(40, 'Exilonmlol', 'exilonmlol@gmail.com', '20b8bb20c0f2e2684a6e40e4147adf3f60fa8fbe53bbad75ed73a0c7e06606db', NULL, NULL);
 
 -- --------------------------------------------------------
 
@@ -165,8 +173,9 @@ CREATE TABLE `votaciones` (
 --
 
 INSERT INTO `votaciones` (`origen`, `quizz`, `cantidad`) VALUES
-(19, 33, 5),
-(20, 33, 3);
+(19, 33, 4),
+(20, 33, 3),
+(40, 39, 4);
 
 --
 -- Índices para tablas volcadas
@@ -221,19 +230,19 @@ ALTER TABLE `votaciones`
 -- AUTO_INCREMENT de la tabla `notificaciones`
 --
 ALTER TABLE `notificaciones`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=4;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT de la tabla `quizz`
 --
 ALTER TABLE `quizz`
-  MODIFY `id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
+  MODIFY `id` int(50) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=40;
 
 --
 -- AUTO_INCREMENT de la tabla `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=41;
 
 --
 -- Restricciones para tablas volcadas

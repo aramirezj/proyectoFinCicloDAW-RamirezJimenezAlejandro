@@ -1,6 +1,6 @@
 import { Component, ViewChild } from '@angular/core';
 import { AuthService } from './services/auth.service';
-import { Usuario } from './modelo/usuario';
+import { Usuario } from './modelo/Usuario';
 import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserService } from './services/user.service';

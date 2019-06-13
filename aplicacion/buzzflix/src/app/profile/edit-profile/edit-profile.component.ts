@@ -55,13 +55,14 @@ export class EditProfileComponent implements OnInit {
   }
 
   editProfile() {
+    console.log(this.profileForm.get("nombreFC"))
     let datos: any = [];
     let cambios = false;
     if (this.authService.getAuthUser().name != this.profileForm.get("nombreFC").value) {
       datos["nombre"] = this.profileForm.get("nombreFC").value;
       cambios = true;
     }
-    if (this.profileForm.get("(oldPassFC").value != "" && this.profileForm.get("newPassFC").value != "") {
+    if (this.profileForm.get("oldPassFC").value != "" && this.profileForm.get("newPassFC").value != "") {
       datos["oldpass"] = this.profileForm.get("oldPassFC").value;
       datos["newpass"] = this.profileForm.get("newPassFC").value;
       cambios = true;
