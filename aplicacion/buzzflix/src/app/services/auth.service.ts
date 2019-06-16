@@ -61,7 +61,6 @@ export class AuthService {
         return this.http.post(`${CONFIG.apiUrl}authenticate`, { email: email, password: password })
             .toPromise()
             .then((response) => {
-                console.log(response)
                 if (response.status == 200) {
                     let aux: Usuario = response.json().usuario;
                     localStorage.setItem("token", response.json().token);
@@ -89,7 +88,8 @@ export class AuthService {
 
     isLoggedIn(): boolean {
         let usuario = localStorage.getItem("usuario");
-        if (usuario) {
+        let token = localStorage.getItem("token");
+        if (usuario && token) {
             return true
         } else {
             return false;

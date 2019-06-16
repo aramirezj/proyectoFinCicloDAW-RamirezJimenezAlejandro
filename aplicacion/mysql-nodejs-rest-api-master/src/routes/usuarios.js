@@ -372,7 +372,7 @@ router.get('/quizz/todos', (req, res) => {
 router.get('/quizzes/:nombre', (req, res) => {
   let { nombre } = req.params;
   console.log("Obtener quizz por nombre " + nombre);
-  mysqlConnection.query('SELECT q.*,COALESCE(SUM(v.cantidad),0) as estrellas FROM quizz q left join votaciones v on q.id=v.quizz WHERE LOWER(q.titulo) LIKE LOWER(?) AND q.publicado=1  GROUP BY q.id order by q.titulo', ['%' + nombre + "%"], (err, rows, fields) => {
+  mysqlConnection.query('SELECT q.*,COALESCE(SUM(v.cantidad),0) as estrellas FROM quizz q left join votaciones v on q.id=v.quizz WHERE LOWER(q.titulo) LIKE LOWER(?) AND q.publicado=1 AND privado IS NULL GROUP BY q.id order by q.titulo', ['%' + nombre + "%"], (err, rows, fields) => {
     if (!err) {
       res.send({
         status: '200',

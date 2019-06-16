@@ -23,7 +23,8 @@ export class AppComponent {
   showSQ:boolean = false;
   showSU:boolean = false;
   vacio: boolean = false;
-  notificaciones: Section[]
+  notificaciones: Section[];
+  icono:string;
   panelOpenState = false;
   correctas: Section[] = [
   ];
@@ -105,9 +106,14 @@ export class AppComponent {
             }
             this.notificaciones.push(section);
           }
+          if(this.notificaciones.length>9){
+            this.icono="filter_9_plus";
+          }else{
+            this.icono="filter_"+this.notificaciones.length;
+          }
         }))
     }
-
+    
   }
 
   read(notificacion) {
@@ -116,6 +122,12 @@ export class AppComponent {
     this.notificaciones.splice(index, 1);
     if (this.notificaciones.length == 0) {
       this.vacio = true;
+    }else{
+      if(this.notificaciones.length>9){
+        this.icono="filter_9_plus";
+      }else{
+        this.icono="filter_"+this.notificaciones.length;
+      }
     }
 
   }
