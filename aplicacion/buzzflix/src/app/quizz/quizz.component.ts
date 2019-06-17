@@ -91,6 +91,7 @@ export class QuizzComponent implements OnInit {
   borrar(accion) {
     if (accion) {
       this.quizzService.borraQuizz(this.quizz);
+      this.quizz=null;
     }
   }
   cambiar() {
