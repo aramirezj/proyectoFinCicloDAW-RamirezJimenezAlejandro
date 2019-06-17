@@ -55,7 +55,6 @@ export class EditProfileComponent implements OnInit {
   }
 
   editProfile() {
-    console.log(this.profileForm.get("nombreFC"))
     let datos: any = [];
     let cambios = false;
     if (this.authService.getAuthUser().name != this.profileForm.get("nombreFC").value) {
@@ -107,8 +106,7 @@ export class EditProfileComponent implements OnInit {
       this.file = file;
     } else {
       this.notifyService.notify("Los formatos aceptados son PNG,JPG,JPEG", "error");
-      console.log(this.profileForm.get("avatar").reset());
-      console.log(this.profileForm.get("avatar"))
+      this.profileForm.get("avatar").reset();
     }
   }
 }

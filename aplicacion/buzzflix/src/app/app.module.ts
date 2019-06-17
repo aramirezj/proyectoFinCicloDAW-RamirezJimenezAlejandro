@@ -26,8 +26,10 @@ import {FollowService} from './services/follow.service';
 import { CreateQuizzComponent } from './create-quizz/create-quizz.component';
 import { QuizzService } from './services/quizz.service';
 import { QuizzComponent } from './quizz/quizz.component';
-import { VerQuizzComponent } from './ver-quizz/ver-quizz.component';
+import {  VerQuizzComponent } from './ver-quizz/ver-quizz.component';
 import { ExploradorComponent } from './explorador/explorador.component';
+import {  MatPaginatorIntlCro } from './explorador/explorador.component';
+
 import { UsuarioComponent } from './usuario/usuario.component';
 import { DashboardUsersComponent } from './dashboard-users/dashboard-users.component';
 import { VotarComponent } from './ver-quizz/votar/votar.component';
@@ -40,9 +42,11 @@ import {MatSnackBarModule} from '@angular/material/snack-bar';
 import {MatCardModule} from '@angular/material/card';
 import {MatDialogModule} from '@angular/material/dialog';
 import {MatTreeModule} from '@angular/material/tree';
+import {MatPaginatorIntl} from '@angular/material';
 import {MatExpansionModule} from '@angular/material/expansion';
 import {MatCheckboxModule} from '@angular/material/checkbox';
 import {MatGridListModule} from '@angular/material/grid-list'
+import {MatPaginatorModule} from '@angular/material/paginator';
 import { MatToolbarModule, MatSidenavModule, MatListModule, MatIconModule } from "@angular/material";
 import {MatMenuModule} from '@angular/material/menu';
 import { AngularFirestore } from '@angular/fire/firestore';
@@ -100,7 +104,7 @@ import { NotFoundComponent } from './not-found/not-found.component';
     MatDialogModule,
     MatToolbarModule,
     MatSidenavModule,
-    
+    MatPaginatorModule,
     MatGridListModule,
     MatListModule, 
     MatCheckboxModule,
@@ -111,7 +115,7 @@ import { NotFoundComponent } from './not-found/not-found.component';
     AngularFireDatabaseModule 
   ],
   exports: [RouterModule,MatSelectModule],
-  providers: [AuthService,AuthGuard,AuthedGuard,QuizzService,NotifyService,UserService,FollowService,AngularFirestore,AngularFireStorage],
+  providers: [AuthService,AuthGuard,AuthedGuard,QuizzService,NotifyService,UserService,FollowService,AngularFirestore,AngularFireStorage,{ provide: MatPaginatorIntl, useClass: MatPaginatorIntlCro}],
   bootstrap: [AppComponent],
   entryComponents: [DialogboxComponent]
 })

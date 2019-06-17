@@ -72,13 +72,11 @@ export class VerQuizzComponent implements OnInit {
     let cp = this.quizz.preguntas.length;
 
     let prerespondidas = $(".activado");
-    console.log(prerespondidas)
-    
+
     for (let x = 1; x <= cp; x++) {
       totales[x] = 0;
     }
     let preguntas: Array<Pregunta> = this.quizz.preguntas;
-    console.log(preguntas)
     for (let i = 0; i < cp; i++) {
       for (let j = 0; j < preguntas[i].respuestas.length; j++) {
         let p1 = preguntas[i].respuestas[j].enunciado.trim();
@@ -93,7 +91,6 @@ export class VerQuizzComponent implements OnInit {
     for (let pregunta of preguntas) {
       respondidas.push(pregunta.eleccion);
     }
-    console.log(respondidas)
     for (let respuesta of respondidas) {
       for (let afinidad of respuesta.afinidades) {
         totales[afinidad.ids] = +afinidad.cantidad + +totales[afinidad.ids]
@@ -136,11 +133,10 @@ export class VerQuizzComponent implements OnInit {
         if (this.quizz != null) {
           this.id = this.quizz.id;
           this.bar.start();
-            this.generaFormulario();
-            this.cargado = true;
-            this.bar.done();
+          this.generaFormulario();
+          this.cargado = true;
+          this.bar.done();
         }
-console.log(this.quizz)
 
       })
   }

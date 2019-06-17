@@ -31,14 +31,12 @@ export class DashboardUsersComponent implements OnInit {
   initialiseInvites() {
     this.router.params.subscribe((params) => {
       this.nombre = params['nombre'];})
-    //console.log("INITIAL SERVISES"+this.nombre);
     this.getUsuarios();
   }
 
   ngOnInit() {
     this.router.params.subscribe((params) => {
       this.nombre = params['nombre'];})
-      //console.log("ON INIT"+this.nombre);
       //this.getUsuarios();
   }
 
@@ -52,7 +50,6 @@ export class DashboardUsersComponent implements OnInit {
     this.userService.getUsuarios(this.nombre)
     .then(resp=>{
       this.usuarios=resp;
-      console.log(this.usuarios)
       if(this.usuarios!=null){
         this.notifyService.notify("Búsqueda realizada","success");
       }

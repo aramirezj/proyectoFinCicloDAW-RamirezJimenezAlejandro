@@ -158,13 +158,11 @@ export class UserService {
                     aux.avatar = avatar;
                     localStorage.setItem("usuario", JSON.stringify(aux));
                     if (file != undefined) {
-                        console.log("Preparo subida")
                         let ref = this.afStorage.ref(avatar);
                         const uploadTask = ref.put(file);
                         uploadTask.snapshotChanges().pipe(
                             finalize(() => {
                                 if (datos["oldfile"] != undefined && datos["oldfile"]!="") {
-                                    console.log("Preparo borrado")
                                     this.borraImagen(datos["oldfile"]);
                                 }
                                 this.notifyService.notify("¡Usuario actualizado con exito!", "success");

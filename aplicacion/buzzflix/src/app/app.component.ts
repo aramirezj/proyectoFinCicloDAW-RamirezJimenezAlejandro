@@ -20,11 +20,11 @@ export class AppComponent {
   public miniForm: FormGroup
   public miniForm2: FormGroup
   usuario: Usuario
-  showSQ:boolean = false;
-  showSU:boolean = false;
+  showSQ: boolean = false;
+  showSU: boolean = false;
   vacio: boolean = false;
   notificaciones: Section[];
-  icono:string;
+  icono: string;
   panelOpenState = false;
   correctas: Section[] = [
   ];
@@ -65,23 +65,23 @@ export class AppComponent {
   onSubmit() {
     let nombre = this.miniForm.get('nombre').value;
     if (nombre != "") {
-      this.showSQ=false;
-      this.showSU=false;
+      this.showSQ = false;
+      this.showSU = false;
       this.router.navigate(['ver/usuarios/' + nombre]);
     } else {
-      this.showSQ=false;
-      this.showSU=false;
+      this.showSQ = false;
+      this.showSU = false;
     }
   }
   onSubmit2() {
     let nombre = this.miniForm2.get('nombre2').value;
     if (nombre != "") {
-      this.showSQ=false;
-      this.showSU=false;
+      this.showSQ = false;
+      this.showSU = false;
       this.router.navigate(['ver/quizzes/' + nombre]);
     } else {
-      this.showSQ=false;
-      this.showSU=false;
+      this.showSQ = false;
+      this.showSU = false;
     }
   }
 
@@ -99,21 +99,24 @@ export class AppComponent {
     if (this.authService.isLoggedIn()) {
       this.authService.getNotificaciones()
         .then((respuesta => {
-          for (let resp of respuesta) {
-            let section: Section;
-            section = {
-              name: resp["mensaje"]
+          if (respuesta != undefined) {
+            for (let resp of respuesta) {
+              let section: Section;
+              section = {
+                name: resp["mensaje"]
+              }
+              this.notificaciones.push(section);
             }
-            this.notificaciones.push(section);
+            if (this.notificaciones.length > 9) {
+              this.icono = "filter_9_plus";
+            } else {
+              this.icono = "filter_" + this.notificaciones.length;
+            }
           }
-          if(this.notificaciones.length>9){
-            this.icono="filter_9_plus";
-          }else{
-            this.icono="filter_"+this.notificaciones.length;
-          }
+
         }))
     }
-    
+
   }
 
   read(notificacion) {
@@ -122,21 +125,21 @@ export class AppComponent {
     this.notificaciones.splice(index, 1);
     if (this.notificaciones.length == 0) {
       this.vacio = true;
-    }else{
-      if(this.notificaciones.length>9){
-        this.icono="filter_9_plus";
-      }else{
-        this.icono="filter_"+this.notificaciones.length;
+    } else {
+      if (this.notificaciones.length > 9) {
+        this.icono = "filter_9_plus";
+      } else {
+        this.icono = "filter_" + this.notificaciones.length;
       }
     }
 
   }
 
   muestraForm() {
-    this.showSU=true;
+    this.showSU = true;
   }
   muestraForm2() {
-    this.showSQ=true;
+    this.showSQ = true;
   }
 
 

@@ -88,7 +88,6 @@ export class ProfileComponent implements OnInit {
       this.mutualaux = false;
     } else {
       this.followers++;
-      console.log(this.mutual)
       if(this.mutual[0]!=null){
         if (this.mutual[0].origen == this.id) {
           this.mutualaux = true;

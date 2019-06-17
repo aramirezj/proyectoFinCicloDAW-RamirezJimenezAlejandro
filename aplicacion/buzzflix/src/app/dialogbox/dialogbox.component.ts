@@ -12,7 +12,6 @@ export class DialogboxComponent implements OnInit {
     constructor(
         private dialogRef: MatDialogRef<DialogboxComponent>,
         @Inject(MAT_DIALOG_DATA) data) {
-          console.log(data);
         this.description = data.title;
     }
 

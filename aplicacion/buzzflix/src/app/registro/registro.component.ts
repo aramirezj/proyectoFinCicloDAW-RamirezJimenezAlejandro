@@ -53,7 +53,6 @@ export class RegistroComponent implements OnInit {
   }
 
   onSubmit(form){
-    console.log("llego a onsubmit");
     let verdad=true;
     if(this.nombreFC.invalid){
       this.notifyService.notify("El nombre es obligatorio","error");

@@ -32,9 +32,7 @@ export class WallComponent implements OnInit {
     this.userService.getUserWall(this.id)
     .then(resp=>{
       if(resp.status == '200'){
-        console.log(resp.cont)
         this.quizzs=resp.cont;
-        console.log(this.quizzs)
         this.isLoaded=true;
       }else{
         this.quizzs=null;

@@ -82,13 +82,13 @@ router.post('/register', cors(), (req, res, next) => {
     if (!err) {
       var token = creaToken(rows.insertId);
       console.log(token);
-      res.send({ status:"200",auth: true, token: token, id: rows.insertId });
+      res.send({ status: "200", auth: true, token: token, id: rows.insertId });
     } else {
       if (err.code == 'ER_DUP_ENTRY') {
-        res.send({ status:"Duplicate" });
-        }else{
-          res.send({ status:"Error sql" });
-        }
+        res.send({ status: "Duplicate" });
+      } else {
+        res.send({ status: "Error sql" });
+      }
     }
   });
 });
@@ -321,52 +321,74 @@ router.get('/usuario/:id/wall', (req, res) => {
   });
 });
 //Obtener los quizzes de todos los seguidos (UNPROTECTED)
-router.get('/quizz/:id/seguidos', (req, res) => {
+router.get('/quizz/:id/seguidos/:cadena', (req, res) => {
   console.log("Obtener quizz de los seguidos")
-  const { id } = req.params;
-  let query = "SELECT q.*,COALESCE(SUM(v.cantidad),0) as estrellas FROM quizz q left JOIN votaciones v on q.id=v.quizz WHERE creador in ( SELECT destino from follows where origen = ? ) AND publicado = 1 AND privado IS NULL GROUP BY q.id order by fechacreacion DESC"
-  mysqlConnection.query(query, [id], (err, rows, fields) => {
-    if (!err) {
-      if (rows.length == 0) {
-        res.json({
-          status: "200",
-          cont: null
-        })
+  const { id, cadena } = req.params;
+  let limite = cadena.split("-");
+  limite = "LIMIT " + limite[0] + "," + limite[1];
+  let total = 0;
+  let query2 = "SELECT count(id) as pls from quizz where publicado=1 and privado is null and  creador in ( SELECT destino from follows where origen = ? ) "
+  mysqlConnection.query(query2, [id], (err, rows, fields) => {
+    total = rows[0].pls;
+    let query = "SELECT q.*,COALESCE(SUM(v.cantidad),0) as estrellas FROM quizz q left JOIN votaciones v on q.id=v.quizz WHERE creador in ( SELECT destino from follows where origen = ? ) AND publicado = 1 AND privado IS NULL GROUP BY q.id order by fechacreacion DESC " + limite
+    mysqlConnection.query(query, [id], (err, rows, fields) => {
+      if (!err) {
+        if (rows.length == 0) {
+          res.json({
+            status: "200",
+            cont: null
+          })
+        } else {
+          res.json({
+            status: "200",
+            cont: rows,
+            total:total
+          });
+        }
+        return res;
       } else {
-        res.json({
-          status: "200",
-          cont: rows
-        });
+        console.log(err);
       }
-      return res;
-    } else {
-      console.log(err);
-    }
+    });
   });
 });
 //Obtener los quizzes de la web (UNPROTECTED)
-router.get('/quizz/todos', (req, res) => {
+router.get('/quizz/todos/:cadena', (req, res) => {
   console.log("Obtener quizz de todos")
-  let query = "SELECT q.*,COALESCE(SUM(v.cantidad),0) as estrellas FROM quizz q LEFT JOIN votaciones v on q.id=v.quizz"
-    + " where publicado = 1 and privado is null GROUP BY q.id ORDER BY SUM(v.cantidad) DESC"
-  mysqlConnection.query(query, null, (err, rows, fields) => {
-    if (!err) {
-      if (rows.length == 0) {
-        res.json({
-          status: "EMPTY",
-          cont: null
-        })
+  const { cadena } = req.params;
+  let limite = cadena.split("-");
+  limite = "LIMIT " + limite[0] + "," + limite[1];
+  console.log(limite)
+
+  let total = 0;
+  let query2 = "SELECT count(id) as pls from quizz where publicado=1 and privado IS NULL"
+  mysqlConnection.query(query2, null, (err, rows, fields) => {
+    total = rows[0].pls;
+    let query = "SELECT q.*,COALESCE(SUM(v.cantidad),0) as estrellas FROM quizz q LEFT JOIN votaciones v on q.id=v.quizz"
+      + " where publicado = 1 and privado is null GROUP BY q.id DESC " + limite;
+    mysqlConnection.query(query, null, (err, rows, fields) => {
+      if (!err) {
+        if (rows.length == 0) {
+          res.json({
+            status: "EMPTY",
+            cont: null
+          })
+        } else {
+          res.json({
+            status: "OK",
+            cont: rows,
+            total: total
+          });
+        }
+        return res;
       } else {
-        res.json({
-          status: "OK",
-          cont: rows
-        });
+        console.log(err);
       }
-      return res;
-    } else {
-      console.log(err);
-    }
+    });
   });
+
+
+
 });
 // Obtener quizz según nombre 
 router.get('/quizzes/:nombre', (req, res) => {
@@ -592,8 +614,8 @@ router.get('/quizz/:id/media', (req, res) => {
   console.log("Obtener cantidad de votos, (no cantidad)")
   const { id } = req.params;
   let cantidad = 0;
-  let query = "SELECT count(quizz) as m FROM votaciones WHERE quizz = ?"
-  mysqlConnection.query(query, [id], (err, rows, fields) => {
+  let query = "SELECT count(quizz) as m FROM votaciones WHERE quizz = ? OR quizz in(SELECT id from quizz where privado = ?)"
+  mysqlConnection.query(query, [id,id], (err, rows, fields) => {
     if (!err) {
       if (rows.length == 0) {
       } else {
@@ -653,15 +675,6 @@ router.post('/usuario/followers', (req, res) => {
   });
 });
 
-
-
-//Petición de subida de archivo (VER COMO PROTEGER)
-router.post('/file', upload.any('file'), (req, res, next) => {
-  console.log("PETICION SUBIR IMAGENES")
-  console.log("PARAMETROS")
-  console.log(req.files)
-
-});
 
 //Peticion para crear un quizz (UNPROTECTED)
 router.post('/creaQuizz', cors(), (req, res, next) => {

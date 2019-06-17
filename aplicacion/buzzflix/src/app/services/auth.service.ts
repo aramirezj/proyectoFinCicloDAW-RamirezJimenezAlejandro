@@ -34,7 +34,6 @@ export class AuthService {
 
     register(name: string, email: string, password: string): Promise<Usuario> {
         this.bar.start();
-        console.log("Llego a la peticion" + name + "-" + email + "-" + password);
         return this.http.post(`${CONFIG.apiUrl}register`, { name: name, email: email, password: password })
             .toPromise()
             .then((response) => {

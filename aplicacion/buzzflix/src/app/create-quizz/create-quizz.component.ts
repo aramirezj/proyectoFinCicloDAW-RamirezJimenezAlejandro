@@ -88,7 +88,7 @@ export class CreateQuizzComponent implements OnInit {
       this.files[n] = file;
     }else{
       this.notifyService.notify("Los formatos aceptados son PNG,JPG,JPEG","error");
-      console.log(this.quizzForm.get(nameInput).reset());
+      this.quizzForm.get(nameInput).reset();
     }
 
   }
@@ -129,7 +129,7 @@ export class CreateQuizzComponent implements OnInit {
   //Generación de las soluciones al pulsar el boton
   generaSoluciones() {
     this.aux = this.quizzForm.get('cs').value;
-    console.log(this.quizzForm.value.privado);
+    this.quizzForm.value.privado;
     if (this.aux > 1 && this.aux < 6) {
       this.reseteaCondRespuestas();
       this.secondStep = false;
@@ -317,7 +317,7 @@ export class CreateQuizzComponent implements OnInit {
     this.estado = this.quizzForm.invalid;
     this.ref.detectChanges();
     if (!this.estado) {
-      console.log(this.compruebaRespuestasMinimas());
+      this.compruebaRespuestasMinimas();
       this.notifyService.notify("¡Hora de mostrarle esta maravilla al mundo!", "success");
       setTimeout(() => {
         this.onSubmit();
@@ -439,7 +439,6 @@ export class CreateQuizzComponent implements OnInit {
       privado = this.makeId();
     }
     this.quizz = new Quizz(null, this.authService.getAuthUserId(), titulo, this.files[0].name, this.preparaSoluciones(), this.preparaPreguntas(), 0, null);
-    console.log(this.quizz);
 
     this.quizzService.createQuizz(this.quizz, this.files, privado)
       .then(resp => {

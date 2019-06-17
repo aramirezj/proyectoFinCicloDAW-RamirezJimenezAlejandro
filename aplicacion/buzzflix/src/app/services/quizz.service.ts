@@ -9,7 +9,8 @@ import { DatePipe } from '@angular/common';
 import { UserService } from './user.service';
 import { NotifyService } from './notify.service';
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
-import { AngularFireStorage } from 'angularfire2/storage';
+import { AngularFireStorage, AngularFireUploadTask } from 'angularfire2/storage';
+import { finalize } from 'rxjs/operators';
 @Injectable()
 export class QuizzService {
     private headers: Headers
@@ -90,7 +91,6 @@ export class QuizzService {
         quizz.creador = id;
         let prep = JSON.stringify(quizz);
         let body = { creador: this.authService.getAuthUserId(), titulo: quizz.titulo, contenido: prep, fecha: fecha, privado: privado };
-        console.log(body);
         let options = new RequestOptions({ headers: this.headers });
         return this.http.post(url, body, options)
             .toPromise()
@@ -109,14 +109,16 @@ export class QuizzService {
     }
 
 
-    obtenerQuizzSeguidos(): Promise<Array<Quizz>> {
+
+    obtenerQuizzSeguidos(inicio:number,fin:number): Promise<Array<Quizz>> {
         this.headers = new Headers({ 'Authorization': `Bearer ${this.getToken()}` });
         let id = this.authService.getAuthUserId();
-        return this.http.get(`${CONFIG.apiUrl}quizz/${id}/seguidos`)
+        let cadena = inicio+"-"+fin;
+        return this.http.get(`${CONFIG.apiUrl}quizz/${id}/seguidos/${cadena}`)
             .toPromise()
             .then(resp => {
                 if (resp.json().status == "200") {
-                    return resp.json().cont;
+                    return resp.json();
                 } else if (resp.json().status == "Usuario sin permiso") {
                     this.notifyService.notify("No tienes permiso", "error");
                 } else if (resp.json().status == "Error sql") {
@@ -131,13 +133,14 @@ export class QuizzService {
             })
 
     }
-    obtenerAllQuizz(): Promise<Array<Quizz>> {
+    obtenerAllQuizz(inicio:number,fin:number): Promise<Array<Quizz>> {
         let id = this.authService.getAuthUserId();
-        return this.http.get(`${CONFIG.apiUrl}quizz/todos`)
+        let cadena = inicio+"-"+fin;
+        return this.http.get(`${CONFIG.apiUrl}quizz/todos/${cadena}`)
             .toPromise()
             .then(resp => {
                 if (resp.json().status == 'OK') {
-                    return resp.json().cont;
+                    return resp.json();
                 } else {
                     return null;
                 }

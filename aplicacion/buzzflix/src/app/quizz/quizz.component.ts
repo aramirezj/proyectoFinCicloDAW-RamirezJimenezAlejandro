@@ -20,7 +20,7 @@ export class QuizzComponent implements OnInit {
   id: number
   idaux: number
   clase: string = "fa fa-star"
-  estrellas: number
+  estrellas: number=0;
   @Input() quizz
   usuario: Usuario
   isCreador: boolean
@@ -46,6 +46,11 @@ export class QuizzComponent implements OnInit {
         this.quizzService.getMedia(this.quizz.id)
           .then((resp) => {
             this.estrellas = this.quizz.estrellas / resp;
+            if(isNaN(this.estrellas)){
+              this.estrellas=0;
+            }else{
+              this.estrellas = Math.round(this.estrellas);
+            }
           })
       })
     this.quizz.image = JSON.parse(this.quizz.contenido).image;
@@ -63,13 +68,6 @@ export class QuizzComponent implements OnInit {
     }
   }
 
-  generaEstrella(n: number) {
-    if (this.estrellas >= n) {
-      return "fa fa-star checked";
-    } else {
-      return "fa fa-star";
-    }
-  }
   openDialog() {
     const dialogConfig = new MatDialogConfig();
     dialogConfig.position = {
@@ -101,7 +99,6 @@ export class QuizzComponent implements OnInit {
       privado = true;
     }
     this.quizz.id = this.id;
-    console.log(this.quizz.id)
     this.quizzService.cambiaTipo(this.quizz, privado);
   }
   obtenerURL() {
