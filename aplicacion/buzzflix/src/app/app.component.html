@@ -134,7 +134,7 @@
               <mat-expansion-panel-header style="padding: 16px;">
                 <mat-panel-title>
                   <mat-icon style="margin-right: 16px;vertical-align: middle;">mail_outline</mat-icon> <span
-                    role="button" mat-button>Notificaciones</span>
+                    role="button" mat-button>Notificaciones  <mat-icon *ngIf="notificaciones.length>0">{{this.icono}}</mat-icon></span>
                 </mat-panel-title>
                 <mat-panel-description>
                 </mat-panel-description>

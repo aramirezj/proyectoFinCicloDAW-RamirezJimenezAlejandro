@@ -49,6 +49,9 @@ background: transparent
 mat-nav-list,mat-menu,mat-expansion-panel{
   background-color: #5a458d !important;
 }
+mat-list-item{
+  height: 100%!important;
+}
 
 
 span{
