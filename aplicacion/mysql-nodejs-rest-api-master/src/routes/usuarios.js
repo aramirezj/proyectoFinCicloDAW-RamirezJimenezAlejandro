@@ -213,6 +213,30 @@ router.get('/usuario/admin', (req, res) => {
     })
   }
 });
+// Obtener los logros de un usuario (PROTECTED)
+router.get('/usuario/:id/logros', (req, res) => {
+  console.log("Obtener logros de un usuario")
+  let permiso = verificaToken(req.headers);
+  const { id } = req.params;
+  if (permiso) {
+    mysqlConnection.query('SELECT L.*,(SELECT fecha from logros_obtenidos where usuario= ? and logro = L.id) as fecha from logros L', [id], (err, rows, fields) => {
+      if (!err) {
+        res.send({
+          status: '200',
+          logros: rows
+        })
+      } else {
+        res.send({
+          status: 'Error sql'
+        })
+      }
+    });
+  } else {
+    res.send({
+      status: 'Token invalido'
+    })
+  }
+});
 // Obtener notificaciones de un usuario (PROTECTED)
 router.get('/usuario/notificaciones', (req, res) => {
   console.log("Obtener las notificaciones de un usuario")
@@ -629,10 +653,10 @@ router.get('/quizz/:id/media', (req, res) => {
 });
 
 //Obtener número de seguidores (UNPROTECTED)
-router.post('/usuario/followers', (req, res) => {
-  let resultados = [];
+router.post('/usuario/stats', (req, res) => {
+  let resultados = [0,0,0,0];
   const { origen, destino } = req.body;
-  console.log("Obtener número de seguidores")
+  console.log("Obtener estadisticas de un perfil")
   let query0 = "SELECT *  FROM follows WHERE origen = ? AND destino = ? OR destino = ? AND origen = ?";
   mysqlConnection.query(query0, [origen, destino, origen, destino], (err, rows, fields) => {
     if (!err) {
@@ -654,6 +678,18 @@ router.post('/usuario/followers', (req, res) => {
         resultados[1] = 0;
       } else {
         resultados[1] = rows[0].followers
+      }
+    } else {
+      console.log(err);
+    }
+  });
+  let queryLogros = "SELECT count(*) as logros FROM `logros_obtenidos` WHERE usuario=?";
+  mysqlConnection.query(queryLogros, [destino], (err, rows, fields) => {
+    if (!err) {
+      if (rows.length == 0) {
+        resultados[3] = 0;
+      } else {
+        resultados[3] = rows[0].logros
       }
     } else {
       console.log(err);

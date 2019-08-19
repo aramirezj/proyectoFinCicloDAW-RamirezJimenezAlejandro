@@ -11,9 +11,13 @@ import { Image } from '../modelo/Image';
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
 import { AngularFireStorage } from 'angularfire2/storage';
 import { finalize } from 'rxjs/operators';
+import { Logro } from '../modelo/Logro';
+import { BehaviorSubject } from 'rxjs';
 
 @Injectable()
 export class UserService {
+    public idPaquete = new BehaviorSubject(0);
+    currentMessage = this.idPaquete.asObservable();
     public userProfileUpdated: EventEmitter<Usuario>
     private headers: Headers
     model: Image;
@@ -35,7 +39,9 @@ export class UserService {
             name: ''
         }
     }
-
+    changeMessage(id: number) {
+        this.idPaquete.next(id)
+      }
 
     getToken(): string {
         return localStorage.getItem('token');
@@ -64,11 +70,25 @@ export class UserService {
             .toPromise()
             .then((response) => {
                return response.json()
+            })
+            .catch(function(error) {
+               console.log(error);
             });
     }
-    getUserFollowers(id: number): Promise<number> {
+    getLogros(id:number): Promise<Array<Logro>>{
+        let options = new RequestOptions({ headers: this.headers });
+        return this.http.get(`${CONFIG.apiUrl}usuario/${id}/logros`, options)
+            .toPromise()
+            .then((response) => {
+               return response.json().logros
+            })
+            .catch(function(error) {
+               console.log(error);
+            });
+    }
+    getUserStats(id: number): Promise<number> {
 
-        let url = `${CONFIG.apiUrl}usuario/followers`;
+        let url = `${CONFIG.apiUrl}usuario/stats`;
         let body = { origen: this.authService.getAuthUserId(), destino: id };
         let options = new RequestOptions({ headers: this.headers });
         return this.http.post(url, body, options)
