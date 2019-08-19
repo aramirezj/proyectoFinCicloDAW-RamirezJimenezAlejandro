@@ -1,3 +1,5 @@
+@import 'variables.scss';
+
 @font-face {
   font-family: 'retroFont';
   src: 
@@ -19,10 +21,10 @@
 
 
 body{
-    background-color:#271553!important;
+    background-color:$fondoWeb !important;
 }
 mat-paginator{
-  background-color: #5a458d!important;
+  background-color: $fondoSuave !important;
   color:White!important;
   margin-top: 1%!important;
 }
@@ -33,7 +35,7 @@ opacity: 0.90;
   font-size: 1.8em;
   border:1px solid #AAA;
   font-weight: bold;
-  background: #5a458d ;
+  background: $fondoSuave ;
   padding:1%;
   color:White;
 }

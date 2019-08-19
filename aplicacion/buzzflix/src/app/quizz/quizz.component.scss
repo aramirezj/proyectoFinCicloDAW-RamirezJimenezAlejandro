@@ -1,48 +1,47 @@
-button{
-  display:block;
-  margin-top:2%;
-}
+@import "../../variables.scss";
 
+button {
+  display: block;
+  margin-top: 2%;
+}
 .checked {
-    color: #e14705;
-  }
-  img{
-    height: 20em;
-    border-radius: 2%;
-  }
-.fa-star{
+  color: $naranjaRetro;
+}
+img {
+  height: 20em;
+  border-radius: 2%;
+}
+.fa-star {
   width: 1.5em;
   font-size: 1.5em;
 }
-div{
-  background: linear-gradient(to left, #529f82,#46317c);
-  color:white;
+div {
+  background: linear-gradient(to left, #529f82, #46317c);
+  color: white;
   border-radius: 3%;
   text-transform: capitalize;
 }
-a{
-}
-p{
+
+p {
   margin-top: 2%;
 }
-.card{
+.card {
   box-shadow: 1px 3px 2px rgb(104, 100, 100);
   width: 47%;
-  float:left;
+  float: left;
   margin: 1%;
   transition-delay: 0.1s;
-  transition: all .3s;
-  border:0px!important;
+  transition: all 0.3s;
+  border: 0px !important;
 }
-.card:hover{
-  
+.card:hover {
   transform: translateY(-5px);
 }
 
-.card:hover{
+.card:hover {
   box-shadow: 4px 14px 8px rgb(68, 65, 65);
 }
 
-.card-body{
-text-align: center;
+.card-body {
+  text-align: center;
 }

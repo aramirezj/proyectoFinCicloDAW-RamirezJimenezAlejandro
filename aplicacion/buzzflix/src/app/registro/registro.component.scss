@@ -1,30 +1,11 @@
-mat-form-field{
-    display: block;
-}
-.box{
-  background-color: #3b2572!important;
-  border-radius:1em; 
-}
-
 .panel{
   margin: 1em;
   font-size: 1.5em;
   font-weight: bold;
 }
-
-
-.example-form {
-    min-width: 150px;
-    max-width: 500px;
+.example-full-width {
     width: 100%;
-    
-  }
- 
-  .example-full-width {
-    width: 100%;
-  }
-  button{
-      margin-top: 2%;
-      padding: 2%;
-      font-size: 1.2em;
-  }
+}
+mat-form-field{
+  margin-bottom: 1%;
+}

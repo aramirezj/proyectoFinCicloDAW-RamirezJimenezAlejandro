@@ -7,7 +7,6 @@ import { RegistroComponent } from './registro/registro.component';
 import { ROUTES } from './routes/routes';
 import { FormsModule, ReactiveFormsModule }   from '@angular/forms';
 import { AuthService } from './services/auth.service';
-import { ConexionComponent } from './conexion/conexion.component';
 import { HttpModule } from '@angular/http';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoginComponent,MyErrorStateMatcher } from './login/login.component';
@@ -63,7 +62,6 @@ import { NotFoundComponent } from './not-found/not-found.component';
   declarations: [
     AppComponent,
     RegistroComponent,
-    ConexionComponent,
     DashboardComponent,
     LoginComponent,
     MyErrorStateMatcher,

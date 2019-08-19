@@ -3,16 +3,12 @@ import { ActivatedRoute } from '@angular/router';
 import { Quizz } from '../modelo/Quizz';
 import { QuizzService } from '../services/quizz.service';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
-import { NgProgressModule, NgProgressService } from 'ng2-progressbar';
+import { NgProgressService } from 'ng2-progressbar';
 import { Respuesta } from '../modelo/Respuesta';
 import { Pregunta } from '../modelo/Pregunta';
 import { Solucion } from '../modelo/Solucion';
-import { NotifyService } from '../services/notify.service';
-import { MatSelectModule } from '@angular/material/select';
 import { AngularFireStorage } from 'angularfire2/storage';
 import * as $ from 'jquery';
-import 'hammerjs';
-import { UserService } from '../services/user.service';
 
 @Component({
   selector: 'app-ver-quizz',
@@ -35,10 +31,7 @@ export class VerQuizzComponent implements OnInit {
     private router: ActivatedRoute,
     private fb: FormBuilder,
     private bar: NgProgressService,
-    private notifyService: NotifyService,
-    private afStorage: AngularFireStorage,
-    private userService: UserService
-  ) {
+    private afStorage: AngularFireStorage) {
     this.resultado = false;
     this.cargado = false;
     this.quizzForm = this.fb.group({})
@@ -54,7 +47,6 @@ export class VerQuizzComponent implements OnInit {
 
   generaFormulario() {
     let cp = this.quizz.preguntas.length;
-    let grupo: any;
     for (let i = 1; i <= cp; i++) {
       let name: string = "" + i;
       this.quizzForm.addControl(name, new FormControl(null, []));
@@ -63,7 +55,6 @@ export class VerQuizzComponent implements OnInit {
     this.quizz.id = this.id
 
   }
-
 
   onSubmit() {
     let totales: Array<number> = [];
@@ -112,7 +103,6 @@ export class VerQuizzComponent implements OnInit {
     this.resultado = true;
     this.urlShare = "https://twitter.com/share?url=" + window.location.href + "&amp;text=¡Obtuve%20" + this.solucionado.titulo + "!%20&amp;hashtags=Hasquiz";
 
-    // $(".shareme").attr("href",this.urlShare);
     setTimeout(() => {
       $(".mat-card-header-text")[0].style.width = "100%";
       $(".mat-card-header-text")[0].style.margin = "0";
@@ -126,7 +116,6 @@ export class VerQuizzComponent implements OnInit {
   }
 
   getQuizz() {
-    let pre: any;
     this.quizzService.getQuizz(this.rawid)
       .then(resp => {
         this.quizz = resp;
@@ -168,8 +157,6 @@ export class VerQuizzComponent implements OnInit {
         elemento = document.getElementById('p' + nextId);
       }
       elemento.scrollIntoView(false);
-
-
     }
 
   }

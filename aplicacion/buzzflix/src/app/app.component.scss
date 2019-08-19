@@ -1,39 +1,34 @@
-form {
-  display: inline;
-  align-items: initial;
-}
+@import '../variables.scss';
 
-input {
-  margin-top: 0.5%;
-}
-i {
-  vertical-align: sub;
-  margin-left: 0.5%;
-}
-ul {
-  display: inline;
-}
+//Toda la barra de navegación
+//Elementos
 a {
   font-size: 1em;
   font-weight: bold;
-  color: White !important;
+  color: white !important;
   text-decoration:none;
   vertical-align: bottom;
 }
 a:hover {
-  color: #e14705 !important;
+  color: $naranjaRetro !important;
 }
-
-
-.mat-toolbar {
-  background-color: #5a458d !important;
+//Elementos
+//Formularios del buscador 
+form {
+  display: inline;
+  align-items: initial;
+}
+input {
+  margin-top: 0.5%;
 }
 button {
   vertical-align: bottom;
 }
-
-
-
+//Formularios del buscador
+//Menú desplegable
+.mat-toolbar {
+  background-color: $fondoSuave;
+}
 .menu-spacer {
   flex: 1 1 auto;
 }
@@ -47,13 +42,11 @@ background: transparent
   margin-top:5%;
 }
 mat-nav-list,mat-menu,mat-expansion-panel{
-  background-color: #5a458d !important;
+  background-color: $fondoSuave ;
 }
 mat-list-item{
   height: 100%!important;
 }
-
-
 span{
   color:white!important;
   font-size:3vh;
@@ -73,7 +66,6 @@ mat-panel-title>mat-icon{
   vertical-align:top;
 }
 .icono{
-  
   color:orange!important;
   font-size:2.5em;
 }
@@ -87,3 +79,4 @@ h4{
   color:white;
   white-space: normal!important;
 }
+//Menú desplegable
