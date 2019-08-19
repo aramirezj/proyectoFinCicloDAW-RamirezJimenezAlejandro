@@ -19,6 +19,8 @@
       </mat-expansion-panel>
     </mat-accordion>
   </div>
+
+
   <div class="boxEnunciado" *ngIf="this.isLoaded && this.quizzs!=null" class="text-center">
     {{this.controlImagenes(0)}}
   <p class="box textEnunciado" style="background: #5a458d;width: 100%">Quiz {{this.quizzs[this.indice].titulo | json}} </p>
@@ -38,21 +40,19 @@
     <div style="clear:both;"></div>
 
     <p class="box textEnunciado">Preguntas</p>
-    <div class="boxPregunta" *ngFor="let pregunta of this.quizzs[this.indice].preguntas;let i = index">
-      <h4  style="margin-bottom: 1%;" [class]="'box textPregunta'+' color'+i">{{pregunta.enunciado}}</h4>
+    <div class="cajaPregunta" *ngFor="let pregunta of this.quizzs[this.indice].preguntas;let i = index">
+      <h4  style="margin-bottom: 1%;">{{pregunta.enunciado}}</h4>
       <div class="clear"></div>
-      <div style="margin-bottom: 1%;" [class]="'box boxRespuesta'+' color'+i" *ngFor="let respuesta of pregunta.respuestas;let j=index">
-        <p class="textRespuesta">{{respuesta.enunciado}}</p>
+      <div style="margin-bottom: 1%;" class="'box cajaRespuesta" *ngFor="let respuesta of pregunta.respuestas;let j=index">
+        <p>{{respuesta.enunciado}}</p>
       </div>
       <div class="clear"></div>
     </div>
     <div class="acciones">
         <button *ngIf="!this.isAdmin" style="float:left;" mat-raised-button color="warn" (click)="juzga(false)">Rechazar</button>
         <button *ngIf="!this.isAdmin" style="float:right;" mat-raised-button color="primary" (click)="juzga(true)">Aprobar</button>
-        <button *ngIf="this.isAdmin" style="float:left;" mat-raised-button color="warn" (click)="juzga(false)">Rechazar</button>
+        <button *ngIf="this.isAdmin" style="float:left;" mat-raised-button color="warn" (click)="juzga(false)">Borrar</button>
         <button *ngIf="this.isAdmin" style="float:right;" mat-raised-button color="primary" (click)="juzga(true)">Publicar</button>
-      <!--<button type="button" class="btn btn-danger" (click)="juzga(false)">Rechazar</button>
-      <button type="button" class="btn btn-success" (click)="juzga(true)">Aprobar</button>-->
     </div>
   </div>
   <div *ngIf="this.isLoaded && this.quizzs==null">

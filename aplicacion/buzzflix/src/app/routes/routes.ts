@@ -15,6 +15,7 @@ import { DashboardUsersComponent } from '../dashboard-users/dashboard-users.comp
 import { ModeracionComponent } from '../moderacion/moderacion.component';
 import { DashboardQuizComponent } from '../dashboard-quiz/dashboard-quiz.component';
 import { NotFoundComponent } from '../not-found/not-found.component';
+import { LogrosComponent } from '../profile/logros/logros.component';
 export const ROUTES = [
     {
         path:'auth/register',
@@ -50,6 +51,9 @@ export const ROUTES = [
         },{
             path:'edit',
             component:EditProfileComponent
+        },{
+            path:'logros',
+            component:LogrosComponent
         }]
     },
     {

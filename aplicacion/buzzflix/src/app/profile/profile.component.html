@@ -25,10 +25,10 @@
           <div class="profile-card-inf__txt">Quizzes</div>
         </div>
 
-       <!-- <div class="profile-card-inf__item">
+        <div class="profile-card-inf__item">
           <div class="profile-card-inf__title">0</div>
           <div class="profile-card-inf__txt">Logros</div>
-        </div>-->
+        </div>
       </div>
 
 
@@ -38,7 +38,7 @@
           [currentProfileId]="id"></app-follow>
         <button class="profile-card__button button--blue js-message-btn" *ngIf="isAuthUserProfile()"
           routerLink="edit">Editar perfil</button>
-        <!--<button class="profile-card__button button--yellow js-message-btn">Logros</button>-->
+        <button class="profile-card__button button--yellow js-message-btn" routerLink="logros">Logros</button>
         
       </div>
     </div>

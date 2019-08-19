@@ -57,6 +57,7 @@ import { DialogboxComponent } from './dialogbox/dialogbox.component';
 import { ModeracionComponent } from './moderacion/moderacion.component';
 import { DashboardQuizComponent } from './dashboard-quiz/dashboard-quiz.component';
 import { NotFoundComponent } from './not-found/not-found.component';
+import { LogrosComponent } from './profile/logros/logros.component';
 
 @NgModule({
   declarations: [
@@ -82,6 +83,7 @@ import { NotFoundComponent } from './not-found/not-found.component';
     ModeracionComponent,
     DashboardQuizComponent,
     NotFoundComponent,
+    LogrosComponent,
   ],
   imports: [
     BrowserModule,
