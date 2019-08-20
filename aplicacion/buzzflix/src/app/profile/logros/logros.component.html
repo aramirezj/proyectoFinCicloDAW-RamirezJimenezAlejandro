@@ -4,7 +4,10 @@
     <div class="card-body">
       <h4 class="card-title">{{logro.nombre}}</h4>
       <p class="card-text">{{logro.descripcion}}</p>
-      <p class="card-text">{{logro.fecha | PrettyDate}}</p>
+      <p class="card-text">
+        <span *ngIf="logro.fecha=='Aun no conseguido'" class="textoPendiente">{{logro.fecha}}</span>
+        <span *ngIf="logro.fecha!='Aun no conseguido'">{{logro.fecha | PrettyDate}}</span>
+      </p>
     </div>
   </div>
 </div>

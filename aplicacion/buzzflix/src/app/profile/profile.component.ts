@@ -69,9 +69,7 @@ export class ProfileComponent implements OnInit {
         this.followers = resp[2];
         this.logros=resp[3];
         this.mutual = resp[0];
-        if (this.mutual.length == 2) {
-          this.mutualaux = true;
-        }
+        this.mutualaux = this.mutual.length == 2 ? true : false;
       })
   }
 

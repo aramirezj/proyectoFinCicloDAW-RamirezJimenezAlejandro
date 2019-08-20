@@ -2,30 +2,17 @@ var cors = require('cors')
 const express = require('express');
 const router = express.Router();
 const app = express();
-app.use(cors())
-var multer = require("multer");
 var jwt = require('jsonwebtoken');
-var bcrypt = require('bcryptjs');
-
-
 var crypto = require('crypto')
+app.use(cors())
 const algorithm = 'aes-192-cbc';
 const secretPassword = 'a670711037';
 
 var tokenService = require('../tokenService');
 let secretWord = tokenService;
 
-const storage = multer.diskStorage({
-  destination: function (req, file, cb) {
-    cb(null, './../buzzflix/src/assets/img')
-  },
-  filename: function (req, file, cb) {
-    cb(null, file.originalname)
-  }
-})
-const upload = multer({
-  storage: storage
-})
+const listaQuerys = require('../querys');
+
 
 const mysqlConnection = require('../database.js');
 
@@ -66,6 +53,44 @@ function encripta(texto) {
   let encrypted = cipher.update('some clear text data', 'utf8', 'hex');
   encrypted += cipher.final('hex');
   return encrypted;
+}
+
+function compruebaLogros(id) {
+  let query = "SELECT L.*,(SELECT fecha from logros_obtenidos where usuario= ? and logro = L.id) as fecha from logros L";
+  console.log(listaQuerys)
+
+  let qLogro0 = "";
+  let qLogro1 = "SELECT count(*) as total from quizz where creador = ? and publicado = 1 having total>5";
+  let qLogro2 = "SELECT count(*) as total from follows where destino = ? having total>10";
+  let qLogro3 = "SELECT max(counted) FROM (SELECT count(*) as counted from votaciones where quizz in (SELECT id as elid from quizz where creador = ?) group by quizz having counted > 10 ) as counts";
+  let querysLogros = [qLogro0,qLogro1,qLogro2,qLogro3];
+
+  let qInsertLogro = "INSERT INTO logros_obtenidos (usuario,logro) values ";
+
+  mysqlConnection.query(query, [id], (err, rows, fields) => {
+    if (!err) {
+      for(let logro of rows){
+        if(logro.fecha == null){
+          mysqlConnection.query(querysLogros[logro.id], [id], (err2, rows2, fields2) => {
+            if(rows2.length>0 && rows2[0]!=null){
+              qInsertLogro+="("+id+","+logro.id+")";
+              insertaLogro(qInsertLogro);
+            }
+          })
+        }
+      }
+    }else{
+      res.send({ status: "Error sql" });
+    }
+  });
+
+}
+
+function insertaLogro(query){
+  mysqlConnection.query(query, null, (err, rows, fields) => {
+    console.log("Se ha insertado un logro");
+    console.log(query)
+  })
 }
 
 //Petición para registrar un usuario .
@@ -126,12 +151,8 @@ router.put('/usuario/actualizar/:id', cors(), (req, res, next) => {
 
   let permiso = verificaToken(req.headers);
   if (permiso != false) {
-
-
-
     const { name, oldpass, newpass, avatar } = req.body;
     const { id } = req.params;
-    console.log(oldpass)
     if (oldpass == undefined || newpass == undefined) {
       let query = "UPDATE users set name = ?, avatar=? WHERE id = ?";
       mysqlConnection.query(query, [name, avatar, id], (err, rows, fields) => {
@@ -186,8 +207,10 @@ router.put('/usuario/actualizar/:id', cors(), (req, res, next) => {
 
 // Ver si un usuario es admin (PROTECTED)
 router.get('/usuario/admin', (req, res) => {
+  
   console.log("Preguntar si un usuario es administrador")
   let permiso = verificaToken(req.headers);
+  compruebaLogros(permiso);
   console.log(permiso)
   if (permiso) {
     mysqlConnection.query('SELECT id FROM users WHERE id = ? and admin is not null', [permiso], (err, rows, fields) => {
@@ -366,7 +389,7 @@ router.get('/quizz/:id/seguidos/:cadena', (req, res) => {
           res.json({
             status: "200",
             cont: rows,
-            total:total
+            total: total
           });
         }
         return res;
@@ -639,7 +662,7 @@ router.get('/quizz/:id/media', (req, res) => {
   const { id } = req.params;
   let cantidad = 0;
   let query = "SELECT count(quizz) as m FROM votaciones WHERE quizz = ? OR quizz in(SELECT id from quizz where privado = ?)"
-  mysqlConnection.query(query, [id,id], (err, rows, fields) => {
+  mysqlConnection.query(query, [id, id], (err, rows, fields) => {
     if (!err) {
       if (rows.length == 0) {
       } else {
@@ -654,7 +677,7 @@ router.get('/quizz/:id/media', (req, res) => {
 
 //Obtener número de seguidores (UNPROTECTED)
 router.post('/usuario/stats', (req, res) => {
-  let resultados = [0,0,0,0];
+  let resultados = [0, 0, 0, 0];
   const { origen, destino } = req.body;
   console.log("Obtener estadisticas de un perfil")
   let query0 = "SELECT *  FROM follows WHERE origen = ? AND destino = ? OR destino = ? AND origen = ?";

@@ -17,5 +17,5 @@ app.use(require('./routes/usuarios'));
 
 // Starting the server
 app.listen(app.get('port'), () => {
-  console.log(`Server on port ${app.get('port')}`);
+  console.log(`Servidor ejecutandose en el puerto ${app.get('port')}`);
 });

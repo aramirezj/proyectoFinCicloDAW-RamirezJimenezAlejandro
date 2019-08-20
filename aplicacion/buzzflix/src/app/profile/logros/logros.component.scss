@@ -13,5 +13,10 @@
 }
 .pendiente{
     -webkit-filter: grayscale(100%);
-    filter: grayscale(100%)
+    filter: grayscale(100%);
+    
+}
+.textoPendiente{
+    color:$naranjaRetro;
+    font-weight: bold;
 }

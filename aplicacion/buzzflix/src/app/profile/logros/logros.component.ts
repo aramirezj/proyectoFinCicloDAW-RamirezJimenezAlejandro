@@ -9,7 +9,7 @@ import { PrettyDatePipe } from '../../pipes/pretty-date.pipe';
 })
 export class LogrosComponent implements OnInit {
   public listaLogros: Array<Logro>;
-  public id:number;
+  public id: number;
   constructor(
     private userService: UserService,
   ) { }
@@ -18,22 +18,20 @@ export class LogrosComponent implements OnInit {
     this.userService.getLogros(this.id)
       .then((logros) => {
         this.listaLogros = logros;
-        for(let logro of this.listaLogros){
-          if(logro.fecha==null){
-            logro.fecha="Aun no conseguido";
+        for (let logro of this.listaLogros) {
+          if (logro.fecha == null) {
+            logro.fecha = "Aun no conseguido";
           }
         }
       });
-}
-isPendiente(logro:Logro){
-  if(logro.fecha=="Aun no conseguido"){
-    return "card-img-top pendiente";
-  }else{
-    return "card-img-top";
   }
-}
-  
-  
+  isPendiente(logro: Logro) {
+    return logro.fecha == "Aun no conseguido" ? 
+      "card-img-top pendiente" : 
+      "card-img-top";
+  }
+
+
 }
 
 
