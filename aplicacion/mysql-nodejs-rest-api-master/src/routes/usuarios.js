@@ -56,25 +56,15 @@ function encripta(texto) {
 }
 
 function compruebaLogros(id) {
-  let query = "SELECT L.*,(SELECT fecha from logros_obtenidos where usuario= ? and logro = L.id) as fecha from logros L";
-  console.log(listaQuerys)
 
-  let qLogro0 = "";
-  let qLogro1 = "SELECT count(*) as total from quizz where creador = ? and publicado = 1 having total>5";
-  let qLogro2 = "SELECT count(*) as total from follows where destino = ? having total>10";
-  let qLogro3 = "SELECT max(counted) FROM (SELECT count(*) as counted from votaciones where quizz in (SELECT id as elid from quizz where creador = ?) group by quizz having counted > 10 ) as counts";
-  let querysLogros = [qLogro0,qLogro1,qLogro2,qLogro3];
-
-  let qInsertLogro = "INSERT INTO logros_obtenidos (usuario,logro) values ";
-
-  mysqlConnection.query(query, [id], (err, rows, fields) => {
+  mysqlConnection.query(listaQuerys["buscaLogros"], [id], (err, rows, fields) => {
     if (!err) {
       for(let logro of rows){
         if(logro.fecha == null){
-          mysqlConnection.query(querysLogros[logro.id], [id], (err2, rows2, fields2) => {
+          mysqlConnection.query(listaQuerys["checkLogro"+logro.id], [id], (err2, rows2, fields2) => {
             if(rows2.length>0 && rows2[0]!=null){
-              qInsertLogro+="("+id+","+logro.id+")";
-              insertaLogro(qInsertLogro);
+              let parametros ="("+id+","+logro.id+")";
+              insertaLogro(listaQuerys["insertLogro"]+parametros);
             }
           })
         }
@@ -89,21 +79,15 @@ function compruebaLogros(id) {
 function insertaLogro(query){
   mysqlConnection.query(query, null, (err, rows, fields) => {
     console.log("Se ha insertado un logro");
-    console.log(query)
   })
 }
 
 //Petición para registrar un usuario .
 router.post('/register', cors(), (req, res, next) => {
   console.log("PETICION REGISTRO")
-  console.log("PARAMETROS")
   let { name, email, password } = req.body;
   password = encripta(password);
-  console.log(name, email, password);
-
-  const query = "insert into users (name,email,password) VALUES(?,?,?)";
-
-  mysqlConnection.query(query, [name, email, password], (err, rows, fields) => {
+  mysqlConnection.query(listaQuerys["registro"], [name, email, password], (err, rows, fields) => {
     if (!err) {
       var token = creaToken(rows.insertId);
       console.log(token);
@@ -120,13 +104,11 @@ router.post('/register', cors(), (req, res, next) => {
 //Petición para iniciar sesión
 router.post('/authenticate', cors(), (req, res, next) => {
   console.log("PETICION LOGIN(authenticate)")
-  console.log("PARAMETROS")
   let { email, password } = req.body;
   password = encripta(password);
 
   console.log("Parametros:" + email, password);
-  const query = "select id,name,email,avatar from users where email = ? AND password = ?";
-  mysqlConnection.query(query, [email, password], (err, rows, fields) => {
+  mysqlConnection.query(listaQuerys["login"], [email, password], (err, rows, fields) => {
     if (!err) {
       if (rows.length < 1) {
         res.json({
@@ -154,8 +136,7 @@ router.put('/usuario/actualizar/:id', cors(), (req, res, next) => {
     const { name, oldpass, newpass, avatar } = req.body;
     const { id } = req.params;
     if (oldpass == undefined || newpass == undefined) {
-      let query = "UPDATE users set name = ?, avatar=? WHERE id = ?";
-      mysqlConnection.query(query, [name, avatar, id], (err, rows, fields) => {
+      mysqlConnection.query(listaQuerys["editarPerfil1"], [name, avatar, id], (err, rows, fields) => {
         if (!err) {
           res.send({
             status: '200'
@@ -167,13 +148,10 @@ router.put('/usuario/actualizar/:id', cors(), (req, res, next) => {
         }
       });
     } else {
-      let boolean = false;
-      let query = "SELECT password from users where password = ? AND id = ?";
-      mysqlConnection.query(query, [oldpass, id], (err, rows, fields) => {
+      mysqlConnection.query(listaQuerys["editarPerfil2"], [oldpass, id], (err, rows, fields) => {
         if (!err) {
           if (rows.length > 0) {
-            let query = "UPDATE users set name = ? , password =?, avatar = ? WHERE id = ?";
-            mysqlConnection.query(query, [name, newpass, avatar, id], (err, rows, fields) => {
+            mysqlConnection.query(listaQuerys["editarPerfil3"], [name, newpass, avatar, id], (err, rows, fields) => {
               if (!err) {
                 res.send({
                   status: '200'
@@ -211,12 +189,10 @@ router.get('/usuario/admin', (req, res) => {
   console.log("Preguntar si un usuario es administrador")
   let permiso = verificaToken(req.headers);
   compruebaLogros(permiso);
-  console.log(permiso)
   if (permiso) {
-    mysqlConnection.query('SELECT id FROM users WHERE id = ? and admin is not null', [permiso], (err, rows, fields) => {
+    mysqlConnection.query(listaQuerys["isAdmin"], [permiso], (err, rows, fields) => {
       if (!err) {
         let respuesta = false;
-        console.log(rows.length);
         if (rows.length > 0) {
           respuesta = true;
         }
@@ -242,7 +218,7 @@ router.get('/usuario/:id/logros', (req, res) => {
   let permiso = verificaToken(req.headers);
   const { id } = req.params;
   if (permiso) {
-    mysqlConnection.query('SELECT L.*,(SELECT fecha from logros_obtenidos where usuario= ? and logro = L.id) as fecha from logros L', [id], (err, rows, fields) => {
+    mysqlConnection.query(listaQuerys["buscaLogros"], [id], (err, rows, fields) => {
       if (!err) {
         res.send({
           status: '200',
@@ -266,7 +242,7 @@ router.get('/usuario/notificaciones', (req, res) => {
   let permiso = verificaToken(req.headers);
   console.log(permiso)
   if (permiso) {
-    mysqlConnection.query('SELECT mensaje FROM notificaciones WHERE usuario = ? and leido is null', [permiso], (err, rows, fields) => {
+    mysqlConnection.query(listaQuerys["getNotis"], [permiso], (err, rows, fields) => {
       if (!err) {
         res.send({
           status: '200',
@@ -289,10 +265,9 @@ router.get('/usuario/notificaciones', (req, res) => {
 router.get('/usuario/:id', (req, res) => {
   console.log("Obtener un usuario mediante una id")
   let permiso = verificaToken(req.headers);
-  console.log(permiso)
   if (permiso) {
     const { id } = req.params;
-    mysqlConnection.query('SELECT id,name,email,avatar FROM users WHERE id = ?', [id], (err, rows, fields) => {
+    mysqlConnection.query(listaQuerys["getUsuario"], [id], (err, rows, fields) => {
       if (!err) {
         res.send({
           status: '200',
@@ -316,7 +291,7 @@ router.get('/usuarios/:nombre', (req, res) => {
   let permiso = verificaToken(req.headers);
   if (permiso) {
     let { nombre } = req.params;
-    mysqlConnection.query('SELECT id,name FROM users WHERE name LIKE ? order by name', [nombre + "%"], (err, rows, fields) => {
+    mysqlConnection.query(listaQuerys["getUsuariosByNombre"], [nombre + "%"], (err, rows, fields) => {
       if (!err) {
         res.send({
           status: '200',
@@ -337,16 +312,13 @@ router.get('/usuarios/:nombre', (req, res) => {
 //Obtener todos los quizz de alguien (SEMI-PROTECTED)
 router.get('/usuario/:id/wall', (req, res) => {
   console.log("Obtener todos los quizz de un perfil")
-
   let permiso = verificaToken(req.headers);
-
   const { id } = req.params;
-  console.log(id);
   let query = ""
   if (permiso == id) {
-    query = "SELECT q.*,COALESCE(SUM(v.cantidad),0) as estrellas FROM quizz q left JOIN votaciones v on q.id=v.quizz WHERE creador = ? GROUP BY q.id order by fechacreacion DESC"
+    query = listaQuerys["getUsuarioWallPrivate"];
   } else {
-    query = "SELECT q.*,COALESCE(SUM(v.cantidad),0) as estrellas FROM quizz q left JOIN votaciones v on q.id=v.quizz WHERE creador = ? AND publicado = 1 AND privado is null GROUP BY q.id order by fechacreacion DESC"
+    query = listaQuerys["getUsuarioWallPublic"];
   }
   mysqlConnection.query(query, [id], (err, rows, fields) => {
     if (!err) {
@@ -374,11 +346,9 @@ router.get('/quizz/:id/seguidos/:cadena', (req, res) => {
   let limite = cadena.split("-");
   limite = "LIMIT " + limite[0] + "," + limite[1];
   let total = 0;
-  let query2 = "SELECT count(id) as pls from quizz where publicado=1 and privado is null and  creador in ( SELECT destino from follows where origen = ? ) "
-  mysqlConnection.query(query2, [id], (err, rows, fields) => {
+  mysqlConnection.query(listaQuerys["getSeguidos1"], [id], (err, rows, fields) => {
     total = rows[0].pls;
-    let query = "SELECT q.*,COALESCE(SUM(v.cantidad),0) as estrellas FROM quizz q left JOIN votaciones v on q.id=v.quizz WHERE creador in ( SELECT destino from follows where origen = ? ) AND publicado = 1 AND privado IS NULL GROUP BY q.id order by fechacreacion DESC " + limite
-    mysqlConnection.query(query, [id], (err, rows, fields) => {
+    mysqlConnection.query(listaQuerys["getSeguidos2"]+limite, [id], (err, rows, fields) => {
       if (!err) {
         if (rows.length == 0) {
           res.json({
@@ -405,15 +375,10 @@ router.get('/quizz/todos/:cadena', (req, res) => {
   const { cadena } = req.params;
   let limite = cadena.split("-");
   limite = "LIMIT " + limite[0] + "," + limite[1];
-  console.log(limite)
-
   let total = 0;
-  let query2 = "SELECT count(id) as pls from quizz where publicado=1 and privado IS NULL"
-  mysqlConnection.query(query2, null, (err, rows, fields) => {
+  mysqlConnection.query(listaQuerys["getAllQuizzes1"], null, (err, rows, fields) => {
     total = rows[0].pls;
-    let query = "SELECT q.*,COALESCE(SUM(v.cantidad),0) as estrellas FROM quizz q LEFT JOIN votaciones v on q.id=v.quizz"
-      + " where publicado = 1 and privado is null GROUP BY q.id DESC " + limite;
-    mysqlConnection.query(query, null, (err, rows, fields) => {
+    mysqlConnection.query(listaQuerys["getAllQuizzes2"]+limite, null, (err, rows, fields) => {
       if (!err) {
         if (rows.length == 0) {
           res.json({
@@ -441,7 +406,7 @@ router.get('/quizz/todos/:cadena', (req, res) => {
 router.get('/quizzes/:nombre', (req, res) => {
   let { nombre } = req.params;
   console.log("Obtener quizz por nombre " + nombre);
-  mysqlConnection.query('SELECT q.*,COALESCE(SUM(v.cantidad),0) as estrellas FROM quizz q left join votaciones v on q.id=v.quizz WHERE LOWER(q.titulo) LIKE LOWER(?) AND q.publicado=1 AND privado IS NULL GROUP BY q.id order by q.titulo', ['%' + nombre + "%"], (err, rows, fields) => {
+  mysqlConnection.query(listaQuerys["getQuizzesByName"], ['%' + nombre + "%"], (err, rows, fields) => {
     if (!err) {
       res.send({
         status: '200',
@@ -459,9 +424,7 @@ router.get('/quizzes/:nombre', (req, res) => {
 router.post('/quizz/moderacion', (req, res) => {
   console.log("obtener quizz a moderar")
   const { id } = req.body;
-  let query = "SELECT q.*,COALESCE(SUM(v.cantidad),0) as estrellas FROM quizz q left join votaciones v on q.id=v.quizz where publicado = 0 AND privado is null AND creador != ? AND id not in " +
-    "(select quizz from moderacion where usuario = ? ) group by q.id"
-  mysqlConnection.query(query, [id, id], (err, rows, fields) => {
+  mysqlConnection.query(listaQuerys["getQuizzesaModerar"], [id, id], (err, rows, fields) => {
     if (!err) {
       if (rows.length == 0) {
         res.json({
@@ -489,28 +452,23 @@ router.post('/modera', (req, res) => {
   console.log(quizz + "--" + "--" + usuario + "---" + decision)
   let permiso = verificaToken(req.headers);
   if (permiso) {
-    let queryDatos = "SELECT creador,titulo from Quizz where id = ?";
-    mysqlConnection.query(queryDatos, [quizz], (err, rows, fields) => {
+    mysqlConnection.query(listaQuerys["setModerar1"], [quizz], (err, rows, fields) => {
       if (!err) {
         creador = rows[0].creador;
         titulo = rows[0].titulo;
-        console.log(creador, titulo)
-        mysqlConnection.query('SELECT id FROM users WHERE id = ? and admin is not null', [permiso], (err, rows, fields) => {
+        mysqlConnection.query(listaQuerys["setModerar2"], [permiso], (err, rows, fields) => {
           if (!err) {
             if (rows.length > 0) {
               //PUBLICO
               //TRUE
               if (decision) {
-                let queryadmin = "UPDATE quizz set publicado =1 where id = ?";
-                mysqlConnection.query(queryadmin, [quizz], (err, rows, fields) => {
+                mysqlConnection.query(listaQuerys["setModerar3"], [quizz], (err, rows, fields) => {
                   if (!err) {
-                    let queryadmin2 = "DELETE FROM moderacion WHERE quizz = ?";
-                    mysqlConnection.query(queryadmin2, [quizz], (err, rows, fields) => {
+                    mysqlConnection.query(listaQuerys["setModerar4"], [quizz], (err, rows, fields) => {
                       if (!err) {
                         if (!err) {
                           let mensajito = "¡Enhorabuena, su Quiz " + titulo + " ha sido publicado en la web!";
-                          let queryNotify = "insert into notificaciones (usuario,mensaje) values(?,?)";
-                          mysqlConnection.query(queryNotify, [creador, mensajito], (err, rows, fields) => {
+                          mysqlConnection.query(listaQuerys["setModerar5"], [creador, mensajito], (err, rows, fields) => {
                             if (!err) {
                               res.send({
                                 status: '200'
@@ -544,15 +502,12 @@ router.post('/modera', (req, res) => {
                 });
               } else {
                 //BORRO
-                let queryadmin = "DELETE FROM moderacion WHERE quizz = ?";
-                mysqlConnection.query(queryadmin, [quizz], (err, rows, fields) => {
+                mysqlConnection.query(listaQuerys["setModerar4"], [quizz], (err, rows, fields) => {
                   if (!err) {
-                    let queryadmin2 = "DELETE FROM quizz where id = ?";
-                    mysqlConnection.query(queryadmin2, [quizz], (err, rows, fields) => {
+                    mysqlConnection.query(listaQuerys["setModerar6"], [quizz], (err, rows, fields) => {
                       if (!err) {
                         let mensajito = "Lo sentimos, su Quiz " + titulo + " no ha superado el proceso de moderación, revisa los criterios e intentalo de nuevo.";
-                        let queryNotify = "insert into notificaciones (usuario,mensaje) values(?,?)";
-                        mysqlConnection.query(queryNotify, [creador, mensajito], (err, rows, fields) => {
+                        mysqlConnection.query(listaQuerys["setModerar7"], [creador, mensajito], (err, rows, fields) => {
                           if (!err) {
                             res.send({
                               status: '200'
@@ -581,8 +536,7 @@ router.post('/modera', (req, res) => {
               }
             } else {
               //APRUEBO
-              const query2 = "insert into moderacion (quizz,usuario,decision) VALUES(?,?,?)";
-              mysqlConnection.query(query2, [quizz, usuario, decision], (err, rows, fields) => {
+              mysqlConnection.query(listaQuerys["setModerar8"], [quizz, usuario, decision], (err, rows, fields) => {
                 if (!err) {
                 } else {
                   console.log(err);
@@ -612,9 +566,9 @@ router.get('/quizz/:id', (req, res) => {
   let query = "";
   console.log(id);
   if (!isNaN(id)) {
-    query = "SELECT * FROM quizz WHERE id = ? and publicado = 1";
+    query = listaQuerys["getOneQuizz1"];
   } else {
-    query = "SELECT * FROM quizz where privado = ?";
+    query = listaQuerys["getOneQuizz2"];
   }
 
   mysqlConnection.query(query, [id], (err, rows, fields) => {
@@ -642,8 +596,7 @@ router.get('/quizz/:id/cantidad', (req, res) => {
   console.log("Obtener cantidad de quizzes por un usuario")
   const { id } = req.params;
   let cantidad = 0;
-  let query = "SELECT count(id) as c FROM quizz WHERE creador = ? and publicado = 1"
-  mysqlConnection.query(query, [id], (err, rows, fields) => {
+  mysqlConnection.query(listaQuerys["getCantidadQuizzes"], [id], (err, rows, fields) => {
     if (!err) {
       if (rows.length == 0) {
       } else {
@@ -661,8 +614,7 @@ router.get('/quizz/:id/media', (req, res) => {
   console.log("Obtener cantidad de votos, (no cantidad)")
   const { id } = req.params;
   let cantidad = 0;
-  let query = "SELECT count(quizz) as m FROM votaciones WHERE quizz = ? OR quizz in(SELECT id from quizz where privado = ?)"
-  mysqlConnection.query(query, [id, id], (err, rows, fields) => {
+  mysqlConnection.query(listaQuerys["getCantidadVotos"], [id, id], (err, rows, fields) => {
     if (!err) {
       if (rows.length == 0) {
       } else {
@@ -680,8 +632,7 @@ router.post('/usuario/stats', (req, res) => {
   let resultados = [0, 0, 0, 0];
   const { origen, destino } = req.body;
   console.log("Obtener estadisticas de un perfil")
-  let query0 = "SELECT *  FROM follows WHERE origen = ? AND destino = ? OR destino = ? AND origen = ?";
-  mysqlConnection.query(query0, [origen, destino, origen, destino], (err, rows, fields) => {
+  mysqlConnection.query(listaQuerys["getEstadisticas1"], [origen, destino, origen, destino], (err, rows, fields) => {
     if (!err) {
       console.log("TOTAL " + rows);
       if (rows.length < 2) {
@@ -694,8 +645,7 @@ router.post('/usuario/stats', (req, res) => {
     }
   });
 
-  let query = "SELECT count(origen) as followers FROM follows WHERE origen = ?";
-  mysqlConnection.query(query, [destino], (err, rows, fields) => {
+  mysqlConnection.query(listaQuerys["getEstadisticas2"], [destino], (err, rows, fields) => {
     if (!err) {
       if (rows.length == 0) {
         resultados[1] = 0;
@@ -706,8 +656,7 @@ router.post('/usuario/stats', (req, res) => {
       console.log(err);
     }
   });
-  let queryLogros = "SELECT count(*) as logros FROM `logros_obtenidos` WHERE usuario=?";
-  mysqlConnection.query(queryLogros, [destino], (err, rows, fields) => {
+  mysqlConnection.query(listaQuerys["getEstadisticas3"], [destino], (err, rows, fields) => {
     if (!err) {
       if (rows.length == 0) {
         resultados[3] = 0;
@@ -718,8 +667,7 @@ router.post('/usuario/stats', (req, res) => {
       console.log(err);
     }
   });
-  let query2 = "SELECT count(destino) as followers FROM follows WHERE destino = ?"
-  mysqlConnection.query(query2, [destino], (err, rows, fields) => {
+  mysqlConnection.query(listaQuerys["getEstadisticas4"], [destino], (err, rows, fields) => {
     if (!err) {
       if (rows.length == 0) {
         resultados[2] = 0;
@@ -740,9 +688,7 @@ router.post('/creaQuizz', cors(), (req, res, next) => {
   console.log("PETICION subir un quizz")
   console.log("PARAMETROS")
   const { creador, titulo, contenido, fecha, privado } = req.body;
-  console.log(creador + "--" + titulo + " " + privado);
-  const query = "insert into quizz (creador,titulo,contenido,fechacreacion,publicado,privado) VALUES(?,?,?,?,0,?)";
-  mysqlConnection.query(query, [creador, titulo, contenido, fecha, privado], (err, rows, fields) => {
+  mysqlConnection.query(listaQuerys["setQuiz"], [creador, titulo, contenido, fecha, privado], (err, rows, fields) => {
     if (!err) {
       res.json({ id: rows.insertId });
     } else {
@@ -758,14 +704,8 @@ router.post('/borraQuizz', cors(), (req, res, next) => {
   console.log("PETICION borrar un quizz")
   let permiso = verificaToken(req.headers);
   if (permiso != false) {
-    console.log(permiso);
-    console.log("PARAMETROS")
     const { quizz } = req.body;
-    console.log(req.body);
-
-
-
-    mysqlConnection.query('DELETE FROM quizz WHERE id = ? AND creador = ?', [quizz, permiso], (err, rows, fields) => {
+    mysqlConnection.query(listaQuerys["deleteQuiz"], [quizz, permiso], (err, rows, fields) => {
       if (!err) {
         res.send({
           status: '200'
@@ -790,9 +730,7 @@ router.post('/vota', cors(), (req, res, next) => {
   let permiso = verificaToken(req.headers);
   if (permiso != false) {
     const { origen, quizz, cantidad } = req.body;
-    console.log("O:" + origen + " Q:" + quizz + " C:" + cantidad)
-    const query = "SELECT * from votaciones where origen = ? and quizz = ?";
-    mysqlConnection.query(query, [origen, quizz], (err, rows, fields) => {
+    mysqlConnection.query(listaQuerys["setVotacion1"], [origen, quizz], (err, rows, fields) => {
       if (!err) {
         if (rows.length == 0) {
           console.log("Voy a insertar votación");
@@ -806,8 +744,7 @@ router.post('/vota', cors(), (req, res, next) => {
 
 
     function inserta(origen, quizz, cantidad) {
-      const query = "insert into votaciones (origen,quizz,cantidad) VALUES(?,?,?)";
-      mysqlConnection.query(query, [origen, quizz, cantidad], (err, rows, fields) => {
+      mysqlConnection.query(listaQuerys["setVotacion2"], [origen, quizz, cantidad], (err, rows, fields) => {
         if (!err) {
           res.send({
             status: '200'
@@ -821,8 +758,7 @@ router.post('/vota', cors(), (req, res, next) => {
     }
 
     function updatea(origen, quizz, cantidad) {
-      const query = "update votaciones set cantidad = ? where origen= ? AND quizz = ?";
-      mysqlConnection.query(query, [cantidad, origen, quizz], (err, rows, fields) => {
+      mysqlConnection.query(listaQuerys["setVotacion3"], [cantidad, origen, quizz], (err, rows, fields) => {
         if (!err) {
           res.send({
             status: '200'
@@ -849,11 +785,8 @@ router.post('/vota', cors(), (req, res, next) => {
 //Peticion post para ver si sigue a x persona (UNPROTECTED)
 router.post('/is/following', cors(), (req, res, next) => {
   console.log("PETICION PARA VER SI HAY SEGUIMIENTO")
-  console.log("PARAMETROS")
   const { origen, destino } = req.body;
-  console.log("Parametros:" + origen + "-" + destino);
-  const query = "select destino FROM follows where origen = ? AND destino = ?";
-  mysqlConnection.query(query, [origen, destino], (err, rows, fields) => {
+  mysqlConnection.query(listaQuerys["isFollowing"], [origen, destino], (err, rows, fields) => {
     if (!err) {
       if (rows.length < 1) {
         console.log("NO LE SIGUE");
@@ -881,8 +814,7 @@ router.post('/follow', cors(), (req, res, next) => {
   if (permiso != false) {
     const { origen, destino } = req.body;
     if (permiso == origen) {
-      const query = "insert into follows values(?,?)";
-      mysqlConnection.query(query, [origen, destino], (err, rows, fields) => {
+      mysqlConnection.query(listaQuerys["setFollow"], [origen, destino], (err, rows, fields) => {
         if (!err) {
           res.send({
             status: '200'
@@ -909,8 +841,7 @@ router.post('/usuario/read', cors(), (req, res, next) => {
   let permiso = verificaToken(req.headers);
   if (permiso != false) {
     const { mensaje } = req.body;
-    const query = "UPDATE notificaciones set leido = 1 where usuario = ? AND mensaje = ?";
-    mysqlConnection.query(query, [permiso, mensaje], (err, rows, fields) => {
+    mysqlConnection.query(listaQuerys["readNoti"], [permiso, mensaje], (err, rows, fields) => {
       if (!err) {
         res.send({
           status: '200'
@@ -935,15 +866,11 @@ router.post('/usuario/read', cors(), (req, res, next) => {
 //cambiaTipo
 router.post('/cambiaTipo', cors(), (req, res, next) => {
   console.log("PETICION para cambiar privacidad")
-  console.log(req.headers);
   let permiso = verificaToken(req.headers);
   if (permiso != false) {
     const { quizz, privado } = req.body;
-    console.log(quizz + "--" + privado)
-    let query = "";
     if (privado == null) {
-      query = "UPDATE quizz set privado = null where id = ?"
-      mysqlConnection.query(query, [quizz], (err, rows, fields) => {
+      mysqlConnection.query(listaQuerys["setPrivacidad1"], [quizz], (err, rows, fields) => {
         if (!err) {
           res.send({
             status: '200',
@@ -958,8 +885,7 @@ router.post('/cambiaTipo', cors(), (req, res, next) => {
         }
       });
     } else {
-      query = "UPDATE quizz set privado = ? where id = ?";
-      mysqlConnection.query(query, [privado, quizz], (err, rows, fields) => {
+      mysqlConnection.query(listaQuerys["setPrivacidad2"], [privado, quizz], (err, rows, fields) => {
         if (!err) {
           res.send({
             status: '200'
@@ -987,8 +913,7 @@ router.post('/unfollow', cors(), (req, res, next) => {
   if (permiso != false) {
     const { origen, destino } = req.body;
     if (permiso == origen) {
-      const query = "delete from follows where origen = ? AND destino = ?";
-      mysqlConnection.query(query, [origen, destino], (err, rows, fields) => {
+      mysqlConnection.query(listaQuerys["deleteFollow"], [origen, destino], (err, rows, fields) => {
         if (!err) {
           res.send({
             status: '200'
