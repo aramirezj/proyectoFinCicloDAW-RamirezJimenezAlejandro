@@ -98,7 +98,7 @@ export class AppComponent {
   obtenerNotificaciones() {
     if (this.authService.isLoggedIn()) {
       this.authService.getNotificaciones()
-        .then((respuesta => {
+        .subscribe((respuesta => {
           if (respuesta != undefined) {
             for (let resp of respuesta) {
               let section: Section;

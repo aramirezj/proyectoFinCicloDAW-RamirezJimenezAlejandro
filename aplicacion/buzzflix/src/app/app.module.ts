@@ -5,49 +5,51 @@ import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { RegistroComponent } from './registro/registro.component';
 import { ROUTES } from './routes/routes';
-import { FormsModule, ReactiveFormsModule }   from '@angular/forms';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from './services/auth.service';
 import { HttpModule } from '@angular/http';
+import { HttpClientModule } from '@angular/common/http';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { LoginComponent,MyErrorStateMatcher } from './login/login.component';
+import { LoginComponent, MyErrorStateMatcher } from './login/login.component';
 import { AuthGuard } from './guards/auth.guard';
-import {AuthedGuard} from './guards/authed.guard';
+import { AuthedGuard } from './guards/authed.guard';
 import { NotifyComponent } from './notify/notify.component';
 import { NotifyService } from './services/notify.service';
+import { FuncionesService } from './services/funciones.service';
 import { ProfileComponent } from './profile/profile.component';
 import { UserService } from './services/user.service'
 import { PrettyDatePipe } from './pipes/pretty-date.pipe';
-import {NgProgressModule } from 'ng2-progressbar';
+import { NgProgressModule } from 'ng2-progressbar';
 import { WallComponent } from './profile/wall/wall.component';
 import { EditProfileComponent } from './profile/edit-profile/edit-profile.component';
 import { FollowComponent } from './profile/follow/follow.component';
-import {FollowService} from './services/follow.service';
+import { FollowService } from './services/follow.service';
 import { CreateQuizzComponent } from './create-quizz/create-quizz.component';
 import { QuizzService } from './services/quizz.service';
 import { QuizzComponent } from './quizz/quizz.component';
-import {  VerQuizzComponent } from './ver-quizz/ver-quizz.component';
+import { VerQuizzComponent } from './ver-quizz/ver-quizz.component';
 import { ExploradorComponent } from './explorador/explorador.component';
-import {  MatPaginatorIntlCro } from './explorador/explorador.component';
+import { MatPaginatorIntlCro } from './explorador/explorador.component';
 
 import { UsuarioComponent } from './usuario/usuario.component';
 import { DashboardUsersComponent } from './dashboard-users/dashboard-users.component';
 import { VotarComponent } from './ver-quizz/votar/votar.component';
-import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
-import {FlexLayoutModule} from '@angular/flex-layout';
-import {MatSelectModule} from '@angular/material/select';
-import {MatInputModule} from '@angular/material/input';
-import {MatButtonModule} from '@angular/material/button';
-import {MatSnackBarModule} from '@angular/material/snack-bar';
-import {MatCardModule} from '@angular/material/card';
-import {MatDialogModule} from '@angular/material/dialog';
-import {MatTreeModule} from '@angular/material/tree';
-import {MatPaginatorIntl} from '@angular/material';
-import {MatExpansionModule} from '@angular/material/expansion';
-import {MatCheckboxModule} from '@angular/material/checkbox';
-import {MatGridListModule} from '@angular/material/grid-list'
-import {MatPaginatorModule} from '@angular/material/paginator';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FlexLayoutModule } from '@angular/flex-layout';
+import { MatSelectModule } from '@angular/material/select';
+import { MatInputModule } from '@angular/material/input';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatCardModule } from '@angular/material/card';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MatTreeModule } from '@angular/material/tree';
+import { MatPaginatorIntl } from '@angular/material';
+import { MatExpansionModule } from '@angular/material/expansion';
+import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatGridListModule } from '@angular/material/grid-list'
+import { MatPaginatorModule } from '@angular/material/paginator';
 import { MatToolbarModule, MatSidenavModule, MatListModule, MatIconModule } from "@angular/material";
-import {MatMenuModule} from '@angular/material/menu';
+import { MatMenuModule } from '@angular/material/menu';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFireDatabaseModule } from '@angular/fire/database';
@@ -88,10 +90,11 @@ import { LogrosComponent } from './profile/logros/logros.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    RouterModule.forRoot(ROUTES, {onSameUrlNavigation: 'reload'}),
+    RouterModule.forRoot(ROUTES, { onSameUrlNavigation: 'reload' }),
     FormsModule,
     ReactiveFormsModule,
     HttpModule,
+    HttpClientModule,
     NgProgressModule,
     BrowserAnimationsModule,
     FlexLayoutModule,
@@ -99,23 +102,23 @@ import { LogrosComponent } from './profile/logros/logros.component';
     MatInputModule,
     MatButtonModule,
     MatMenuModule,
-    MatSnackBarModule ,
-    MatCardModule ,
+    MatSnackBarModule,
+    MatCardModule,
     MatDialogModule,
     MatToolbarModule,
     MatSidenavModule,
     MatPaginatorModule,
     MatGridListModule,
-    MatListModule, 
+    MatListModule,
     MatCheckboxModule,
     MatIconModule,
-    MatExpansionModule, 
-    
+    MatExpansionModule,
+
     AngularFireModule.initializeApp(environment.firebaseConfig),
-    AngularFireDatabaseModule 
+    AngularFireDatabaseModule
   ],
-  exports: [RouterModule,MatSelectModule],
-  providers: [AuthService,AuthGuard,AuthedGuard,QuizzService,NotifyService,UserService,FollowService,AngularFirestore,AngularFireStorage,{ provide: MatPaginatorIntl, useClass: MatPaginatorIntlCro}],
+  exports: [RouterModule, MatSelectModule],
+  providers: [AuthService, AuthGuard, AuthedGuard, QuizzService, NotifyService, UserService, FollowService, FuncionesService, AngularFirestore, AngularFireStorage, { provide: MatPaginatorIntl, useClass: MatPaginatorIntlCro }],
   bootstrap: [AppComponent],
   entryComponents: [DialogboxComponent]
 })

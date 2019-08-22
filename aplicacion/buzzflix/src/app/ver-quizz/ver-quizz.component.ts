@@ -117,7 +117,7 @@ export class VerQuizzComponent implements OnInit {
 
   getQuizz() {
     this.quizzService.getQuizz(this.rawid)
-      .then(resp => {
+      .subscribe(resp => {
         this.quizz = resp;
         if (this.quizz != null) {
           this.id = this.quizz.id;

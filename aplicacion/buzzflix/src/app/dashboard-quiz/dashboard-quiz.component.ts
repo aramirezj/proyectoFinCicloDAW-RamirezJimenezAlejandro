@@ -46,7 +46,7 @@ export class DashboardQuizComponent implements OnInit {
 
   getQuizzes(){
     this.quizzService.getQuizzes(this.nombre)
-    .then(resp=>{
+    .subscribe(resp=>{
       this.quizzes=resp;
       if(this.quizzes!=null){
         this.notifyService.notify("Búsqueda realizada","success");

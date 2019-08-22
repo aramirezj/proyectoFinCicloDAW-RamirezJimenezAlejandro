@@ -24,7 +24,7 @@ export class UsuarioComponent implements OnInit {
 
   getCantidad(){
     this.quizzService.getCantidad(this.usuario.id)
-    .then(resp =>{
+    .subscribe(resp =>{
       this.cantidad=resp;
     })
   }

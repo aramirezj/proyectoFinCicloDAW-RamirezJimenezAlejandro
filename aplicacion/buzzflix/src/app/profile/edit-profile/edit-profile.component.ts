@@ -78,7 +78,7 @@ export class EditProfileComponent implements OnInit {
     if (cambios) {
       this.bar.start();
       this.userService.updateProfile(datos)
-        .then((usuario) => {
+        .subscribe((usuario) => {
           if (usuario != null) {
             this.usuario = usuario;
           } else {

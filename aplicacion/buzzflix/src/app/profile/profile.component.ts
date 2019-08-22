@@ -49,8 +49,11 @@ export class ProfileComponent implements OnInit {
     this.router.params.subscribe((params) => {
       this.id = +params['id'];
       this.userService.changeMessage(this.id);
+      console.log("???")
       this.userService.getUserById(this.id)
-        .then((usuario) => {
+      
+        .subscribe((usuario) => {
+          console.log(usuario)
           this.usuario = usuario;
           if (this.usuario.avatar == "" || this.usuario.avatar == null) {
             this.usuario.avatar = "hehexd.PNG";
@@ -64,7 +67,7 @@ export class ProfileComponent implements OnInit {
   //Función que cargará la cantidad de seguidores,seguidos y logros obtenidos.
   cargaStats() {
     this.userService.getUserStats(this.id)
-      .then((resp) => {
+      .subscribe((resp) => {
         this.follows = resp[1];
         this.followers = resp[2];
         this.logros=resp[3];
@@ -75,7 +78,7 @@ export class ProfileComponent implements OnInit {
 
   cargaCantidad() {
     this.quizzService.getCantidad(this.id)
-      .then((resp) => {
+      .subscribe((resp) => {
         this.cantidad = resp;
       });
   }

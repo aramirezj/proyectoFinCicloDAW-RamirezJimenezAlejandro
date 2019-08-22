@@ -57,7 +57,7 @@ export class ModeracionComponent implements OnInit {
     this.quizzs = [];
     let quizz: Quizz;
     this.quizzService.listaModeracion()
-      .then(resp => {
+      .subscribe(resp => {
         if (resp != null) {
           for (let i = 0; i < resp.length; i++) {
             quizz = JSON.parse(resp[i]["contenido"]);
@@ -89,10 +89,7 @@ export class ModeracionComponent implements OnInit {
           }
         }, 200);
       })
-    this.userService.isAdmin()
-    .then((resp) => {
-      this.isAdmin=resp;
-    })
+    this.isAdmin = this.userService.isAdmin();
   }
 
   juzga(decision: boolean) {

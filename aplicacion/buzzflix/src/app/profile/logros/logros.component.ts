@@ -16,7 +16,7 @@ export class LogrosComponent implements OnInit {
   ngOnInit() {
     this.userService.currentMessage.subscribe(message => this.id = message)
     this.userService.getLogros(this.id)
-      .then((logros) => {
+      .subscribe((logros) => {
         this.listaLogros = logros;
         for (let logro of this.listaLogros) {
           if (logro.fecha == null) {

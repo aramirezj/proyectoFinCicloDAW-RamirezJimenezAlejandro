@@ -1,7 +1,7 @@
 import { Observable } from 'rxjs';
 import { Injectable, ɵConsole } from '@angular/core';
 import { AuthService } from './auth.service';
-import { Http, Headers, RequestOptions } from '@angular/http';
+import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { CONFIG } from './../config/config';
 import { NgProgressService } from 'ng2-progressbar';
 import { Quizz } from '../modelo/Quizz';
@@ -13,76 +13,66 @@ import { AngularFireStorage, AngularFireUploadTask } from 'angularfire2/storage'
 import { finalize } from 'rxjs/operators';
 @Injectable()
 export class QuizzService {
-    private headers: Headers
+    private headers: HttpHeaders
     constructor(
         private authService: AuthService,
         private userService: UserService,
-        private http: Http,
+        private http: HttpClient,
         private bar: NgProgressService,
         private notifyService: NotifyService,
         private firestore: AngularFirestore,
         private afStorage: AngularFireStorage
     ) {
-        this.headers = new Headers({ 'Authorization': `Bearer ${this.getToken()}` });
+        this.headers = new HttpHeaders({ 'Authorization': `Bearer ${this.getToken()}` });
     }
-
-
-
 
     getToken(): string {
         return localStorage.getItem('token');
     }
 
-    votaQuizz(quizz: number|string, n: number) {
+    votaQuizz(quizz: number | string, n: number): Observable<void> {
         this.bar.start();
         let id = this.authService.getAuthUserId();
-        let fecha = new Date();
         let url = `${CONFIG.apiUrl}vota`;
         let body = { origen: id, quizz: quizz, cantidad: n };
-        let options = new RequestOptions({ headers: this.headers });
-        return this.http.post(url, body, options)
-            .toPromise()
-            .then(resp => {
+        return this.http.post(url, body, { observe: 'body', headers: this.headers })
+            .map((response: any) => {
                 this.bar.done();
-                if (resp.json().status == "200") {
+                if (response.status == "200") {
                     this.notifyService.notify("Has votado correctamente, ¡Gracias!", "success");
-                } else if (resp.json().status == "Usuario sin permiso") {
+                } else if (response.status == "Usuario sin permiso") {
                     this.notifyService.notify("No tienes permiso", "error");
-                } else if (resp.json().status == "Error sql") {
+                } else if (response.status == "Error sql") {
                     this.notifyService.notify("Error en el servidor", "error");
-                } else if (resp.json().status == "Token invalido") {
+                } else if (response.status == "Token invalido") {
                     this.authService.logout();
                 } else {
                     this.notifyService.notify("Error desconocido", "error");
                 }
-
-                return resp.json();
-            })
+            }, (err: HttpErrorResponse) => {
+                console.log(err);
+            });
     }
 
-    getCantidad(id: number): Promise<number> {
-        return this.http.get(`${CONFIG.apiUrl}quizz/${id}/cantidad`)
-            .toPromise()
-            .then(resp => {
-                return resp.json().resultado;
-            })
-            .catch(function (e) {
-                console.log("Error ", e)
-            })
+    getCantidad(id: number): Observable<number> {
+        return this.http.get(`${CONFIG.apiUrl}quizz/${id}/cantidad`, { observe: 'body', headers: this.headers })
+            .map((response: any) => {
+                return response.resultado;
+            }, (err: HttpErrorResponse) => {
+                console.log(err);
+            });
     }
 
-    getMedia(id: number): Promise<number> {
-        return this.http.get(`${CONFIG.apiUrl}quizz/${id}/media`)
-            .toPromise()
-            .then(resp => {
-                return resp.json().resultado;
-            })
-            .catch(function (e) {
-                console.log("Error ", e)
-            })
+    getMedia(id: number): Observable<number> {
+        return this.http.get(`${CONFIG.apiUrl}quizz/${id}/media`, { observe: 'body', headers: this.headers })
+        .map((response: any) => {
+                return response.resultado;
+            }, (err: HttpErrorResponse) => {
+                console.log(err);
+            });
     }
 
-    createQuizz(quizz: Quizz, files: File[], privado: string): Promise<any> {
+    createQuizz(quizz: Quizz, files: File[], privado: string): Observable<any> {
         this.bar.start();
         let id = this.authService.getAuthUserId();
         let fecha = new Date();
@@ -91,17 +81,17 @@ export class QuizzService {
         quizz.creador = id;
         let prep = JSON.stringify(quizz);
         let body = { creador: this.authService.getAuthUserId(), titulo: quizz.titulo, contenido: prep, fecha: fecha, privado: privado };
-        let options = new RequestOptions({ headers: this.headers });
-        return this.http.post(url, body, options)
-            .toPromise()
-            .then(resp => {
+        return this.http.post(url, body, { observe: 'body', headers: this.headers })
+        .map((response: any) => {
                 this.uploadImage(files);
                 this.bar.done();
-                return resp.json();
-            })
+                return response;
+            }, (err: HttpErrorResponse) => {
+                console.log(err);
+            });
     }
 
-    uploadImage(files) {
+    uploadImage(files): void {
         for (let i = 0; i < files.length; i++) {
             let ref = this.afStorage.ref(files[i].name);
             ref.put(files[i]);
@@ -110,78 +100,68 @@ export class QuizzService {
 
 
 
-    obtenerQuizzSeguidos(inicio:number,fin:number): Promise<Array<Quizz>> {
-        this.headers = new Headers({ 'Authorization': `Bearer ${this.getToken()}` });
+    obtenerQuizzSeguidos(inicio: number, fin: number): Observable<Array<Quizz>> {
         let id = this.authService.getAuthUserId();
-        let cadena = inicio+"-"+fin;
-        return this.http.get(`${CONFIG.apiUrl}quizz/${id}/seguidos/${cadena}`)
-            .toPromise()
-            .then(resp => {
-                if (resp.json().status == "200") {
-                    return resp.json();
-                } else if (resp.json().status == "Usuario sin permiso") {
+        let cadena = inicio + "-" + fin;
+        return this.http.get(`${CONFIG.apiUrl}quizz/${id}/seguidos/${cadena}`,{ observe: 'body', headers: this.headers })
+        .map((response: any) => {
+                if (response.status == "200") {
+                    return response;
+                } else if (response.status == "Usuario sin permiso") {
                     this.notifyService.notify("No tienes permiso", "error");
-                } else if (resp.json().status == "Error sql") {
+                } else if (response.status == "Error sql") {
                     this.notifyService.notify("Error en el servidor", "error");
                 } else {
                     this.authService.logout();
                     return null;
                 }
-            })
-            .catch(function (e) {
-                console.log("Error ", e)
-            })
+            }, (err: HttpErrorResponse) => {
+                console.log(err);
+            });
 
     }
-    obtenerAllQuizz(inicio:number,fin:number): Promise<Array<Quizz>> {
+    obtenerAllQuizz(inicio: number, fin: number): Observable<Array<Quizz>> {
         let id = this.authService.getAuthUserId();
-        let cadena = inicio+"-"+fin;
-        return this.http.get(`${CONFIG.apiUrl}quizz/todos/${cadena}`)
-            .toPromise()
-            .then(resp => {
-                if (resp.json().status == 'OK') {
-                    return resp.json();
+        let cadena = inicio + "-" + fin;
+        return this.http.get(`${CONFIG.apiUrl}quizz/todos/${cadena}`,{ observe: 'body', headers: this.headers })
+            .map((response: any) => {
+                if (response.status == 'OK') {
+                    return response;
                 } else {
                     return null;
                 }
-            })
-            .catch(function (e) {
-                console.log("Error ", e)
-            })
+            }, (err: HttpErrorResponse) => {
+                console.log(err);
+            });
 
     }
 
-    getQuizz(id: string): Promise<Quizz> {
-        return this.http.get(`${CONFIG.apiUrl}quizz/${id}`)
-            .toPromise()
-            .then(resp => {
-                if (resp.json().status == 'OK') {
-                    let rawquiz = resp.json().cont[0];
+    getQuizz(id: string): Observable<Quizz> {
+        return this.http.get(`${CONFIG.apiUrl}quizz/${id}`,{ observe: 'body', headers: this.headers })
+            .map((response: any) => {
+                if (response.status == 'OK') {
+                    let rawquiz = response.cont[0];
                     let quiz = JSON.parse(rawquiz.contenido);
                     quiz.id = rawquiz.id;
-                    let aux = resp.json();
                     return quiz;
                 } else {
                     return null;
                 }
-            })
-            .catch(function (e) {
-                console.log("Error ", e)
-            })
+            }, (err: HttpErrorResponse) => {
+                console.log(err);
+            });
     }
-    getQuizzes(nombre: string): Promise<Array<Quizz>> {
-        return this.http.get(`${CONFIG.apiUrl}quizzes/${nombre}`)
-            .toPromise()
-            .then(resp => {
-                if (resp.json().status == '200') {
-                    return resp.json().quizzes;
+    getQuizzes(nombre: string): Observable<Array<Quizz>> {
+        return this.http.get(`${CONFIG.apiUrl}quizzes/${nombre}`,{ observe: 'body', headers: this.headers })
+            .map((response: any) => {
+                if (response.status == '200') {
+                    return response.quizzes;
                 } else {
                     return null;
                 }
-            })
-            .catch(function (e) {
-                console.log("Error ", e)
-            })
+            }, (err: HttpErrorResponse) => {
+                console.log(err);
+            });
 
     }
 
@@ -191,30 +171,28 @@ export class QuizzService {
         this.bar.start();
         let url = `${CONFIG.apiUrl}borraQuizz`;
         let body = { quizz: quizz.id };
-        console.log(body)
-        let options = new RequestOptions({ headers: this.headers });
-        return this.http.post(url, body, options)
-            .toPromise()
-            .then(resp => {
+        return this.http.post(url, body,{ observe: 'body', headers: this.headers })
+            .map((response: any) => {
                 this.bar.done();
-                if (resp.json().status == "200") {
+                if (response.status == "200") {
                     this.notifyService.notify("Has borrado tu quizz correctamente, una gran perdida...", "success");
                     this.deleteImages(quizz);
                     location.reload();
-                } else if (resp.json().status == "Usuario sin permiso") {
+                } else if (response.status == "Usuario sin permiso") {
                     this.notifyService.notify("No tienes permiso", "error");
-                } else if (resp.json().status == "Error sql") {
+                } else if (response.status == "Error sql") {
                     this.notifyService.notify("Error en el servidor", "error");
                 } else {
                     this.authService.logout();
                     return null;
                 }
-
-                return resp.json();
-            })
+                return response;
+            }, (err: HttpErrorResponse) => {
+                console.log(err);
+            });
     }
 
-    deleteImages(quizz: Quizz) {
+    deleteImages(quizz: Quizz):void {
         let files: string[] = [];
         files.push(quizz.image);
         for (let i = 0; i < quizz.soluciones.length; i++) {
@@ -225,44 +203,41 @@ export class QuizzService {
         }
     }
 
-    listaModeracion(): Promise<Array<Quizz>> {
+    listaModeracion(): Observable<Array<Quizz>> {
         let id = this.authService.getAuthUserId();
         let url = `${CONFIG.apiUrl}quizz/moderacion`;
         let body = { id: id };
-        let options = new RequestOptions({ headers: this.headers });
-        return this.http.post(url, body, options)
-            .toPromise()
-            .then(resp => {
-                if (resp.json().status == '200') {
-                    return resp.json().cont;
+        return this.http.post(url, body,{ observe: 'body', headers: this.headers })
+            .map((response: any) => {
+                if (response.status == '200') {
+                    return response.cont;
                 } else {
                     return null;
                 }
-            })
-            .catch(function (e) {
-                console.log("Error ", e)
-            })
+            }, (err: HttpErrorResponse) => {
+                console.log(err);
+            });
     }
 
     moderaQuizz(id: number, accion: boolean) { //PROTEGIDO
         let url = `${CONFIG.apiUrl}modera`;
         let body = { quizz: id, usuario: this.authService.getAuthUserId(), decision: accion };
-        let options = new RequestOptions({ headers: this.headers });
-        return this.http.post(url, body, options)
-            .toPromise()
-            .then(resp => {
+        return this.http.post(url, body,{ observe: 'body', headers: this.headers })
+            .map((response: any) => {
                 this.bar.done();
-                if (resp.json().status == "200") {
+                if (response.status == "200") {
                     this.notifyService.notify("Acción registrada", "success");
                     return true;
-                } else if (resp.json().status == "Error sql") {
+                } else if (response.status == "Error sql") {
                     this.notifyService.notify("Error en el servidor", "error");
                 } else {
                     this.authService.logout();
                     return null;
                 }
-                return resp.json();
-            })
+                return response;
+            }, (err: HttpErrorResponse) => {
+                console.log(err);
+            });
     }
     cambiaTipo(quiz: Quizz, privado: boolean) {
         this.bar.start();
@@ -274,24 +249,21 @@ export class QuizzService {
             text = null;
         }
         let body = { quizz: quiz.id, privado: text };
-        let options = new RequestOptions({ headers: this.headers });
-        return this.http.post(url, body, options)
-            .toPromise()
-            .then(resp => {
+        return this.http.post(url, body,{ observe: 'body', headers: this.headers })
+            .map((response: any) => {
                 this.bar.done();
-                if (resp.json().status == '200') { 
+                if (response.status == '200') {
                     location.reload();
-                } else if (resp.json().status == "Error sql") {
+                } else if (response.status == "Error sql") {
                     this.notifyService.notify("Error en el servidor", "error");
                     return null;
                 } else {
                     this.authService.logout();
                     return null;
                 }
-            })
-            .catch(function (e) {
-                console.log("Error ", e)
-            })
+            }, (err: HttpErrorResponse) => {
+                console.log(err);
+            });
     }
 
 

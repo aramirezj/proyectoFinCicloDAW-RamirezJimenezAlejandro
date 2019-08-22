@@ -25,7 +25,7 @@ export class FollowComponent implements OnInit,OnChanges {
 
   checkIfFollowing(){
     this.followService.isFollowing(this.currentProfileId)
-    .then(resp=>{
+    .subscribe(resp=>{
       this.isLoading=false;
       this.isFollowing=resp;
     })
@@ -33,14 +33,14 @@ export class FollowComponent implements OnInit,OnChanges {
 
   follow(){
     this.followService.follow(this.currentProfileId)
-    .then(resp=>{
+    .subscribe(resp=>{
       this.isFollowing=true;
       this.notify.emit(1);
     })
   }
   unfollow(){
     this.followService.unfollow(this.currentProfileId)
-    .then(resp=>{
+    .subscribe(resp=>{
       this.isFollowing=false;
       this.notify.emit(-1);
     })

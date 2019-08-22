@@ -25,7 +25,7 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
 })
 export class RegistroComponent implements OnInit {
   form: FormGroup;
-  nombreFC = new FormControl('',[
+  nombreFC = new FormControl('', [
     Validators.required,
     Validators.minLength(3)
   ])
@@ -37,43 +37,42 @@ export class RegistroComponent implements OnInit {
     Validators.required,
     Validators.minLength(6)
   ])
-  
+
   matcher = new MyErrorStateMatcher();
 
   constructor(
-    private authService:AuthService,
+    private authService: AuthService,
     private fb: FormBuilder,
-    private notifyService:NotifyService
-    ) { }
+    private notifyService: NotifyService
+  ) { }
 
   ngOnInit() {
     this.form = this.fb.group({
-      
+
     })
   }
 
-  onSubmit(form){
-    let verdad=true;
-    if(this.nombreFC.invalid){
-      this.notifyService.notify("El nombre es obligatorio","error");
-      verdad=false;
-    }else if(this.emailFC.invalid){
-      this.notifyService.notify("El correo no es valido","error");
-      verdad=false;
-    }else if( this.passFC.invalid){
-      this.notifyService.notify("La contraseña no es valida","error");
-      verdad=false;
+  onSubmit(form) {
+    let verdad = true;
+    if (this.nombreFC.invalid) {
+      this.notifyService.notify("El nombre es obligatorio", "error");
+      verdad = false;
+    } else if (this.emailFC.invalid) {
+      this.notifyService.notify("El correo no es valido", "error");
+      verdad = false;
+    } else if (this.passFC.invalid) {
+      this.notifyService.notify("La contraseña no es valida", "error");
+      verdad = false;
     }
-    if(verdad){
-      this.authService.register(this.nombreFC.value,this.emailFC.value,this.passFC.value)
-    .then((usuario)=>{
-      if(usuario!=null){
-        this.authService.logUserIn(usuario);
-      }
-      
-    })
+    if (verdad) {
+      this.authService.register(this.nombreFC.value, this.emailFC.value, this.passFC.value)
+        .subscribe((usuario) => {
+          if (usuario != null) {
+            this.authService.logUserIn(usuario);
+          }
+        })
     }
-  
+
   }
 
 
@@ -87,7 +86,7 @@ export class RegistroComponent implements OnInit {
 
 
 
-  
+
 
 
 

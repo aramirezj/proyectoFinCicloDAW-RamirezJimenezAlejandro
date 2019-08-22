@@ -6,7 +6,6 @@ var jwt = require('jsonwebtoken');
 var crypto = require('crypto')
 app.use(cors())
 const algorithm = 'aes-192-cbc';
-const secretPassword = 'a670711037';
 
 var tokenService = require('../tokenService');
 let secretWord = tokenService;
@@ -19,15 +18,18 @@ const mysqlConnection = require('../database.js');
 
 
 function creaToken(id) {
+  console.log(id)
   var token = jwt.sign({ id: id }, secretWord, {
     expiresIn: 86400 // expires in 24 hours
   });
+  console.log(token)
   return token;
 }
 
 
 
 function verificaToken(headers) {
+  //console.log(headers.authorization);
   let bearerHeader = headers["authorization"];
   if (typeof bearerHeader !== 'undefined') {
     const bearer = bearerHeader.split(" ");
@@ -47,7 +49,7 @@ function verificaToken(headers) {
 }
 
 function encripta(texto) {
-  const passwordraw = crypto.scryptSync(secretPassword, texto, 24);
+  const passwordraw = crypto.scryptSync(secretWord, texto, 24);
   const iv = Buffer.alloc(16, 0);
   const cipher = crypto.createCipheriv(algorithm, passwordraw, iv);
   let encrypted = cipher.update('some clear text data', 'utf8', 'hex');
@@ -56,7 +58,6 @@ function encripta(texto) {
 }
 
 function compruebaLogros(id) {
-
   mysqlConnection.query(listaQuerys["buscaLogros"], [id], (err, rows, fields) => {
     if (!err) {
       for(let logro of rows){
@@ -191,6 +192,7 @@ router.get('/usuario/admin', (req, res) => {
   compruebaLogros(permiso);
   if (permiso) {
     mysqlConnection.query(listaQuerys["isAdmin"], [permiso], (err, rows, fields) => {
+      console.log(rows.length)
       if (!err) {
         let respuesta = false;
         if (rows.length > 0) {

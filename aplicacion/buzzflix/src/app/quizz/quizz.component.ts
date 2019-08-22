@@ -40,11 +40,11 @@ export class QuizzComponent implements OnInit {
     this.id = this.quizz.id;
     this.privado = false;
     this.userService.getUserById(this.quizz.creador)
-      .then((resp) => {
+      .subscribe((resp) => {
         this.usuario = resp;
         this.isCreador = this.usuario.id == this.authService.getAuthUserId();
         this.quizzService.getMedia(this.quizz.id)
-          .then((resp) => {
+          .subscribe((resp) => {
             this.estrellas = this.quizz.estrellas / resp;
             if(isNaN(this.estrellas)){
               this.estrellas=0;

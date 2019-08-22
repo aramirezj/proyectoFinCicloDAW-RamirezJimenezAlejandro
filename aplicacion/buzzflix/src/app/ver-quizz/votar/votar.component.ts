@@ -36,7 +36,7 @@ export class VotarComponent implements OnInit {
       rating: rating
     });
     this.quizzService.votaQuizz(this.id,this.rating)
-    .then((resp)=>{
+    .subscribe((resp)=>{
       this.router.navigate(['ver/todos'])
     })
 

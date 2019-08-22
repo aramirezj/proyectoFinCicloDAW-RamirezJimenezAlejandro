@@ -48,7 +48,7 @@ export class LoginComponent implements OnInit {
     }
     if (verdad) {
       this.authService.login(this.emailFC.value, this.passFC.value)
-        .then((user) => {
+        .subscribe((user) => {
           this.authService.logUserIn(user);
         })
     }

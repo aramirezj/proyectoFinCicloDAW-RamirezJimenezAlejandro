@@ -28,7 +28,7 @@ export class DashboardComponent implements OnInit {
 
   getQuizzes(){
     this.quizzService.obtenerQuizzSeguidos(this.inicio,this.fin)
-    .then(resp=>{
+    .subscribe(resp=>{
       this.totalQuizzes=resp["total"];
       this.quizzs=resp["cont"];
       this.isLoaded=true;

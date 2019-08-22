@@ -48,7 +48,7 @@ export class DashboardUsersComponent implements OnInit {
 
   getUsuarios(){
     this.userService.getUsuarios(this.nombre)
-    .then(resp=>{
+    .subscribe(resp=>{
       this.usuarios=resp;
       if(this.usuarios!=null){
         this.notifyService.notify("Búsqueda realizada","success");

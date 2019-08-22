@@ -30,7 +30,7 @@ export class WallComponent implements OnInit {
 
   getUserWall(){
     this.userService.getUserWall(this.id)
-    .then(resp=>{
+    .subscribe(resp=>{
       if(resp.status == '200'){
         this.quizzs=resp.cont;
         this.isLoaded=true;

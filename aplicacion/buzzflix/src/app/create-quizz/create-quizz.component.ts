@@ -441,7 +441,7 @@ export class CreateQuizzComponent implements OnInit {
     this.quizz = new Quizz(null, this.authService.getAuthUserId(), titulo, this.files[0].name, this.preparaSoluciones(), this.preparaPreguntas(), 0, null);
 
     this.quizzService.createQuizz(this.quizz, this.files, privado)
-      .then(resp => {
+      .subscribe(resp => {
         this.router.navigate(['/usuario/perfil', this.authService.getAuthUserId()])
       })
   }
