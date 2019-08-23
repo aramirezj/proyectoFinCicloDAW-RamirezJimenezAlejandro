@@ -29,10 +29,7 @@ export class ExploradorComponent implements OnInit  {
     this.quizzService.obtenerAllQuizz(this.inicio,this.fin)
     .subscribe(resp=>{
       this.totalQuizzes=resp["total"];
-      this.quizzs=resp["cont"];
-      if(this.quizzs.length==0){
-        this.quizzs=null;
-      }
+      this.quizzs = resp["cont"].length>0 ? resp["cont"] : null;
       this.isLoaded=true
     })
   }

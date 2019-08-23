@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs';
-import { Injectable} from '@angular/core';
+import { Injectable } from '@angular/core';
 import { CONFIG } from '../config/config';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Router } from '@angular/router'
@@ -36,8 +36,8 @@ export class AuthService {
         this.bar.start();
         let body = { name: name, email: email, password: password };
         let url = `${CONFIG.apiUrl}register`;
-        return this.http.post(url,body,{ observe: 'body', headers: this.headers } )
-        .map((response: any) => {
+        return this.http.post(url, body, { observe: 'body', headers: this.headers })
+            .map((response: any) => {
                 this.bar.done();
                 if (response.status == "200") {
                     let aux: Usuario = new Usuario(response.id, name, email, null);
@@ -53,23 +53,27 @@ export class AuthService {
             }, (err: HttpErrorResponse) => {
                 console.log(err);
             });
-            
+
     }
 
     login(email: string, password: string): Observable<Usuario> {
         this.bar.start();
         let body = { email: email, password: password };
         let url = `${CONFIG.apiUrl}authenticate`;
-        return this.http.post(url,body,{ observe: 'body', headers: this.headers } )
-        .map((response: any) => {
-                if (response.auth="true") {
-                    let aux: Usuario = response.usuario;
-                    localStorage.setItem("token", response.token);
-                    this.bar.done();
-                    return aux;
+        return this.http.post(url, body, { observe: 'body', headers: this.headers })
+            .map((response: any) => {
+                if (response["status"] == 200) {
+                    if (response.auth = "true") {
+                        let aux: Usuario = response.usuario;
+                        localStorage.setItem("token", response.token);
+                        this.bar.done();
+                        return aux;
+                    } else {
+                        this.bar.done();
+                        return null;
+                    }
                 } else {
-                    this.bar.done();
-                    return null;
+                    this.notifyService.notify("Error en el servidor", "error");
                 }
             }, (err: HttpErrorResponse) => {
                 console.log(err);
@@ -97,7 +101,7 @@ export class AuthService {
         }
     }
 
-    logout():void {
+    logout(): void {
         localStorage.removeItem("usuario");
         localStorage.removeItem("token");
         this.notifyService.notify("Has cerrado la sesión correctamente", "success");
@@ -106,7 +110,7 @@ export class AuthService {
 
     getNotificaciones(): Observable<String[]> {
         return this.http.get(`${CONFIG.apiUrl}usuario/notificaciones`, { observe: 'body', headers: this.headers })
-        .map((response: any) => {
+            .map((response: any) => {
                 if (response.status == "200") {
                     return response.mensajes;
                 } else if (response.status == "Token invalido") {
@@ -124,7 +128,7 @@ export class AuthService {
         let url = `${CONFIG.apiUrl}usuario/read`;
         let body = { mensaje: notificacion };
         return this.http.post(url, body, { observe: 'body', headers: this.headers })
-        .map((response: any) => {
+            .map((response: any) => {
                 this.bar.done();
                 if (response.status == "200") {
                     return true;

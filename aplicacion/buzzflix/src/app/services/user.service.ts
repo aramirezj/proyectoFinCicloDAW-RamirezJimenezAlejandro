@@ -1,5 +1,5 @@
 import { Observable, Subject } from 'rxjs';
-import { Injectable, EventEmitter} from '@angular/core';
+import { Injectable, EventEmitter } from '@angular/core';
 import { AuthService } from './auth.service';
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { CONFIG } from './../config/config';
@@ -41,59 +41,57 @@ export class UserService {
             name: ''
         }
     }
-    changeMessage(id: number):void {
+    changeMessage(id: number): void {
         this.idPaquete.next(id)
-      }
+    }
 
     getToken(): string {
         return localStorage.getItem('token');
     }
-    isAdmin():any{
+    isAdmin(): Observable<boolean> {
         let url = `${CONFIG.apiUrl}usuario/admin`;
 
-        /*this.funcionesService.peticionGet(url).subscribe((response:any) => {
-            console.log(response)
+        /*let aux = this.funcionesService.peticionGet(url).subscribe((response:any) => {
         if (response.status == "200") {
-            return response.respuesta;
         } else if (response.status == "Token invalido") {
             this.authService.logout();
-            return response.respuesta;
         } else if(response.status == "Error sql"){
             this.notifyService.notify("Error en el servidor", "error");
-            return response.respuesta;
+
         }
     })*/
-        
         return this.http.get(url, { observe: 'body', headers: this.headers })
-        .map((response: any) => {
-                if (response.status == "200") {
-                    return response.respuesta;
-                } else if (response.status == "Token invalido") {
+            .map((response: Object) => {
+                if (response["status"] == "200") {
+                    return response["respuesta"];
+                } else if (response["status"] == "Token invalido") {
                     this.authService.logout();
-                    return response.respuesta;
-                } else if(response.status == "Error sql"){
+                    return response["respuesta"];
+                } else if (response["status"] == "Error sql") {
                     this.notifyService.notify("Error en el servidor", "error");
-                    return response.respuesta;
+                    return response["respuesta"];
                 }
             }, (err: HttpErrorResponse) => {
                 console.log(err);
             });
     }
-    
 
-
-    getUserWall(id: number): Observable<Array<Quizz>> | any {
-        return this.http.get(`${CONFIG.apiUrl}usuario/${id}/wall`,  { observe: 'body', headers: this.headers })
-        .map((response: any) => {
-               return response
+    getUserWall(id: number): Observable<Array<Quizz>> {
+        return this.http.get(`${CONFIG.apiUrl}usuario/${id}/wall`, { observe: 'body', headers: this.headers })
+            .map((response: Object) => {
+                if (response["status"] == "200") {
+                    return response["cont"];
+                } else if (response["status"] == "Error sql") {
+                    this.notifyService.notify("Error en el servidor", "error");
+                }
             }, (err: HttpErrorResponse) => {
                 console.log(err);
             });
     }
-    getLogros(id:number): Observable<Array<Logro>>{
+    getLogros(id: number): Observable<Array<Logro>> {
         return this.http.get(`${CONFIG.apiUrl}usuario/${id}/logros`, { observe: 'body', headers: this.headers })
-        .map((response: any) => {
-               return response.logros
+            .map((response: any) => {
+                return response.logros
             }, (err: HttpErrorResponse) => {
                 console.log(err);
             });
@@ -103,10 +101,10 @@ export class UserService {
         let url = `${CONFIG.apiUrl}usuario/stats`;
         let body = { origen: this.authService.getAuthUserId(), destino: id };
         return this.http.post(url, body, { observe: 'body', headers: this.headers })
-        .map((response: any) => {
+            .map((response: any) => {
                 this.bar.done();
                 if (response.status == "200") {
-                    return response.cont;
+                    return response.stats[0];
                 } else if (response.status == "Usuario sin permiso") {
                     this.notifyService.notify("No tienes permiso", "error");
                 } else if (response.status == "Error sql") {
@@ -118,8 +116,9 @@ export class UserService {
     }
 
     getUserById(id: number): Observable<Usuario> {  //PROTEGIDO
+        this.headers = new HttpHeaders({ 'Authorization': `Bearer ${this.getToken()}` });
         return this.http.get(`${CONFIG.apiUrl}usuario/${id}`, { observe: 'body', headers: this.headers })
-        .map((response: any) => {
+            .map((response: any) => {
                 if (response.status == "200") {
                     return response.usuario
                 } else if (response.status == "Token invalido") {
@@ -136,7 +135,7 @@ export class UserService {
         }
 
         return this.http.get(`${CONFIG.apiUrl}usuarios/${nombre}`, { observe: 'body', headers: this.headers })
-        .map((response: any) => {
+            .map((response: any) => {
                 if (response.status == "200") {
                     return response.usuarios;
                 } else if (response.status == "Error sql") {
@@ -173,8 +172,8 @@ export class UserService {
             avatar: avatar
         };
 
-        return this.http.put(url, body,  { observe: 'body', headers: this.headers })
-        .map((response: any) => {
+        return this.http.put(url, body, { observe: 'body', headers: this.headers })
+            .map((response: any) => {
                 if (response.status == "200") {
                     let aux = this.authService.getAuthUser();
                     aux.name = datos["nombre"];
@@ -185,7 +184,7 @@ export class UserService {
                         const uploadTask = ref.put(file);
                         uploadTask.snapshotChanges().pipe(
                             finalize(() => {
-                                if (datos["oldfile"] != undefined && datos["oldfile"]!="") {
+                                if (datos["oldfile"] != undefined && datos["oldfile"] != "") {
                                     this.borraImagen(datos["oldfile"]);
                                 }
                                 this.notifyService.notify("¡Usuario actualizado con exito!", "success");
@@ -212,7 +211,7 @@ export class UserService {
                 console.log(err);
             });
     }
-    borraImagen(avatar: string):void {
+    borraImagen(avatar: string): void {
         this.afStorage.ref(avatar).delete();
     }
 

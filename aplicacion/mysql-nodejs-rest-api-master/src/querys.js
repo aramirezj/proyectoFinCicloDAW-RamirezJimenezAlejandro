@@ -56,10 +56,6 @@ querys["setVotacion2"] = "INSERT INTO votaciones (origen,quizz,cantidad) VALUES(
 querys["setVotacion3"] = "UPDATE votaciones set cantidad = ? where origen= ? AND quizz = ?";
 
 //Querys de estadisticas
-querys["getEstadisticas1"] = "SELECT *  FROM follows WHERE origen = ? AND destino = ? OR destino = ? AND origen = ?";
-querys["getEstadisticas2"] = "SELECT count(origen) as followers FROM follows WHERE origen = ?";
-querys["getEstadisticas3"] = "SELECT count(*) as logros FROM `logros_obtenidos` WHERE usuario = ?";
-querys["getEstadisticas4"] = "SELECT count(destino) as followers FROM follows WHERE destino = ?";
-
+querys["getEstadisticas"] = "SELECT (SELECT count(*) FROM follows WHERE origen = ? and destino = ? AND destino IN (SELECT destino from follows WHERE destino = ? and origen = ?) ) as mutual,  (SELECT count(destino) FROM follows WHERE destino = ?) as seguidores, (SELECT count(origen) FROM follows WHERE origen = ?) as seguidos,(SELECT count(*) FROM logros_obtenidos WHERE usuario = ?) as logros,(SELECT count(id) FROM quizz WHERE creador = ? and publicado = 1) as cantidad FROM dual;"
 
  module.exports = querys;

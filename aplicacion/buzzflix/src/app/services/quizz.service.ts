@@ -31,6 +31,7 @@ export class QuizzService {
     }
 
     votaQuizz(quizz: number | string, n: number): Observable<void> {
+        this.headers = new HttpHeaders({ 'Authorization': `Bearer ${this.getToken()}` });
         this.bar.start();
         let id = this.authService.getAuthUserId();
         let url = `${CONFIG.apiUrl}vota`;
@@ -54,19 +55,15 @@ export class QuizzService {
             });
     }
 
-    getCantidad(id: number): Observable<number> {
-        return this.http.get(`${CONFIG.apiUrl}quizz/${id}/cantidad`, { observe: 'body', headers: this.headers })
-            .map((response: any) => {
-                return response.resultado;
-            }, (err: HttpErrorResponse) => {
-                console.log(err);
-            });
-    }
 
     getMedia(id: number): Observable<number> {
         return this.http.get(`${CONFIG.apiUrl}quizz/${id}/media`, { observe: 'body', headers: this.headers })
-        .map((response: any) => {
-                return response.resultado;
+            .map((response: any) => {
+                if (response.status == "200") {
+                    return response.resultado;
+                } else if (response.status == "Error sql") {
+                    this.notifyService.notify("Error en el servidor", "error");
+                }
             }, (err: HttpErrorResponse) => {
                 console.log(err);
             });
@@ -82,10 +79,15 @@ export class QuizzService {
         let prep = JSON.stringify(quizz);
         let body = { creador: this.authService.getAuthUserId(), titulo: quizz.titulo, contenido: prep, fecha: fecha, privado: privado };
         return this.http.post(url, body, { observe: 'body', headers: this.headers })
-        .map((response: any) => {
-                this.uploadImage(files);
-                this.bar.done();
-                return response;
+            .map((response: any) => {
+                if (response.status == '200') {
+                    this.uploadImage(files);
+                    this.bar.done();
+                    return response;
+                } else if (response.status == "Error sql") {
+                    this.notifyService.notify("Error en el servidor", "error");
+                    return null;
+                }
             }, (err: HttpErrorResponse) => {
                 console.log(err);
             });
@@ -101,10 +103,11 @@ export class QuizzService {
 
 
     obtenerQuizzSeguidos(inicio: number, fin: number): Observable<Array<Quizz>> {
+        this.headers = new HttpHeaders({ 'Authorization': `Bearer ${this.getToken()}` });
         let id = this.authService.getAuthUserId();
         let cadena = inicio + "-" + fin;
-        return this.http.get(`${CONFIG.apiUrl}quizz/${id}/seguidos/${cadena}`,{ observe: 'body', headers: this.headers })
-        .map((response: any) => {
+        return this.http.get(`${CONFIG.apiUrl}quizz/${id}/seguidos/${cadena}`, { observe: 'body', headers: this.headers })
+            .map((response: any) => {
                 if (response.status == "200") {
                     return response;
                 } else if (response.status == "Usuario sin permiso") {
@@ -121,13 +124,14 @@ export class QuizzService {
 
     }
     obtenerAllQuizz(inicio: number, fin: number): Observable<Array<Quizz>> {
-        let id = this.authService.getAuthUserId();
+        this.headers = new HttpHeaders({ 'Authorization': `Bearer ${this.getToken()}` });
         let cadena = inicio + "-" + fin;
-        return this.http.get(`${CONFIG.apiUrl}quizz/todos/${cadena}`,{ observe: 'body', headers: this.headers })
+        return this.http.get(`${CONFIG.apiUrl}quizz/todos/${cadena}`, { observe: 'body', headers: this.headers })
             .map((response: any) => {
-                if (response.status == 'OK') {
+                if (response.status == '200') {
                     return response;
-                } else {
+                } else if (response.status == "Error sql") {
+                    this.notifyService.notify("Error en el servidor", "error");
                     return null;
                 }
             }, (err: HttpErrorResponse) => {
@@ -137,7 +141,8 @@ export class QuizzService {
     }
 
     getQuizz(id: string): Observable<Quizz> {
-        return this.http.get(`${CONFIG.apiUrl}quizz/${id}`,{ observe: 'body', headers: this.headers })
+        this.headers = new HttpHeaders({ 'Authorization': `Bearer ${this.getToken()}` });
+        return this.http.get(`${CONFIG.apiUrl}quizz/${id}`, { observe: 'body', headers: this.headers })
             .map((response: any) => {
                 if (response.status == 'OK') {
                     let rawquiz = response.cont[0];
@@ -152,7 +157,8 @@ export class QuizzService {
             });
     }
     getQuizzes(nombre: string): Observable<Array<Quizz>> {
-        return this.http.get(`${CONFIG.apiUrl}quizzes/${nombre}`,{ observe: 'body', headers: this.headers })
+        this.headers = new HttpHeaders({ 'Authorization': `Bearer ${this.getToken()}` });
+        return this.http.get(`${CONFIG.apiUrl}quizzes/${nombre}`, { observe: 'body', headers: this.headers })
             .map((response: any) => {
                 if (response.status == '200') {
                     return response.quizzes;
@@ -168,10 +174,11 @@ export class QuizzService {
 
 
     borraQuizz(quizz: Quizz) {
+        this.headers = new HttpHeaders({ 'Authorization': `Bearer ${this.getToken()}` });
         this.bar.start();
         let url = `${CONFIG.apiUrl}borraQuizz`;
         let body = { quizz: quizz.id };
-        return this.http.post(url, body,{ observe: 'body', headers: this.headers })
+        return this.http.post(url, body, { observe: 'body', headers: this.headers })
             .map((response: any) => {
                 this.bar.done();
                 if (response.status == "200") {
@@ -192,7 +199,7 @@ export class QuizzService {
             });
     }
 
-    deleteImages(quizz: Quizz):void {
+    deleteImages(quizz: Quizz): void {
         let files: string[] = [];
         files.push(quizz.image);
         for (let i = 0; i < quizz.soluciones.length; i++) {
@@ -204,10 +211,11 @@ export class QuizzService {
     }
 
     listaModeracion(): Observable<Array<Quizz>> {
+        this.headers = new HttpHeaders({ 'Authorization': `Bearer ${this.getToken()}` });
         let id = this.authService.getAuthUserId();
         let url = `${CONFIG.apiUrl}quizz/moderacion`;
         let body = { id: id };
-        return this.http.post(url, body,{ observe: 'body', headers: this.headers })
+        return this.http.post(url, body, { observe: 'body', headers: this.headers })
             .map((response: any) => {
                 if (response.status == '200') {
                     return response.cont;
@@ -219,10 +227,11 @@ export class QuizzService {
             });
     }
 
-    moderaQuizz(id: number, accion: boolean) { //PROTEGIDO
+    moderaQuizz(id: number, accion: boolean): Observable<boolean> { //PROTEGIDO
+        this.headers = new HttpHeaders({ 'Authorization': `Bearer ${this.getToken()}` });
         let url = `${CONFIG.apiUrl}modera`;
         let body = { quizz: id, usuario: this.authService.getAuthUserId(), decision: accion };
-        return this.http.post(url, body,{ observe: 'body', headers: this.headers })
+        return this.http.post(url, body, { observe: 'body', headers: this.headers })
             .map((response: any) => {
                 this.bar.done();
                 if (response.status == "200") {
@@ -239,17 +248,13 @@ export class QuizzService {
                 console.log(err);
             });
     }
-    cambiaTipo(quiz: Quizz, privado: boolean) {
-        this.bar.start();
+    cambiaTipo(quiz: Quizz, privado: boolean):Observable<void> {
+        this.headers = new HttpHeaders({ 'Authorization': `Bearer ${this.getToken()}` });
+        let text = privado ? Math.random().toString(36).substring(2):null;
         let url = `${CONFIG.apiUrl}cambiaTipo`;
-        var text
-        if (privado) {
-            text = Math.random().toString(36).substring(2);
-        } else {
-            text = null;
-        }
         let body = { quizz: quiz.id, privado: text };
-        return this.http.post(url, body,{ observe: 'body', headers: this.headers })
+        this.bar.start();
+        return this.http.post(url, body, { observe: 'body', headers: this.headers })
             .map((response: any) => {
                 this.bar.done();
                 if (response.status == '200') {
@@ -259,7 +264,6 @@ export class QuizzService {
                     return null;
                 } else {
                     this.authService.logout();
-                    return null;
                 }
             }, (err: HttpErrorResponse) => {
                 console.log(err);

@@ -49,18 +49,14 @@ export class ProfileComponent implements OnInit {
     this.router.params.subscribe((params) => {
       this.id = +params['id'];
       this.userService.changeMessage(this.id);
-      console.log("???")
       this.userService.getUserById(this.id)
-      
         .subscribe((usuario) => {
-          console.log(usuario)
           this.usuario = usuario;
           if (this.usuario.avatar == "" || this.usuario.avatar == null) {
             this.usuario.avatar = "hehexd.PNG";
           }
           this.usuario.avatar = this.afStorage.ref(this.usuario.avatar).getDownloadURL();
           this.cargaStats();
-          this.cargaCantidad();
         })
     })
   }
@@ -68,20 +64,16 @@ export class ProfileComponent implements OnInit {
   cargaStats() {
     this.userService.getUserStats(this.id)
       .subscribe((resp) => {
-        this.follows = resp[1];
-        this.followers = resp[2];
-        this.logros=resp[3];
-        this.mutual = resp[0];
-        this.mutualaux = this.mutual.length == 2 ? true : false;
+        this.follows = resp["seguidos"];
+        this.followers = resp["seguidores"];
+        this.logros=resp["logros"];
+        this.mutual = resp["mutual"];
+        this.cantidad = resp["cantidad"];
+        //this.mutualaux = this.mutual.length == 2 ? true : false;
       })
   }
 
-  cargaCantidad() {
-    this.quizzService.getCantidad(this.id)
-      .subscribe((resp) => {
-        this.cantidad = resp;
-      });
-  }
+
 
   onNotify(n: number): void {
     if (n == -1) {

@@ -10,35 +10,30 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class WallComponent implements OnInit {
   public quizzs
-  public id:number
-  isLoaded:boolean=false;
+  public id: number
+  isLoaded: boolean = false;
   constructor(
-    private userService:UserService,
-    private router:ActivatedRoute
-    
+    private userService: UserService,
+    private router: ActivatedRoute
+
   ) { }
 
   ngOnInit() {
-    this.router.params.subscribe(params =>{
-     this.id=+params['id']
-     this.getUserWall();
+    this.router.params.subscribe(params => {
+      this.id = +params['id']
+      this.getUserWall();
     })
-   
+
   }
 
 
 
-  getUserWall(){
+  getUserWall() {
     this.userService.getUserWall(this.id)
-    .subscribe(resp=>{
-      if(resp.status == '200'){
-        this.quizzs=resp.cont;
-        this.isLoaded=true;
-      }else{
-        this.quizzs=null;
-        this.isLoaded=true;
-      }
-    })
+      .subscribe(resp => {
+        this.quizzs = resp;
+        this.isLoaded = true;
+      })
 
   }
 

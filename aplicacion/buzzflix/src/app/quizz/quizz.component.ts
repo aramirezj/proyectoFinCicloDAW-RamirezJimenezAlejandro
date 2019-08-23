@@ -100,7 +100,8 @@ export class QuizzComponent implements OnInit {
       privado = true;
     }
     this.quizz.id = this.id;
-    this.quizzService.cambiaTipo(this.quizz, privado);
+    this.quizzService.cambiaTipo(this.quizz, privado)
+    .subscribe((resp)=>{});
   }
   obtenerURL() {
     var url = "localhost:4200/ver/quizz/" + this.quizz.id;

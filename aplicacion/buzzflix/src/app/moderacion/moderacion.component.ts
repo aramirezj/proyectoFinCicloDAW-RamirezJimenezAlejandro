@@ -58,7 +58,7 @@ export class ModeracionComponent implements OnInit {
     let quizz: Quizz;
     this.quizzService.listaModeracion()
       .subscribe(resp => {
-        if (resp != null) {
+        if (resp != null && resp.length>0) {
           for (let i = 0; i < resp.length; i++) {
             quizz = JSON.parse(resp[i]["contenido"]);
             quizz.id = resp[i].id;
@@ -89,11 +89,15 @@ export class ModeracionComponent implements OnInit {
           }
         }, 200);
       })
-    this.isAdmin = this.userService.isAdmin();
+    this.userService.isAdmin()
+    .subscribe(resp => {
+      this.isAdmin=resp;
+    });
   }
 
   juzga(decision: boolean) {
-    this.quizzService.moderaQuizz(this.quizzs[this.indice].id, decision);
+    this.quizzService.moderaQuizz(this.quizzs[this.indice].id, decision)
+    .subscribe(resp => {});
     this.indice++;
     $("html, body").animate({ scrollTop: 0 }, "fast");
     if (this.indice == this.quizzs.length) {

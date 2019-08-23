@@ -15,7 +15,7 @@ export class FollowService {
         private bar: NgProgressService,
         private notifyService: NotifyService
     ) {
-        //this.headers = new HttpHeaders({ 'Authorization': `Bearer ${this.getToken()}` });
+        this.headers = new HttpHeaders({ 'Authorization': `Bearer ${this.getToken()}` });
     }
     getToken(): string {
         return localStorage.getItem('token');
