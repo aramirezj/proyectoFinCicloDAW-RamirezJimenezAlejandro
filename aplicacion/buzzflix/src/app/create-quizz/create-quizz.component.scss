@@ -34,12 +34,7 @@
   font-weight: bold;
   border-radius: 3.5px;
 }
-.resp-apar {
-  border-radius: 5%;
-  margin: 2%;
-  background-color: #82ccb0;
-  padding: 5%;
-}
+
 .box {
   //background-color: #dde19c !important;
   border-radius: 1em;
@@ -89,6 +84,7 @@ option {
   text-align: center;
   width: 20%;
   float: left;
+  margin:1vw;
 }
 
 .clear {
@@ -142,7 +138,7 @@ option {
     border: 0px;
     text-align: center;
     color: white;
-    font-size: 2vw;
+    font-size: 1.75vw;
     padding: 2%;
     font-weight: bold;
   }
@@ -150,6 +146,9 @@ option {
     text-transform: uppercase;
   }
   .resp-box {
+    width: 46%;
+    float: left;
+    margin:1vw;
     p {
       font-weight: bold;
       color: white;
@@ -177,7 +176,10 @@ option {
     background-color: $fondoSuave;
   }
   .resp-box {
-    background-color: $fondoSuave;
+    background-color: $verdeRetro;
+    input{
+      background-color: $verdeRetro;
+    }
   }
 }
 .cajaPregunta:nth-child(odd) {
@@ -188,8 +190,18 @@ option {
     background-color: $verdeRetro;
   }
   .resp-box {
-    background-color: $verdeRetro;
+    background-color: $fondoSuave;
+    input{
+      background-color: $fondoSuave;
+    }
   }
+}
+
+.resp-box:nth-child(even){
+  float:left;
+}
+.resp-box:nth-child(odd){
+  float:right;
 }
 
 .cajaRespuesta {

@@ -149,41 +149,40 @@
             <p class="text-center seccion">Preguntas</p>
             <div class="cajaPregunta" *ngFor="let item of [].constructor(this.maxp); let i = index">
               <div class="cont">
-              <p class="text-center apartado">Nº {{i+1}}</p>
-              <div class="form-group">
-                <input type="text" class="form-control" placeholder="Titulo pregunta"
-                  [formControlName]="generaId('pt',i)">
+                <p class="text-center apartado">Nº {{i+1}}</p>
+                <div class="form-group">
+                  <input type="text" class="form-control" placeholder="Titulo pregunta"
+                    [formControlName]="generaId('pt',i)">
+                </div>
+                <div class="form-group">
+                  <input type="number" class="form-control" placeholder="Cantidad respuestas"
+                    [formControlName]="generaId('pcr',i)" max="20">
+                </div>
+                <div class="form-group text-center">
+                  <button type="button" mat-raised-button color="accent" (click)="generaRespuestas(i+1)">Generar
+                    respuestas</button>
+                </div>
               </div>
-              <div class="form-group">
-                <input type="number" class="form-control" placeholder="Cantidad respuestas"
-                  [formControlName]="generaId('pcr',i)" max="20">
-              </div>
-              <div class="form-group text-center">
-                <button type="button" mat-raised-button color="accent" (click)="generaRespuestas(i+1)">Generar
-                  respuestas</button>
-              </div>
-            </div>
               <!-- RESPUESTAS -->
-              <div *ngIf="this.verdades[i].creada" class="resp-box">
-                <div *ngFor="let n of this.learray[i];let j = index">
+              <div *ngIf="this.verdades[i].creada">
+                <div *ngFor="let n of this.learray[i];let j = index" class="resp-box">
                   <div class="resp-apar" *ngIf="this.verdades[i].respuestas[n-1].mostrado">
-                    <p class="text-center apartado">Respuesta Nº {{n}}</p>
                     <div class="form-group">
                       <input type="text" class="form-control" placeholder="Titulo respuesta"
-                        [formControlName]="generaIdR('r',n,'p',i)">
-                      <div class="select-box">
-                        <div *ngFor="let x of [].constructor(this.maxs); let p = index">
-                          <p>Afinidad {{p+1}} ({{quizzForm.get('st'+(p+1)).value}})</p>
-                          <select [formControlName]="generaIdRR('p',i,'rs',n,'a',p)">
-                            <option *ngFor="let q of [0,1,2,3,4,5,6,7,8,9,10]; let l = index">{{q}}</option>
-                          </select>
-
-                        </div>
-                      </div>
+                        [formControlName]="generaIdR('r',n,'p',i)" />
+                      <mat-form-field *ngFor="let x of [].constructor(this.maxs); let p = index">
+                        <mat-label>Afinidad</mat-label>
+                        <mat-select>
+                          <mat-option>Hell</mat-option>
+                          <mat-option>Hedwadll</mat-option>
+                          <!--<mat-option *ngFor="let numero of numeros; let l = index" [value]="numero.value">{{numero.value}}</mat-option>-->
+                        </mat-select>
+                      </mat-form-field>
                       <div class="clear"></div>
                     </div>
                   </div>
                 </div>
+                <div class="clear"></div>
               </div>
             </div>
           </div>

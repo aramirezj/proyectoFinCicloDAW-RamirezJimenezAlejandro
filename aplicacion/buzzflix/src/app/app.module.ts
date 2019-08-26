@@ -117,7 +117,7 @@ import { LogrosComponent } from './profile/logros/logros.component';
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireDatabaseModule
   ],
-  exports: [RouterModule, MatSelectModule],
+  exports: [RouterModule],
   providers: [AuthService, AuthGuard, AuthedGuard, QuizzService, NotifyService, UserService, FollowService, FuncionesService, AngularFirestore, AngularFireStorage, { provide: MatPaginatorIntl, useClass: MatPaginatorIntlCro }],
   bootstrap: [AppComponent],
   entryComponents: [DialogboxComponent]

@@ -10,9 +10,12 @@ import { Respuesta } from '../modelo/Respuesta';
 import { Afinidad } from '../modelo/Afinidad';
 import { Quizz } from '../modelo/Quizz';
 import { NotifyService } from '../services/notify.service';
-import { MatSelectModule } from '@angular/material/select';
+import {MatSelectModule} from '@angular/material/select';
 import * as $ from 'jquery';
-import { AngularFireDatabase } from '@angular/fire/database';
+export interface Numero {
+  value: number;
+  viewValue: number;
+}
 @Component({
   selector: 'app-create-quizz',
   templateUrl: './create-quizz.component.html',
@@ -20,6 +23,11 @@ import { AngularFireDatabase } from '@angular/fire/database';
 })
 export class CreateQuizzComponent implements OnInit {
   //PUNTO DE INFLEXION
+  numeros: Numero[] = [
+    {value: 0, viewValue: 0},
+    {value: 1, viewValue: 1},
+    {value: 2, viewValue: 2}
+  ];
   checked = false;
   labelPosition = 'before';
   indeterminate = false;
@@ -52,7 +60,7 @@ export class CreateQuizzComponent implements OnInit {
     private ref: ChangeDetectorRef,
     private notifyService: NotifyService,
   ) {
-
+    
     this.files = [];
     this.createForm();
     this.verdades = [];
@@ -94,7 +102,8 @@ export class CreateQuizzComponent implements OnInit {
         let destino: any = $("#img" + n)[0];
         var reader = new FileReader();
         reader.onload = function (event) {
-          destino.src = event.target.result;
+          let target:any = event.target;
+          destino.src = target.result;
         };
         reader.readAsDataURL(file);
         destino.src = file;
