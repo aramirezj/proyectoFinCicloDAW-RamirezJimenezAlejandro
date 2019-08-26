@@ -1,6 +1,6 @@
 <div class="row">
-  <div class="col-md-8 col-md-offset-1 box">
-    <div class="panel panel-default">
+  <div class="col-md-12 box">
+    <div class="panel-default">
       <div class="panel-heading">
         Crear Quizz
       </div>
@@ -50,8 +50,8 @@
                 <div class="input-group-btn">
                   <span class="fileUpload btn btn-success">
                     <span class="upl" id="upload">Subir imagen</span>
-                    <input type="file" class="upload up" accept="image/*" (change)="onFileChanged($event,69)" formControlName="banner"
-                      id="up" />
+                    <input type="file" class="upload up" accept="image/*" (change)="onFileChanged($event,50)"
+                      formControlName="banner" id="up" />
                   </span>
                 </div>
               </div>
@@ -68,14 +68,16 @@
             </div>
             <div class="form-group">
               <label>Configuración</label><br>
-              <mat-checkbox formControlName="privado" style="font-weight: normal!important;font-size:0.9em!important;" (ngModel)="indeterminate" [labelPosition]="labelPosition">
-       Quiz privado
-      </mat-checkbox>
+              <mat-checkbox formControlName="privado" style="font-weight: normal!important;font-size:0.9em!important;"
+                (ngModel)="indeterminate" [labelPosition]="labelPosition">
+                Quiz privado
+              </mat-checkbox>
             </div>
             <div class="form-group text-center">
-              <button *ngIf="firstStep" type="button" class="btn btn-info" (click)="generaSoluciones()">Generar
+              <button *ngIf="firstStep" type="button" mat-raised-button color="primary"
+                (click)="generaSoluciones()">Generar
                 Soluciones</button>
-              <button *ngIf="!firstStep" type="button" class="btn btn-info" (click)="generaSoluciones()"
+              <button *ngIf="!firstStep" type="button" mat-raised-button color="primary" (click)="generaSoluciones()"
                 [disabled]="quizzForm.invalid">Generar Soluciones</button>
             </div>
           </div>
@@ -83,7 +85,7 @@
           <div *ngIf="firstStep" class="solu-box">
             <p class="text-center seccion">Soluciones</p>
             <!-- Soluciones -->
-            <div class="solu-apar" *ngFor="let item of [].constructor(this.max); let i = index">
+            <!--<div class="solu-apar" *ngFor="let item of [].constructor(this.max); let i = index">
               <p class="text-center apartado">Solución Nº {{i+1}}</p>
               <div class="form-group">
                 <input type="text" class="form-control" [formControlName]="generaId('st',i)"
@@ -93,8 +95,6 @@
                 <input type="text" class="form-control" [formControlName]="generaId('sd',i)"
                   placeholder="Explicación de la solución">
               </div>
-
-
 
               <div class="form-group">
                 <div class="input-group">
@@ -108,20 +108,48 @@
                   </div>
                 </div>
               </div>
+            </div>-->
 
-
+            <div class="solucionBox text-center" *ngFor="let item of [].constructor(this.max); let i = index">
+              <mat-card class="example-card ">
+                <mat-card-header>
+                  <mat-card-title class="mat-card-header-text">Solución Nº {{i+1}}
+                    <input type="text" class="form-control" placeholder="Nombre de la solución"
+                      [formControlName]="generaId('st',i)">
+                    <input type="text" style="display:none" class="form-control" placeholder="Imagen de la solución"
+                      readonly>
+                    <div class="input-group-btn">
+                      <span class="fileUpload btn btn-success">
+                        <span class="upl" id="upload">Subir imagen</span>
+                        <input type="file" class="upload up" (change)="onFileChanged($event,i)"
+                          [formControlName]="generaId('si',i)" id="up" />
+                      </span>
+                    </div>
+                    <br>
+                    <img [id]="'img'+i" mat-card-image width="200px">
+                  </mat-card-title>
+                </mat-card-header>
+                <mat-card-content>
+                  <input type="text" class="form-control" placeholder="Explicación de la solución"
+                    [formControlName]="generaId('sd',i)">
+                </mat-card-content>
+              </mat-card>
             </div>
+            <div style="clear:both"></div>
+            <!--Fin soluciones-->
+
             <div class="form-group text-center">
-              <button *ngIf="firstStep" type="button" class="btn btn-danger" (click)="generaPreguntas()"
+              <button *ngIf="firstStep" type="button" mat-raised-button color="warn" (click)="generaPreguntas()"
                 [disabled]="!firstStep">Generar Preguntas</button>
             </div>
           </div>
 
           <!-- PREGUNTAS -->
           <div *ngIf="secondStep" class="preg-box">
-            <p class="text-center">Preguntas</p>
-            <div class="preg-apar" *ngFor="let item of [].constructor(this.maxp); let i = index">
-              <p class="text-center apartado">Pregunta Nº {{i+1}}</p>
+            <p class="text-center seccion">Preguntas</p>
+            <div class="cajaPregunta" *ngFor="let item of [].constructor(this.maxp); let i = index">
+              <div class="cont">
+              <p class="text-center apartado">Nº {{i+1}}</p>
               <div class="form-group">
                 <input type="text" class="form-control" placeholder="Titulo pregunta"
                   [formControlName]="generaId('pt',i)">
@@ -131,8 +159,10 @@
                   [formControlName]="generaId('pcr',i)" max="20">
               </div>
               <div class="form-group text-center">
-                <button type="button" class="btn btn-danger" (click)="generaRespuestas(i+1)">Generar respuestas</button>
+                <button type="button" mat-raised-button color="accent" (click)="generaRespuestas(i+1)">Generar
+                  respuestas</button>
               </div>
+            </div>
               <!-- RESPUESTAS -->
               <div *ngIf="this.verdades[i].creada" class="resp-box">
                 <div *ngFor="let n of this.learray[i];let j = index">

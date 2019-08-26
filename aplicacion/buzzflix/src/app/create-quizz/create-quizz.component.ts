@@ -69,12 +69,15 @@ export class CreateQuizzComponent implements OnInit {
 
     }
   }
-  onFileChanged(event, n: number) {
-    let nameInput=event.target.getAttribute("ng-reflect-name");
-    if (n != 69) {
+  onFileChanged(event: any, n: number) {
+    console.log(n)
+    let verdad = true;
+    let nameInput = event.target.getAttribute("ng-reflect-name");
+    if (n != 50) {
       n++;
     } else {
       n = 0;
+      verdad = false;;
     }
 
     const file = event.target.files[0];
@@ -86,8 +89,19 @@ export class CreateQuizzComponent implements OnInit {
         writable: false
       })
       this.files[n] = file;
-    }else{
-      this.notifyService.notify("Los formatos aceptados son PNG,JPG,JPEG","error");
+      if (verdad) {
+        n--;
+        let destino: any = $("#img" + n)[0];
+        var reader = new FileReader();
+        reader.onload = function (event) {
+          destino.src = event.target.result;
+        };
+        reader.readAsDataURL(file);
+        destino.src = file;
+      }
+
+    } else {
+      this.notifyService.notify("Los formatos aceptados son PNG,JPG,JPEG", "error");
       this.quizzForm.get(nameInput).reset();
     }
 
@@ -158,7 +172,6 @@ export class CreateQuizzComponent implements OnInit {
         this.max = this.quizzForm.get('cs').value;
         //this.ref.detectChanges();
         this.bar.done();
-
       }, 500);
     } else {
       this.notifyService.notify("El máximo de soluciones son 5, y el mínimo son 2", "error");
