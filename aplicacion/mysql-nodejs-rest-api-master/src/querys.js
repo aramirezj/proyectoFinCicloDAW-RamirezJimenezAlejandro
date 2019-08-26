@@ -30,7 +30,7 @@ querys["getOneQuizz2"] = "SELECT * FROM quizz where privado = ?";
 querys["getAllQuizzes1"] = "SELECT count(id) as pls from quizz where publicado=1 and privado IS NULL";
 querys["getAllQuizzes2"] = "SELECT q.*,COALESCE(SUM(v.cantidad),0) as estrellas FROM quizz q LEFT JOIN votaciones v on q.id=v.quizz where publicado = 1 and privado is null GROUP BY q.id DESC ";
 querys["getCantidadQuizzes"] = "SELECT count(id) as c FROM quizz WHERE creador = ? and publicado = 1";
-querys["getSeguidos1"] = "SELECT count(id) as pls from quizz where publicado=1 and privado is null and  creador in ( SELECT destino from follows where origen = ? )";
+querys["getSeguidos1"] = "SELECT count(id) as pls from quizz where publicado=1 and privado is null and  creador in ( SELECT destino from follows where origen = ? ) ";
 querys["getSeguidos2"] = "SELECT q.*,COALESCE(SUM(v.cantidad),0) as estrellas FROM quizz q left JOIN votaciones v on q.id=v.quizz WHERE creador in ( SELECT destino from follows where origen = ? ) AND publicado = 1 AND privado IS NULL GROUP BY q.id order by fechacreacion DESC ";
 querys["getQuizzesByName"] = "SELECT q.*,COALESCE(SUM(v.cantidad),0) as estrellas FROM quizz q left join votaciones v on q.id=v.quizz WHERE LOWER(q.titulo) LIKE LOWER(?) AND q.publicado=1 AND privado IS NULL GROUP BY q.id order by q.titulo";
 querys["getQuizzesaModerar"] = "SELECT q.*,COALESCE(SUM(v.cantidad),0) as estrellas FROM quizz q left join votaciones v on q.id=v.quizz where publicado = 0 AND privado is null AND creador != ? AND id not in (select quizz from moderacion where usuario = ? ) group by q.id";

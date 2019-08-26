@@ -98,7 +98,7 @@ function gestionaEnvioErrores(opcion, res) {
 }
 
 function ejecutaConsulta(query, valores, res, callback, limite) {
-  let queryElegida = limite != 'undefined' ? listaQuerys[query] : listaQuerys[query] + limite;
+  let queryElegida = limite == undefined ? listaQuerys[query] : listaQuerys[query] + limite;
   mysqlConnection.query(queryElegida, valores, (err, rows, fields) => {
     if (!err) {
       return callback(rows);
@@ -284,12 +284,11 @@ router.get('/quizz/:id/seguidos/:cadena', (req, res) => {
 });
 //Obtener los quizzes de la web (UNPROTECTED)
 router.get('/quizz/todos/:cadena', (req, res) => {
-  console.log("Obtener quizz de todos")
+  console.log("Petición para obtener todos los quizzes de la web")
   const { cadena } = req.params;
   let total = 0;
   let limite = cadena.split("-");
   limite = "LIMIT " + limite[0] + "," + limite[1];
-
   ejecutaConsulta("getAllQuizzes1", null, res, function (rows) {
     if (rows) {
       total = rows[0].pls;
