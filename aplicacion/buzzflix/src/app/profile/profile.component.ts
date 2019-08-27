@@ -3,7 +3,6 @@ import { ActivatedRoute } from '@angular/router';
 import { UserService } from '../services/user.service';
 import { Usuario } from '../modelo/Usuario';
 import { AuthService } from '../services/auth.service';
-import { QuizzService } from '../services/quizz.service';
 import { AngularFireStorage } from 'angularfire2/storage';
 import { LogrosComponent } from './logros/logros.component';
 @Component({
@@ -16,7 +15,7 @@ export class ProfileComponent implements OnInit {
   usuario: Usuario
   followers: number;
   follows: number;
-  logros:number;
+  logros: number;
   cantidad: number
   downloadURL: any
   mutual: any
@@ -26,7 +25,6 @@ export class ProfileComponent implements OnInit {
     private router: ActivatedRoute,
     private userService: UserService,
     private authService: AuthService,
-    private quizzService: QuizzService,
     private afStorage: AngularFireStorage,
   ) {
 
@@ -66,7 +64,7 @@ export class ProfileComponent implements OnInit {
       .subscribe((resp) => {
         this.follows = resp["seguidos"];
         this.followers = resp["seguidores"];
-        this.logros=resp["logros"];
+        this.logros = resp["logros"];
         this.mutual = resp["mutual"];
         this.cantidad = resp["cantidad"];
         //this.mutualaux = this.mutual.length == 2 ? true : false;
@@ -89,11 +87,6 @@ export class ProfileComponent implements OnInit {
 
     }
   }
-
-
-
-
-
 }
 
 

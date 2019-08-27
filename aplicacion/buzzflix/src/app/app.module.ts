@@ -15,7 +15,7 @@ import { AuthGuard } from './guards/auth.guard';
 import { AuthedGuard } from './guards/authed.guard';
 import { NotifyComponent } from './notify/notify.component';
 import { NotifyService } from './services/notify.service';
-import { FuncionesService } from './services/funciones.service';
+import { RestService } from './services/rest.service';
 import { ProfileComponent } from './profile/profile.component';
 import { UserService } from './services/user.service'
 import { PrettyDatePipe } from './pipes/pretty-date.pipe';
@@ -118,7 +118,7 @@ import { LogrosComponent } from './profile/logros/logros.component';
     AngularFireDatabaseModule
   ],
   exports: [RouterModule],
-  providers: [AuthService, AuthGuard, AuthedGuard, QuizzService, NotifyService, UserService, FollowService, FuncionesService, AngularFirestore, AngularFireStorage, { provide: MatPaginatorIntl, useClass: MatPaginatorIntlCro }],
+  providers: [AuthService, AuthGuard, AuthedGuard, QuizzService, NotifyService, UserService, FollowService, RestService, AngularFirestore, AngularFireStorage, { provide: MatPaginatorIntl, useClass: MatPaginatorIntlCro }],
   bootstrap: [AppComponent],
   entryComponents: [DialogboxComponent]
 })

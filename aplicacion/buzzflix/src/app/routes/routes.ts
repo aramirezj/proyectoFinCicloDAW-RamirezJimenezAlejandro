@@ -7,7 +7,6 @@ import { CanActivate } from '@angular/router/src/utils/preactivation';
 import { ProfileComponent } from '../profile/profile.component';
 import { WallComponent } from './../profile/wall/wall.component';
 import { EditProfileComponent } from './../profile/edit-profile/edit-profile.component';
-import { Component } from '@angular/core';
 import { CreateQuizzComponent } from '../create-quizz/create-quizz.component';
 import { VerQuizzComponent } from '../ver-quizz/ver-quizz.component';
 import { ExploradorComponent } from '../explorador/explorador.component';
@@ -39,12 +38,12 @@ export const ROUTES = [
     },
     {
         path:'crear/quizz',
-        component: CreateQuizzComponent
+        component: CreateQuizzComponent,
+        canActivate:[AuthGuard]
     },
     {
         path:'usuario/perfil/:id',
         component: ProfileComponent,
-        canActivate: [AuthGuard],
         children:[{
             path:'',
             component:WallComponent
@@ -58,8 +57,7 @@ export const ROUTES = [
     },
     {
         path:'ver/quizz/:id',
-        component: VerQuizzComponent,
-        canActivate:[AuthGuard]
+        component: VerQuizzComponent
     },
     {
         path:'ver/usuarios/:nombre',
@@ -68,8 +66,7 @@ export const ROUTES = [
     },
     {
         path:'ver/quizzes/:nombre',
-        component: DashboardQuizComponent,
-        canActivate:[AuthGuard]
+        component: DashboardQuizComponent
     },
     {
         path:'ver/todos',

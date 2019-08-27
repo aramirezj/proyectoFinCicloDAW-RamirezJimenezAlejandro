@@ -1,7 +1,7 @@
 <div class="wrapper" *ngIf="usuario">
   <div class="profile-card js-profile-card">
     <div class="profile-card__img">
-      <img *ngIf="this.usuario.avatar | async; let url"  [src]="url" alt="profile card">
+      <img *ngIf="this.usuario.avatar | async; let url" [src]="url" alt="profile card">
     </div>
 
     <div class="profile-card__cnt js-profile-cnt">
@@ -34,12 +34,12 @@
 
 
       <div class="profile-card-ctr">
-          <app-follow class="profile-card__button button--orange" *ngIf="!isAuthUserProfile()" (notify)='onNotify($event)'
-          [currentProfileId]="id"></app-follow>
+        <app-follow class="profile-card__button button--orange" *ngIf="!isAuthUserProfile() && this.authService.
+          isLoggedIn()" (notify)='onNotify($event)' [currentProfileId]="id"></app-follow>
         <button class="profile-card__button button--blue js-message-btn" *ngIf="isAuthUserProfile()"
           routerLink="edit">Editar perfil</button>
         <button class="profile-card__button button--yellow js-message-btn" routerLink="logros">Logros</button>
-        
+
       </div>
     </div>
   </div>

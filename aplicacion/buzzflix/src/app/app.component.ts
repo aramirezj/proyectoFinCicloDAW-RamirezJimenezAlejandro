@@ -120,7 +120,8 @@ export class AppComponent {
   }
 
   read(notificacion) {
-    this.authService.readNoti(notificacion.name);
+    this.authService.readNoti(notificacion.name)
+      .subscribe();
     let index = this.notificaciones.indexOf(notificacion);
     this.notificaciones.splice(index, 1);
     if (this.notificaciones.length == 0) {

@@ -97,7 +97,7 @@ export class ModeracionComponent implements OnInit {
 
   juzga(decision: boolean) {
     this.quizzService.moderaQuizz(this.quizzs[this.indice].id, decision)
-    .subscribe(resp => {});
+    .subscribe();
     this.indice++;
     $("html, body").animate({ scrollTop: 0 }, "fast");
     if (this.indice == this.quizzs.length) {

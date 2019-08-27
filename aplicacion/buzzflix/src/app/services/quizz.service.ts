@@ -1,96 +1,19 @@
 import { Observable } from 'rxjs';
-import { Injectable, ɵConsole } from '@angular/core';
+import { Injectable } from '@angular/core';
 import { AuthService } from './auth.service';
-import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { CONFIG } from './../config/config';
-import { NgProgressService } from 'ng2-progressbar';
 import { Quizz } from '../modelo/Quizz';
-import { DatePipe } from '@angular/common';
-import { UserService } from './user.service';
 import { NotifyService } from './notify.service';
-import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
-import { AngularFireStorage, AngularFireUploadTask } from 'angularfire2/storage';
-import { finalize } from 'rxjs/operators';
+import { AngularFireStorage} from 'angularfire2/storage';
+import { RestService } from './rest.service';
 @Injectable()
 export class QuizzService {
-    private headers: HttpHeaders
     constructor(
         private authService: AuthService,
-        private userService: UserService,
-        private http: HttpClient,
-        private bar: NgProgressService,
+        private restService: RestService,
         private notifyService: NotifyService,
-        private firestore: AngularFirestore,
         private afStorage: AngularFireStorage
     ) {
-        this.headers = new HttpHeaders({ 'Authorization': `Bearer ${this.getToken()}` });
-    }
-
-    getToken(): string {
-        return localStorage.getItem('token');
-    }
-
-    votaQuizz(quizz: number | string, n: number): Observable<void> {
-        this.headers = new HttpHeaders({ 'Authorization': `Bearer ${this.getToken()}` });
-        this.bar.start();
-        let id = this.authService.getAuthUserId();
-        let url = `${CONFIG.apiUrl}vota`;
-        let body = { origen: id, quizz: quizz, cantidad: n };
-        return this.http.post(url, body, { observe: 'body', headers: this.headers })
-            .map((response: any) => {
-                this.bar.done();
-                if (response.status == "200") {
-                    this.notifyService.notify("Has votado correctamente, ¡Gracias!", "success");
-                } else if (response.status == "Usuario sin permiso") {
-                    this.notifyService.notify("No tienes permiso", "error");
-                } else if (response.status == "Error sql") {
-                    this.notifyService.notify("Error en el servidor", "error");
-                } else if (response.status == "Token invalido") {
-                    this.authService.logout();
-                } else {
-                    this.notifyService.notify("Error desconocido", "error");
-                }
-            }, (err: HttpErrorResponse) => {
-                console.log(err);
-            });
-    }
-
-
-    getMedia(id: number): Observable<number> {
-        return this.http.get(`${CONFIG.apiUrl}quizz/${id}/media`, { observe: 'body', headers: this.headers })
-            .map((response: any) => {
-                if (response.status == "200") {
-                    return response.resultado;
-                } else if (response.status == "Error sql") {
-                    this.notifyService.notify("Error en el servidor", "error");
-                }
-            }, (err: HttpErrorResponse) => {
-                console.log(err);
-            });
-    }
-
-    createQuizz(quizz: Quizz, files: File[], privado: string): Observable<any> {
-        this.bar.start();
-        let id = this.authService.getAuthUserId();
-        let fecha = new Date();
-        let url = `${CONFIG.apiUrl}creaQuizz`;
-        quizz.fechacreacion = fecha;
-        quizz.creador = id;
-        let prep = JSON.stringify(quizz);
-        let body = { creador: this.authService.getAuthUserId(), titulo: quizz.titulo, contenido: prep, fecha: fecha, privado: privado };
-        return this.http.post(url, body, { observe: 'body', headers: this.headers })
-            .map((response: any) => {
-                if (response.status == '200') {
-                    this.uploadImage(files);
-                    this.bar.done();
-                    return response;
-                } else if (response.status == "Error sql") {
-                    this.notifyService.notify("Error en el servidor", "error");
-                    return null;
-                }
-            }, (err: HttpErrorResponse) => {
-                console.log(err);
-            });
     }
 
     uploadImage(files): void {
@@ -99,106 +22,6 @@ export class QuizzService {
             ref.put(files[i]);
         }
     }
-
-
-
-    obtenerQuizzSeguidos(inicio: number, fin: number): Observable<Array<Quizz>> {
-        this.headers = new HttpHeaders({ 'Authorization': `Bearer ${this.getToken()}` });
-        let id = this.authService.getAuthUserId();
-        let cadena = inicio + "-" + fin;
-        return this.http.get(`${CONFIG.apiUrl}quizz/${id}/seguidos/${cadena}`, { observe: 'body', headers: this.headers })
-            .map((response: any) => {
-                if (response.status == "200") {
-                    return response;
-                } else if (response.status == "Usuario sin permiso") {
-                    this.notifyService.notify("No tienes permiso", "error");
-                } else if (response.status == "Error sql") {
-                    this.notifyService.notify("Error en el servidor", "error");
-                } else {
-                    this.authService.logout();
-                    return null;
-                }
-            }, (err: HttpErrorResponse) => {
-                console.log(err);
-            });
-
-    }
-    obtenerAllQuizz(inicio: number, fin: number): Observable<Array<Quizz>> {
-        this.headers = new HttpHeaders({ 'Authorization': `Bearer ${this.getToken()}` });
-        let cadena = inicio + "-" + fin;
-        return this.http.get(`${CONFIG.apiUrl}quizz/todos/${cadena}`, { observe: 'body', headers: this.headers })
-            .map((response: any) => {
-                if (response.status == '200') {
-                    return response;
-                } else if (response.status == "Error sql") {
-                    this.notifyService.notify("Error en el servidor", "error");
-                    return null;
-                }
-            }, (err: HttpErrorResponse) => {
-                console.log(err);
-            });
-
-    }
-
-    getQuizz(id: string): Observable<Quizz> {
-        this.headers = new HttpHeaders({ 'Authorization': `Bearer ${this.getToken()}` });
-        return this.http.get(`${CONFIG.apiUrl}quizz/${id}`, { observe: 'body', headers: this.headers })
-            .map((response: any) => {
-                if (response.status == 'OK') {
-                    let rawquiz = response.cont[0];
-                    let quiz = JSON.parse(rawquiz.contenido);
-                    quiz.id = rawquiz.id;
-                    return quiz;
-                } else {
-                    return null;
-                }
-            }, (err: HttpErrorResponse) => {
-                console.log(err);
-            });
-    }
-    getQuizzes(nombre: string): Observable<Array<Quizz>> {
-        this.headers = new HttpHeaders({ 'Authorization': `Bearer ${this.getToken()}` });
-        return this.http.get(`${CONFIG.apiUrl}quizzes/${nombre}`, { observe: 'body', headers: this.headers })
-            .map((response: any) => {
-                if (response.status == '200') {
-                    return response.quizzes;
-                } else {
-                    return null;
-                }
-            }, (err: HttpErrorResponse) => {
-                console.log(err);
-            });
-
-    }
-
-
-
-    borraQuizz(quizz: Quizz) {
-        this.headers = new HttpHeaders({ 'Authorization': `Bearer ${this.getToken()}` });
-        this.bar.start();
-        let url = `${CONFIG.apiUrl}borraQuizz`;
-        let body = { quizz: quizz.id };
-        return this.http.post(url, body, { observe: 'body', headers: this.headers })
-            .map((response: any) => {
-                this.bar.done();
-                if (response.status == "200") {
-                    this.notifyService.notify("Has borrado tu quizz correctamente, una gran perdida...", "success");
-                    this.deleteImages(quizz);
-                    location.reload();
-                } else if (response.status == "Usuario sin permiso") {
-                    this.notifyService.notify("No tienes permiso", "error");
-                } else if (response.status == "Error sql") {
-                    this.notifyService.notify("Error en el servidor", "error");
-                } else {
-                    this.authService.logout();
-                    return null;
-                }
-                return response;
-            }, (err: HttpErrorResponse) => {
-                console.log(err);
-            });
-    }
-
     deleteImages(quizz: Quizz): void {
         let files: string[] = [];
         files.push(quizz.image);
@@ -210,64 +33,152 @@ export class QuizzService {
         }
     }
 
-    listaModeracion(): Observable<Array<Quizz>> {
-        this.headers = new HttpHeaders({ 'Authorization': `Bearer ${this.getToken()}` });
+    votaQuizz(quizz: number | string, n: number): Observable<boolean> {
         let id = this.authService.getAuthUserId();
-        let url = `${CONFIG.apiUrl}quizz/moderacion`;
-        let body = { id: id };
-        return this.http.post(url, body, { observe: 'body', headers: this.headers })
-            .map((response: any) => {
-                if (response.status == '200') {
-                    return response.cont;
-                } else {
-                    return null;
-                }
-            }, (err: HttpErrorResponse) => {
-                console.log(err);
+        let url = `${CONFIG.apiUrl}vota`;
+        let body = { origen: id, quizz: quizz, cantidad: n };
+        if (id == 0) {
+            this.notifyService.notify("Lo sentimos, debes iniciar sesión para poder votar", "error");
+            return Observable.create(observer => {
+                observer.next(false)
+                observer.complete();
             });
+        } else {
+            return Observable.create(observer => {
+                this.restService.peticionHttp(url, body).subscribe(response => {
+                    this.notifyService.notify("Has votado correctamente, ¡Gracias!", "success");
+                    observer.next(true)
+                    observer.complete();
+                })
+            });
+        }
+
+    }
+
+    createQuizz(quizz: Quizz, files: File[], privado: string): Observable<any> {
+        let id = this.authService.getAuthUserId();
+        let fecha = new Date();
+        quizz.fechacreacion = fecha;
+        quizz.creador = id;
+        let prep = JSON.stringify(quizz);
+
+        let url = `${CONFIG.apiUrl}creaQuizz`;
+        let body = { creador: this.authService.getAuthUserId(), titulo: quizz.titulo, contenido: prep, fecha: fecha, privado: privado };
+
+        return Observable.create(observer => {
+            this.restService.peticionHttp(url, body).subscribe(response => {
+                this.uploadImage(files);
+                observer.next(response.respuesta)
+                observer.complete();
+            })
+        });
+    }
+
+    obtenerQuizzSeguidos(inicio: number, fin: number): Observable<Array<Quizz>> {
+        let id = this.authService.getAuthUserId();
+        let cadena = inicio + "-" + fin;
+        let url = `${CONFIG.apiUrl}quizz/${id}/seguidos/${cadena}`;
+
+        return Observable.create(observer => {
+            this.restService.peticionHttp(url).subscribe(response => {
+                observer.next(response)
+                observer.complete();
+            })
+        });
+    }
+
+    obtenerAllQuizz(inicio: number, fin: number): Observable<Array<Quizz>> {
+        let cadena = inicio + "-" + fin;
+        let url = `${CONFIG.apiUrl}quizz/todos/${cadena}`;
+
+        return Observable.create(observer => {
+            this.restService.peticionHttp(url).subscribe(response => {
+                observer.next(response)
+                observer.complete();
+            })
+        });
+    }
+
+    getQuizz(id: string): Observable<Quizz> {
+        let url = `${CONFIG.apiUrl}quizz/${id}`;
+
+        return Observable.create(observer => {
+            this.restService.peticionHttp(url).subscribe(response => {
+                let rawquiz = response.respuesta;
+                let quiz = JSON.parse(rawquiz.contenido);
+                quiz.id = rawquiz.id;
+                observer.next(quiz)
+                observer.complete();
+            })
+        });
+    }
+
+    getQuizzes(nombre: string): Observable<Array<Quizz>> {
+        let url = `${CONFIG.apiUrl}quizzes/${nombre}`;
+
+        return Observable.create(observer => {
+            this.restService.peticionHttp(url).subscribe(response => {
+                observer.next(response.respuesta)
+                observer.complete();
+            })
+        });
+    }
+
+
+
+    borraQuizz(quizz: Quizz) {
+        let url = `${CONFIG.apiUrl}borraQuizz`;
+        let body = { quizz: quizz.id };
+
+        return Observable.create(observer => {
+            this.restService.peticionHttp(url, body).subscribe(response => {
+                this.notifyService.notify("Has borrado tu quizz correctamente, una gran perdida...", "success");
+                this.deleteImages(quizz);
+                location.reload();
+                observer.next()
+                observer.complete();
+            })
+        });
+    }
+
+
+
+    listaModeracion(): Observable<Array<Quizz>> {
+        let url = `${CONFIG.apiUrl}quizz/moderacion`;
+        let body = { id: this.authService.getAuthUserId() };
+
+        return Observable.create(observer => {
+            this.restService.peticionHttp(url, body).subscribe(response => {
+                observer.next(response.respuesta)
+                observer.complete();
+            })
+        });
     }
 
     moderaQuizz(id: number, accion: boolean): Observable<boolean> { //PROTEGIDO
-        this.headers = new HttpHeaders({ 'Authorization': `Bearer ${this.getToken()}` });
         let url = `${CONFIG.apiUrl}modera`;
         let body = { quizz: id, usuario: this.authService.getAuthUserId(), decision: accion };
-        return this.http.post(url, body, { observe: 'body', headers: this.headers })
-            .map((response: any) => {
-                this.bar.done();
-                if (response.status == "200") {
-                    this.notifyService.notify("Acción registrada", "success");
-                    return true;
-                } else if (response.status == "Error sql") {
-                    this.notifyService.notify("Error en el servidor", "error");
-                } else {
-                    this.authService.logout();
-                    return null;
-                }
-                return response;
-            }, (err: HttpErrorResponse) => {
-                console.log(err);
-            });
+        return Observable.create(observer => {
+            this.restService.peticionHttp(url, body).subscribe(response => {
+                this.notifyService.notify("Acción registrada", "success");
+                observer.next()
+                observer.complete();
+            })
+        });
+
     }
-    cambiaTipo(quiz: Quizz, privado: boolean):Observable<void> {
-        this.headers = new HttpHeaders({ 'Authorization': `Bearer ${this.getToken()}` });
-        let text = privado ? Math.random().toString(36).substring(2):null;
+    cambiaTipo(quiz: Quizz, privado: boolean): Observable<void> {
+        let text = privado ? Math.random().toString(36).substring(2) : null;
         let url = `${CONFIG.apiUrl}cambiaTipo`;
         let body = { quizz: quiz.id, privado: text };
-        this.bar.start();
-        return this.http.post(url, body, { observe: 'body', headers: this.headers })
-            .map((response: any) => {
-                this.bar.done();
-                if (response.status == '200') {
-                    location.reload();
-                } else if (response.status == "Error sql") {
-                    this.notifyService.notify("Error en el servidor", "error");
-                    return null;
-                } else {
-                    this.authService.logout();
-                }
-            }, (err: HttpErrorResponse) => {
-                console.log(err);
-            });
+
+        return Observable.create(observer => {
+            this.restService.peticionHttp(url, body).subscribe(response => {
+                location.reload();
+                observer.next()
+                observer.complete();
+            })
+        });
     }
 
 

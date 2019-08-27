@@ -12,7 +12,7 @@ import { Router } from '@angular/router';
 
 
 export class VotarComponent implements OnInit {
-  @Input() id:number
+  @Input() id: number
   @Input() rating: number;
   @Input() itemId: number;
   @Output() ratingClick: EventEmitter<any> = new EventEmitter<any>();
@@ -20,10 +20,10 @@ export class VotarComponent implements OnInit {
   inputName: string;
 
   constructor(
-    private quizzService:QuizzService,
+    private quizzService: QuizzService,
     private router: Router,
   ) {
-    
+
   }
 
   ngOnInit() {
@@ -35,21 +35,24 @@ export class VotarComponent implements OnInit {
       itemId: this.itemId,
       rating: rating
     });
-    this.quizzService.votaQuizz(this.id,this.rating)
-    .subscribe((resp)=>{
-      this.router.navigate(['ver/todos'])
-    })
+    this.quizzService.votaQuizz(this.id, this.rating)
+      .subscribe((resp) => {
+        if (resp) {
+          this.router.navigate(['ver/todos'])
+        }
+
+      })
 
   }
 
 
-  
-
-  
-
-  
 
 
 
-  
+
+
+
+
+
+
 }

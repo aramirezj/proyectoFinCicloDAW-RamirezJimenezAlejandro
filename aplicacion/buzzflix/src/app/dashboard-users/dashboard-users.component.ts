@@ -52,12 +52,11 @@ export class DashboardUsersComponent implements OnInit {
     this.userService.getUsuarios(this.nombre)
       .subscribe(resp => {
         this.usuarios = resp;
-        if (this.usuarios != null && this.usuarios != undefined) {
+        if (this.usuarios != null && this.usuarios != undefined && this.usuarios != 'undefined') {
+          this.usuarios = this.usuarios.length == 0 ? null : this.usuarios;
           this.notifyService.notify("Búsqueda realizada", "success");
         } else {
-          if (this.usuarios.length == 0) {
-            this.usuarios = null;
-          }
+          this.usuarios = null;
         }
         this.isLoaded = true;
       })

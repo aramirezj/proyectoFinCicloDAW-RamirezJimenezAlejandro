@@ -27,7 +27,7 @@ function creaToken(id) {
 
 
 
-function verificaToken(headers,res) {
+function verificaToken(headers, res, verdad) {
   //console.log(headers.authorization);
   let bearerHeader = headers["authorization"];
   if (typeof bearerHeader !== 'undefined') {
@@ -37,14 +37,20 @@ function verificaToken(headers,res) {
       let decoded = jwt.verify(bearerToken, secretWord)
       return decoded.id;
     } catch (err) {
+      if (verdad) {
+        return 0;
+      } 
       console.log("Es un token erroneo");
       gestionaEnvioErrores(2, res);
       return false;
     }
   } else {
-    console.log("Es un token erroneo");
+    
+    console.log("Es un token invalido");
     gestionaEnvioErrores(2, res);
     return false;
+
+
   }
 }
 
@@ -80,18 +86,20 @@ function gestionaEnvioErrores(opcion, res) {
   switch (opcion) {
     case 1:
       console.log("Error sql");
+      res.statusCode = 500;
       res.send({ status: "Error sql" });
       break;
     case 2:
       console.log("Token invalido");
+      res.statusCode = 403;
       res.send({ status: 'Token invalido' })
       break;
     case 3:
       console.log("Duplicate");
-      res.send({ status: "Duplicate" });
+      res.send({ auth: false });
       break;
     case 4:
-      console.log("Contraseña incorrectas");
+      console.log("Contraseña incorrecta");
       res.send({ status: "Wrong password" });
       break;
   }
@@ -104,10 +112,11 @@ function ejecutaConsulta(query, valores, res, callback, limite) {
       return callback(rows);
     } else {
       console.log("HA OCURRIDO UN ERROR");
-      console.log(err)
+
       if (err.code == 'ER_DUP_ENTRY') {
         gestionaEnvioErrores(3, res);
       } else {
+        console.log(err)
         gestionaEnvioErrores(1, res);
       }
       return callback(false);
@@ -142,9 +151,9 @@ router.post('/authenticate', cors(), (req, res, next) => {
   ejecutaConsulta("login", [email, password], res, function (rows) {
     if (rows) {
       if (rows.length > 0) {//Datos correctos
-        res.send({ status: "200", auth: true, token: creaToken(rows[0].id), usuario: rows[0] });
+        res.send({ auth: true, token: creaToken(rows[0].id), respuesta: rows[0] });
       } else {//Datos incorrectos
-        res.send({ status: "200", auth: false });
+        res.send({ auth: false });
       }
     }
   });
@@ -153,7 +162,7 @@ router.post('/authenticate', cors(), (req, res, next) => {
 //Actualizar perfil de un usuario (PROTECTED)
 router.put('/usuario/actualizar/:id', cors(), (req, res, next) => {
   console.log("Petición para actualizar el perfil de un usuario")
-  let permiso = verificaToken(req.headers,res);
+  let permiso = verificaToken(req.headers, res);
   if (permiso) {
     let { name, oldpass, newpass, avatar } = req.body;
     const { id } = req.params;
@@ -187,7 +196,7 @@ router.put('/usuario/actualizar/:id', cors(), (req, res, next) => {
 // Ver si un usuario es admin (PROTECTED)
 router.get('/usuario/admin', (req, res) => {
   console.log("Preguntar si un usuario es administrador")
-  let permiso = verificaToken(req.headers,res);
+  let permiso = verificaToken(req.headers, res);
   if (permiso) {
     ejecutaConsulta("isAdmin", [permiso], res, function (rows) {
       if (rows) {
@@ -200,51 +209,46 @@ router.get('/usuario/admin', (req, res) => {
 // Obtener los logros de un usuario (PROTECTED)
 router.get('/usuario/:id/logros', (req, res) => {
   console.log("Obtener logros de un usuario")
-  let permiso = verificaToken(req.headers,res);
   const { id } = req.params;
-  if (permiso) {
     ejecutaConsulta("buscaLogros", [id], res, function (rows) {
       if (rows) {
-        res.send({ status: '200', logros: rows });
+        res.send({ status: '200', respuesta: rows });
       }
     });
-  }
 });
 // Obtener notificaciones de un usuario (PROTECTED)
 router.get('/usuario/notificaciones', (req, res) => {
   console.log("Obtener las notificaciones de un usuario")
-  let permiso = verificaToken(req.headers,res);
+  let permiso = verificaToken(req.headers, res);
   if (permiso) {
-    ejecutaConsulta("buscaLogros", [permiso], res, function (rows) {
+    ejecutaConsulta("getNotis", [permiso], res, function (rows) {
       if (rows) {
-        res.send({ status: '200', mensajes: rows })
+        res.send({respuesta: rows })
       }
     });
   }
 });
 
-// Obtener un usuario (PROTECTED)
+// Obtener un usuario (UNPROTECTED)
 router.get('/usuario/:id', (req, res) => {
   console.log("Obtener un usuario mediante una id")
-  let permiso = verificaToken(req.headers,res);
-  if (permiso) {
-    const { id } = req.params;
-    ejecutaConsulta("getUsuario", [id], res, function (rows) {
-      if (rows) {
-        res.send({ status: '200', usuario: rows[0] })
-      };
-    });
-  }
+  const { id } = req.params;
+  ejecutaConsulta("getUsuario", [id], res, function (rows) {
+    if (rows) {
+      res.send({ status: '200', respuesta: rows[0] })
+    };
+  });
+
 });
 // Obtener varios usuarios según nombre (PROTECTED)
 router.get('/usuarios/:nombre', (req, res) => {
   console.log("Obtener usuarios por nombre");
-  let permiso = verificaToken(req.headers,res);
+  let permiso = verificaToken(req.headers, res);
   let { nombre } = req.params;
   if (permiso) {
     ejecutaConsulta("getUsuariosByNombre", [nombre + "%"], res, function (rows) {
       if (rows) {
-        res.send({ status: '200', usuarios: rows })
+        res.send({ status: '200', respuesta: rows })
       };
     });
   }
@@ -253,12 +257,11 @@ router.get('/usuarios/:nombre', (req, res) => {
 router.get('/usuario/:id/wall', (req, res) => {
   console.log("Obtener todos los quizz de un perfil")
   const { id } = req.params;
-  let permiso = verificaToken(req.headers,res);
+  let permiso = verificaToken(req.headers, res, true);
   let query = permiso == id ? "getUsuarioWallPrivate" : "getUsuarioWallPublic"
-
   ejecutaConsulta(query, [id], res, function (rows) {
     if (rows) {
-      res.send({ status: "200", cont: rows });
+      res.send({ respuesta: rows });
     }
   });
 
@@ -276,7 +279,7 @@ router.get('/quizz/:id/seguidos/:cadena', (req, res) => {
       total = rows[0].pls;
       ejecutaConsulta("getSeguidos2", [id], res, function (rows2) {
         if (rows2) {
-          res.send({ status: "200", cont: rows2, total: total });
+          res.send({ cont: rows2, total: total });
         }
       }, limite);
     }
@@ -294,7 +297,7 @@ router.get('/quizz/todos/:cadena', (req, res) => {
       total = rows[0].pls;
       ejecutaConsulta("getAllQuizzes2", null, res, function (rows2) {
         if (rows2) {
-          res.send({ status: "200", cont: rows2, total: total });
+          res.send({ cont: rows2, total: total });
         }
       }, limite);
     }
@@ -307,7 +310,7 @@ router.get('/quizzes/:nombre', (req, res) => {
   console.log("Obtener quizzes por nombre " + nombre);
   ejecutaConsulta("getQuizzesByName", ['%' + nombre + "%"], res, function (rows) {
     if (rows) {
-      res.send({ status: '200', quizzes: rows });
+      res.send({ respuesta: rows });
     }
   });
 });
@@ -319,7 +322,7 @@ router.post('/quizz/moderacion', (req, res) => {
 
   ejecutaConsulta("getQuizzesaModerar", [id, id], res, function (rows) {
     if (rows) {
-      res.send({ status: "200", cont: rows });
+      res.send({ respuesta: rows });
     }
   });
 });
@@ -329,7 +332,7 @@ router.post('/modera', (req, res) => {
   const { quizz, usuario, decision } = req.body;
   let titulo = null;
   let creador = null;
-  let permiso = verificaToken(req.headers,res);
+  let permiso = verificaToken(req.headers, res);
   if (permiso) {
     ejecutaConsulta("setModerar1", [quizz], res, function (rows) {
       if (rows) {
@@ -386,35 +389,19 @@ router.get('/quizz/:id', (req, res) => {
   let query = !isNaN(id) ? "getOneQuizz1" : "getOneQuizz2";
   ejecutaConsulta(query, [id], res, function (rows) {
     if (rows) {
-      res.send({ status: "OK", cont: rows });
+      res.send({ respuesta: rows[0] });
     }
   });
 
-});
-
-
-
-//Obtener cantidad de votos recibidos x personas (UNPROTECTED)
-router.get('/quizz/:id/media', (req, res) => {
-  console.log("Obtener cantidad de votos, (no cantidad)")
-  const { id } = req.params;
-  ejecutaConsulta("getCantidadVotos", [id, id], res, function (rows) {
-    if (rows) {
-      res.send({ status: '200', resultado: rows[0].m });;
-    }
-  });
 });
 
 //Obtener número de seguidores (UNPROTECTED)
 router.post('/usuario/stats', (req, res) => {
   console.log("Obtener estadisticas de un perfil")
   const { origen, destino } = req.body;
-  let resultados = [0, 0, 0, 0];
   ejecutaConsulta("getEstadisticas", [origen, destino, destino, origen, destino, destino, destino, destino], res, function (rows) {
     if (rows) {
-      console.log("----------------------------")
-      console.log(rows);
-      res.send({ status: "200", stats: rows });
+      res.send({ status: "200", respuesta: rows[0] });
     }
   });
 });
@@ -426,7 +413,7 @@ router.post('/creaQuizz', cors(), (req, res, next) => {
   const { creador, titulo, contenido, fecha, privado } = req.body;
   ejecutaConsulta("setQuiz", [creador, titulo, contenido, fecha, privado], res, function (rows) {
     if (rows) {
-      res.send({ status: '200', id: rows.insertId });
+      res.send({ respuesta: rows.insertId });
     }
   })
 });
@@ -435,7 +422,7 @@ router.post('/creaQuizz', cors(), (req, res, next) => {
 router.post('/borraQuizz', cors(), (req, res, next) => {
   console.log("Petición para borrar un quizz")
   const { quizz } = req.body;
-  let permiso = verificaToken(req.headers,res);
+  let permiso = verificaToken(req.headers, res);
   if (permiso) {
     ejecutaConsulta("deleteQuiz", [quizz, permiso], res, function (rows) {
       if (rows) {
@@ -450,18 +437,18 @@ router.post('/borraQuizz', cors(), (req, res, next) => {
 router.post('/vota', cors(), (req, res, next) => {
   console.log("Petición para puntuar un test")
   const { origen, quizz, cantidad } = req.body;
-  let permiso = verificaToken(req.headers,res);
+  let permiso = verificaToken(req.headers, res);
 
   if (permiso) {
     ejecutaConsulta("setVotacion1", [origen, quizz], res, function (rows) {
       if (rows) {
         if (rows.length == 0) {
           ejecutaConsulta("setVotacion2", [origen, quizz, cantidad], res, function (rows2) {
-            res.send({ status: '200' });
+            res.send({});
           });
         } else {
           ejecutaConsulta("setVotacion3", [cantidad, origen, quizz], res, function (rows3) {
-            res.send({ status: '200' });
+            res.send({});
           });
         }
       }
@@ -471,14 +458,14 @@ router.post('/vota', cors(), (req, res, next) => {
 
 
 //Peticion post para ver si sigue a x persona (UNPROTECTED)
-router.post('/is/following', cors(), (req, res, next) => {
+router.post('/isFollowing', cors(), (req, res, next) => {
   console.log("Petición para ver si hay un seguimiento")
   const { origen, destino } = req.body;
 
   ejecutaConsulta("isFollowing", [origen, destino], res, function (rows) {
     if (rows) {
       let verdad = rows.length < 1 ? false : true;
-      res.send({ status: '200', verdad: verdad });
+      res.send({ respuesta: verdad });
     }
   });
 });
@@ -487,7 +474,7 @@ router.post('/is/following', cors(), (req, res, next) => {
 router.post('/follow', cors(), (req, res, next) => {
   console.log("Petición para comenzar a seguir")
   const { origen, destino } = req.body;
-  let permiso = verificaToken(req.headers,res);
+  let permiso = verificaToken(req.headers, res);
   if (permiso) {
     ejecutaConsulta("setFollow", [origen, destino], res, function (rows) {
       if (rows) {
@@ -500,7 +487,7 @@ router.post('/follow', cors(), (req, res, next) => {
 router.post('/usuario/read', cors(), (req, res, next) => {
   console.log("Petición para leer una notificación");
   const { mensaje } = req.body;
-  let permiso = verificaToken(req.headers,res);
+  let permiso = verificaToken(req.headers, res);
   if (permiso) {
     ejecutaConsulta("readNoti", [permiso, mensaje], res, function (rows) {
       if (rows) {
@@ -514,7 +501,7 @@ router.post('/usuario/read', cors(), (req, res, next) => {
 router.post('/cambiaTipo', cors(), (req, res, next) => {
   console.log("Petición para cambiar la privacidad")
   const { quizz, privado } = req.body;
-  let permiso = verificaToken(req.headers,res);
+  let permiso = verificaToken(req.headers, res);
   let query = privado == null ? "setPrivacidad1" : "setPrivacidad2";
   let valores = privado == null ? [quizz] : [privado, quizz];
   if (permiso) {
@@ -530,7 +517,7 @@ router.post('/cambiaTipo', cors(), (req, res, next) => {
 router.post('/unfollow', cors(), (req, res, next) => {
   console.log("Petición para borrar un seguimiento");
   const { origen, destino } = req.body;
-  let permiso = verificaToken(req.headers,res);
+  let permiso = verificaToken(req.headers, res);
   if (permiso) {
     ejecutaConsulta("deleteFollow", [origen, destino], res, function (rows) {
       res.send({ status: '200' });
