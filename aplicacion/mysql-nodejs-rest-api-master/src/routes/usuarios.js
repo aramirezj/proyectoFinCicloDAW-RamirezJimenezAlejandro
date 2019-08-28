@@ -58,28 +58,43 @@ function encripta(texto) {
   return encrypted;
 }
 
-function compruebaLogros(id,logroConcreto) {
-
-  if(logroConcreto==null){
-    mysqlConnection.query(listaQuerys["buscaLogros"], [id], (err, rows, fields) => {
-    if (!err) {
-      for (let logro of rows) {
-        if (logro.fecha == null) {
-          mysqlConnection.query(listaQuerys["checkLogro" + logro.id], [id], (err2, rows2, fields2) => {
-            if (rows2.length > 0 && rows2[0] != null) {
-              let parametros = "(" + id + "," + logro.id + ")";
-              insertaLogro(listaQuerys["insertLogro"] + parametros);
-            }
-          })
+function logroAvatar(id, avatar, oldAvatar, res) {
+  ejecutaConsulta("buscaLogro", [id, 6], res,
+    function (rows) {
+      if (rows) {
+        if (rows.length == 0) {
+          if (oldAvatar != avatar) {
+            ejecutaConsulta("insertLogro", [id, 6], res,
+              function (rows) { console.log("Logro insertado") });
+          }
         }
       }
-    } else {
-      res.send({ status: "Error sql" });
-    }
-  });
-  }
-  
+    });
 }
+
+function logroUsuarios(id, res) {
+  ejecutaConsulta("checkLogrosByUser", [id, id, id], res,
+    function (rows) {
+      if (rows) {
+        for (let i = 1; i <= 2; i++) {
+          if (rows[0]["logro" + i] != null) {
+            ejecutaConsulta("buscaLogro", [id, i], res,
+              function (rows2) {
+                if (rows2) {
+                  if (rows2.length == 0) {
+                    ejecutaConsulta("insertLogro", [id, i], res,
+                      function (rows) { console.log("Logro insertado") });
+                  }
+                }
+              });
+          }
+        }
+      };
+    });
+}
+
+
+
 
 function gestionaEnvioErrores(opcion, res) {
   switch (opcion) {
@@ -123,11 +138,6 @@ function ejecutaConsulta(query, valores, res, callback, limite) {
   });
 }
 
-function insertaLogro(query) {
-  mysqlConnection.query(query, null, (err, rows, fields) => {
-    console.log("Se ha insertado un logro");
-  })
-}
 
 //Petición para registrar un usuario .
 router.post('/register', cors(), (req, res, next) => {
@@ -164,7 +174,15 @@ router.put('/usuario/actualizar/:id', cors(), (req, res, next) => {
   let permiso = verificaToken(req.headers, res);
   if (permiso) {
     let { name, oldpass, newpass, avatar } = req.body;
-    const { id } = req.params;
+    const { id } = req.params; 3
+    //Logro 6
+    ejecutaConsulta("getUsuario", [id], res, function (rows) {
+      if (rows) {
+        logroAvatar(permiso, avatar, rows[0].avatar, res);
+      }
+    })
+    //Logro 6 
+
     if (oldpass == undefined || newpass == undefined) {//Modificamos solo nombre y avatar
       ejecutaConsulta("editarPerfil1", [name, avatar, id], res, function (rows) {
         if (rows) {
@@ -347,6 +365,7 @@ router.post('/modera', (req, res) => {
                       if (rows4) {
                         let mensajito = "¡Enhorabuena, su Quiz " + titulo + " ha sido publicado en la web!";
                         ejecutaConsulta("setModerar5", [creador, mensajito], res, function (rows5) {
+                          logroUsuarios(creador,res);
                           if (rows5) {
                             res.send({ status: '200' });
                           }
@@ -443,6 +462,7 @@ router.post('/vota', cors(), (req, res, next) => {
       if (rows) {
         if (rows.length == 0) {
           ejecutaConsulta("setVotacion2", [origen, quizz, cantidad], res, function (rows2) {
+            
             res.send({});
           });
         } else {
@@ -477,6 +497,7 @@ router.post('/follow', cors(), (req, res, next) => {
   if (permiso) {
     ejecutaConsulta("setFollow", [origen, destino], res, function (rows) {
       if (rows) {
+        logroUsuarios(destino, res);
         res.send({ status: '200' });
       }
     });
