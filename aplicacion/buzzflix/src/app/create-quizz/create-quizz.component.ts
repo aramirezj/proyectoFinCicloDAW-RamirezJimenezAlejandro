@@ -10,7 +10,7 @@ import { Respuesta } from '../modelo/Respuesta';
 import { Afinidad } from '../modelo/Afinidad';
 import { Quizz } from '../modelo/Quizz';
 import { NotifyService } from '../services/notify.service';
-import {MatSelectModule} from '@angular/material/select';
+import { MatSelectModule } from '@angular/material/select';
 import * as $ from 'jquery';
 export interface Numero {
   value: number;
@@ -24,9 +24,9 @@ export interface Numero {
 export class CreateQuizzComponent implements OnInit {
   //PUNTO DE INFLEXION
   numeros: Numero[] = [
-    {value: 0, viewValue: 0},
-    {value: 1, viewValue: 1},
-    {value: 2, viewValue: 2}
+    { value: 0, viewValue: 0 },
+    { value: 1, viewValue: 1 },
+    { value: 2, viewValue: 2 }
   ];
   checked = false;
   labelPosition = 'before';
@@ -60,7 +60,7 @@ export class CreateQuizzComponent implements OnInit {
     private ref: ChangeDetectorRef,
     private notifyService: NotifyService,
   ) {
-    
+
     this.files = [];
     this.createForm();
     this.verdades = [];
@@ -102,7 +102,7 @@ export class CreateQuizzComponent implements OnInit {
         let destino: any = $("#img" + n)[0];
         var reader = new FileReader();
         reader.onload = function (event) {
-          let target:any = event.target;
+          let target: any = event.target;
           destino.src = target.result;
         };
         reader.readAsDataURL(file);
@@ -156,7 +156,7 @@ export class CreateQuizzComponent implements OnInit {
     if (this.aux > 1 && this.aux < 6) {
       this.reseteaCondRespuestas();
       this.secondStep = false;
-      //this.ref.detach();
+      this.ref.detach();
       this.bar.start();
       let grupo: any
 
@@ -179,7 +179,7 @@ export class CreateQuizzComponent implements OnInit {
       this.firstStep = true;
       setTimeout(() => {
         this.max = this.quizzForm.get('cs').value;
-        //this.ref.detectChanges();
+        this.ref.detectChanges();
         this.bar.done();
       }, 500);
     } else {
@@ -192,38 +192,50 @@ export class CreateQuizzComponent implements OnInit {
 
   //Generación de las preguntas por el boton
   generaPreguntas() {
-    this.aux = this.quizzForm.get('cp').value;
-    if (this.aux > 1 && this.aux < 11) {
-      this.reseteaFullRespuestas();
-      this.ref.detach();
-      this.bar.start();
-      let grupo: any
-      this.aux = this.quizzForm.get('cp').value;
-      for (let i = 1; i <= this.aux; i++) {
-        let titulo: string = "pt" + i;
-        let descripcion: string = "pcr" + i;
-        grupo = [
-          { name: titulo, control: new FormControl(null, []) },
-          { name: descripcion, control: new FormControl(null, []) }
-        ]
-        grupo.forEach(f => {
-          this.quizzForm.addControl(f.name, f.control);
-          this.quizzForm.controls[f.name].setValidators([Validators.required]);
-          this.quizzForm.controls[f.name].updateValueAndValidity();
-          let eje = i;
-          eje--;
-          this.verdades[eje].creada = true;
-        });
+
+    let verdad = true;
+    for (let i = 1; i <= this.quizzForm.get('cs').value; i++) {
+      if (this.quizzForm.get('st' + i).value == null) {
+        verdad = false;
       }
-      this.secondStep = true;
-      setTimeout(() => {
-        this.maxp = this.quizzForm.get('cp').value;
-        this.ref.detectChanges();
-        this.bar.done();
-      }, 500);
-    } else {
-      this.notifyService.notify("El máximo de preguntas son 10, y el mínimo son 2", "error");
     }
+    this.aux = this.quizzForm.get('cp').value;
+    if (verdad) {
+      if (this.aux > 1 && this.aux < 11) {
+        this.reseteaFullRespuestas();
+        this.ref.detach();
+        this.bar.start();
+        let grupo: any
+        this.aux = this.quizzForm.get('cp').value;
+        for (let i = 1; i <= this.aux; i++) {
+          let titulo: string = "pt" + i;
+          let descripcion: string = "pcr" + i;
+          grupo = [
+            { name: titulo, control: new FormControl(null, []) },
+            { name: descripcion, control: new FormControl(null, []) }
+          ]
+          grupo.forEach(f => {
+            this.quizzForm.addControl(f.name, f.control);
+            this.quizzForm.controls[f.name].setValidators([Validators.required]);
+            this.quizzForm.controls[f.name].updateValueAndValidity();
+            let eje = i;
+            eje--;
+            this.verdades[eje].creada = true;
+          });
+        }
+        this.secondStep = true;
+        setTimeout(() => {
+          this.maxp = this.quizzForm.get('cp').value;
+          this.ref.detectChanges();
+          this.bar.done();
+        }, 500);
+      } else {
+        this.notifyService.notify("El máximo de preguntas son 10, y el mínimo son 2", "error");
+      }
+    }else{
+      this.notifyService.notify("Por favor, rellena al menos los titulos de las soluciones", "error");
+    }
+
 
 
   }
@@ -233,6 +245,7 @@ export class CreateQuizzComponent implements OnInit {
   generaRespuestas(id: number) {
     this.maxs = this.quizzForm.get('cs').value;
     this.maxr = this.quizzForm.value["pcr" + id];
+    console.log(this)
     if (this.maxr < 21 && this.maxr > 1) {
       this.thirdStep = true;
       this.reseteaRespuestas(id);

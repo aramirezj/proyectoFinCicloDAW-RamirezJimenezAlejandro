@@ -11,11 +11,7 @@ var tokenService = require('../tokenService');
 let secretWord = tokenService;
 
 const listaQuerys = require('../querys');
-
-
 const mysqlConnection = require('../database.js');
-
-
 
 function creaToken(id) {
   var token = jwt.sign({ id: id }, secretWord, {
@@ -28,7 +24,6 @@ function creaToken(id) {
 
 
 function verificaToken(headers, res, verdad) {
-  //console.log(headers.authorization);
   let bearerHeader = headers["authorization"];
   if (typeof bearerHeader !== 'undefined') {
     const bearer = bearerHeader.split(" ");
@@ -39,13 +34,13 @@ function verificaToken(headers, res, verdad) {
     } catch (err) {
       if (verdad) {
         return 0;
-      } 
+      }
       console.log("Es un token erroneo");
       gestionaEnvioErrores(2, res);
       return false;
     }
   } else {
-    
+
     console.log("Es un token invalido");
     gestionaEnvioErrores(2, res);
     return false;
@@ -63,8 +58,10 @@ function encripta(texto) {
   return encrypted;
 }
 
-function compruebaLogros(id) {
-  mysqlConnection.query(listaQuerys["buscaLogros"], [id], (err, rows, fields) => {
+function compruebaLogros(id,logroConcreto) {
+
+  if(logroConcreto==null){
+    mysqlConnection.query(listaQuerys["buscaLogros"], [id], (err, rows, fields) => {
     if (!err) {
       for (let logro of rows) {
         if (logro.fecha == null) {
@@ -80,6 +77,8 @@ function compruebaLogros(id) {
       res.send({ status: "Error sql" });
     }
   });
+  }
+  
 }
 
 function gestionaEnvioErrores(opcion, res) {
@@ -210,11 +209,11 @@ router.get('/usuario/admin', (req, res) => {
 router.get('/usuario/:id/logros', (req, res) => {
   console.log("Obtener logros de un usuario")
   const { id } = req.params;
-    ejecutaConsulta("buscaLogros", [id], res, function (rows) {
-      if (rows) {
-        res.send({ status: '200', respuesta: rows });
-      }
-    });
+  ejecutaConsulta("buscaLogros", [id], res, function (rows) {
+    if (rows) {
+      res.send({ status: '200', respuesta: rows });
+    }
+  });
 });
 // Obtener notificaciones de un usuario (PROTECTED)
 router.get('/usuario/notificaciones', (req, res) => {
@@ -223,7 +222,7 @@ router.get('/usuario/notificaciones', (req, res) => {
   if (permiso) {
     ejecutaConsulta("getNotis", [permiso], res, function (rows) {
       if (rows) {
-        res.send({respuesta: rows })
+        res.send({ respuesta: rows })
       }
     });
   }

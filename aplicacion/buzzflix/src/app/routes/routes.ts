@@ -27,11 +27,6 @@ export const ROUTES = [
         canActivate: [AuthedGuard]
     },
     {
-        path:'',
-        component: DashboardComponent,
-        canActivate: [AuthGuard]
-    },
-    {
         path:'dashboard',
         component: DashboardComponent,
         canActivate: [AuthGuard]
@@ -67,6 +62,11 @@ export const ROUTES = [
     {
         path:'ver/quizzes/:nombre',
         component: DashboardQuizComponent
+    },
+    {
+        path:'',
+        component:ExploradorComponent,
+        CanActivate:[AuthGuard]
     },
     {
         path:'ver/todos',

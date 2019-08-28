@@ -85,31 +85,6 @@
           <div *ngIf="firstStep" class="solu-box">
             <p class="text-center seccion">Soluciones</p>
             <!-- Soluciones -->
-            <!--<div class="solu-apar" *ngFor="let item of [].constructor(this.max); let i = index">
-              <p class="text-center apartado">Solución Nº {{i+1}}</p>
-              <div class="form-group">
-                <input type="text" class="form-control" [formControlName]="generaId('st',i)"
-                  placeholder="Nombre de la solución">
-              </div>
-              <div class="form-group">
-                <input type="text" class="form-control" [formControlName]="generaId('sd',i)"
-                  placeholder="Explicación de la solución">
-              </div>
-
-              <div class="form-group">
-                <div class="input-group">
-                  <input type="text" class="form-control" placeholder="Imagen de la solución" readonly>
-                  <div class="input-group-btn">
-                    <span class="fileUpload btn btn-success">
-                      <span class="upl" id="upload">Subir imagen</span>
-                      <input type="file" class="upload up" (change)="onFileChanged($event,i)"
-                        [formControlName]="generaId('si',i)" id="up" />
-                    </span>
-                  </div>
-                </div>
-              </div>
-            </div>-->
-
             <div class="solucionBox text-center" *ngFor="let item of [].constructor(this.max); let i = index">
               <mat-card class="example-card ">
                 <mat-card-header>
@@ -158,10 +133,12 @@
                   <input type="number" class="form-control" placeholder="Cantidad respuestas"
                     [formControlName]="generaId('pcr',i)" max="20">
                 </div>
-                <div class="form-group text-center">
-                  <button type="button" mat-raised-button color="accent" (click)="generaRespuestas(i+1)">Generar
-                    respuestas</button>
-                </div>
+
+              </div>
+              <div class="form-group text-center">
+                <button style="margin-top:1vw;background-color: mediumvioletred;" type="button" mat-raised-button color="accent"
+                  (click)="generaRespuestas(i+1)">Generar
+                  respuestas</button>
               </div>
               <!-- RESPUESTAS -->
               <div *ngIf="this.verdades[i].creada">
@@ -170,14 +147,14 @@
                     <div class="form-group">
                       <input type="text" class="form-control" placeholder="Titulo respuesta"
                         [formControlName]="generaIdR('r',n,'p',i)" />
-                      <mat-form-field *ngFor="let x of [].constructor(this.maxs); let p = index">
-                        <mat-label>Afinidad</mat-label>
-                        <mat-select>
-                          <mat-option>Hell</mat-option>
-                          <mat-option>Hedwadll</mat-option>
-                          <!--<mat-option *ngFor="let numero of numeros; let l = index" [value]="numero.value">{{numero.value}}</mat-option>-->
-                        </mat-select>
-                      </mat-form-field>
+                      <div class="form-group afinidad-box" *ngFor="let x of [].constructor(this.maxs); let p = index">
+
+                        <label for="exampleFormControlSelect1">Afinidad {{this.quizzForm.get('st'+(p+1)).value}}</label>
+                        <select [formControlName]="generaIdRR('p',i,'rs',n,'a',p)" class="form-control"
+                          id="exampleFormControlSelect1">
+                          <option *ngFor="let q of [0,1,2,3,4,5,6,7,8,9,10]; let l = index">{{q}}</option>
+                        </select>
+                      </div>
                       <div class="clear"></div>
                     </div>
                   </div>

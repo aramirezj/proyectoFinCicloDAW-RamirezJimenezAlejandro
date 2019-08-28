@@ -176,9 +176,9 @@ option {
     background-color: $fondoSuave;
   }
   .resp-box {
-    background-color: $verdeRetro;
+    background-color: $fondoSuave;
     input{
-      background-color: $verdeRetro;
+      background-color: $fondoSuave;
     }
   }
 }
@@ -190,9 +190,9 @@ option {
     background-color: $verdeRetro;
   }
   .resp-box {
-    background-color: $fondoSuave;
+    background-color: $verdeRetro;
     input{
-      background-color: $fondoSuave;
+      background-color: $verdeRetro;
     }
   }
 }
@@ -213,6 +213,18 @@ option {
   margin-right: 2%;
   margin-left: 2%;
 }
+
+.afinidad-box{
+  width: 40%;
+  margin: 1vw;
+}
+.afinidad-box:nth-child(even){
+  float:left;
+}
+.afinidad-box:nth-child(odd){
+  float:right;
+}
+
 //Apartado de la solución mostrada
 .solucionBox {
   display: inline-block;
