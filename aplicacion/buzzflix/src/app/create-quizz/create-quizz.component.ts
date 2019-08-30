@@ -2,7 +2,7 @@ import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms'
 import { QuizzService } from '../services/quizz.service';
 import { Solucion } from '../modelo/Solucion';
-import { NgProgressService } from 'ng2-progressbar';
+import { NgProgress } from 'ngx-progressbar';
 import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { Pregunta } from '../modelo/Pregunta';
@@ -56,7 +56,7 @@ export class CreateQuizzComponent implements OnInit {
     private authService: AuthService,
     private router: Router,
     private quizzService: QuizzService,
-    private bar: NgProgressService,
+    private bar: NgProgress,
     private ref: ChangeDetectorRef,
     private notifyService: NotifyService,
   ) {

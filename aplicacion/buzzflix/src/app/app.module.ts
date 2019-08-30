@@ -19,7 +19,7 @@ import { RestService } from './services/rest.service';
 import { ProfileComponent } from './profile/profile.component';
 import { UserService } from './services/user.service'
 import { PrettyDatePipe } from './pipes/pretty-date.pipe';
-import { NgProgressModule } from 'ng2-progressbar';
+import { NgProgressModule } from 'ngx-progressbar';
 import { WallComponent } from './profile/wall/wall.component';
 import { EditProfileComponent } from './profile/edit-profile/edit-profile.component';
 import { FollowComponent } from './profile/follow/follow.component';
@@ -43,12 +43,15 @@ import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MatTreeModule } from '@angular/material/tree';
-import { MatPaginatorIntl } from '@angular/material';
+import { MatPaginatorIntl } from '@angular/material/paginator';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatGridListModule } from '@angular/material/grid-list'
 import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatToolbarModule, MatSidenavModule, MatListModule, MatIconModule } from "@angular/material";
+import { MatIconModule } from "@angular/material/icon";
+import { MatListModule } from "@angular/material/list";
+import { MatSidenavModule } from "@angular/material/sidenav";
+import { MatToolbarModule } from "@angular/material/toolbar";
 import { MatMenuModule } from '@angular/material/menu';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireModule } from '@angular/fire';

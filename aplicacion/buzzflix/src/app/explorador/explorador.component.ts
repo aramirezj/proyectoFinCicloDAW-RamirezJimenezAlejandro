@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Quizz } from '../modelo/Quizz';
 import { QuizzService } from '../services/quizz.service';
-import {MatPaginatorIntl, PageEvent} from '@angular/material';
+import { MatPaginatorIntl, PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-explorador',

@@ -1,7 +1,7 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Usuario } from '../modelo/Usuario';
 import { QuizzService } from '../services/quizz.service';
-import { MatDialog, MatDialogConfig } from "@angular/material";
+import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
 import { DialogboxComponent } from '../dialogbox/dialogbox.component';
 import { AngularFireStorage } from 'angularfire2/storage';
 import * as $ from 'jquery';

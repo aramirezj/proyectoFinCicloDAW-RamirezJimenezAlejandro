@@ -3,7 +3,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Quizz } from '../modelo/Quizz';
 import { QuizzService } from '../services/quizz.service';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
-import { NgProgressService } from 'ng2-progressbar';
+import { NgProgress } from 'ngx-progressbar';
 import { Respuesta } from '../modelo/Respuesta';
 import { Pregunta } from '../modelo/Pregunta';
 import { Solucion } from '../modelo/Solucion';
@@ -30,7 +30,7 @@ export class VerQuizzComponent implements OnInit {
     private quizzService: QuizzService,
     private router: ActivatedRoute,
     private fb: FormBuilder,
-    private bar: NgProgressService,
+    private bar: NgProgress,
     private afStorage: AngularFireStorage) {
     this.resultado = false;
     this.cargado = false;

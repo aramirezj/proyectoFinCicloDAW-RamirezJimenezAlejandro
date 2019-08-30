@@ -3,7 +3,7 @@ import { Injectable, EventEmitter } from '@angular/core';
 import { AuthService } from './auth.service';
 import { CONFIG } from './../config/config';
 import { Usuario } from '../modelo/Usuario';
-import { NgProgressService } from 'ng2-progressbar';
+import { NgProgress } from 'ngx-progressbar';
 import { Quizz } from '../modelo/Quizz';
 import { NotifyService } from './notify.service';
 import { Image } from '../modelo/Image';
@@ -25,7 +25,7 @@ export class UserService {
     successMsg = 'Data successfully saved.';
     constructor(
         private authService: AuthService,
-        private bar: NgProgressService,
+        private bar: NgProgress,
         private notifyService: NotifyService,
         private restService: RestService,
         private firestore: AngularFirestore,

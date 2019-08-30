@@ -5,7 +5,7 @@ import { UserService } from 'src/app/services/user.service';
 import { NotifyService } from 'src/app/services/notify.service';
 import { ErrorStateMatcher } from '@angular/material/core';
 import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
-import { NgProgressService } from 'ng2-progressbar';
+import { NgProgress } from 'ngx-progressbar';
 import * as $ from 'jquery';
 import { AngularFireStorage } from 'angularfire2/storage';
 @Component({
@@ -23,7 +23,7 @@ export class EditProfileComponent implements OnInit {
     private authService: AuthService,
     private userService: UserService,
     private notifyService: NotifyService,
-    private bar: NgProgressService,
+    private bar: NgProgress,
     private afStorage: AngularFireStorage
 
   ) {

@@ -1,7 +1,7 @@
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
 import { QuizzService } from '../services/quizz.service';
 import { Quizz } from '../modelo/Quizz';
-import { MatPaginatorIntl, PageEvent } from '@angular/material';
+import { MatPaginatorIntl, PageEvent } from '@angular/material/paginator';
 
 @Component({
   selector: 'app-dashboard',

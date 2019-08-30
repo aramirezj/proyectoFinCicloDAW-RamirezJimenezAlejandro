@@ -2,7 +2,7 @@ import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http
 import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { NotifyService } from './notify.service';
-import { NgProgressService } from 'ng2-progressbar';
+import { NgProgress } from 'ngx-progressbar';
 
 export enum Tipos {
     Get,
@@ -17,7 +17,7 @@ export class RestService {
     constructor(
         private http: HttpClient,
         private notifyService: NotifyService,
-        private bar: NgProgressService
+        private bar: NgProgress
     ) {
         this.headers = new HttpHeaders({ 'Authorization': `Bearer ${this.getToken()}` });
     }
