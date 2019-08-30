@@ -3,7 +3,7 @@ import { DashboardComponent } from '../dashboard/dashboard.component';
 import { LoginComponent } from '../login/login.component';
 import { AuthGuard } from '../guards/auth.guard';
 import { AuthedGuard } from '../guards/authed.guard';
-import { CanActivate } from '@angular/router/src/utils/preactivation';
+import { CanActivate } from '@angular/router/';
 import { ProfileComponent } from '../profile/profile.component';
 import { WallComponent } from './../profile/wall/wall.component';
 import { EditProfileComponent } from './../profile/edit-profile/edit-profile.component';

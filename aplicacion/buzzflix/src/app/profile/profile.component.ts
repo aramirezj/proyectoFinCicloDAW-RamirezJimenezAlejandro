@@ -20,7 +20,7 @@ export class ProfileComponent implements OnInit {
   downloadURL: any
   mutual: any
   mutualaux: boolean
-  @ViewChild(LogrosComponent) child;
+  @ViewChild(LogrosComponent,{static: false}) child;
   constructor(
     private router: ActivatedRoute,
     private userService: UserService,
