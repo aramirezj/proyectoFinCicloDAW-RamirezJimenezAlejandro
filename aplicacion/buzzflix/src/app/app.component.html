@@ -1,29 +1,25 @@
 <ng-progress [color]="'orange'"></ng-progress>
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
   integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
+<link rel="icon" type="image/png" href="assets/icon.png" >
 
 
 
 <div>
   <mat-toolbar color="primary">
     <mat-toolbar-row>
-      <button mat-icon-button (click)="sidenav.toggle()" fxShow="true" fxHide.gt-sm>
-        <mat-icon>menu</mat-icon>
-      </button>
-      <span role="button" routerLink="dashboard">Hasquiz</span>
+      <img src="assets/logo.png" width="250" role="button" routerLink="dashboard">
       <span class="menu-spacer"></span>
       <!--Elementos de la barra-->
-      <div fxShow="true" fxHide.lt-md>
+      <div>
         <!--Formulario usuarios-->
-        <form class="form-inline" id="form1" *ngIf="this.showSU"
-          [formGroup]="miniForm">
+        <form class="form-inline" id="form1" *ngIf="this.showSU" [formGroup]="miniForm">
           <input class="form-control mr-sm-2" formControlName="nombre" type="search" placeholder="Buscar usuarios"
             aria-label="Search" />
           <button type="submit" class="btn btn-default" (click)="onSubmit()">Buscar</button>
         </form>
         <!--Formulario Quizzes-->
-        <form class="form-inline" id="form2" *ngIf="this.showSQ"
-          [formGroup]="miniForm2">
+        <form class="form-inline" id="form2" *ngIf="this.showSQ" [formGroup]="miniForm2">
           <input class="form-control mr-sm-2" formControlName="nombre2" type="search" placeholder="Buscar quizzes"
             aria-label="Search" />
           <button type="submit" class="btn btn-default" (click)="onSubmit2()">Buscar</button>
@@ -38,10 +34,8 @@
         </div>
 
 
-        <a role="button" mat-button
-          [routerLink]="['ver/todos']">Todos los quizzes</a>
-        <a role="button" mat-button
-          [routerLink]="['crear/quizz']">Crear Quiz</a>
+        <a role="button" mat-button [routerLink]="['ver/todos']">Todos los quizzes</a>
+        <a role="button" mat-button [routerLink]="['crear/quizz']">Crear Quiz</a>
         <a role="button" mat-button *ngIf="isLoggedIn() && this.authService.getAuthUser()"
           [routerLink]="['moderacion']">Moderación</a>
         <button mat-icon-button (click)="changeColor()" [matMenuTriggerFor]="menu"
@@ -60,7 +54,8 @@
               <mat-expansion-panel-header style="padding: 16px;">
                 <mat-panel-title>
                   <mat-icon style="margin-right: 16px;vertical-align: middle;">mail_outline</mat-icon> <span
-                    role="button" mat-button>Notificaciones <mat-icon *ngIf="notificaciones.length>0">{{this.icono}}</mat-icon></span>
+                    role="button" mat-button>Notificaciones <mat-icon *ngIf="notificaciones.length>0">{{this.icono}}
+                    </mat-icon></span>
                 </mat-panel-title>
                 <mat-panel-description>
 
@@ -103,13 +98,15 @@
         <!--a (click)="sidenav.toggle()" href="" mat-list-item>Close</a>-->
         <div mat-list-item><a role="button" mat-button *ngIf="isLoggedIn() && this.authService.getAuthUser()"
             [routerLink]="['ver/todos']">Todos los quizzes</a></div>
-            <div mat-list-item style="display: inline;margin-right:4%;" *ngIf="isLoggedIn() && (!this.showSQ && !this.showSU)">
-              <mat-icon class="lupas" (click)="muestraForm2()">image_search</mat-icon>
-            </div>
-            <div mat-list-item style="display: inline;margin-right: 2%;" *ngIf="isLoggedIn() && (!this.showSQ && !this.showSU)">
-              <mat-icon class="lupas" (click)="muestraForm()">search</mat-icon>
-            </div>
-            <form class="form-inline" id="form1" *ngIf="isLoggedIn() && this.authService.getAuthUser() && this.showSU"
+        <div mat-list-item style="display: inline;margin-right:4%;"
+          *ngIf="isLoggedIn() && (!this.showSQ && !this.showSU)">
+          <mat-icon class="lupas" (click)="muestraForm2()">image_search</mat-icon>
+        </div>
+        <div mat-list-item style="display: inline;margin-right: 2%;"
+          *ngIf="isLoggedIn() && (!this.showSQ && !this.showSU)">
+          <mat-icon class="lupas" (click)="muestraForm()">search</mat-icon>
+        </div>
+        <form class="form-inline" id="form1" *ngIf="isLoggedIn() && this.authService.getAuthUser() && this.showSU"
           [formGroup]="miniForm">
           <input class="form-control mr-sm-2" formControlName="nombre" type="search" placeholder="Buscar usuarios"
             aria-label="Search" />
@@ -134,7 +131,8 @@
               <mat-expansion-panel-header style="padding: 16px;">
                 <mat-panel-title>
                   <mat-icon style="margin-right: 16px;vertical-align: middle;">mail_outline</mat-icon> <span
-                    role="button" mat-button>Notificaciones  <mat-icon *ngIf="notificaciones.length>0">{{this.icono}}</mat-icon></span>
+                    role="button" mat-button>Notificaciones <mat-icon *ngIf="notificaciones.length>0">{{this.icono}}
+                    </mat-icon></span>
                 </mat-panel-title>
                 <mat-panel-description>
                 </mat-panel-description>
@@ -151,7 +149,8 @@
             </mat-expansion-panel>
           </mat-accordion>
         </div>
-        <div mat-list-item (click)="logout()"><a role="button" mat-button *ngIf="isLoggedIn() && this.authService.getAuthUser()"
+        <div mat-list-item (click)="logout()"><a role="button" mat-button
+            *ngIf="isLoggedIn() && this.authService.getAuthUser()"
             [routerLink]="['usuario/perfil',this.authService.getAuthUserId()]">Cerrar sesión</a></div>
       </mat-nav-list>
     </mat-sidenav>

@@ -24,55 +24,35 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
   styleUrls: ['./registro.component.scss']
 })
 export class RegistroComponent implements OnInit {
-  form: FormGroup;
-  nombreFC = new FormControl('', [
-    Validators.required,
-    Validators.minLength(3)
-  ])
-  emailFC = new FormControl('', [
-    Validators.required,
-    Validators.email,
-  ])
-  passFC = new FormControl('', [
-    Validators.required,
-    Validators.minLength(6)
-  ])
-
+  registroForm: FormGroup;
   matcher = new MyErrorStateMatcher();
 
   constructor(
-    private authService: AuthService,
-    private fb: FormBuilder,
-    private notifyService: NotifyService
+    private authService: AuthService
   ) { }
 
   ngOnInit() {
-    this.form = this.fb.group({
-
-    })
+    this.createForm();
   }
 
-  onSubmit(form) {
-    let verdad = true;
-    if (this.nombreFC.invalid) {
-      this.notifyService.notify("El nombre es obligatorio", "error");
-      verdad = false;
-    } else if (this.emailFC.invalid) {
-      this.notifyService.notify("El correo no es valido", "error");
-      verdad = false;
-    } else if (this.passFC.invalid) {
-      this.notifyService.notify("La contraseña no es valida", "error");
-      verdad = false;
-    }
-    if (verdad) {
-      this.authService.register(this.nombreFC.value, this.emailFC.value, this.passFC.value)
+  createForm() {
+    this.registroForm = new FormGroup({
+      email: new FormControl(null, [Validators.required, Validators.email]),
+      nombre: new FormControl(null, [Validators.required, Validators.minLength(4)]),
+      password: new FormControl(null, [Validators.required, Validators.minLength(6)]),
+      password2: new FormControl(null, [Validators.required, Validators.minLength(6)])
+    });
+  }
+
+  onSubmit() {
+    if (!this.registroForm.invalid) {
+      this.authService.register(this.registroForm.get('nombre').value, this.registroForm.get('email').value, this.registroForm.get('password').value)
         .subscribe((usuario) => {
           if (usuario != null) {
             this.authService.logUserIn(usuario);
           }
         })
     }
-
   }
 
 

@@ -1,8 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../services/auth.service';
 import { ErrorStateMatcher } from '@angular/material/core';
-import { FormControl, FormGroupDirective, NgForm, Validators } from '@angular/forms';
-import { NotifyService } from '../services/notify.service';
+import { FormControl, FormGroupDirective, NgForm, Validators, FormGroup } from '@angular/forms';
 
 @Component({
   selector: 'app-login2',
@@ -21,38 +20,29 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
   styleUrls: ['./login.component.scss']
 })
 export class LoginComponent implements OnInit {
-  emailFC = new FormControl('', [
-    Validators.required,
-    Validators.email,
-  ])
-  passFC = new FormControl('', [
-    Validators.required
-  ])
+  loginForm: FormGroup;
   matcher = new MyErrorStateMatcher();
   constructor(
-    private authService: AuthService,
-    private notifyService: NotifyService
+    private authService: AuthService
   ) { }
 
   ngOnInit() {
+    this.createForm();
+  }
+
+  createForm() {
+    this.loginForm = new FormGroup({
+      email: new FormControl(null, [Validators.required, Validators.email]),
+      password: new FormControl(null, [Validators.required])
+    });
   }
 
   onSubmit() {
-    let verdad = true;
-    if (this.emailFC.invalid) {
-      this.notifyService.notify("El correo es obligatorio", "error");
-      verdad = false;
-    } else if (this.passFC.invalid) {
-      this.notifyService.notify("La contraseña es obligatoria", "error");
-      verdad = false;
-    }
-    if (verdad) {
-      this.authService.login(this.emailFC.value, this.passFC.value)
+    if (!this.loginForm.invalid) {
+      this.authService.login(this.loginForm.get('email').value, this.loginForm.get('password').value)
         .subscribe((user) => {
           this.authService.logUserIn(user);
         })
     }
-
   }
-
 }

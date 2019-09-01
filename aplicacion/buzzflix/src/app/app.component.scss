@@ -3,7 +3,7 @@
 //Toda la barra de navegación
 //Elementos
 a {
-  font-size: 1em;
+  font-size: 1.25em;
   font-weight: bold;
   color: white !important;
   text-decoration:none;
@@ -11,6 +11,9 @@ a {
 }
 a:hover {
   color: $naranjaRetro !important;
+}
+mat-toolbar-row{
+  height: 90px!important;
 }
 //Elementos
 //Formularios del buscador 

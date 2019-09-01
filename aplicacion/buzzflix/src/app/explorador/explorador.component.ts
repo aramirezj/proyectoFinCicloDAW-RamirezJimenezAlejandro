@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Injectable } from '@angular/core';
 import { Quizz } from '../modelo/Quizz';
 import { QuizzService } from '../services/quizz.service';
 import { MatPaginatorIntl, PageEvent } from '@angular/material/paginator';
@@ -46,11 +46,12 @@ export class ExploradorComponent implements OnInit  {
   }
 
 }
+@Injectable()
 export class MatPaginatorIntlCro extends MatPaginatorIntl {
   itemsPerPageLabel = '';
   nextPageLabel     = 'Siguiente';
   previousPageLabel = 'Volver';
-
+  
   getRangeLabel = function (page, pageSize, length) {
     if (length === 0 || pageSize === 0) {
       return '0 de ' + length;

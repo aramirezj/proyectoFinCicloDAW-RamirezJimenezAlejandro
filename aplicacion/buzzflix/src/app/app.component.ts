@@ -15,7 +15,7 @@ export interface Section {
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  @ViewChild(MatMenuTrigger,{static: false}) trigger: MatMenuTrigger;
+  @ViewChild(MatMenuTrigger,{static: true}) trigger: MatMenuTrigger;
 
   public miniForm: FormGroup
   public miniForm2: FormGroup
