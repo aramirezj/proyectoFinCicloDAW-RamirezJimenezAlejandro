@@ -1,10 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { Quizz } from '../modelo/Quizz';
 import { QuizzService } from '../services/quizz.service';
-import { NgProgress } from 'ngx-progressbar';
-import { Respuesta } from '../modelo/Respuesta';
-import { Pregunta } from '../modelo/Pregunta';
-import { Solucion } from '../modelo/Solucion';
 import { NotifyService } from '../services/notify.service';
 import { AngularFireStorage } from 'angularfire2/storage';
 import * as $ from 'jquery';

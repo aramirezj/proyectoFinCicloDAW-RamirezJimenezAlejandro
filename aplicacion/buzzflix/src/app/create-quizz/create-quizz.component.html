@@ -2,51 +2,47 @@
   <div class="col-md-12 box">
     <div class="panel-default">
       <div class="panel-heading">
-        Crear Quizz
+        Creación de Quiz
       </div>
+      <mat-accordion>
+          <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                Notas y consejos a la hora de crear un quiz
+              </mat-panel-title>
+              <mat-panel-description>
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+            <mat-list>
+              <mat-list-item *ngFor="let correcta of correctas">
+                <mat-icon mat-list-icon>stars</mat-icon>
+                <h4 mat-line>{{correcta.name}}</h4>
+              </mat-list-item>
+            </mat-list>
+          </mat-expansion-panel>
+        </mat-accordion>
       <div class="panel-body">
         <form enctype="multipart/form-data" [formGroup]="quizzForm" (ngSubmit)="onSubmit()">
           <div class="top-form">
-            <ul class="list-group">
-              <li class="list-group-item text-danger"
-                *ngIf="quizzForm.get('titulo').hasError('required') && quizzForm.get('titulo').touched">
-                El título es obligatorio
-              </li>
-              <li class="list-group-item text-danger"
-                *ngIf="quizzForm.get('cp').hasError('required') && quizzForm.get('cp').touched">
-                La cantidad de preguntas es obligatoría
-              </li>
-              <li class="list-group-item text-danger"
-                *ngIf="quizzForm.get('cs').hasError('required') && quizzForm.get('cs').touched">
-                La cantidad de soluciones es obligatoría
-              </li>
-              <li class="list-group-item text-danger"
-                *ngIf="quizzForm.get('cp').hasError('min') && quizzForm.get('cp').dirty">
-                La cantidad de preguntas mínima son 4
-              </li>
-              <li class="list-group-item text-danger"
-                *ngIf="quizzForm.get('cp').hasError('max') && quizzForm.get('cp').dirty">
-                La cantidad de preguntas máxima son 10
-              </li>
-              <li class="list-group-item text-danger"
-                *ngIf="quizzForm.get('cs').hasError('min') && quizzForm.get('cs').dirty">
-                La cantidad de soluciones mínima son 2
-              </li>
-              <li class="list-group-item text-danger"
-                *ngIf="quizzForm.get('cs').hasError('max') && quizzForm.get('cs').dirty">
-                La cantidad de soluciones máxima son 5
-              </li>
-
-
-            </ul>
-
-            <div class="form-group">
-              <label>Titulo del Quizz</label>
-              <input type="text" class="form-control" formControlName="titulo" placeholder="Titulo del Quizz">
-            </div>
-            <div class="form-group">
+            <mat-form-field class="example-full-width" style="width: 100%">
+              <input matInput placeholder="Titulo del quiz" required formControlName="titulo"
+                [errorStateMatcher]="matcher">
+              <mat-hint>El nombre a mostrar en la web</mat-hint>
+              <mat-error *ngIf="quizzForm.get('titulo').hasError('required') && quizzForm.get('titulo').touched">
+                El título es <strong>obligatorio</strong>
+              </mat-error>
+              <mat-error
+                *ngIf="!quizzForm.get('titulo').hasError('required') && quizzForm.get('titulo').hasError('minlength')">
+                El título debe tener al menos <strong>10 caracteres</strong>
+              </mat-error>
+              <mat-error
+                *ngIf="!quizzForm.get('titulo').hasError('required') && quizzForm.get('titulo').hasError('maxlength')">
+                El título no debe superar los <strong>75 caracteres</strong>
+              </mat-error>
+            </mat-form-field>
+            <div class="form-group"><br>
               <div class="input-group">
-                <input type="text" class="form-control" placeholder="Banner del Quizz" readonly>
+                <input type="text" class="form-control" placeholder="Banner del Quiz *" readonly>
                 <div class="input-group-btn">
                   <span class="fileUpload btn btn-success">
                     <span class="upl" id="upload">Subir imagen</span>
@@ -56,19 +52,37 @@
                 </div>
               </div>
             </div>
+            <mat-form-field class="example-full-width">
+              <input type="number" matInput placeholder="Cantidad de soluciones" required formControlName="cs"
+                [errorStateMatcher]="matcher">
+              <mat-hint>Serán la cantidad de posibles soluciones del quiz</mat-hint>
+              <mat-error *ngIf="quizzForm.get('cs').hasError('required') && quizzForm.get('cs').touched">
+                La cantidad de soluciones es <strong>obligatoria</strong>
+              </mat-error>
+              <mat-error *ngIf="!quizzForm.get('cs').hasError('required') && quizzForm.get('cs').hasError('min')">
+                La cantidad de soluciones mínima son <strong>2</strong>
+              </mat-error>
+              <mat-error *ngIf="!quizzForm.get('cs').hasError('required') && quizzForm.get('cs').hasError('max')">
+                La cantidad de soluciones máxima son <strong>5</strong>
+              </mat-error>
+            </mat-form-field>
+            <mat-form-field class="example-full-width">
+              <input type="number" matInput placeholder="Cantidad de preguntas" required formControlName="cp"
+                [errorStateMatcher]="matcher">
+              <mat-hint>Serán la cantidad de preguntas que responderá el usuario</mat-hint>
+              <mat-error *ngIf="quizzForm.get('cp').hasError('required') && quizzForm.get('cp').touched">
+                La cantidad de preguntas es <strong>obligatoria</strong>
+              </mat-error>
+              <mat-error *ngIf="!quizzForm.get('cp').hasError('required') && quizzForm.get('cp').hasError('min')">
+                La cantidad de preguntas mínima son <strong>4</strong>
+              </mat-error>
+              <mat-error *ngIf="!quizzForm.get('cp').hasError('required') && quizzForm.get('cp').hasError('max')">
+                La cantidad de preguntas máxima son <strong>10</strong>
+              </mat-error>
+            </mat-form-field>
             <div class="form-group">
-              <label>Cantidad soluciones</label>
-              <input type="number" class="form-control" formControlName="cs"
-                placeholder="Cantidad de soluciones a generar">
-            </div>
-            <div class="form-group">
-              <label>Cantidad preguntas</label>
-              <input type="number" class="form-control" formControlName="cp"
-                placeholder="Cantidad de preguntas a generar">
-            </div>
-            <div class="form-group">
-              <label>Configuración</label><br>
-              <mat-checkbox formControlName="privado" style="font-weight: normal!important;font-size:0.9em!important;"
+              <label style="display: block;margin-top:4vh;">Configuración</label>
+              <mat-checkbox formControlName="privado" style="font-size:0.9em!important;"
                 (ngModel)="indeterminate" [labelPosition]="labelPosition">
                 Quiz privado
               </mat-checkbox>
@@ -136,8 +150,8 @@
 
               </div>
               <div class="form-group text-center">
-                <button style="margin-top:1vw;background-color: mediumvioletred;" type="button" mat-raised-button color="accent"
-                  (click)="generaRespuestas(i+1)">Generar
+                <button style="margin-top:1vw;background-color: mediumvioletred;" type="button" mat-raised-button
+                  color="accent" (click)="generaRespuestas(i+1)">Generar
                   respuestas</button>
               </div>
               <!-- RESPUESTAS -->

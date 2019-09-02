@@ -32,7 +32,11 @@ querys["getUsuarioWallPublic"] = "SELECT q.*,COALESCE(SUM(v.cantidad),0) as estr
 querys["isFollowing"] = "SELECT destino FROM follows where origen = ? AND destino = ?";
 querys["setFollow"] = "INSERT INTO follows values(?,?)";
 querys["deleteFollow"] = "DELETE from follows where origen = ? AND destino = ?";
-//,(SELECT count(quizz) FROM votaciones WHERE quizz = q.id OR quizz in(SELECT id from quizz where privado = q.id)) as votantes
+
+querys["getReport"] = "SELECT * FROM reportes where origen = ? AND destino = ? AND motivo = ?";
+querys["setReport"] = "INSERT INTO reportes (origen,destino,motivo) values (?,?,?)";
+
+
 //Querys de quizzes
 querys["getOneQuizz1"] = "SELECT * FROM quizz WHERE id = ? and publicado = 1";
 querys["getOneQuizz2"] = "SELECT * FROM quizz where privado = ?";

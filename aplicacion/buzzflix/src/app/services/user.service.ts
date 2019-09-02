@@ -52,6 +52,18 @@ export class UserService {
 
     }
 
+    reportarUsuario(destino:number):Observable<void>{
+        let url = `${CONFIG.apiUrl}reportar`;
+        let body = { origen: this.authService.getAuthUserId(), destino: destino,motivo:"perfil" };
+
+        return Observable.create(observer => {
+            this.restService.peticionHttp(url, body).subscribe(response => {
+                observer.next(response.respuesta)
+                observer.complete();
+            })
+        });
+    }
+
     getUserWall(id: number): Observable<Array<Quizz>> {
         let url = `${CONFIG.apiUrl}usuario/${id}/wall`;
         return Observable.create(observer => {

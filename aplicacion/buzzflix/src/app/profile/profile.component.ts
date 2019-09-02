@@ -5,6 +5,8 @@ import { Usuario } from '../modelo/Usuario';
 import { AuthService } from '../services/auth.service';
 import { AngularFireStorage } from 'angularfire2/storage';
 import { LogrosComponent } from './logros/logros.component';
+import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
+import { DialogboxComponent } from '../dialogbox/dialogbox.component';
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
@@ -26,6 +28,7 @@ export class ProfileComponent implements OnInit {
     private userService: UserService,
     private authService: AuthService,
     private afStorage: AngularFireStorage,
+    public dialog: MatDialog
   ) {
 
     this.userService.userProfileUpdated.subscribe((usuario) => {
@@ -85,6 +88,32 @@ export class ProfileComponent implements OnInit {
         }
       }
 
+    }
+  }
+
+  openDialog() {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.position = {
+
+    };
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+
+    dialogConfig.data = {
+      id: 1,
+      title: 'Si crees que este perfil incluye contenido abusivo o imagenes que incitan al odio, puedes reportarlo y será investigado.'
+    };
+
+    const dialogRef = this.dialog.open(DialogboxComponent, dialogConfig);
+    dialogRef.afterClosed().subscribe(
+      data => this.reportar(data)
+
+    );
+  }
+
+  reportar(accion){
+    if(accion){
+      this.userService.reportarUsuario(this.id).subscribe();
     }
   }
 }

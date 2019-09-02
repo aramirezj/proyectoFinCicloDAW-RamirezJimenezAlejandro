@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms'
+import { FormGroup, FormControl, FormBuilder, Validators, FormGroupDirective, NgForm } from '@angular/forms'
 import { QuizzService } from '../services/quizz.service';
 import { Solucion } from '../modelo/Solucion';
 import { NgProgress } from 'ngx-progressbar';
@@ -10,8 +10,21 @@ import { Respuesta } from '../modelo/Respuesta';
 import { Afinidad } from '../modelo/Afinidad';
 import { Quizz } from '../modelo/Quizz';
 import { NotifyService } from '../services/notify.service';
-import { MatSelectModule } from '@angular/material/select';
 import * as $ from 'jquery';
+import { ErrorStateMatcher } from '@angular/material/core';
+import { Section } from '../moderacion/moderacion.component';
+
+@Component({
+  selector: 'app-create2',
+  templateUrl: './create-quizz.component.html',
+  styleUrls: ['./create-quizz.component.scss']
+})
+export class MyErrorStateMatcher implements ErrorStateMatcher {
+  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
+    const isSubmitted = form && form.submitted;
+    return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
+  }
+}
 export interface Numero {
   value: number;
   viewValue: number;
@@ -22,6 +35,18 @@ export interface Numero {
   styleUrls: ['./create-quizz.component.scss']
 })
 export class CreateQuizzComponent implements OnInit {
+  panelOpenState = false;
+  correctas: Section[] = [
+    {
+      name: 'La opción de Quiz privado, permite que el quiz no vaya a moderación ni se publique, solo tendrás acceso de tu perfil y podrás compartirlo con tus amigos'
+    },
+    {
+      name: 'Una afinidad de la respuesta, es como de ligada está esa respuesta con una solución.'
+    },
+    {
+      name: 'Al ir eligiendo las respuestas, se va sumando las afinidades de la respuesta para ir acercando a una solución u otra.'
+    }
+  ];
   //PUNTO DE INFLEXION
   numeros: Numero[] = [
     { value: 0, viewValue: 0 },
@@ -78,7 +103,6 @@ export class CreateQuizzComponent implements OnInit {
     }
   }
   onFileChanged(event: any, n: number) {
-    console.log(n)
     let verdad = true;
     let nameInput = event.target.getAttribute("ng-reflect-name");
     if (n != 50) {
@@ -117,30 +141,12 @@ export class CreateQuizzComponent implements OnInit {
   }
 
   createForm() {
-
-    this.quizzForm = this.fb.group({
-      titulo: ['', [
-        Validators.required,
-        Validators.minLength(1)
-      ]],
-      cp: ['', [
-        Validators.required,
-        Validators.min(2),
-        Validators.max(10)
-
-      ]],
-      cs: ['', [
-        Validators.required,
-        Validators.min(2),
-        Validators.max(5)
-      ]],
-      banner: ['', [
-        Validators.required,
-      ]],
-      privado: ['', [
-
-      ]]
-
+    this.quizzForm = new FormGroup({
+      titulo: new FormControl(null, [Validators.required, Validators.minLength(10),Validators.maxLength(75)]),
+      cp: new FormControl(null, [Validators.required, Validators.min(4), Validators.max(10)]),
+      cs: new FormControl(null, [Validators.required, Validators.min(2), Validators.max(5)]),
+      banner: new FormControl(null, [Validators.required]),
+      privado: new FormControl(null, [])
     });
   }
 
@@ -173,7 +179,6 @@ export class CreateQuizzComponent implements OnInit {
           this.quizzForm.addControl(f.name, f.control)
           this.quizzForm.controls[f.name].setValidators([Validators.required]);
           this.quizzForm.controls[f.name].updateValueAndValidity();
-
         });
       }
       this.firstStep = true;
@@ -232,7 +237,7 @@ export class CreateQuizzComponent implements OnInit {
       } else {
         this.notifyService.notify("El máximo de preguntas son 10, y el mínimo son 2", "error");
       }
-    }else{
+    } else {
       this.notifyService.notify("Por favor, rellena al menos los titulos de las soluciones", "error");
     }
 

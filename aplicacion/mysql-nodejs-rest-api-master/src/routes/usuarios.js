@@ -223,6 +223,23 @@ router.get('/usuario/admin', (req, res) => {
     })
   }
 });
+//Guarda una acción de reporte (PROTECTED)
+router.post('/reportar', (req, res) => {
+  console.log("Guarda una acción de reporte")
+  const { destino, motivo } = req.body;
+  let permiso = verificaToken(req.headers, res);
+  console.log(permiso+"--"+destino+"--"+destino)
+  if (permiso) {
+    ejecutaConsulta("getReport", [permiso, destino, motivo], res, function (rows) {
+      if (rows) {
+        if (rows.length < 1) {
+          ejecutaConsulta("setReport", [permiso, destino, motivo], res, function (rows) {})
+        }
+        res.send({ status: '200' })
+      }
+    })
+  }
+});
 // Obtener los logros de un usuario (PROTECTED)
 router.get('/usuario/:id/logros', (req, res) => {
   console.log("Obtener logros de un usuario")
@@ -365,7 +382,7 @@ router.post('/modera', (req, res) => {
                       if (rows4) {
                         let mensajito = "¡Enhorabuena, su Quiz " + titulo + " ha sido publicado en la web!";
                         ejecutaConsulta("setModerar5", [creador, mensajito], res, function (rows5) {
-                          logroUsuarios(creador,res);
+                          logroUsuarios(creador, res);
                           if (rows5) {
                             res.send({ status: '200' });
                           }
@@ -462,7 +479,7 @@ router.post('/vota', cors(), (req, res, next) => {
       if (rows) {
         if (rows.length == 0) {
           ejecutaConsulta("setVotacion2", [origen, quizz, cantidad], res, function (rows2) {
-            
+
             res.send({});
           });
         } else {
