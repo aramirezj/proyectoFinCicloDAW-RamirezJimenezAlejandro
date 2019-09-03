@@ -1,9 +1,10 @@
 @import '../variables.scss';
-
 //Toda la barra de navegación
 //Elementos
+img{
+  width: 8em;
+}
 a {
-  font-size: 1.25em;
   font-weight: bold;
   color: white !important;
   text-decoration:none;
@@ -11,9 +12,6 @@ a {
 }
 a:hover {
   color: $naranjaRetro !important;
-}
-mat-toolbar-row{
-  height: 90px!important;
 }
 //Elementos
 //Formularios del buscador 
@@ -35,22 +33,17 @@ button {
 .menu-spacer {
   flex: 1 1 auto;
 }
-mat-sidenav-content{
-  background:none;
-}
-mat-sidenav-container, mat-sidenav{
+mat-sidenav-container, mat-sidenav{ //Para que no joda el fondo
 background: transparent
+}
+mat-nav-list,mat-menu,mat-expansion-panel{//Para que el sidenav tenga fondo
+  background-color: $fondoSuave ;
 }
 .container{
   margin-top:5%;
 }
-mat-nav-list,mat-menu,mat-expansion-panel{
-  background-color: $fondoSuave ;
-}
-mat-list-item{
-  height: 100%!important;
-}
-span{
+
+span,a{
   color:white!important;
   font-size:3vh;
 }
@@ -72,14 +65,24 @@ mat-panel-title>mat-icon{
   color:orange!important;
   font-size:2.5em;
 }
-mat-menu{
-  min-width: 350px!important;
-}
-mat-list-item{
-  margin-bottom:5%;
-}
+
 h4{
   color:white;
   white-space: normal!important;
 }
 //Menú desplegable
+
+//Querys responsive
+.menuBoton{
+  display: none;
+}
+
+@media (max-width: 800px) {
+  .menuBoton {
+    display: inline;
+  }
+  .menuExpandido {
+    display: none;
+  }
+}
+

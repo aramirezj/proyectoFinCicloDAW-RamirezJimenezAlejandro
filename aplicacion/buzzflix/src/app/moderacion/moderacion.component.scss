@@ -20,10 +20,14 @@ mat-expansion-panel{
   background: $fondoSuave ;
   
 }
+.mat-list-base .mat-list-item .mat-line{
+  white-space: normal!important
+}
 .mensaje{
   font-weight: bold;
   margin-bottom: 5%;
 }
+
 
 
 

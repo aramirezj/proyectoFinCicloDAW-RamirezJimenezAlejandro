@@ -12,8 +12,8 @@ export class ExploradorComponent implements OnInit  {
   quizzs:Array<Quizz>
   isLoaded:boolean=false;
   inicio:number=0;
-  fin:number=2;
-  quizporPagina:number=2;
+  fin:number=3;
+  quizporPagina:number=3;
   totalQuizzes:number=0;
   pageEvent: PageEvent;
   constructor(
@@ -26,7 +26,7 @@ export class ExploradorComponent implements OnInit  {
   }
 
   getQuizzes(){
-    this.quizzService.obtenerAllQuizz(this.inicio,this.fin)
+    this.quizzService.obtenerAllQuizz(this.inicio,this.quizporPagina)
     .subscribe(resp=>{
       this.totalQuizzes=resp["total"];
       this.quizzs = resp["cont"].length>0 ? resp["cont"] : null;
@@ -58,10 +58,12 @@ export class MatPaginatorIntlCro extends MatPaginatorIntl {
     }
     length = Math.max(length, 0);
     const startIndex = page * pageSize;
+    
     // If the start index exceeds the list length, do not try and fix the end index to the end.
     const endIndex = startIndex < length ?
       Math.min(startIndex + pageSize, length) :
       startIndex + pageSize;
+      console.log(startIndex+"--"+endIndex+"--"+length)
     return startIndex + 1 + ' - ' + endIndex + ' de ' + length;
   };
 

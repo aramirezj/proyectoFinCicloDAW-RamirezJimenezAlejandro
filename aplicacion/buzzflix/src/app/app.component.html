@@ -1,167 +1,171 @@
 <ng-progress [color]="'orange'"></ng-progress>
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
   integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
-<link rel="icon" type="image/png" href="assets/icon.png" >
 
 
-
-<div>
-  <mat-toolbar color="primary">
-    <mat-toolbar-row>
-      <img src="assets/logo.png" width="250" role="button" routerLink="dashboard">
-      <span class="menu-spacer"></span>
-      <!--Elementos de la barra-->
-      <div>
-        <!--Formulario usuarios-->
-        <form class="form-inline" id="form1" *ngIf="this.showSU" [formGroup]="miniForm">
-          <input class="form-control mr-sm-2" formControlName="nombre" type="search" placeholder="Buscar usuarios"
-            aria-label="Search" />
-          <button type="submit" class="btn btn-default" (click)="onSubmit()">Buscar</button>
-        </form>
-        <!--Formulario Quizzes-->
-        <form class="form-inline" id="form2" *ngIf="this.showSQ" [formGroup]="miniForm2">
-          <input class="form-control mr-sm-2" formControlName="nombre2" type="search" placeholder="Buscar quizzes"
-            aria-label="Search" />
-          <button type="submit" class="btn btn-default" (click)="onSubmit2()">Buscar</button>
-        </form>
-
-        <!--Apartados de la barra-->
-        <div style="display: inline;margin-right:4%;" *ngIf="(!this.showSQ && !this.showSU)">
-          <mat-icon class="lupas" (click)="muestraForm2()">image_search</mat-icon>
-        </div>
-        <div style="display: inline;margin-right: 2%;" *ngIf="(!this.showSQ && !this.showSU)">
-          <mat-icon class="lupas" (click)="muestraForm()">search</mat-icon>
-        </div>
-
-
-        <a role="button" mat-button [routerLink]="['ver/todos']">Todos los quizzes</a>
-        <a role="button" mat-button [routerLink]="['crear/quizz']">Crear Quiz</a>
-        <a role="button" mat-button *ngIf="isLoggedIn() && this.authService.getAuthUser()"
-          [routerLink]="['moderacion']">Moderación</a>
-        <button mat-icon-button (click)="changeColor()" [matMenuTriggerFor]="menu"
-          aria-label="Example icon-button with a menu">
-          <mat-icon>more_vert</mat-icon>
-        </button>
-
-        <!--Menú derecha-->
-        <mat-menu #menu="matMenu">
-          <button mat-menu-item *ngIf="isLoggedIn()" [routerLink]="['usuario/perfil',this.authService.getAuthUserId()]">
-            <mat-icon *ngIf="isLoggedIn()">account_circle</mat-icon>
-            <span role="button" mat-button>Mi perfil</span>
-          </button>
-          <mat-accordion *ngIf="isLoggedIn()" (click)="$event.stopPropagation()">
-            <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
-              <mat-expansion-panel-header style="padding: 16px;">
-                <mat-panel-title>
-                  <mat-icon style="margin-right: 16px;vertical-align: middle;">mail_outline</mat-icon> <span
-                    role="button" mat-button>Notificaciones <mat-icon *ngIf="notificaciones.length>0">{{this.icono}}
-                    </mat-icon></span>
-                </mat-panel-title>
-                <mat-panel-description>
-
-                </mat-panel-description>
-              </mat-expansion-panel-header>
-              <mat-list>
-                <mat-list-item *ngFor="let notificacion of notificaciones">
-                  <h4 mat-line>{{notificacion.name}}</h4>
-                  <mat-icon class="icono" (click)="read(notificacion)">delete_forever</mat-icon>
-                </mat-list-item>
-                <mat-list-item *ngIf="this.vacio || this.notificaciones.length==0">
-                  <h4 mat-line>No tienes ninguna notificación</h4>
-                </mat-list-item>
-              </mat-list>
-            </mat-expansion-panel>
-          </mat-accordion>
-
-          <button mat-menu-item *ngIf="!isLoggedIn()" routerLink="/auth/register">
-            <mat-icon>fiber_new</mat-icon>
-            <span role="button" mat-button>Registrarse</span>
-          </button>
-          <button mat-menu-item *ngIf="!isLoggedIn()" routerLink="/auth/login">
-            <mat-icon>accessibility_new</mat-icon>
-            <span role="button" mat-button>Iniciar sesión</span>
-          </button>
-          <button mat-menu-item *ngIf="isLoggedIn()" (click)="logout()">
-            <mat-icon>directions_run</mat-icon>
-            <span role="button" mat-button>Cerrar sesión</span>
-          </button>
-        </mat-menu>
-
+<mat-toolbar color="primary">
+  <mat-toolbar-row>
+    <button class="menuBoton" mat-icon-button>
+      <mat-icon (click)="sidenav.toggle()">menu</mat-icon>
+    </button>
+    <img src="assets/logo.png" role="button" routerLink="dashboard">
+    <span class="menu-spacer"></span>
+    <div class="menuExpandido">
+      <form class="form-inline" id="form1" *ngIf="this.showSU" [formGroup]="miniForm">
+        <input class="form-control mr-sm-2" formControlName="nombre" type="search" placeholder="Buscar usuarios"
+          aria-label="Search" />
+        <button type="submit" class="btn btn-default" (click)="onSubmit()">Buscar</button>
+      </form>
+      <!--Formulario Quizzes-->
+      <form class="form-inline" id="form2" *ngIf="this.showSQ" [formGroup]="miniForm2">
+        <input class="form-control mr-sm-2" formControlName="nombre2" type="search" placeholder="Buscar quizzes"
+          aria-label="Search" />
+        <button type="submit" class="btn btn-default" (click)="onSubmit2()">Buscar</button>
+      </form>
+      <div style="display: inline;margin-right:4%;" *ngIf="(!this.showSQ && !this.showSU)">
+        <mat-icon class="lupas" (click)="muestraForm2()">image_search</mat-icon>
       </div>
-    </mat-toolbar-row>
-  </mat-toolbar>
+      <div style="display: inline;margin-right: 2%;" *ngIf="(!this.showSQ && !this.showSU)">
+        <mat-icon class="lupas" (click)="muestraForm()">search</mat-icon>
+      </div>
+      <span class="menu-spacer"></span>
+      <a mat-button [routerLink]="['ver/todos']">Todos los quizzes </a>
+      <a mat-button [routerLink]="['crear/quizz']">Crear quiz </a>
+      <a mat-button [routerLink]="['moderacion']">Moderación </a>
+      <button mat-icon-button (click)="changeColor()" [matMenuTriggerFor]="menu"
+        aria-label="Example icon-button with a menu">
+        <mat-icon>more_vert</mat-icon>
+      </button>
 
-  <!--Menú responsive-->
-  <mat-sidenav-container fxFlexFill>
-    <mat-sidenav #sidenav>
-      <mat-nav-list>
-        <!--a (click)="sidenav.toggle()" href="" mat-list-item>Close</a>-->
-        <div mat-list-item><a role="button" mat-button *ngIf="isLoggedIn() && this.authService.getAuthUser()"
-            [routerLink]="['ver/todos']">Todos los quizzes</a></div>
-        <div mat-list-item style="display: inline;margin-right:4%;"
-          *ngIf="isLoggedIn() && (!this.showSQ && !this.showSU)">
-          <mat-icon class="lupas" (click)="muestraForm2()">image_search</mat-icon>
-        </div>
-        <div mat-list-item style="display: inline;margin-right: 2%;"
-          *ngIf="isLoggedIn() && (!this.showSQ && !this.showSU)">
-          <mat-icon class="lupas" (click)="muestraForm()">search</mat-icon>
-        </div>
-        <form class="form-inline" id="form1" *ngIf="isLoggedIn() && this.authService.getAuthUser() && this.showSU"
-          [formGroup]="miniForm">
-          <input class="form-control mr-sm-2" formControlName="nombre" type="search" placeholder="Buscar usuarios"
-            aria-label="Search" />
-          <button type="submit" class="btn btn-default" (click)="onSubmit()">Buscar</button>
-        </form>
-        <!--Formulario Quizzes-->
-        <form class="form-inline" id="form2" *ngIf="isLoggedIn() && this.authService.getAuthUser()  && this.showSQ"
-          [formGroup]="miniForm2">
-          <input class="form-control mr-sm-2" formControlName="nombre2" type="search" placeholder="Buscar quizzes"
-            aria-label="Search" />
-          <button type="submit" class="btn btn-default" (click)="onSubmit2()">Buscar</button>
-        </form>
-        <div mat-list-item><a role="button" mat-button *ngIf="isLoggedIn() && this.authService.getAuthUser()"
-            [routerLink]="['crear/quizz']">Crear Quiz</a></div>
-        <div mat-list-item><a role="button" mat-button *ngIf="isLoggedIn() && this.authService.getAuthUser()"
-            [routerLink]="['moderacion']">Moderación</a></div>
-        <div mat-list-item><a role="button" mat-button *ngIf="isLoggedIn() && this.authService.getAuthUser()"
-            [routerLink]="['usuario/perfil',this.authService.getAuthUserId()]">Mi perfil</a></div>
-        <div mat-list-item>
-          <mat-accordion *ngIf="isLoggedIn()" (click)="$event.stopPropagation()">
-            <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
-              <mat-expansion-panel-header style="padding: 16px;">
-                <mat-panel-title>
-                  <mat-icon style="margin-right: 16px;vertical-align: middle;">mail_outline</mat-icon> <span
-                    role="button" mat-button>Notificaciones <mat-icon *ngIf="notificaciones.length>0">{{this.icono}}
-                    </mat-icon></span>
-                </mat-panel-title>
-                <mat-panel-description>
-                </mat-panel-description>
-              </mat-expansion-panel-header>
-              <mat-list>
-                <mat-list-item *ngFor="let notificacion of notificaciones">
-                  <h4 mat-line>{{notificacion.name}}</h4>
-                  <mat-icon class="icono" (click)="read(notificacion)">delete_forever</mat-icon>
-                </mat-list-item>
-                <mat-list-item *ngIf="this.vacio || this.notificaciones.length==0">
-                  <h4 mat-line>No tienes ninguna notificación</h4>
-                </mat-list-item>
-              </mat-list>
-            </mat-expansion-panel>
-          </mat-accordion>
-        </div>
-        <div mat-list-item (click)="logout()"><a role="button" mat-button
-            *ngIf="isLoggedIn() && this.authService.getAuthUser()"
-            [routerLink]="['usuario/perfil',this.authService.getAuthUserId()]">Cerrar sesión</a></div>
-      </mat-nav-list>
-    </mat-sidenav>
-    <mat-sidenav-content fxFlexFill>
+      <!--Menú derecha-->
+      <mat-menu #menu="matMenu">
+        <button mat-menu-item *ngIf="isLoggedIn()" [routerLink]="['usuario/perfil',this.authService.getAuthUserId()]">
+          <mat-icon *ngIf="isLoggedIn()">account_circle</mat-icon>
+          <span role="button" mat-button>Mi perfil</span>
+        </button>
+        <mat-accordion *ngIf="isLoggedIn()" (click)="$event.stopPropagation()">
+          <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+            <mat-expansion-panel-header style="padding: 16px;">
+              <mat-panel-title>
+                <mat-icon style="margin-right: 16px;vertical-align: middle;">mail_outline</mat-icon> <span role="button"
+                  mat-button>Notificaciones <mat-icon *ngIf="notificaciones.length>0">{{this.icono}}
+                  </mat-icon></span>
+              </mat-panel-title>
+              <mat-panel-description>
+
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+            <mat-list>
+              <mat-list-item *ngFor="let notificacion of notificaciones">
+                <h4 mat-line>{{notificacion.name}}</h4>
+                <mat-icon class="icono" (click)="read(notificacion)">delete_forever</mat-icon>
+              </mat-list-item>
+              <mat-list-item *ngIf="this.vacio || this.notificaciones.length==0">
+                <h4 mat-line>No tienes ninguna notificación</h4>
+              </mat-list-item>
+            </mat-list>
+          </mat-expansion-panel>
+        </mat-accordion>
+
+        <button mat-menu-item *ngIf="!isLoggedIn()" routerLink="/auth/register">
+          <mat-icon>fiber_new</mat-icon>
+          <span role="button" mat-button>Registrarse</span>
+        </button>
+        <button mat-menu-item *ngIf="!isLoggedIn()" routerLink="/auth/login">
+          <mat-icon>accessibility_new</mat-icon>
+          <span role="button" mat-button>Iniciar sesión</span>
+        </button>
+        <button mat-menu-item *ngIf="isLoggedIn()" (click)="logout()">
+          <mat-icon>directions_run</mat-icon>
+          <span role="button" mat-button>Cerrar sesión</span>
+        </button>
+      </mat-menu>
+    </div>
+  </mat-toolbar-row>
+
+  <!--Por si quiero otra linea en el menú
+        <mat-toolbar-row>
+          <span style="font-size: 12px;">SimpleCRM helps you easily manage your contacts</span>
+        </mat-toolbar-row>-->
+</mat-toolbar>
+
+
+<!--EL SIDENAVVVVV-->
+<mat-sidenav-container>
+  <mat-sidenav #sidenav>
+    <mat-nav-list>
+        <form class="form-inline" id="form1" *ngIf="this.showSU" [formGroup]="miniForm">
+            <input class="form-control mr-sm-2" formControlName="nombre" type="search" placeholder="Buscar usuarios"
+              aria-label="Search" />
+            <button type="submit" class="btn btn-default" (click)="onSubmit()">Buscar</button>
+          </form>
+          <!--Formulario Quizzes-->
+          <form class="form-inline" id="form2" *ngIf="this.showSQ" [formGroup]="miniForm2">
+            <input class="form-control mr-sm-2" formControlName="nombre2" type="search" placeholder="Buscar quizzes"
+              aria-label="Search" />
+            <button type="submit" class="btn btn-default" (click)="onSubmit2()">Buscar</button>
+          </form>
+          <div style="display: inline;margin-right:4%;" *ngIf="(!this.showSQ && !this.showSU)">
+            <mat-icon class="lupas" (click)="muestraForm2()">image_search</mat-icon>
+          </div>
+          <div style="display: inline;margin-right: 2%;" *ngIf="(!this.showSQ && !this.showSU)">
+            <mat-icon class="lupas" (click)="muestraForm()">search</mat-icon>
+          </div>
+          <span class="menu-spacer"></span>
+      <a mat-list-item [routerLink]="['ver/todos']">Todos los quizzes </a>
+      <a mat-list-item [routerLink]="['crear/quizz']">Crear quiz </a>
+      <a mat-list-item [routerLink]="['moderacion']">Moderación </a>
+      <button mat-menu-item *ngIf="isLoggedIn()" [routerLink]="['usuario/perfil',this.authService.getAuthUserId()]">
+        <mat-icon *ngIf="isLoggedIn()">account_circle</mat-icon>
+        <span role="button" mat-button>Mi perfil</span>
+      </button>
+      <mat-accordion *ngIf="isLoggedIn()" (click)="$event.stopPropagation()">
+        <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+          <mat-expansion-panel-header style="padding: 16px;">
+            <mat-panel-title>
+              <mat-icon style="margin-right: 16px;vertical-align: middle;">mail_outline</mat-icon> <span role="button"
+                mat-button>Notificaciones <mat-icon *ngIf="notificaciones.length>0">{{this.icono}}
+                </mat-icon></span>
+            </mat-panel-title>
+            <mat-panel-description>
+              
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <mat-list>
+            <mat-list-item *ngFor="let notificacion of notificaciones">
+              <h4 mat-line>{{notificacion.name}}</h4>
+              <mat-icon class="icono" (click)="read(notificacion)">delete_forever</mat-icon>
+            </mat-list-item>
+            <mat-list-item *ngIf="this.vacio || this.notificaciones.length==0">
+              <h4 mat-line>No tienes ninguna notificación</h4>
+            </mat-list-item>
+          </mat-list>
+        </mat-expansion-panel>
+      </mat-accordion>
+
+      <button mat-menu-item *ngIf="!isLoggedIn()" routerLink="/auth/register">
+        <mat-icon>fiber_new</mat-icon>
+        <span role="button" mat-button>Registrarse</span>
+      </button>
+      <button mat-menu-item *ngIf="!isLoggedIn()" routerLink="/auth/login">
+        <mat-icon>accessibility_new</mat-icon>
+        <span role="button" mat-button>Iniciar sesión</span>
+      </button>
+      <button mat-menu-item *ngIf="isLoggedIn()" (click)="logout()">
+        <mat-icon>directions_run</mat-icon>
+        <span role="button" mat-button>Cerrar sesión</span>
+      </button>
+     <!-- <a mat-list-item (click)="sidenav.toggle()" href="" mat-list-item>Close</a>-->
+
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
       <div class="container">
-        <app-notify></app-notify>
         <router-outlet></router-outlet>
       </div>
-    </mat-sidenav-content>
-  </mat-sidenav-container>
-</div>
+
+  </mat-sidenav-content>
+</mat-sidenav-container>
 
 
 <div class="separator"></div>

@@ -1,4 +1,7 @@
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatToolbarModule, MatIconModule, MatSidenavModule, MatListModule, MatButtonModule } from  '@angular/material';
+
 import { NgModule } from '@angular/core';
 import { RouterModule } from '@angular/router'
 import { AppRoutingModule } from './app-routing.module';
@@ -34,24 +37,18 @@ import { MatPaginatorIntlCro } from './explorador/explorador.component';
 import { UsuarioComponent } from './usuario/usuario.component';
 import { DashboardUsersComponent } from './dashboard-users/dashboard-users.component';
 import { VotarComponent } from './ver-quizz/votar/votar.component';
-import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
-import { MatButtonModule } from '@angular/material/button';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
 import { MatCardModule } from '@angular/material/card';
 import { MatDialogModule } from '@angular/material/dialog';
-import { MatTreeModule } from '@angular/material/tree';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 import { MatExpansionModule } from '@angular/material/expansion';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatGridListModule } from '@angular/material/grid-list'
 import { MatPaginatorModule } from '@angular/material/paginator';
-import { MatIconModule } from "@angular/material/icon";
-import { MatListModule } from "@angular/material/list";
-import { MatSidenavModule } from "@angular/material/sidenav";
-import { MatToolbarModule } from "@angular/material/toolbar";
 import { MatMenuModule } from '@angular/material/menu';
 import { AngularFirestore } from '@angular/fire/firestore';
 import { AngularFireModule } from '@angular/fire';

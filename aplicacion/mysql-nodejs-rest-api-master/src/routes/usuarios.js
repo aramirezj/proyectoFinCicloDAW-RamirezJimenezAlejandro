@@ -326,6 +326,7 @@ router.get('/quizz/todos/:cadena', (req, res) => {
   let total = 0;
   let limite = cadena.split("-");
   limite = "LIMIT " + limite[0] + "," + limite[1];
+  console.log(limite)
   ejecutaConsulta("getAllQuizzes1", null, res, function (rows) {
     if (rows) {
       total = rows[0].pls;
