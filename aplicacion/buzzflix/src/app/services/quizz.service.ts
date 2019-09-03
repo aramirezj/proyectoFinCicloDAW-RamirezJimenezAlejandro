@@ -33,6 +33,19 @@ export class QuizzService {
         }
     }
 
+    reportarQuiz(id:number):Observable<void>{
+        let url = `${CONFIG.apiUrl}reportar`;
+        let body = { origen: this.authService.getAuthUserId(), destino: id,motivo:"quiz" };
+
+        return Observable.create(observer => {
+            this.restService.peticionHttp(url, body).subscribe(response => {
+                observer.next(response.respuesta)
+                observer.complete();
+            })
+        });
+
+    }
+
     votaQuizz(quizz: number | string, n: number): Observable<boolean> {
         let id = this.authService.getAuthUserId();
         let url = `${CONFIG.apiUrl}vota`;

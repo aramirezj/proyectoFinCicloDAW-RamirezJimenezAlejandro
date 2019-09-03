@@ -185,6 +185,7 @@ export class CreateQuizzComponent implements OnInit {
       setTimeout(() => {
         this.max = this.quizzForm.get('cs').value;
         this.ref.detectChanges();
+        this.ref.reattach();
         this.bar.done();
       }, 500);
     } else {
@@ -232,6 +233,7 @@ export class CreateQuizzComponent implements OnInit {
         setTimeout(() => {
           this.maxp = this.quizzForm.get('cp').value;
           this.ref.detectChanges();
+          this.ref.reattach();
           this.bar.done();
         }, 500);
       } else {
@@ -250,7 +252,6 @@ export class CreateQuizzComponent implements OnInit {
   generaRespuestas(id: number) {
     this.maxs = this.quizzForm.get('cs').value;
     this.maxr = this.quizzForm.value["pcr" + id];
-    console.log(this)
     if (this.maxr < 21 && this.maxr > 1) {
       this.thirdStep = true;
       this.reseteaRespuestas(id);
@@ -304,6 +305,7 @@ export class CreateQuizzComponent implements OnInit {
         }
         this.maxr = this.quizzForm.get('pcr' + id).value;
         this.ref.detectChanges();
+        this.ref.reattach();
         this.bar.done();
       }, 200);
     } else {

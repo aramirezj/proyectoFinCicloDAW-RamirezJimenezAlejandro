@@ -227,6 +227,9 @@ option {
 .afinidad-box{
   width: 40%;
   margin: 1vw;
+  label{
+    font-size: 0.75em;
+  }
 }
 .afinidad-box:nth-child(even){
   float:left;

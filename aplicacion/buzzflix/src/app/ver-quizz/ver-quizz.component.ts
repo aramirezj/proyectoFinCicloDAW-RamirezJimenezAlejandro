@@ -9,6 +9,9 @@ import { Pregunta } from '../modelo/Pregunta';
 import { Solucion } from '../modelo/Solucion';
 import { AngularFireStorage } from 'angularfire2/storage';
 import * as $ from 'jquery';
+import { MatDialogConfig, MatDialog } from '@angular/material/dialog';
+import { DialogboxComponent } from '../dialogbox/dialogbox.component';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-ver-quizz',
@@ -28,12 +31,16 @@ export class VerQuizzComponent implements OnInit {
 
   constructor(
     private quizzService: QuizzService,
+    private authService:AuthService,
     private router: ActivatedRoute,
     private fb: FormBuilder,
     private bar: NgProgress,
-    private afStorage: AngularFireStorage) {
+    private afStorage: AngularFireStorage,
+    public dialog: MatDialog
+    ) {
     this.resultado = false;
     this.cargado = false;
+    
     this.quizzForm = this.fb.group({})
   }
 
@@ -159,6 +166,31 @@ export class VerQuizzComponent implements OnInit {
       elemento.scrollIntoView(false);
     }
 
+  }
+  openDialog() {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.position = {
+
+    };
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+
+    dialogConfig.data = {
+      id: 1,
+      title: 'Si crees que este quiz incluye contenido abusivo o imagenes que incitan al odio, puedes reportarlo y será investigado.'
+    };
+
+    const dialogRef = this.dialog.open(DialogboxComponent, dialogConfig);
+    dialogRef.afterClosed().subscribe(
+      data => this.reportar(data)
+
+    );
+  }
+
+  reportar(accion){
+    if(accion){
+      this.quizzService.reportarQuiz(this.id).subscribe();
+    }
   }
 
 

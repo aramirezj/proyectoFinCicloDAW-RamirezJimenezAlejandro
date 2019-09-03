@@ -18,7 +18,9 @@
 <div class="text-center">
   <mat-card *ngIf="resultado" class="example-card">
     <mat-card-header>
-      <mat-card-title class="mat-card-header-text">{{this.solucionado.titulo}}</mat-card-title>
+      <mat-card-title class="mat-card-header-text">{{this.solucionado.titulo}}
+          <p style="display: inline;" role="button" (click)="openDialog()"> <mat-icon *ngIf="this.authService.isLoggedIn()" mat-list-icon>report_problem</mat-icon></p>
+      </mat-card-title>
     </mat-card-header>
     <img mat-card-image *ngIf="this.solucionado.image | async; let url" [src]="url" width="200px">
     <mat-card-content>

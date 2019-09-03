@@ -4,6 +4,11 @@
 .clear {
   clear: both;
 }
+mat-icon{
+  float:right;
+  color:$naranjaRetro!important;
+  font-size: 1em;
+}
 
 .desactivado {
   background-color: rgb(88, 87, 87) !important;
