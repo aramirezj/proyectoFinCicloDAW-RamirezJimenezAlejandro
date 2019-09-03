@@ -3,6 +3,7 @@ import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { NotifyService } from './notify.service';
 import { NgProgress } from 'ngx-progressbar';
+import { Router } from '@angular/router';
 
 export enum Tipos {
     Get,
@@ -17,7 +18,8 @@ export class RestService {
     constructor(
         private http: HttpClient,
         private notifyService: NotifyService,
-        private bar: NgProgress
+        private bar: NgProgress,
+        private router: Router
     ) {
         this.headers = new HttpHeaders({ 'Authorization': `Bearer ${this.getToken()}` });
     }
@@ -55,6 +57,9 @@ export class RestService {
             this.notifyService.notify("Error en el servidor", "error");
         } else if (error.status = 403) {
             this.notifyService.notify("Error de sesión", "err");
+            localStorage.removeItem("usuario");
+            localStorage.removeItem("token");
+            this.router.navigate(['/auth/login']);
         }
     }
 

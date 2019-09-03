@@ -5,7 +5,7 @@
   <div *ngFor="let quizz of quizzs">
     <app-quizz [quizz]="quizz"></app-quizz>
   </div>
+  <div style="clear:both;"></div>
+  <mat-paginator [length]="this.totalQuizzes" [pageSize]="3" (page)="pageEvent = $event;muevoPagina()">
+  </mat-paginator>
 </div>
-<div style="clear:both;"></div>
-<mat-paginator [length]="this.totalQuizzes" [pageSize]="3" (page)="pageEvent = $event;muevoPagina()">
-</mat-paginator>

@@ -53,7 +53,7 @@
               </div>
             </div>
             <mat-form-field class="example-full-width">
-              <input type="number" matInput placeholder="Cantidad de soluciones" required formControlName="cs"
+              <input type="number" matInput placeholder="Nº soluciones" required formControlName="cs"
                 [errorStateMatcher]="matcher">
               <mat-hint>Soluciones posibles</mat-hint>
               <mat-error *ngIf="quizzForm.get('cs').hasError('required') && quizzForm.get('cs').touched">
@@ -67,7 +67,7 @@
               </mat-error>
             </mat-form-field>
             <mat-form-field class="example-full-width">
-              <input type="number" matInput placeholder="Cantidad de preguntas" required formControlName="cp"
+              <input type="number" matInput placeholder="Nº preguntas" required formControlName="cp"
                 [errorStateMatcher]="matcher">
               <mat-hint>Preguntas a responder</mat-hint>
               <mat-error *ngIf="quizzForm.get('cp').hasError('required') && quizzForm.get('cp').touched">
