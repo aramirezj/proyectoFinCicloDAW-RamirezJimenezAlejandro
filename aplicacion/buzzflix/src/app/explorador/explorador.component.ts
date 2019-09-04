@@ -63,7 +63,6 @@ export class MatPaginatorIntlCro extends MatPaginatorIntl {
     const endIndex = startIndex < length ?
       Math.min(startIndex + pageSize, length) :
       startIndex + pageSize;
-      console.log(startIndex+"--"+endIndex+"--"+length)
     return startIndex + 1 + ' - ' + endIndex + ' de ' + length;
   };
 

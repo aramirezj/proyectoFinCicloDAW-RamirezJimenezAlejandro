@@ -55,11 +55,13 @@ export class RestService {
         this.bar.done();
         if (error.status == 500) {
             this.notifyService.notify("Error en el servidor", "error");
-        } else if (error.status = 403) {
-            this.notifyService.notify("Error de sesión", "err");
+        } else if (error.status == 403) {
+            this.notifyService.notify("Error de sesión", "error");
             localStorage.removeItem("usuario");
             localStorage.removeItem("token");
             this.router.navigate(['/auth/login']);
+        } else if (error.status == 422){
+            this.notifyService.notify("Hubo un error, comprueba que todos los campos son validos","error");
         }
     }
 

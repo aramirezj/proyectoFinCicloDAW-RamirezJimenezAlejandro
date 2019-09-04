@@ -7,10 +7,12 @@ var crypto = require('crypto')
 app.use(cors())
 const algorithm = 'aes-192-cbc';
 
+const { validationResult } = require('express-validator');
 var tokenService = require('../tokenService');
 let secretWord = tokenService;
 
 const listaQuerys = require('../querys');
+const listaValidaciones = require('../validaciones');
 const mysqlConnection = require('../database.js');
 
 function creaToken(id) {
@@ -40,7 +42,6 @@ function verificaToken(headers, res, verdad) {
       return false;
     }
   } else {
-
     console.log("Es un token invalido");
     gestionaEnvioErrores(2, res);
     return false;
@@ -93,10 +94,16 @@ function logroUsuarios(id, res) {
     });
 }
 
-
-
-
-function gestionaEnvioErrores(opcion, res) {
+function compruebaErrores(req, res) {
+  const errores = validationResult(req);
+  if (errores.isEmpty()) {
+    return false;
+  } else {
+    gestionaEnvioErrores(5, res, errores);
+    return true;
+  }
+}
+function gestionaEnvioErrores(opcion, res, errores) {
   switch (opcion) {
     case 1:
       console.log("Error sql");
@@ -116,6 +123,9 @@ function gestionaEnvioErrores(opcion, res) {
       console.log("Contraseña incorrecta");
       res.send({ status: "Wrong password" });
       break;
+    case 5:
+      console.log("Error en validación de campos")
+      res.status(422).send({ error: errores.array() });
   }
 }
 
@@ -140,71 +150,77 @@ function ejecutaConsulta(query, valores, res, callback, limite) {
 
 
 //Petición para registrar un usuario .
-router.post('/register', cors(), (req, res, next) => {
+router.post('/register', listaValidaciones["registro"], (req, res, next) => {
   console.log("Petición de registro de un usuario")
-  let { name, email, password } = req.body;
-  password = encripta(password);
-  ejecutaConsulta("registro", [name, email, password], res,
-    function (rows) {
-      if (rows) {
-        res.send({ status: "200", auth: true, token: creaToken(rows.insertId), id: rows.insertId });
-      }
-    });
+  if (!compruebaErrores(req, res)) {
+    let { name, email, password } = req.body;
+    password = encripta(password);
+    ejecutaConsulta("registro", [name, email, password], res,
+      function (rows) {
+        if (rows) {
+          res.send({ status: "200", auth: true, token: creaToken(rows.insertId), id: rows.insertId });
+        }
+      });
+  }
 });
 //Petición para iniciar sesión
-router.post('/authenticate', cors(), (req, res, next) => {
+router.post('/authenticate', listaValidaciones["login"], (req, res, next) => {
   console.log("Petición de inicio de sesión")
-  let { email, password } = req.body;
-  password = encripta(password);
-
-  ejecutaConsulta("login", [email, password], res, function (rows) {
-    if (rows) {
-      if (rows.length > 0) {//Datos correctos
-        res.send({ auth: true, token: creaToken(rows[0].id), respuesta: rows[0] });
-      } else {//Datos incorrectos
-        res.send({ auth: false });
+  if (!compruebaErrores(req, res)) {
+    let { email, password } = req.body;
+    password = encripta(password);
+    ejecutaConsulta("login", [email, password], res, function (rows) {
+      if (rows) {
+        if (rows.length > 0) {//Datos correctos
+          res.send({ auth: true, token: creaToken(rows[0].id), respuesta: rows[0] });
+        } else {//Datos incorrectos
+          res.send({ auth: false });
+        }
       }
-    }
-  });
+    });
+  }
+
 });
 
 //Actualizar perfil de un usuario (PROTECTED)
-router.put('/usuario/actualizar/:id', cors(), (req, res, next) => {
+router.put('/usuario/actualizar/:id', listaValidaciones["editar"], (req, res, next) => {
   console.log("Petición para actualizar el perfil de un usuario")
-  let permiso = verificaToken(req.headers, res);
-  if (permiso) {
-    let { name, oldpass, newpass, avatar } = req.body;
-    const { id } = req.params; 3
-    //Logro 6
-    ejecutaConsulta("getUsuario", [id], res, function (rows) {
-      if (rows) {
-        logroAvatar(permiso, avatar, rows[0].avatar, res);
-      }
-    })
-    //Logro 6 
-
-    if (oldpass == undefined || newpass == undefined) {//Modificamos solo nombre y avatar
-      ejecutaConsulta("editarPerfil1", [name, avatar, id], res, function (rows) {
+  if (!compruebaErrores(req, res)) {
+    let permiso = verificaToken(req.headers, res);
+    if (permiso) {
+      let { name, oldpass, newpass, avatar } = req.body;
+      const { id } = req.params; 3
+      //Logro 6
+      ejecutaConsulta("getUsuario", [id], res, function (rows) {
         if (rows) {
-          res.send({ status: '200' });
+          logroAvatar(permiso, avatar, rows[0].avatar, res);
         }
       })
-    } else {//Modificamos contraseñas también
-      oldpass = encripta(oldpass);
-      newpass = encripta(newpass);
-      ejecutaConsulta("editarPerfil2", [oldpass, id], res, function (rows2) {
-        if (rows2) {
-          if (rows2.length > 0) {
-            ejecutaConsulta("editarPerfil3", [name, newpass, avatar, id], res, function (rows3) {
-              if (rows3) {
-                res.send({ status: '200' });
-              }
-            });
-          } else {//Contraseña incorrecta
-            gestionaEnvioErrores(4, res);
+      //Logro 6 
+
+      if (oldpass == undefined || newpass == undefined) {//Modificamos solo nombre y avatar
+        ejecutaConsulta("editarPerfil1", [name, avatar, id], res, function (rows) {
+          if (rows) {
+            res.send({ status: '200' });
           }
-        }
-      });
+        })
+      } else {//Modificamos contraseñas también
+        oldpass = encripta(oldpass);
+        newpass = encripta(newpass);
+        ejecutaConsulta("editarPerfil2", [oldpass, id], res, function (rows2) {
+          if (rows2) {
+            if (rows2.length > 0) {
+              ejecutaConsulta("editarPerfil3", [name, newpass, avatar, id], res, function (rows3) {
+                if (rows3) {
+                  res.send({ status: '200' });
+                }
+              });
+            } else {//Contraseña incorrecta
+              gestionaEnvioErrores(4, res);
+            }
+          }
+        });
+      }
     }
   }
 });
@@ -228,12 +244,12 @@ router.post('/reportar', (req, res) => {
   console.log("Guarda una acción de reporte")
   const { destino, motivo } = req.body;
   let permiso = verificaToken(req.headers, res);
-  console.log(permiso+"--"+destino+"--"+destino)
+  console.log(permiso + "--" + destino + "--" + destino)
   if (permiso) {
     ejecutaConsulta("getReport", [permiso, destino, motivo], res, function (rows) {
       if (rows) {
         if (rows.length < 1) {
-          ejecutaConsulta("setReport", [permiso, destino, motivo], res, function (rows) {})
+          ejecutaConsulta("setReport", [permiso, destino, motivo], res, function (rows) { })
         }
         res.send({ status: '200' })
       }

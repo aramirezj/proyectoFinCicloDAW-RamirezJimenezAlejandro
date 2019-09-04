@@ -5,22 +5,22 @@
         Creación de Quiz
       </div>
       <mat-accordion>
-          <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
-            <mat-expansion-panel-header>
-              <mat-panel-title>
-                Notas y consejos a la hora de crear un quiz
-              </mat-panel-title>
-              <mat-panel-description>
-              </mat-panel-description>
-            </mat-expansion-panel-header>
-            <mat-list>
-              <mat-list-item *ngFor="let correcta of correctas">
-                <mat-icon mat-list-icon>stars</mat-icon>
-                <h4 mat-line>{{correcta.name}}</h4>
-              </mat-list-item>
-            </mat-list>
-          </mat-expansion-panel>
-        </mat-accordion>
+        <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Notas y consejos a la hora de crear un quiz
+            </mat-panel-title>
+            <mat-panel-description>
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <mat-list>
+            <mat-list-item *ngFor="let correcta of correctas">
+              <mat-icon mat-list-icon>stars</mat-icon>
+              <h4 mat-line>{{correcta.name}}</h4>
+            </mat-list-item>
+          </mat-list>
+        </mat-expansion-panel>
+      </mat-accordion>
       <div class="panel-body">
         <form enctype="multipart/form-data" [formGroup]="quizzForm" (ngSubmit)="onSubmit()">
           <div class="top-form">
@@ -82,8 +82,8 @@
             </mat-form-field>
             <div class="form-group">
               <label style="display: block;margin-top:10vh;">Configuración</label>
-              <mat-checkbox formControlName="privado" style="font-size:0.9em!important;"
-                (ngModel)="indeterminate" [labelPosition]="labelPosition">
+              <mat-checkbox formControlName="privado" style="font-size:0.9em!important;" (ngModel)="indeterminate"
+                [labelPosition]="labelPosition">
                 Quiz privado
               </mat-checkbox>
             </div>
@@ -99,6 +99,7 @@
           <div *ngIf="firstStep" class="solu-box">
             <p class="text-center seccion">Soluciones</p>
             <!-- Soluciones -->
+            <div>
             <div class="solucionBox text-center" *ngFor="let item of [].constructor(this.max); let i = index">
               <mat-card class="example-card ">
                 <mat-card-header>
@@ -115,7 +116,7 @@
                       </span>
                     </div>
                     <br>
-                    <img [id]="'img'+i" mat-card-image width="200px">
+                    <img [id]="'img'+i" mat-card-image>
                   </mat-card-title>
                 </mat-card-header>
                 <mat-card-content>
@@ -124,7 +125,9 @@
                 </mat-card-content>
               </mat-card>
             </div>
-            <div style="clear:both"></div>
+            <div class="clear"></div>
+          </div>
+
             <!--Fin soluciones-->
 
             <div class="form-group text-center">
@@ -159,10 +162,9 @@
                 <div *ngFor="let n of this.learray[i];let j = index" class="resp-box">
                   <div class="resp-apar" *ngIf="this.verdades[i].respuestas[n-1].mostrado">
                     <div class="form-group">
-                      <input type="text" class="form-control" placeholder="Titulo respuesta"
+                      <input type="text" class="form-control" placeholder="Respuesta"
                         [formControlName]="generaIdR('r',n,'p',i)" />
                       <div class="form-group afinidad-box" *ngFor="let x of [].constructor(this.maxs); let p = index">
-
                         <label for="exampleFormControlSelect1">Afinidad {{this.quizzForm.get('st'+(p+1)).value}}</label>
                         <select [formControlName]="generaIdRR('p',i,'rs',n,'a',p)" class="form-control"
                           id="exampleFormControlSelect1">

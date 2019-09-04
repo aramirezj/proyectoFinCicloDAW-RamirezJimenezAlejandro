@@ -36,10 +36,10 @@ export class RegistroComponent implements OnInit {
 
   createForm() {
     this.registroForm = new FormGroup({
-      email: new FormControl(null, [Validators.required, Validators.email]),
-      nombre: new FormControl(null, [Validators.required, Validators.minLength(4)]),
-      password: new FormControl(null, [Validators.required, Validators.minLength(6)]),
-      password2: new FormControl(null, [Validators.required, Validators.minLength(6)])
+      email: new FormControl(null, [Validators.required, Validators.email,Validators.maxLength(50)]),
+      nombre: new FormControl(null, [Validators.required, Validators.minLength(2),Validators.maxLength(20)]),
+      password: new FormControl(null, [Validators.required, Validators.minLength(6),Validators.maxLength(30)]),
+      password2: new FormControl(null, [Validators.required, Validators.minLength(6),Validators.maxLength(30)])
     });
   }
 

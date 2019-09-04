@@ -8,7 +8,7 @@
     <p class="card-text" style="text-align:left" *ngIf="!this.isCreador"><small class="">Autor: </small><a
         [routerLink]="['/usuario/perfil',usuario.id]">{{this.usuario.name}}</a><span class="pull-right">Fecha:
         {{this.quizz.fechacreacion | PrettyDate}}</span></p>
-    <button mat-button [matMenuTriggerFor]="menu" *ngIf="this.isCreador" style="background-color: white;color:black">Acciones</button>
+    <button mat-button [matMenuTriggerFor]="menu" *ngIf="this.isCreador">Acciones</button>
     <mat-menu #menu="matMenu">
       <button mat-menu-item (click)="openDialog()">Eliminar</button>
       <button mat-menu-item (click)="cambiar()" *ngIf="!this.privado">Privatizar</button>

@@ -3,6 +3,9 @@
 button {
   display: block;
   margin-top: 2%;
+  font-size: 2.5vh;
+  background-color: white;
+  color:black;
 }
 .checked {
   color: $naranjaRetro;
@@ -14,14 +17,11 @@ img {
   font-size: 2vw;
 }
 div {
-  background: linear-gradient(to left, #529f82, #46317c);
+  background: linear-gradient(to left, #46317c, #529f82, #46317c);
   color: white;
   text-transform: capitalize;
 }
 
-p {
-  margin-top: 2%;
-}
 .card {
   box-shadow: 1px 3px 2px rgb(104, 100, 100);
   width: 50%;
@@ -51,4 +51,8 @@ p {
 
 .card-body {
   text-align: center;
+  padding: 1vh;
+}
+.card-title{
+  font-size: 3vh!important;
 }

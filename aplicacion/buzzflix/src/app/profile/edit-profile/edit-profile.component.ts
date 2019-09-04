@@ -39,7 +39,13 @@ export class EditProfileComponent implements OnInit {
   }
 
   creaFormulario() {
-    this.profileForm = this.fb.group({
+    this.profileForm = new FormGroup({
+      nombre: new FormControl(null, [Validators.required, Validators.minLength(2),Validators.maxLength(20)]),
+      oldPass: new FormControl(null, [Validators.required, Validators.minLength(6),Validators.maxLength(30)]),
+      newPass: new FormControl(null, [Validators.required, Validators.minLength(6),Validators.maxLength(30)]),
+      avatar: new FormControl(null,null)
+    });
+    /*this.profileForm = this.fb.group({
       nombreFC: ['', [
         Validators.required,
         Validators.minLength(3)
@@ -51,7 +57,7 @@ export class EditProfileComponent implements OnInit {
         Validators.minLength(6)
       ]],
       avatar: ['', []]
-    })
+    })*/
   }
 
   editProfile() {
