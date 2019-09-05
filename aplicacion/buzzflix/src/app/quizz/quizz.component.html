@@ -2,7 +2,7 @@
   <img [routerLink]="['/ver/quizz',quizz.id]" role="button" *ngIf="this.quizz.image | async; let url" [src]="url"
     class="card-img-top">
   <div class="card-body">
-    <h4 [routerLink]="['/ver/quizz',quizz.id]" class="card-title" role="button">{{quizz.titulo}}</h4>
+    <h4 class="card-title" role="button">{{quizz.titulo}}</h4>
     <span *ngFor="let item of [].constructor(estrellas)" class="fa fa-star checked"></span>
     <span *ngFor="let item of [].constructor(5-estrellas)" class="fa fa-star"></span>({{quizz.estrellas}})
     <p class="card-text" style="text-align:left" *ngIf="!this.isCreador"><small class="">Autor: </small><a

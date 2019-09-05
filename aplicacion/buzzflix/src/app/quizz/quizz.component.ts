@@ -37,7 +37,7 @@ export class QuizzComponent implements OnInit {
     this.usuario = new Usuario(this.quizz.creador, this.quizz.nombre, null, null);
     this.estrellas = this.quizz.estrellas / this.quizz.votantes;
     this.estrellas = isNaN(this.estrellas) ? 0:Math.round(this.estrellas);
-
+    
     this.quizz.image = JSON.parse(this.quizz.contenido).image;
     this.quizz.image = this.quizz.image == null ? "hehexd.jpg":this.afStorage.ref(this.quizz.image).getDownloadURL();
     

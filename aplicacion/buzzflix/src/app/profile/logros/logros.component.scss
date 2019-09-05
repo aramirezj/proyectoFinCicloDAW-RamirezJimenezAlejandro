@@ -1,15 +1,18 @@
 @import '../../../variables.scss';
 .card{
     background: none;
+    max-width: 250px;
+    margin:2vh;
 }
 .card-body{
     text-align: center;
     background-color: $fondoSuave;
     color:white;
+    min-height: 30vh;
 }
 .card-img-top{
     max-width: 250px;
-    max-height: 280px;
+    max-height: 300px;
 }
 .pendiente{
     -webkit-filter: grayscale(100%);

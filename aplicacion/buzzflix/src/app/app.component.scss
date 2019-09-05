@@ -1,20 +1,29 @@
-@import '../variables.scss';
+@import "../variables.scss";
 //Toda la barra de navegación
 //Elementos
-img{
-  width: 8em;
+.barra {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 2;
+  width: 100% !important;
+  padding-left: 1vW;
+  padding-right: 2vw;
+}
+img {
+  width: 9em;
 }
 a {
   font-weight: bold;
   color: white !important;
-  text-decoration:none;
+  text-decoration: none;
   vertical-align: bottom;
 }
 a:hover {
   color: $naranjaRetro !important;
 }
 //Elementos
-//Formularios del buscador 
+//Formularios del buscador
 form {
   display: inline;
   align-items: initial;
@@ -33,47 +42,57 @@ button {
 .menu-spacer {
   flex: 1 1 auto;
 }
-mat-sidenav-container, mat-sidenav{ //Para que no joda el fondo
-background: transparent
+mat-sidenav-container,
+mat-sidenav {
+  //Para que no joda el fondo
+  background: transparent;
 }
-mat-nav-list,mat-menu,mat-expansion-panel{//Para que el sidenav tenga fondo
-  background-color: $fondoSuave ;
+mat-nav-list,
+mat-menu,
+mat-expansion-panel {
+  //Para que el sidenav tenga fondo
+  background-color: $fondoSuave;
+  
 }
-.container{
-  margin-top:5%;
+mat-nav-list{
+  margin-top: 13vh!important;
+}
+.container {
+  margin-top: 16vh;
 }
 
-span,a{
-  color:white!important;
-  font-size:3vh;
+span,
+a {
+  color: white !important;
+  font-size: 3vh;
 }
-button>mat-icon{
-  color:white!important;
-  font-size:1.8em;
+button > mat-icon {
+  color: white !important;
+  font-size: 1.8em;
 }
-mat-panel-title>mat-icon{
+mat-panel-title > mat-icon {
   height: 100%;
-  color:white!important;
-  font-size:1.8em;
+  color: white !important;
+  font-size: 1.8em;
 }
-.lupas{
-  color:white!important;
-  font-size:1.9em;
-  vertical-align:top;
+.lupas {
+  color: white !important;
+  font-size: 1.9em;
+  vertical-align: top;
 }
-.icono{
-  color:orange!important;
-  font-size:2.5em;
+.icono {
+  color: orange !important;
+  font-size: 2.5em;
 }
 
-h4{
-  color:white;
-  white-space: normal!important;
+h4 {
+  color: white;
+  white-space: normal !important;
 }
 //Menú desplegable
 
 //Querys responsive
-.menuBoton{
+.menuBoton {
   display: none;
 }
 
@@ -85,4 +104,3 @@ h4{
     display: none;
   }
 }
-

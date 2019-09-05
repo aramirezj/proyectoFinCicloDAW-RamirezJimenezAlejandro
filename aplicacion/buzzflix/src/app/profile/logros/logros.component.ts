@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { UserService } from 'src/app/services/user.service';
 import { Logro } from 'src/app/modelo/Logro';
 import { PrettyDatePipe } from '../../pipes/pretty-date.pipe';
+import * as $ from 'jquery';
 @Component({
   selector: 'app-logros',
   templateUrl: './logros.component.html',
@@ -26,12 +27,18 @@ export class LogrosComponent implements OnInit {
       });
   }
   isPendiente(logro: Logro) {
-    return logro.fecha == "Aun no conseguido" ? 
-      "card-img-top pendiente" : 
+    return logro.fecha == "Aun no conseguido" ?
+      "card-img-top pendiente" :
       "card-img-top";
   }
-
-
+  setGif(idLogro) {
+    $("#img"+idLogro)[0].setAttribute("src", "assets/logros/ilu.gif");
+    //document.getElementById("img"+idLogro).setAttribute("src", "assets/logros/ilu.gif");
+  }
+  deleteGif(idLogro) {
+    $("#img"+idLogro)[0].setAttribute("src", "assets/logros/ilu.png");
+    //pendientes[idLogro].setAttribute("src", "assets/logros/ilu.png");
+  }
 }
 
 

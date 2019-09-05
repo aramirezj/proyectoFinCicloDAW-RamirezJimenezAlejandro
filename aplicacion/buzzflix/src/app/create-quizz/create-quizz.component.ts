@@ -171,7 +171,7 @@ export class CreateQuizzComponent implements OnInit {
         let descripcion: string = "sd" + i;
         let image: string = "si" + i;
         grupo = [
-          { name: titulo, control: new FormControl(null, []) },
+          { name: titulo, control: new FormControl(null, [Validators.required]) },
           { name: descripcion, control: new FormControl(null, []) },
           { name: image, control: new FormControl(null, []) },
         ]
@@ -187,6 +187,7 @@ export class CreateQuizzComponent implements OnInit {
         this.ref.detectChanges();
         this.ref.reattach();
         this.bar.done();
+        
       }, 500);
     } else {
       this.notifyService.notify("El máximo de soluciones son 5, y el mínimo son 2", "error");

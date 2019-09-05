@@ -5,13 +5,13 @@ button {
   margin-top: 2%;
   font-size: 2.5vh;
   background-color: white;
-  color:black;
+  color: black;
 }
 .checked {
   color: $naranjaRetro;
 }
 img {
-  height: 25vw; 
+  height: 25vw;
 }
 .fa-star {
   font-size: 2vw;
@@ -23,8 +23,9 @@ div {
 }
 
 .card {
-  box-shadow: 1px 3px 2px rgb(104, 100, 100);
-  width: 50%;
+  //box-shadow: 1px 3px 2px #46317c;
+  width: 48%;
+  margin:1vh;
   float: left;
   transition-delay: 0.1s;
   transition: all 0.3s;
@@ -34,25 +35,23 @@ div {
   transform: translateY(-5px);
 }
 @media (max-width: 800px) {
-  .card{
+  .card {
     width: 75%;
     margin: auto;
-    float:none;
+    float: none;
   }
-  .fa-star{
+  .fa-star {
     font-size: 4vw;
   }
-
 }
-
 .card:hover {
-  box-shadow: 4px 14px 8px rgb(68, 65, 65);
+  box-shadow: 2px 7px 8px #529f82;
 }
 
 .card-body {
   text-align: center;
   padding: 1vh;
 }
-.card-title{
-  font-size: 3vh!important;
+.card-title {
+  font-size: 3vh !important;
 }

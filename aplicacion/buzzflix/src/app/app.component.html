@@ -3,7 +3,7 @@
   integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
 
 
-<mat-toolbar color="primary">
+<mat-toolbar class="barra" color="primary">
   <mat-toolbar-row>
     <button class="menuBoton" mat-icon-button>
       <mat-icon (click)="sidenav.toggle()">menu</mat-icon>
@@ -36,7 +36,7 @@
         aria-label="Example icon-button with a menu">
         <mat-icon>more_vert</mat-icon>
       </button>
-
+      
       <!--Menú derecha-->
       <mat-menu #menu="matMenu">
         <button mat-menu-item *ngIf="isLoggedIn()" [routerLink]="['usuario/perfil',this.authService.getAuthUserId()]">
@@ -82,18 +82,14 @@
       </mat-menu>
     </div>
   </mat-toolbar-row>
-
-  <!--Por si quiero otra linea en el menú
-        <mat-toolbar-row>
-          <span style="font-size: 12px;">SimpleCRM helps you easily manage your contacts</span>
-        </mat-toolbar-row>-->
 </mat-toolbar>
 
 
 <!--EL SIDENAVVVVV-->
 <mat-sidenav-container>
   <mat-sidenav #sidenav>
-    <mat-nav-list>
+    <mat-nav-list >
+      
         <form class="form-inline" id="form1" *ngIf="this.showSU" [formGroup]="miniForm">
             <input class="form-control mr-sm-2" formControlName="nombre" type="search" placeholder="Buscar usuarios"
               aria-label="Search" />
@@ -111,7 +107,7 @@
           <div style="display: inline;margin-right: 2%;" *ngIf="(!this.showSQ && !this.showSU)">
             <mat-icon class="lupas" (click)="muestraForm()">search</mat-icon>
           </div>
-          <span class="menu-spacer"></span>
+        
       <a mat-list-item [routerLink]="['ver/todos']">Todos los quizzes </a>
       <a mat-list-item [routerLink]="['crear/quizz']">Crear quiz </a>
       <a mat-list-item *ngIf="isLoggedIn()" [routerLink]="['moderacion']">Moderación </a>
@@ -155,7 +151,7 @@
         <mat-icon>directions_run</mat-icon>
         <span role="button" mat-button>Cerrar sesión</span>
       </button>
-     <a mat-list-item (click)="sidenav.toggle()" href="" mat-list-item>Cerrar menú</a>
+     <a mat-list-item (click)="sidenav.toggle()" mat-list-item>Cerrar menú</a>
 
     </mat-nav-list>
   </mat-sidenav>

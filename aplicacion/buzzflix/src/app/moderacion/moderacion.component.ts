@@ -35,6 +35,7 @@ export class ModeracionComponent implements OnInit {
     }
   ];
   quizzs: Array<Quizz>
+  rawquizzes
   indice: number = 0
   isLoaded: boolean = false;
   imagenes: any = [];
@@ -53,7 +54,9 @@ export class ModeracionComponent implements OnInit {
     this.quizzService.listaModeracion()
       .subscribe(resp => {
         if (resp != null && resp.length>0) {
+          this.rawquizzes=resp;
           for (let i = 0; i < resp.length; i++) {
+            
             quizz = JSON.parse(resp[i]["contenido"]);
             quizz.id = resp[i].id;
             quizz.titulo = resp[i].titulo;
@@ -87,6 +90,8 @@ export class ModeracionComponent implements OnInit {
     .subscribe(resp => {
       this.isAdmin=resp;
     });
+    
+    
   }
 
   juzga(decision: boolean) {
