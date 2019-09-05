@@ -60,6 +60,7 @@ import { ModeracionComponent } from './moderacion/moderacion.component';
 import { DashboardQuizComponent } from './dashboard-quiz/dashboard-quiz.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { LogrosComponent } from './profile/logros/logros.component';
+import { InfolegalComponent } from './infolegal/infolegal.component';
 
 @NgModule({
   declarations: [
@@ -86,6 +87,7 @@ import { LogrosComponent } from './profile/logros/logros.component';
     DashboardQuizComponent,
     NotFoundComponent,
     LogrosComponent,
+    InfolegalComponent,
   ],
   imports: [
     BrowserModule,

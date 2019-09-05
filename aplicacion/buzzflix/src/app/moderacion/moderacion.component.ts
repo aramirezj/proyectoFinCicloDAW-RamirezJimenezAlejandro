@@ -53,8 +53,10 @@ export class ModeracionComponent implements OnInit {
     let quizz: Quizz;
     this.quizzService.listaModeracion()
       .subscribe(resp => {
+        console.log(resp)
         if (resp != null && resp.length>0) {
           this.rawquizzes=resp;
+          
           for (let i = 0; i < resp.length; i++) {
             
             quizz = JSON.parse(resp[i]["contenido"]);

@@ -61,8 +61,8 @@
                 La contraseña es <strong>obligatoria</strong>
               </mat-error>
             </mat-form-field>
-            Al hacer clic en Registrarse, indicas que has leído y aceptas los <a class="enlace" href="#">Términos del
-              servicio</a> y la <a class="enlace" href="#">Política de privacidad</a>.<br><br>
+            Al hacer clic en Registrarse, indicas que has leído y aceptas los <a class="enlace" [routerLink]="['/infolegal',1]">Términos del
+              servicio</a> y la <a class="enlace" [routerLink]="['/infolegal',2]">Política de privacidad</a>.<br><br>
             <button [disabled]="registroForm.invalid" mat-raised-button color="primary">Registrarse</button>
           </form>
         </div>

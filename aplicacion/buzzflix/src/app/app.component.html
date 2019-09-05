@@ -12,13 +12,13 @@
     <span class="menu-spacer"></span>
     <div class="menuExpandido">
       <form class="form-inline" id="form1" *ngIf="this.showSU" [formGroup]="miniForm">
-        <input class="form-control mr-sm-2" formControlName="nombre" type="search" placeholder="Buscar usuarios"
+        <input maxLength=20 maxLength=20 class="form-control mr-sm-2" formControlName="nombre" type="search" placeholder="Buscar usuarios"
           aria-label="Search" />
         <button type="submit" class="btn btn-default" (click)="onSubmit()">Buscar</button>
       </form>
       <!--Formulario Quizzes-->
       <form class="form-inline" id="form2" *ngIf="this.showSQ" [formGroup]="miniForm2">
-        <input class="form-control mr-sm-2" formControlName="nombre2" type="search" placeholder="Buscar quizzes"
+        <input maxLength=20 class="form-control mr-sm-2" formControlName="nombre2" type="search" placeholder="Buscar quizzes"
           aria-label="Search" />
         <button type="submit" class="btn btn-default" (click)="onSubmit2()">Buscar</button>
       </form>
@@ -91,13 +91,13 @@
     <mat-nav-list >
       
         <form class="form-inline" id="form1" *ngIf="this.showSU" [formGroup]="miniForm">
-            <input class="form-control mr-sm-2" formControlName="nombre" type="search" placeholder="Buscar usuarios"
+            <input maxLength=20 class="form-control mr-sm-2" formControlName="nombre" type="search" placeholder="Buscar usuarios"
               aria-label="Search" />
             <button type="submit" class="btn btn-default" (click)="onSubmit()">Buscar</button>
           </form>
           <!--Formulario Quizzes-->
           <form class="form-inline" id="form2" *ngIf="this.showSQ" [formGroup]="miniForm2">
-            <input class="form-control mr-sm-2" formControlName="nombre2" type="search" placeholder="Buscar quizzes"
+            <input maxLength=20 class="form-control mr-sm-2" formControlName="nombre2" type="search" placeholder="Buscar quizzes"
               aria-label="Search" />
             <button type="submit" class="btn btn-default" (click)="onSubmit2()">Buscar</button>
           </form>

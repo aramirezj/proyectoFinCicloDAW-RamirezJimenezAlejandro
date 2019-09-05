@@ -21,12 +21,13 @@ export class WallComponent implements OnInit {
   ngOnInit() {
     this.router.params.subscribe(params => {
       this.id = +params['id']
+      if(isNaN(this.id)){
+        this.userService.currentMessage.subscribe(message => this.id = message)
+      }
       this.getUserWall();
     })
 
   }
-
-
 
   getUserWall() {
     this.userService.getUserWall(this.id)
@@ -34,7 +35,6 @@ export class WallComponent implements OnInit {
         this.quizzs = resp;
         this.isLoaded = true;
       })
-
   }
 
 }

@@ -22,6 +22,9 @@ export class ProfileComponent implements OnInit {
   downloadURL: any
   mutual: any
   mutualaux: boolean
+  showEditar: boolean=true; //Para gestionar el cambio de boton
+  showLogros:boolean=true;
+  showWall:boolean=false;
   @ViewChild(LogrosComponent,{static: false}) child;
   constructor(
     private router: ActivatedRoute,

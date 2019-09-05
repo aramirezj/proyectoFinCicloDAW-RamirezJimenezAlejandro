@@ -29,6 +29,32 @@ validaciones["creaQuiz"] = [
     check('titulo').isLength({ max: 75 }),
     check('creador').isNumeric(),
     check('contenido').isLength({ max: 20000 })
+];
+validaciones["reporte"] = [
+    check('destino').isNumeric(),
+    check('motivo').isLength({ min: 4 }),
+    check('motivo').isLength({ max: 7 }),
+];
+validaciones["numerico"] = [
+    check('id').isNumeric()
+];
+validaciones["texto"] = [
+    check("nombre").isString(),
+    check("nombre").trim(),
+    check("nombre").isLength({max:20})
+]
+validaciones["modera"] = [
+    check("quizz").isNumeric(),
+    check("usuario").isNumeric()
+]
+validaciones["vota"] = [
+    check("quizz").isNumeric(),
+    check("origen").isNumeric(),
+    check("cantidad").isNumeric()
+]
+validaciones["stats"] = [ //isFollowing también
+    check("origen").isNumeric(),
+    check("destino").isNumeric()
 ]
 
 

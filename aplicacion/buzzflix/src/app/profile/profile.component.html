@@ -1,6 +1,6 @@
 <div class="wrapper" *ngIf="usuario">
   <div class="profile-card js-profile-card">
-    <p role="button" (click)="openDialog()">
+    <p style="position: absolute;right:0" role="button" (click)="openDialog()">
       <mat-icon *ngIf="!isAuthUserProfile() && this.authService.
       isLoggedIn()" mat-list-icon>report_problem</mat-icon>
     </p>
@@ -35,19 +35,19 @@
         </div>
       </div>
 
-
-
       <div class="profile-card-ctr">
         <app-follow class="profile-card__button button--orange" *ngIf="!isAuthUserProfile() && this.authService.
           isLoggedIn()" (notify)='onNotify($event)' [currentProfileId]="id"></app-follow>
-        <button class="profile-card__button button--blue js-message-btn" *ngIf="isAuthUserProfile()"
-          routerLink="edit">Editar perfil</button>
-        <button class="profile-card__button button--yellow js-message-btn" routerLink="logros">Logros</button>
 
+
+        <button (click)="this.showEditar=false;this.showWall=true;this.showLogros=true" class="profile-card__button button--blue js-message-btn"
+          *ngIf="isAuthUserProfile() && this.showEditar" routerLink="edit">Editar perfil</button>
+        <button (click)="this.showWall=false;this.showEditar=true;this.showLogros=true" class="profile-card__button button--orange js-message-btn"
+        *ngIf="this.showWall" routerLink="wall">Quizzes</button>
+        <button (click)="this.showLogros=false;this.showWall=true;this.showEditar=true" class="profile-card__button button--yellow js-message-btn"
+         *ngIf="this.showLogros" routerLink="logros">Logros</button>
       </div>
     </div>
   </div>
-
 </div>
-
 <router-outlet></router-outlet>

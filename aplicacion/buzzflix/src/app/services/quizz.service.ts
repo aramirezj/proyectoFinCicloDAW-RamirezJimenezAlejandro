@@ -141,7 +141,7 @@ export class QuizzService {
 
     borraQuizz(quizz: Quizz) {
         let url = `${CONFIG.apiUrl}borraQuizz`;
-        let body = { quizz: quizz.id };
+        let body = { id: quizz.id };
 
         return Observable.create(observer => {
             this.restService.peticionHttp(url, body).subscribe(response => {
@@ -157,11 +157,10 @@ export class QuizzService {
 
 
     listaModeracion(): Observable<Array<Quizz>> {
+    
         let url = `${CONFIG.apiUrl}quizz/moderacion`;
-        let body = { id: this.authService.getAuthUserId() };
-
         return Observable.create(observer => {
-            this.restService.peticionHttp(url, body).subscribe(response => {
+            this.restService.peticionHttp(url).subscribe(response => {
                 observer.next(response.respuesta)
                 observer.complete();
             })

@@ -38,7 +38,7 @@ export class RestService {
             this.http.get(url, { observe: 'body', headers: this.headers }) :
             this.http.post(url, valores, { observe: 'body', headers: this.headers })
         peticion = tipo == "put" ? this.http.put(url, valores, { observe: 'body', headers: this.headers }) : peticion;
-
+        
         return Observable.create(observer => {
             peticion.subscribe((response: any) => {
                 this.bar.done();

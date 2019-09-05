@@ -15,73 +15,81 @@ import { ModeracionComponent } from '../moderacion/moderacion.component';
 import { DashboardQuizComponent } from '../dashboard-quiz/dashboard-quiz.component';
 import { NotFoundComponent } from '../not-found/not-found.component';
 import { LogrosComponent } from '../profile/logros/logros.component';
+import { InfolegalComponent } from '../infolegal/infolegal.component';
 export const ROUTES = [
     {
-        path:'auth/register',
+        path: 'auth/register',
         component: RegistroComponent,
         canActivate: [AuthedGuard]
     },
     {
-        path:'auth/login',
+        path: 'auth/login',
         component: LoginComponent,
         canActivate: [AuthedGuard]
     },
     {
-        path:'dashboard',
+        path: 'dashboard',
         component: DashboardComponent,
         canActivate: [AuthGuard]
     },
     {
-        path:'crear/quizz',
+        path: 'crear/quizz',
         component: CreateQuizzComponent,
-        canActivate:[AuthGuard]
+        canActivate: [AuthGuard]
     },
     {
-        path:'usuario/perfil/:id',
+        path: 'usuario/perfil/:id',
         component: ProfileComponent,
-        children:[{
-            path:'',
-            component:WallComponent
-        },{
-            path:'edit',
-            component:EditProfileComponent
-        },{
-            path:'logros',
-            component:LogrosComponent
+        children: [{
+            path: '',
+            component: WallComponent
+        }, {
+            path: 'wall',
+            component: WallComponent
+        }, {
+            path: 'edit',
+            component: EditProfileComponent
+        }, {
+            path: 'logros',
+            component: LogrosComponent
         }]
     },
     {
-        path:'ver/quizz/:id',
+        path: 'ver/quizz/:id',
         component: VerQuizzComponent
     },
     {
-        path:'ver/usuarios/:nombre',
-        component: DashboardUsersComponent,
-        canActivate:[AuthGuard]
+        path: 'infolegal/:opcion',
+        component: InfolegalComponent
     },
     {
-        path:'ver/quizzes/:nombre',
+        path: 'ver/usuarios/:nombre',
+        component: DashboardUsersComponent,
+        canActivate: [AuthGuard]
+    },
+    {
+        path: 'ver/quizzes/:nombre',
         component: DashboardQuizComponent
     },
     {
-        path:'',
-        component:ExploradorComponent,
-        CanActivate:[AuthGuard]
+        path: '',
+        component: ExploradorComponent,
+        CanActivate: [AuthGuard]
     },
     {
-        path:'ver/todos',
-        component:ExploradorComponent,
-        CanActivate:[AuthGuard]
+        path: 'ver/todos',
+        component: ExploradorComponent,
+        CanActivate: [AuthGuard]
     },
     {
-        path:'moderacion',
-        component:ModeracionComponent,
-        CanActivate:[AuthGuard]
+        path: 'moderacion',
+        component: ModeracionComponent,
+        CanActivate: [AuthGuard]
     },
     {
         path: '**',
         component: NotFoundComponent
-      }
-    
+    }
+
 ]
 

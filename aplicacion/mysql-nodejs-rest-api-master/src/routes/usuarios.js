@@ -240,31 +240,35 @@ router.get('/usuario/admin', (req, res) => {
   }
 });
 //Guarda una acción de reporte (PROTECTED)
-router.post('/reportar', (req, res) => {
+router.post('/reportar', listaValidaciones["reporte"], (req, res) => {
   console.log("Guarda una acción de reporte")
-  const { destino, motivo } = req.body;
-  let permiso = verificaToken(req.headers, res);
-  console.log(permiso + "--" + destino + "--" + destino)
-  if (permiso) {
-    ejecutaConsulta("getReport", [permiso, destino, motivo], res, function (rows) {
-      if (rows) {
-        if (rows.length < 1) {
-          ejecutaConsulta("setReport", [permiso, destino, motivo], res, function (rows) { })
+  if (!compruebaErrores(req, res)) {
+    let permiso = verificaToken(req.headers, res);
+    const { destino, motivo } = req.body;
+    if (permiso) {
+      ejecutaConsulta("getReport", [permiso, destino, motivo], res, function (rows) {
+        if (rows) {
+          if (rows.length < 1) {
+            ejecutaConsulta("setReport", [permiso, destino, motivo], res, function (rows) { })
+          }
+          res.send({ status: '200' })
         }
-        res.send({ status: '200' })
-      }
-    })
+      })
+    }
   }
+
 });
 // Obtener los logros de un usuario (PROTECTED)
-router.get('/usuario/:id/logros', (req, res) => {
+router.get('/usuario/:id/logros', listaValidaciones["numerico"], (req, res) => {
   console.log("Obtener logros de un usuario")
-  const { id } = req.params;
-  ejecutaConsulta("buscaLogros", [id], res, function (rows) {
-    if (rows) {
-      res.send({ status: '200', respuesta: rows });
-    }
-  });
+  if (!compruebaErrores(req, res)) {
+    const { id } = req.params;
+    ejecutaConsulta("buscaLogros", [id], res, function (rows) {
+      if (rows) {
+        res.send({ status: '200', respuesta: rows });
+      }
+    });
+  }
 });
 // Obtener notificaciones de un usuario (PROTECTED)
 router.get('/usuario/notificaciones', (req, res) => {
@@ -277,44 +281,49 @@ router.get('/usuario/notificaciones', (req, res) => {
       }
     });
   }
+
 });
 
 // Obtener un usuario (UNPROTECTED)
-router.get('/usuario/:id', (req, res) => {
+router.get('/usuario/:id', listaValidaciones["numerico"], (req, res) => {
   console.log("Obtener un usuario mediante una id")
-  const { id } = req.params;
-  ejecutaConsulta("getUsuario", [id], res, function (rows) {
-    if (rows) {
-      res.send({ status: '200', respuesta: rows[0] })
-    };
-  });
-
-});
-// Obtener varios usuarios según nombre (PROTECTED)
-router.get('/usuarios/:nombre', (req, res) => {
-  console.log("Obtener usuarios por nombre");
-  let permiso = verificaToken(req.headers, res);
-  let { nombre } = req.params;
-  if (permiso) {
-    ejecutaConsulta("getUsuariosByNombre", [nombre + "%"], res, function (rows) {
+  if (!compruebaErrores(req, res)) {
+    const { id } = req.params;
+    ejecutaConsulta("getUsuario", [id], res, function (rows) {
       if (rows) {
-        res.send({ status: '200', respuesta: rows })
+        res.send({ status: '200', respuesta: rows[0] })
       };
     });
   }
 });
-//Obtener todos los quizz de alguien (SEMI-PROTECTED)
-router.get('/usuario/:id/wall', (req, res) => {
-  console.log("Obtener todos los quizz de un perfil")
-  const { id } = req.params;
-  let permiso = verificaToken(req.headers, res, true);
-  let query = permiso == id ? "getUsuarioWallPrivate" : "getUsuarioWallPublic"
-  ejecutaConsulta(query, [id], res, function (rows) {
-    if (rows) {
-      res.send({ respuesta: rows });
+// Obtener varios usuarios según nombre (PROTECTED)
+router.get('/usuarios/:nombre', listaValidaciones["texto"], (req, res) => {
+  console.log("Obtener usuarios por nombre");
+  if (!compruebaErrores(req, res)) {
+    let permiso = verificaToken(req.headers, res);
+    let { nombre } = req.params;
+    if (permiso) {
+      ejecutaConsulta("getUsuariosByNombre", [nombre + "%"], res, function (rows) {
+        if (rows) {
+          res.send({ status: '200', respuesta: rows })
+        };
+      });
     }
-  });
-
+  }
+});
+//Obtener todos los quizz de alguien (SEMI-PROTECTED)
+router.get('/usuario/:id/wall', listaValidaciones["numerico"], (req, res) => {
+  console.log("Obtener todos los quizz de un perfil")
+  if (!compruebaErrores(req, res)) {
+    const { id } = req.params;
+    let permiso = verificaToken(req.headers, res, true);
+    let query = permiso == id ? "getUsuarioWallPrivate" : "getUsuarioWallPublic"
+    ejecutaConsulta(query, [id], res, function (rows) {
+      if (rows) {
+        res.send({ respuesta: rows });
+      }
+    });
+  }
 });
 //Obtener los quizzes de todos los seguidos (UNPROTECTED)
 router.get('/quizz/:id/seguidos/:cadena', (req, res) => {
@@ -342,7 +351,6 @@ router.get('/quizz/todos/:cadena', (req, res) => {
   let total = 0;
   let limite = cadena.split("-");
   limite = "LIMIT " + limite[0] + "," + limite[1];
-  console.log(limite)
   ejecutaConsulta("getAllQuizzes1", null, res, function (rows) {
     if (rows) {
       total = rows[0].pls;
@@ -356,185 +364,206 @@ router.get('/quizz/todos/:cadena', (req, res) => {
 });
 
 // Obtener quizzes según nombre 
-router.get('/quizzes/:nombre', (req, res) => {
-  let { nombre } = req.params;
-  console.log("Obtener quizzes por nombre " + nombre);
-  ejecutaConsulta("getQuizzesByName", ['%' + nombre + "%"], res, function (rows) {
-    if (rows) {
-      res.send({ respuesta: rows });
-    }
-  });
-});
-
-//Obtener los quizzes a moderar (UNPROTECTED)
-router.post('/quizz/moderacion', (req, res) => {
-  console.log("obtener quizzes a moderar")
-  const { id } = req.body;
-
-  ejecutaConsulta("getQuizzesaModerar", [id, id], res, function (rows) {
-    if (rows) {
-      res.send({ respuesta: rows });
-    }
-  });
-});
-//guarda una accion de moderacion (PROTECTED)
-router.post('/modera', (req, res) => {
-  console.log("Guarda una acción de moderar")
-  const { quizz, usuario, decision } = req.body;
-  let titulo = null;
-  let creador = null;
-  let permiso = verificaToken(req.headers, res);
-  if (permiso) {
-    ejecutaConsulta("setModerar1", [quizz], res, function (rows) {
+router.get('/quizzes/:nombre', listaValidaciones["texto"], (req, res) => {
+  if (!compruebaErrores(req, res)) {
+    let { nombre } = req.params;
+    console.log("Obtener quizzes por nombre " + nombre);
+    ejecutaConsulta("getQuizzesByName", ['%' + nombre + "%"], res, function (rows) {
       if (rows) {
-        creador = rows[0].creador;
-        titulo = rows[0].titulo;
-        ejecutaConsulta("setModerar2", [permiso], res, function (rows2) {//Compruebo si el usuario es administrador
-          if (rows2) {
-            if (rows2.length > 0) {//Si soy administrador
-              if (decision) {//Si quiero PUBLICAR el quiz
-                ejecutaConsulta("setModerar3", [quizz], res, function (rows3) {
-                  if (rows3) {
-                    ejecutaConsulta("setModerar4", [quizz], res, function (rows4) {
-                      if (rows4) {
-                        let mensajito = "¡Enhorabuena, su Quiz " + titulo + " ha sido publicado en la web!";
-                        ejecutaConsulta("setModerar5", [creador, mensajito], res, function (rows5) {
-                          logroUsuarios(creador, res);
-                          if (rows5) {
-                            res.send({ status: '200' });
-                          }
-                        });
-                      }
-                    });
-                  }
-                });
-              } else {//Si quiero BORRAR el quiz
-                ejecutaConsulta("setModerar4", [quizz], res, function (rows6) {
-                  if (rows6) {
-                    ejecutaConsulta("setModerar6", [quizz], res, function (rows7) {
-                      if (rows7) {
-                        let mensajito = "Lo sentimos, su Quiz " + titulo + " no ha superado el proceso de moderación, revisa los criterios e intentalo de nuevo.";
-                        ejecutaConsulta("setModerar7", [creador, mensajito], res, function (rows8) {
-                          res.send({ status: '200' });
-                        });
-                      }
-                    })
-                  }
-                });
-              }
-            } else {//SI NO SOY ADMINISTRADOR, GUARDO ACCIÓN MODERAR
-              ejecutaConsulta("setModerar8", [quizz, usuario, decision], res, function (rows8) {
-                res.send({ status: '200' });
-              });
-            }
-          }
-        });
+        res.send({ respuesta: rows });
       }
     });
   }
 });
 
-//Obtener un solo quizz (UNPROTECTED)
-router.get('/quizz/:id', (req, res) => {
-  console.log("Obtener quizz del id")
-  const { id } = req.params;
-  let query = !isNaN(id) ? "getOneQuizz1" : "getOneQuizz2";
-  ejecutaConsulta(query, [id], res, function (rows) {
-    if (rows) {
-      res.send({ respuesta: rows[0] });
+//Obtener los quizzes a moderar (UNPROTECTED)
+router.get('/quizz/moderacion', (req, res) => {
+  console.log("obtener quizzes a moderar")
+  let permiso = verificaToken(req.headers, res);
+  if (permiso) {
+    ejecutaConsulta("getQuizzesaModerar", [permiso, permiso], res, function (rows) {
+      if (rows) {
+        res.send({ respuesta: rows });
+      }
+    });
+  }
+});
+//guarda una accion de moderacion (PROTECTED)
+router.post('/modera', listaValidaciones["modera"], (req, res) => {
+  console.log("Guarda una acción de moderar")
+  if (!compruebaErrores(req, res)) {
+    const { quizz, usuario, decision } = req.body;
+    let titulo = null;
+    let creador = null;
+    let permiso = verificaToken(req.headers, res);
+    if (permiso) {
+      ejecutaConsulta("setModerar1", [quizz], res, function (rows) {
+        if (rows) {
+          creador = rows[0].creador;
+          titulo = rows[0].titulo;
+          ejecutaConsulta("setModerar2", [permiso], res, function (rows2) {//Compruebo si el usuario es administrador
+            if (rows2) {
+              if (rows2.length > 0) {//Si soy administrador
+                if (decision) {//Si quiero PUBLICAR el quiz
+                  ejecutaConsulta("setModerar3", [quizz], res, function (rows3) {
+                    if (rows3) {
+                      ejecutaConsulta("setModerar4", [quizz], res, function (rows4) {
+                        if (rows4) {
+                          let mensajito = "¡Enhorabuena, su Quiz " + titulo + " ha sido publicado en la web!";
+                          ejecutaConsulta("setModerar5", [creador, mensajito], res, function (rows5) {
+                            logroUsuarios(creador, res);
+                            if (rows5) {
+                              res.send({ status: '200' });
+                            }
+                          });
+                        }
+                      });
+                    }
+                  });
+                } else {//Si quiero BORRAR el quiz
+                  ejecutaConsulta("setModerar4", [quizz], res, function (rows6) {
+                    if (rows6) {
+                      ejecutaConsulta("setModerar6", [quizz], res, function (rows7) {
+                        if (rows7) {
+                          let mensajito = "Lo sentimos, su Quiz " + titulo + " no ha superado el proceso de moderación, revisa los criterios e intentalo de nuevo.";
+                          ejecutaConsulta("setModerar7", [creador, mensajito], res, function (rows8) {
+                            res.send({ status: '200' });
+                          });
+                        }
+                      })
+                    }
+                  });
+                }
+              } else {//SI NO SOY ADMINISTRADOR, GUARDO ACCIÓN MODERAR
+                ejecutaConsulta("setModerar8", [quizz, usuario, decision], res, function (rows8) {
+                  res.send({ status: '200' });
+                });
+              }
+            }
+          });
+        }
+      });
     }
-  });
+  }
+});
 
+//Obtener un solo quizz (UNPROTECTED)
+router.get('/quizz/:id',listaValidaciones["numerico"], (req, res) => {
+  console.log("Obtener quizz del id")
+  console.log(req.params)
+  if (!compruebaErrores(req, res)) {
+    const { id } = req.params;
+    let query = !isNaN(id) ? "getOneQuizz1" : "getOneQuizz2";
+    ejecutaConsulta(query, [id], res, function (rows) {
+      if (rows) {
+        res.send({ respuesta: rows[0] });
+      }
+    });
+  }
 });
 
 //Obtener número de seguidores (UNPROTECTED)
-router.post('/usuario/stats', (req, res) => {
+router.post('/usuario/stats', listaValidaciones["stats"], (req, res) => {
   console.log("Obtener estadisticas de un perfil")
-  const { origen, destino } = req.body;
-  ejecutaConsulta("getEstadisticas", [origen, destino, destino, origen, destino, destino, destino, destino], res, function (rows) {
-    if (rows) {
-      res.send({ status: "200", respuesta: rows[0] });
-    }
-  });
-});
-
-
-//Peticion para crear un quiz (UNPROTECTED)
-router.post('/creaQuizz', cors(), (req, res, next) => {
-  console.log("Petición para crear un quiz")
-  const { creador, titulo, contenido, fecha, privado } = req.body;
-  ejecutaConsulta("setQuiz", [creador, titulo, contenido, fecha, privado], res, function (rows) {
-    if (rows) {
-      res.send({ respuesta: rows.insertId });
-    }
-  })
-});
-
-//Peticion para borrar un quizz
-router.post('/borraQuizz', cors(), (req, res, next) => {
-  console.log("Petición para borrar un quizz")
-  const { quizz } = req.body;
-  let permiso = verificaToken(req.headers, res);
-  if (permiso) {
-    ejecutaConsulta("deleteQuiz", [quizz, permiso], res, function (rows) {
+  if (!compruebaErrores(req, res)) {
+    const { origen, destino } = req.body;
+    ejecutaConsulta("getEstadisticas", [origen, destino, destino, origen, destino, destino, destino, destino], res, function (rows) {
       if (rows) {
-        res.send({ status: '200' });
+        res.send({ status: "200", respuesta: rows[0] });
       }
     });
+  }
+});
+
+
+//Peticion para crear un quiz (PROTECTED)
+router.post('/creaQuizz', listaValidaciones["creaQuiz"], (req, res, next) => {
+  console.log("Petición para crear un quiz")
+  if (!compruebaErrores(req, res)) {
+    let permiso = verificaToken(req.headers, res);
+    if (permiso) {
+      const { creador, titulo, contenido, fecha, privado } = req.body;
+      ejecutaConsulta("setQuiz", [creador, titulo, contenido, fecha, privado], res, function (rows) {
+        if (rows) {
+          res.send({ respuesta: rows.insertId });
+        }
+      })
+    }
+  }
+});
+
+//Peticion para borrar un quizz (PROTECTED)
+router.post('/borraQuizz', listaValidaciones["numerico"], (req, res, next) => {
+  console.log("Petición para borrar un quizz")
+  if (!compruebaErrores(req, res)) {
+    const { id } = req.body;
+    let permiso = verificaToken(req.headers, res);
+    if (permiso) {
+      ejecutaConsulta("deleteQuiz", [id, permiso], res, function (rows) {
+        if (rows) {
+          res.send({ status: '200' });
+        }
+      });
+    }
   }
 });
 
 
 //Peticion para puntuar un test (PROTECTED)
-router.post('/vota', cors(), (req, res, next) => {
+router.post('/vota', listaValidaciones["vota"], (req, res, next) => {
   console.log("Petición para puntuar un test")
-  const { origen, quizz, cantidad } = req.body;
-  let permiso = verificaToken(req.headers, res);
+  if (!compruebaErrores(req, res)) {
+    const { origen, quizz, cantidad } = req.body;
+    let permiso = verificaToken(req.headers, res);
 
-  if (permiso) {
-    ejecutaConsulta("setVotacion1", [origen, quizz], res, function (rows) {
-      if (rows) {
-        if (rows.length == 0) {
-          ejecutaConsulta("setVotacion2", [origen, quizz, cantidad], res, function (rows2) {
+    if (permiso) {
+      ejecutaConsulta("setVotacion1", [origen, quizz], res, function (rows) {
+        if (rows) {
+          if (rows.length == 0) {
+            ejecutaConsulta("setVotacion2", [origen, quizz, cantidad], res, function (rows2) {
 
-            res.send({});
-          });
-        } else {
-          ejecutaConsulta("setVotacion3", [cantidad, origen, quizz], res, function (rows3) {
-            res.send({});
-          });
+              res.send({});
+            });
+          } else {
+            ejecutaConsulta("setVotacion3", [cantidad, origen, quizz], res, function (rows3) {
+              res.send({});
+            });
+          }
         }
-      }
-    });
+      });
+    }
   }
 });
 
 
 //Peticion post para ver si sigue a x persona (UNPROTECTED)
-router.post('/isFollowing', cors(), (req, res, next) => {
+router.post('/isFollowing', listaValidaciones["stats"], (req, res, next) => {
   console.log("Petición para ver si hay un seguimiento")
-  const { origen, destino } = req.body;
-
-  ejecutaConsulta("isFollowing", [origen, destino], res, function (rows) {
-    if (rows) {
-      let verdad = rows.length < 1 ? false : true;
-      res.send({ respuesta: verdad });
-    }
-  });
+  if (!compruebaErrores(req, res)) {
+    const { origen, destino } = req.body;
+    ejecutaConsulta("isFollowing", [origen, destino], res, function (rows) {
+      if (rows) {
+        let verdad = rows.length < 1 ? false : true;
+        res.send({ respuesta: verdad });
+      }
+    });
+  }
 });
 
 //Peticion post para comenzar a seguir (PROTECTED)
-router.post('/follow', cors(), (req, res, next) => {
+router.post('/follow', listaValidaciones["stats"], (req, res, next) => {
   console.log("Petición para comenzar a seguir")
-  const { origen, destino } = req.body;
-  let permiso = verificaToken(req.headers, res);
-  if (permiso) {
-    ejecutaConsulta("setFollow", [origen, destino], res, function (rows) {
-      if (rows) {
-        logroUsuarios(destino, res);
-        res.send({ status: '200' });
-      }
-    });
+  if (!compruebaErrores(req, res)) {
+    const { origen, destino } = req.body;
+    let permiso = verificaToken(req.headers, res);
+    if (permiso) {
+      ejecutaConsulta("setFollow", [origen, destino], res, function (rows) {
+        if (rows) {
+          logroUsuarios(destino, res);
+          res.send({ status: '200' });
+        }
+      });
+    }
   }
 });
 //Peticion para marcar como leido una notificación
@@ -568,14 +597,16 @@ router.post('/cambiaTipo', cors(), (req, res, next) => {
 });
 
 //Peticion post para borrar un seguimiento (PROTECTED)
-router.post('/unfollow', cors(), (req, res, next) => {
+router.post('/unfollow', listaValidaciones["stats"], (req, res, next) => {
   console.log("Petición para borrar un seguimiento");
-  const { origen, destino } = req.body;
-  let permiso = verificaToken(req.headers, res);
-  if (permiso) {
-    ejecutaConsulta("deleteFollow", [origen, destino], res, function (rows) {
-      res.send({ status: '200' });
-    });
+  if (!compruebaErrores(req, res)) {
+    const { origen, destino } = req.body;
+    let permiso = verificaToken(req.headers, res);
+    if (permiso) {
+      ejecutaConsulta("deleteFollow", [origen, destino], res, function (rows) {
+        res.send({ status: '200' });
+      });
+    }
   }
 });
 
