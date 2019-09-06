@@ -1,5 +1,5 @@
 import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { FormGroup, FormControl, FormBuilder, Validators, FormGroupDirective, NgForm } from '@angular/forms'
+import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms'
 import { QuizzService } from '../services/quizz.service';
 import { Solucion } from '../modelo/Solucion';
 import { NgProgress } from 'ngx-progressbar';
@@ -11,20 +11,10 @@ import { Afinidad } from '../modelo/Afinidad';
 import { Quizz } from '../modelo/Quizz';
 import { NotifyService } from '../services/notify.service';
 import * as $ from 'jquery';
-import { ErrorStateMatcher } from '@angular/material/core';
+import { ErrorStateMatcher } from '@angular/material';
 import { Section } from '../moderacion/moderacion.component';
 
-@Component({
-  selector: 'app-create2',
-  templateUrl: './create-quizz.component.html',
-  styleUrls: ['./create-quizz.component.scss']
-})
-export class MyErrorStateMatcher implements ErrorStateMatcher {
-  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
-    const isSubmitted = form && form.submitted;
-    return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
-  }
-}
+
 export interface Numero {
   value: number;
   viewValue: number;
@@ -53,6 +43,7 @@ export class CreateQuizzComponent implements OnInit {
     { value: 1, viewValue: 1 },
     { value: 2, viewValue: 2 }
   ];
+  matcher = new ErrorStateMatcher();
   checked = false;
   labelPosition = 'before';
   indeterminate = false;

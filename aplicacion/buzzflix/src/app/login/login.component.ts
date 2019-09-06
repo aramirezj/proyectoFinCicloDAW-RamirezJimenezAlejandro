@@ -1,19 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../services/auth.service';
-import { ErrorStateMatcher } from '@angular/material/core';
-import { FormControl, FormGroupDirective, NgForm, Validators, FormGroup } from '@angular/forms';
+import { FormControl, Validators, FormGroup } from '@angular/forms';
+import { ErrorStateMatcher } from '@angular/material';
 
-@Component({
-  selector: 'app-login2',
-  templateUrl: './login.component.html',
-  styleUrls: ['./login.component.scss']
-})
-export class MyErrorStateMatcher implements ErrorStateMatcher {
-  isErrorState(control: FormControl | null, form: FormGroupDirective | NgForm | null): boolean {
-    const isSubmitted = form && form.submitted;
-    return !!(control && control.invalid && (control.dirty || control.touched || isSubmitted));
-  }
-}
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -21,7 +11,7 @@ export class MyErrorStateMatcher implements ErrorStateMatcher {
 })
 export class LoginComponent implements OnInit {
   loginForm: FormGroup;
-  matcher = new MyErrorStateMatcher();
+  matcher = new ErrorStateMatcher();
   constructor(
     private authService: AuthService
   ) { }

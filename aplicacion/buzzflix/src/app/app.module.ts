@@ -13,7 +13,7 @@ import { AuthService } from './services/auth.service';
 import { HttpModule } from '@angular/http';
 import { HttpClientModule } from '@angular/common/http';
 import { DashboardComponent } from './dashboard/dashboard.component';
-import { LoginComponent, MyErrorStateMatcher } from './login/login.component';
+import { LoginComponent } from './login/login.component';
 import { AuthGuard } from './guards/auth.guard';
 import { AuthedGuard } from './guards/authed.guard';
 import { NotifyComponent } from './notify/notify.component';
@@ -37,6 +37,8 @@ import { MatPaginatorIntlCro } from './explorador/explorador.component';
 import { UsuarioComponent } from './usuario/usuario.component';
 import { DashboardUsersComponent } from './dashboard-users/dashboard-users.component';
 import { VotarComponent } from './ver-quizz/votar/votar.component';
+
+import { ErrorStateMatcher,ShowOnDirtyErrorStateMatcher } from '@angular/material/core';
 
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatSelectModule } from '@angular/material/select';
@@ -68,7 +70,6 @@ import { InfolegalComponent } from './infolegal/infolegal.component';
     RegistroComponent,
     DashboardComponent,
     LoginComponent,
-    MyErrorStateMatcher,
     NotifyComponent,
     ProfileComponent,
     PrettyDatePipe,
@@ -120,7 +121,7 @@ import { InfolegalComponent } from './infolegal/infolegal.component';
     AngularFireDatabaseModule
   ],
   exports: [RouterModule],
-  providers: [AuthService, AuthGuard, AuthedGuard, QuizzService, NotifyService, UserService, FollowService, RestService, AngularFirestore, AngularFireStorage, { provide: MatPaginatorIntl, useClass: MatPaginatorIntlCro }],
+  providers: [AuthService, AuthGuard, AuthedGuard, QuizzService, NotifyService, UserService, FollowService, RestService, AngularFirestore, AngularFireStorage, { provide: MatPaginatorIntl, useClass: MatPaginatorIntlCro },{provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher}],
   bootstrap: [AppComponent],
   entryComponents: [DialogboxComponent]
 })

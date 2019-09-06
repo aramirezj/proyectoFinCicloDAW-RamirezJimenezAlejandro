@@ -10,7 +10,7 @@ export class FollowComponent implements OnInit,OnChanges {
   @Output() notify: EventEmitter<number> = new EventEmitter<number>();
   @Input() currentProfileId
   public isFollowing
-  private isLoading: boolean = true
+  public isLoading: boolean = true
   constructor(
     private followService:FollowService
   ) { }

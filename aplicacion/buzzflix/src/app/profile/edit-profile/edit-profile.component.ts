@@ -1,13 +1,11 @@
-import { Component, OnInit, createPlatformFactory } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { Usuario } from 'src/app/modelo/Usuario';
 import { AuthService } from './../../services/auth.service';
 import { UserService } from 'src/app/services/user.service';
 import { NotifyService } from 'src/app/services/notify.service';
-import { ErrorStateMatcher } from '@angular/material/core';
-import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { NgProgress } from 'ngx-progressbar';
 import * as $ from 'jquery';
-import { AngularFireStorage } from 'angularfire2/storage';
 @Component({
   selector: 'app-edit-profile',
   templateUrl: './edit-profile.component.html',
@@ -19,12 +17,10 @@ export class EditProfileComponent implements OnInit {
   profileForm: FormGroup
   textInput: String
   constructor(
-    private fb: FormBuilder,
     private authService: AuthService,
     private userService: UserService,
     private notifyService: NotifyService,
     private bar: NgProgress,
-    private afStorage: AngularFireStorage
 
   ) {
     this.textInput = "Sube aquí tu nuevo avatar.";
@@ -45,19 +41,6 @@ export class EditProfileComponent implements OnInit {
       newPass: new FormControl(null, [Validators.required, Validators.minLength(6),Validators.maxLength(30)]),
       avatar: new FormControl(null,null)
     });
-    /*this.profileForm = this.fb.group({
-      nombreFC: ['', [
-        Validators.required,
-        Validators.minLength(3)
-      ]],
-      oldPassFC: ['', [
-        Validators.minLength(6)
-      ]],
-      newPassFC: ['', [
-        Validators.minLength(6)
-      ]],
-      avatar: ['', []]
-    })*/
   }
 
   editProfile() {

@@ -1,5 +1,5 @@
 var cors = require('cors')
-const express = require('express');
+const express = require('express'), nodeMailer = require('nodemailer');;
 const router = express.Router();
 const app = express();
 var jwt = require('jsonwebtoken');
@@ -23,7 +23,32 @@ function creaToken(id) {
   return token;
 }
 
-
+function enviaCorreo() {
+  console.log("Procedo a enviar un correo??")
+  let transporter = nodeMailer.createTransport({
+    host: 'smtp.gmail.com',
+    port: 465,
+    secure: true,
+    auth: {
+      user: 'hasquizwebsite@gmail.com',
+      pass: 'illidariweare16.0'
+    }
+  });
+  let mailOptions = {
+    from: '"Hasquiz" <hasquizwebsite@gmail.com>', // sender address
+    to: "exilonmlol@gmail.com", // list of receivers
+    subject: "Asunto registro", // Subject line
+    text: "El body churra", // plain text body
+    html: '<b>NodeJS Email Tutorial</b>' // html body
+  };
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      return console.log(error);
+    }
+    console.log('Message %s sent: %s', info.messageId, info.response);
+    //res.render('index');
+  });
+}
 
 function verificaToken(headers, res, verdad) {
   let bearerHeader = headers["authorization"];
@@ -229,6 +254,7 @@ router.put('/usuario/actualizar/:id', listaValidaciones["editar"], (req, res, ne
 // Ver si un usuario es admin (PROTECTED)
 router.get('/usuario/admin', (req, res) => {
   console.log("Preguntar si un usuario es administrador")
+  enviaCorreo();
   let permiso = verificaToken(req.headers, res);
   if (permiso) {
     ejecutaConsulta("isAdmin", [permiso], res, function (rows) {
@@ -448,7 +474,7 @@ router.post('/modera', listaValidaciones["modera"], (req, res) => {
 });
 
 //Obtener un solo quizz (UNPROTECTED)
-router.get('/quizz/:id',listaValidaciones["numerico"], (req, res) => {
+router.get('/quizz/:id', listaValidaciones["numerico"], (req, res) => {
   console.log("Obtener quizz del id")
   console.log(req.params)
   if (!compruebaErrores(req, res)) {
