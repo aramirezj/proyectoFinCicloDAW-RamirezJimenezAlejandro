@@ -26,16 +26,16 @@ function creaToken(id) {
 function enviaCorreo() {
   console.log("Procedo a enviar un correo??")
   let transporter = nodeMailer.createTransport({
-    host: 'smtp.gmail.com',
+    host: 'smtp.hasquiz.com',
     port: 465,
     secure: true,
     auth: {
-      user: 'hasquizwebsite@gmail.com',
-      pass: 'illidariweare16.0'
+      user: 'noreply@hasquiz.com',
+      pass: 'Illidariweare16'
     }
   });
   let mailOptions = {
-    from: '"Hasquiz" <hasquizwebsite@gmail.com>', // sender address
+    from: '"Hasquiz" <noreply@hasquiz.com>', // sender address
     to: "exilonmlol@gmail.com", // list of receivers
     subject: "Asunto registro", // Subject line
     text: "El body churra", // plain text body
