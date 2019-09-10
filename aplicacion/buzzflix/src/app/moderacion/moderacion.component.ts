@@ -5,6 +5,8 @@ import { NotifyService } from '../services/notify.service';
 import { AngularFireStorage } from 'angularfire2/storage';
 import * as $ from 'jquery';
 import { UserService } from '../services/user.service';
+import * as firebase from 'firebase';
+import 'firebase/firestore';
 
 export interface Section {
   name: string;
