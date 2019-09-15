@@ -8,6 +8,8 @@ import { Quizz } from '../modelo/Quizz';
 import { NotifyService } from './notify.service';
 import { Image } from '../modelo/Image';
 import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
+import * as firebase from 'firebase';
+import 'firebase/firestore';
 import { AngularFireStorage } from 'angularfire2/storage';
 import { finalize } from 'rxjs/operators';
 import { Logro } from '../modelo/Logro';

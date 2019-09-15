@@ -4,6 +4,8 @@ import { QuizzService } from '../services/quizz.service';
 import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
 import { DialogboxComponent } from '../dialogbox/dialogbox.component';
 import { AngularFireStorage } from 'angularfire2/storage';
+import * as firebase from 'firebase';
+import 'firebase/firestore';
 import * as $ from 'jquery';
 import { NotifyService } from '../services/notify.service';
 import { AuthService } from '../services/auth.service';

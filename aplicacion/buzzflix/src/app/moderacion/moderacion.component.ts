@@ -3,6 +3,8 @@ import { Quizz } from '../modelo/Quizz';
 import { QuizzService } from '../services/quizz.service';
 import { NotifyService } from '../services/notify.service';
 import { AngularFireStorage } from 'angularfire2/storage';
+import * as firebase from 'firebase';
+import 'firebase/firestore';
 import * as $ from 'jquery';
 import { UserService } from '../services/user.service';
 

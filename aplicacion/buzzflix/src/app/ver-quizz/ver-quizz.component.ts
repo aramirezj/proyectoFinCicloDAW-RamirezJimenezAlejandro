@@ -9,6 +9,8 @@ import { Pregunta } from '../modelo/Pregunta';
 import { Solucion } from '../modelo/Solucion';
 import { AngularFireStorage } from 'angularfire2/storage';
 import * as $ from 'jquery';
+import * as firebase from 'firebase';
+import 'firebase/firestore';
 import { MatDialogConfig, MatDialog } from '@angular/material/dialog';
 import { DialogboxComponent } from '../dialogbox/dialogbox.component';
 import { AuthService } from '../services/auth.service';

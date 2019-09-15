@@ -4,6 +4,8 @@ import { UserService } from '../services/user.service';
 import { Usuario } from '../modelo/Usuario';
 import { AuthService } from '../services/auth.service';
 import { AngularFireStorage } from 'angularfire2/storage';
+import * as firebase from 'firebase';
+import 'firebase/firestore';
 import { LogrosComponent } from './logros/logros.component';
 import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
 import { DialogboxComponent } from '../dialogbox/dialogbox.component';

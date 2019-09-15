@@ -5,6 +5,8 @@ import { CONFIG } from './../config/config';
 import { Quizz } from '../modelo/Quizz';
 import { NotifyService } from './notify.service';
 import { AngularFireStorage} from 'angularfire2/storage';
+import * as firebase from 'firebase';
+import 'firebase/firestore';
 import { RestService } from './rest.service';
 @Injectable()
 export class QuizzService {
