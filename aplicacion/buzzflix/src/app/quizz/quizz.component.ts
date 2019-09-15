@@ -9,6 +9,8 @@ import 'firebase/firestore';
 import * as $ from 'jquery';
 import { NotifyService } from '../services/notify.service';
 import { AuthService } from '../services/auth.service';
+import * as firebase from 'firebase';
+import 'firebase/firestore';
 @Component({
   selector: 'app-quizz',
   templateUrl: './quizz.component.html',

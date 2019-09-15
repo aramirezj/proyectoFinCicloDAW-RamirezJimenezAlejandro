@@ -15,6 +15,8 @@ import { finalize } from 'rxjs/operators';
 import { Logro } from '../modelo/Logro';
 import { BehaviorSubject } from 'rxjs';
 import { RestService } from './rest.service';
+import * as firebase from 'firebase';
+import 'firebase/firestore';
 
 @Injectable()
 export class UserService {

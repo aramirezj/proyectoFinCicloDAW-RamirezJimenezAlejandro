@@ -8,6 +8,8 @@ import { AngularFireStorage} from 'angularfire2/storage';
 import * as firebase from 'firebase';
 import 'firebase/firestore';
 import { RestService } from './rest.service';
+import * as firebase from 'firebase';
+import 'firebase/firestore';
 @Injectable()
 export class QuizzService {
     constructor(
