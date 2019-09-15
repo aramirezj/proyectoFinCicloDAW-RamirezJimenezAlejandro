@@ -1,4 +1,3 @@
 export const CONFIG = {
-    apiUrl: window.location.protocol+"//"+window.location.hostname+":4202/"
+    apiUrl: window.location.protocol+"//"+window.location.hostname+":4201/api/"
 }
-console.log(window.location.protocol)

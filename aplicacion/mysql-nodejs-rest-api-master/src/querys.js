@@ -7,8 +7,8 @@ querys["checkLogro1"] = "SELECT count(*) as total from quizz where creador = ? a
 querys["checkLogro2"] = "SELECT count(*) as total from follows where destino = ? having total>10";
 querys["checkLogro3"] = "SELECT max(counted) FROM (SELECT count(*) as counted from votaciones where quizz in (SELECT id as elid from quizz where creador = ?) group by quizz having counted > 10 ) as counts";
 
-querys["checkLogrosByUser"] = "SELECT (SELECT Q.creador from quizz Q where creador = ? and publicado = 1 group by q.creador having COUNT(*) >=5) as logro1, (SELECT F.destino from follows F where destino = ? having count(*) >= 5) as logro2 from dual"
-querys["checkLogrosByQuizz"] = "SELECT (SELECT U.id from users u where u.id in (SELECT q.creador from quizz Q where Q.id in (SELECT V.quizz from votaciones V where V.quizz = ? having count(*) > 4 ) )) as logro1"
+querys["checkLogrosByUser"] = "SELECT (SELECT Q.creador from quizz Q where creador = ? and publicado = 1 group by Q.creador having COUNT(*) >=5) as logro1, (SELECT F.destino from follows F where destino = ? having count(*) >= 5) as logro2 from dual"
+querys["checkLogrosByQuizz"] = "SELECT (SELECT U.id from users u where u.id in (SELECT Q.creador from quizz Q where Q.id in (SELECT V.quizz from votaciones V where V.quizz = ? having count(*) > 4 ) )) as logro1"
 
 querys["checkLogro4"] = "SELECT moderacion.usuario from moderacion where moderacion.quizz = ?"
 querys["checkLogro7"] = "SELECT LP.usuario as usuario from logros_proceso LP where LP.logro = 7 AND LP.cantidad>99"
@@ -48,7 +48,7 @@ querys["getSeguidos2"] = "SELECT q.*,COALESCE(SUM(v.cantidad),0) as estrellas,(S
 querys["getQuizzesByName"] = "SELECT q.*,COALESCE(SUM(v.cantidad),0) as estrellas,(SELECT count(quizz) FROM votaciones WHERE quizz = q.id OR quizz in(SELECT id from quizz where privado = q.id)) as votantes,u.name as nombre FROM quizz q left join votaciones v on q.id=v.quizz LEFT JOIN users u on q.creador= u.id WHERE LOWER(q.titulo) LIKE LOWER(?) AND q.publicado=1 AND privado IS NULL GROUP BY q.id order by q.titulo";
 querys["getQuizzesaModerar"] = "SELECT q.*,COALESCE(SUM(v.cantidad),0) as estrellas FROM quizz q left join votaciones v on q.id=v.quizz where publicado = 0 AND privado is null AND creador != ? AND id not in (select quizz from moderacion where usuario = ? ) group by q.id";
 
-querys["setModerar1"] = "SELECT creador,titulo from Quizz where id = ?";
+querys["setModerar1"] = "SELECT creador,titulo from quizz where id = ?";
 querys["setModerar2"] = "SELECT id FROM users WHERE id = ? and admin is not null";
 querys["setModerar3"] = "UPDATE quizz set publicado = 1 where id = ?";
 querys["setModerar4"] = "DELETE FROM moderacion WHERE quizz = ?";
