@@ -175,7 +175,7 @@ function ejecutaConsulta(query, valores, res, callback, limite) {
 
 
 //Petición para registrar un usuario .
-router.post('/register', listaValidaciones["registro"], (req, res, next) => {
+router.post('/api/register', listaValidaciones["registro"], (req, res, next) => {
   console.log("Petición de registro de un usuario")
   if (!compruebaErrores(req, res)) {
     let { name, email, password } = req.body;
@@ -189,7 +189,7 @@ router.post('/register', listaValidaciones["registro"], (req, res, next) => {
   }
 });
 //Petición para iniciar sesión
-router.post('/authenticate', listaValidaciones["login"], (req, res, next) => {
+router.post('/api/authenticate', listaValidaciones["login"], (req, res, next) => {
   console.log("Petición de inicio de sesión")
   if (!compruebaErrores(req, res)) {
     let { email, password } = req.body;
@@ -208,7 +208,7 @@ router.post('/authenticate', listaValidaciones["login"], (req, res, next) => {
 });
 
 //Actualizar perfil de un usuario (PROTECTED)
-router.put('/usuario/actualizar/:id', listaValidaciones["editar"], (req, res, next) => {
+router.put('/api/usuario/actualizar/:id', listaValidaciones["editar"], (req, res, next) => {
   console.log("Petición para actualizar el perfil de un usuario")
   if (!compruebaErrores(req, res)) {
     let permiso = verificaToken(req.headers, res);
@@ -252,7 +252,7 @@ router.put('/usuario/actualizar/:id', listaValidaciones["editar"], (req, res, ne
 
 
 // Ver si un usuario es admin (PROTECTED)
-router.get('/usuario/admin', (req, res) => {
+router.get('/api/usuario/admin', (req, res) => {
   console.log("Preguntar si un usuario es administrador")
   enviaCorreo();
   let permiso = verificaToken(req.headers, res);
@@ -266,7 +266,7 @@ router.get('/usuario/admin', (req, res) => {
   }
 });
 //Guarda una acción de reporte (PROTECTED)
-router.post('/reportar', listaValidaciones["reporte"], (req, res) => {
+router.post('/api/reportar', listaValidaciones["reporte"], (req, res) => {
   console.log("Guarda una acción de reporte")
   if (!compruebaErrores(req, res)) {
     let permiso = verificaToken(req.headers, res);
@@ -285,7 +285,7 @@ router.post('/reportar', listaValidaciones["reporte"], (req, res) => {
 
 });
 // Obtener los logros de un usuario (PROTECTED)
-router.get('/usuario/:id/logros', listaValidaciones["numerico"], (req, res) => {
+router.get('/api/usuario/:id/logros', listaValidaciones["numerico"], (req, res) => {
   console.log("Obtener logros de un usuario")
   if (!compruebaErrores(req, res)) {
     const { id } = req.params;
@@ -297,7 +297,7 @@ router.get('/usuario/:id/logros', listaValidaciones["numerico"], (req, res) => {
   }
 });
 // Obtener notificaciones de un usuario (PROTECTED)
-router.get('/usuario/notificaciones', (req, res) => {
+router.get('/api/usuario/notificaciones', (req, res) => {
   console.log("Obtener las notificaciones de un usuario")
   let permiso = verificaToken(req.headers, res);
   if (permiso) {
@@ -311,7 +311,7 @@ router.get('/usuario/notificaciones', (req, res) => {
 });
 
 // Obtener un usuario (UNPROTECTED)
-router.get('/usuario/:id', listaValidaciones["numerico"], (req, res) => {
+router.get('/api/usuario/:id', listaValidaciones["numerico"], (req, res) => {
   console.log("Obtener un usuario mediante una id")
   if (!compruebaErrores(req, res)) {
     const { id } = req.params;
@@ -323,7 +323,7 @@ router.get('/usuario/:id', listaValidaciones["numerico"], (req, res) => {
   }
 });
 // Obtener varios usuarios según nombre (PROTECTED)
-router.get('/usuarios/:nombre', listaValidaciones["texto"], (req, res) => {
+router.get('/api/usuarios/:nombre', listaValidaciones["texto"], (req, res) => {
   console.log("Obtener usuarios por nombre");
   if (!compruebaErrores(req, res)) {
     let permiso = verificaToken(req.headers, res);
@@ -338,7 +338,7 @@ router.get('/usuarios/:nombre', listaValidaciones["texto"], (req, res) => {
   }
 });
 //Obtener todos los quizz de alguien (SEMI-PROTECTED)
-router.get('/usuario/:id/wall', listaValidaciones["numerico"], (req, res) => {
+router.get('/api/usuario/:id/wall', listaValidaciones["numerico"], (req, res) => {
   console.log("Obtener todos los quizz de un perfil")
   if (!compruebaErrores(req, res)) {
     const { id } = req.params;
@@ -352,7 +352,7 @@ router.get('/usuario/:id/wall', listaValidaciones["numerico"], (req, res) => {
   }
 });
 //Obtener los quizzes de todos los seguidos (UNPROTECTED)
-router.get('/quizz/:id/seguidos/:cadena', (req, res) => {
+router.get('/api/quizz/:id/seguidos/:cadena', (req, res) => {
   console.log("Obtener quizz de los seguidos")
   const { id, cadena } = req.params;
   let limite = cadena.split("-");
@@ -371,7 +371,7 @@ router.get('/quizz/:id/seguidos/:cadena', (req, res) => {
   })
 });
 //Obtener los quizzes de la web (UNPROTECTED)
-router.get('/quizz/todos/:cadena', (req, res) => {
+router.get('/api/quizz/todos/:cadena', (req, res) => {
   console.log("Petición para obtener todos los quizzes de la web")
   const { cadena } = req.params;
   let total = 0;
@@ -390,7 +390,7 @@ router.get('/quizz/todos/:cadena', (req, res) => {
 });
 
 // Obtener quizzes según nombre 
-router.get('/quizzes/:nombre', listaValidaciones["texto"], (req, res) => {
+router.get('/api/quizzes/:nombre', listaValidaciones["texto"], (req, res) => {
   if (!compruebaErrores(req, res)) {
     let { nombre } = req.params;
     console.log("Obtener quizzes por nombre " + nombre);
@@ -403,7 +403,7 @@ router.get('/quizzes/:nombre', listaValidaciones["texto"], (req, res) => {
 });
 
 //Obtener los quizzes a moderar (UNPROTECTED)
-router.get('/quizz/moderacion', (req, res) => {
+router.get('/api/quizz/moderacion', (req, res) => {
   console.log("obtener quizzes a moderar")
   let permiso = verificaToken(req.headers, res);
   if (permiso) {
@@ -415,7 +415,7 @@ router.get('/quizz/moderacion', (req, res) => {
   }
 });
 //guarda una accion de moderacion (PROTECTED)
-router.post('/modera', listaValidaciones["modera"], (req, res) => {
+router.post('/api/modera', listaValidaciones["modera"], (req, res) => {
   console.log("Guarda una acción de moderar")
   if (!compruebaErrores(req, res)) {
     const { quizz, usuario, decision } = req.body;
@@ -474,7 +474,7 @@ router.post('/modera', listaValidaciones["modera"], (req, res) => {
 });
 
 //Obtener un solo quizz (UNPROTECTED)
-router.get('/quizz/:id', listaValidaciones["numerico"], (req, res) => {
+router.get('/api/quizz/:id', listaValidaciones["numerico"], (req, res) => {
   console.log("Obtener quizz del id")
   console.log(req.params)
   if (!compruebaErrores(req, res)) {
@@ -489,7 +489,7 @@ router.get('/quizz/:id', listaValidaciones["numerico"], (req, res) => {
 });
 
 //Obtener número de seguidores (UNPROTECTED)
-router.post('/usuario/stats', listaValidaciones["stats"], (req, res) => {
+router.post('/api/usuario/stats', listaValidaciones["stats"], (req, res) => {
   console.log("Obtener estadisticas de un perfil")
   if (!compruebaErrores(req, res)) {
     const { origen, destino } = req.body;
@@ -503,7 +503,7 @@ router.post('/usuario/stats', listaValidaciones["stats"], (req, res) => {
 
 
 //Peticion para crear un quiz (PROTECTED)
-router.post('/creaQuizz', listaValidaciones["creaQuiz"], (req, res, next) => {
+router.post('/api/creaQuizz', listaValidaciones["creaQuiz"], (req, res, next) => {
   console.log("Petición para crear un quiz")
   if (!compruebaErrores(req, res)) {
     let permiso = verificaToken(req.headers, res);
@@ -519,7 +519,7 @@ router.post('/creaQuizz', listaValidaciones["creaQuiz"], (req, res, next) => {
 });
 
 //Peticion para borrar un quizz (PROTECTED)
-router.post('/borraQuizz', listaValidaciones["numerico"], (req, res, next) => {
+router.post('/api/borraQuizz', listaValidaciones["numerico"], (req, res, next) => {
   console.log("Petición para borrar un quizz")
   if (!compruebaErrores(req, res)) {
     const { id } = req.body;
@@ -536,7 +536,7 @@ router.post('/borraQuizz', listaValidaciones["numerico"], (req, res, next) => {
 
 
 //Peticion para puntuar un test (PROTECTED)
-router.post('/vota', listaValidaciones["vota"], (req, res, next) => {
+router.post('/api/vota', listaValidaciones["vota"], (req, res, next) => {
   console.log("Petición para puntuar un test")
   if (!compruebaErrores(req, res)) {
     const { origen, quizz, cantidad } = req.body;
@@ -563,7 +563,7 @@ router.post('/vota', listaValidaciones["vota"], (req, res, next) => {
 
 
 //Peticion post para ver si sigue a x persona (UNPROTECTED)
-router.post('/isFollowing', listaValidaciones["stats"], (req, res, next) => {
+router.post('/api/isFollowing', listaValidaciones["stats"], (req, res, next) => {
   console.log("Petición para ver si hay un seguimiento")
   if (!compruebaErrores(req, res)) {
     const { origen, destino } = req.body;
@@ -577,7 +577,7 @@ router.post('/isFollowing', listaValidaciones["stats"], (req, res, next) => {
 });
 
 //Peticion post para comenzar a seguir (PROTECTED)
-router.post('/follow', listaValidaciones["stats"], (req, res, next) => {
+router.post('/api/follow', listaValidaciones["stats"], (req, res, next) => {
   console.log("Petición para comenzar a seguir")
   if (!compruebaErrores(req, res)) {
     const { origen, destino } = req.body;
@@ -593,7 +593,7 @@ router.post('/follow', listaValidaciones["stats"], (req, res, next) => {
   }
 });
 //Peticion para marcar como leido una notificación
-router.post('/usuario/read', cors(), (req, res, next) => {
+router.post('/api/usuario/read', cors(), (req, res, next) => {
   console.log("Petición para leer una notificación");
   const { mensaje } = req.body;
   let permiso = verificaToken(req.headers, res);
@@ -607,7 +607,7 @@ router.post('/usuario/read', cors(), (req, res, next) => {
 });
 
 //Peticion para privatizar o desprivatizar un quiz (PROTECTED)
-router.post('/cambiaTipo', cors(), (req, res, next) => {
+router.post('/api/cambiaTipo', cors(), (req, res, next) => {
   console.log("Petición para cambiar la privacidad")
   const { quizz, privado } = req.body;
   let permiso = verificaToken(req.headers, res);
@@ -623,7 +623,7 @@ router.post('/cambiaTipo', cors(), (req, res, next) => {
 });
 
 //Peticion post para borrar un seguimiento (PROTECTED)
-router.post('/unfollow', listaValidaciones["stats"], (req, res, next) => {
+router.post('/api/unfollow', listaValidaciones["stats"], (req, res, next) => {
   console.log("Petición para borrar un seguimiento");
   if (!compruebaErrores(req, res)) {
     const { origen, destino } = req.body;
