@@ -9,8 +9,6 @@ import 'firebase/firestore';
 import { LogrosComponent } from './logros/logros.component';
 import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
 import { DialogboxComponent } from '../dialogbox/dialogbox.component';
-import * as firebase from 'firebase';
-import 'firebase/firestore';
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',

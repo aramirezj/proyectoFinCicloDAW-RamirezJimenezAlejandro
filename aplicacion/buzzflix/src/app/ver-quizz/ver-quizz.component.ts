@@ -14,8 +14,6 @@ import 'firebase/firestore';
 import { MatDialogConfig, MatDialog } from '@angular/material/dialog';
 import { DialogboxComponent } from '../dialogbox/dialogbox.component';
 import { AuthService } from '../services/auth.service';
-import * as firebase from 'firebase';
-import 'firebase/firestore';
 
 @Component({
   selector: 'app-ver-quizz',
