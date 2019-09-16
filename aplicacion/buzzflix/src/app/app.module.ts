@@ -63,7 +63,7 @@ import { DashboardQuizComponent } from './dashboard-quiz/dashboard-quiz.componen
 import { NotFoundComponent } from './not-found/not-found.component';
 import { LogrosComponent } from './profile/logros/logros.component';
 import { InfolegalComponent } from './infolegal/infolegal.component';
-
+import { HashLocationStrategy, LocationStrategy } from '@angular/common';
 @NgModule({
   declarations: [
     AppComponent,
@@ -93,7 +93,7 @@ import { InfolegalComponent } from './infolegal/infolegal.component';
   imports: [
     BrowserModule,
     AppRoutingModule,
-    RouterModule.forRoot(ROUTES, { onSameUrlNavigation: 'reload' }),
+    RouterModule.forRoot(ROUTES, { onSameUrlNavigation: 'reload',useHash: true }),
     FormsModule,
     ReactiveFormsModule,
     HttpModule,
@@ -121,7 +121,7 @@ import { InfolegalComponent } from './infolegal/infolegal.component';
     AngularFireDatabaseModule
   ],
   exports: [RouterModule],
-  providers: [AuthService, AuthGuard, AuthedGuard, QuizzService, NotifyService, UserService, FollowService, RestService, AngularFirestore, AngularFireStorage, { provide: MatPaginatorIntl, useClass: MatPaginatorIntlCro },{provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher}],
+  providers: [AuthService, AuthGuard, AuthedGuard, QuizzService, NotifyService, UserService, FollowService, RestService, AngularFirestore, AngularFireStorage, { provide: MatPaginatorIntl, useClass: MatPaginatorIntlCro },{provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher},{provide: LocationStrategy, useClass: HashLocationStrategy}],
   bootstrap: [AppComponent],
   entryComponents: [DialogboxComponent]
 })
