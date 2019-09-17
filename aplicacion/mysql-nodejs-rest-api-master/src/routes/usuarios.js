@@ -85,12 +85,12 @@ function encripta(texto) {
 }
 
 function logroAvatar(id, avatar, oldAvatar, res) {
-  ejecutaConsulta("buscaLogro", [id, 6], res,
+  ejecutaConsulta("buscaLogro", [id, 1], res,
     function (rows) {
       if (rows) {
         if (rows.length == 0) {
           if (oldAvatar != avatar) {
-            ejecutaConsulta("insertLogro", [id, 6], res,
+            ejecutaConsulta("insertLogro", [id, 1], res,
               function (rows) { console.log("Logro insertado") });
           }
         }
@@ -99,16 +99,39 @@ function logroAvatar(id, avatar, oldAvatar, res) {
 }
 
 function logroUsuarios(id, res) {
+  const logrosTipoUsuarios = [6,2];
   ejecutaConsulta("checkLogrosByUser", [id, id, id], res,
     function (rows) {
       if (rows) {
-        for (let i = 1; i <= 2; i++) {
+        for (let i = 0; i < logrosTipoUsuarios.length; i++) {
           if (rows[0]["logro" + i] != null) {
-            ejecutaConsulta("buscaLogro", [id, i], res,
+            ejecutaConsulta("buscaLogro", [id, logrosTipoUsuarios[i]], res,
               function (rows2) {
                 if (rows2) {
                   if (rows2.length == 0) {
-                    ejecutaConsulta("insertLogro", [id, i], res,
+                    ejecutaConsulta("insertLogro", [id, logrosTipoUsuarios[i]], res,
+                      function (rows) { console.log("Logro insertado") });
+                  }
+                }
+              });
+          }
+        }
+      };
+    });
+}
+
+function logroQuizzes(id,res){
+  const logrosTipoQuizzes = [3];
+  ejecutaConsulta("checkLogrosByQuiz", [id, id, id], res,
+    function (rows) {
+      if (rows) {
+        for (let i = 0; i < logrosTipoQuizzes.length; i++) {
+          if (rows[0]["logro" + i] != null) {
+            ejecutaConsulta("buscaLogro", [id, logrosTipoQuizzes[i]], res,
+              function (rows2) {
+                if (rows2) {
+                  if (rows2.length == 0) {
+                    ejecutaConsulta("insertLogro", [id, logrosTipoQuizzes[i]], res,
                       function (rows) { console.log("Logro insertado") });
                   }
                 }
@@ -215,13 +238,13 @@ router.put('/api/usuario/actualizar/:id', listaValidaciones["editar"], (req, res
     if (permiso) {
       let { name, oldpass, newpass, avatar } = req.body;
       const { id } = req.params; 3
-      //Logro 6
+      //Logro 1 (Nuevo outfit)
       ejecutaConsulta("getUsuario", [id], res, function (rows) {
         if (rows) {
           logroAvatar(permiso, avatar, rows[0].avatar, res);
         }
       })
-      //Logro 6 
+      //Logro 1 (Nuevo outfit)
 
       if (oldpass == undefined || newpass == undefined) {//Modificamos solo nombre y avatar
         ejecutaConsulta("editarPerfil1", [name, avatar, id], res, function (rows) {
@@ -545,9 +568,9 @@ router.post('/api/vota', listaValidaciones["vota"], (req, res, next) => {
     if (permiso) {
       ejecutaConsulta("setVotacion1", [origen, quizz], res, function (rows) {
         if (rows) {
+          logroQuizzes(quizz,res); //Procedo a ver si tengo que dar un logro tipo 3 (Artista)
           if (rows.length == 0) {
             ejecutaConsulta("setVotacion2", [origen, quizz, cantidad], res, function (rows2) {
-
               res.send({});
             });
           } else {
