@@ -345,7 +345,7 @@ router.post('/api/modera', listaValidaciones["modera"], (req, res) => {
 });
 
 //Obtener un solo quizz (UNPROTECTED)
-router.get('/api/quizz/:id', listaValidaciones["numerico"], (req, res) => {
+router.get('/api/quizz/:id', (req, res) => {
   console.log("Obtener quiz del id")
   if (!queryService.compruebaErrores(req, res)) {
     const { id } = req.params;
