@@ -109,8 +109,11 @@ export class VerQuizzComponent implements OnInit {
     if (this.solucionado.image == null) {
       this.solucionado.image = "hehexd.png"
     }
-    this.resultado = true;
-    this.urlShare = "https://twitter.com/share?url=" + window.location.href + "&amp;text=¡Obtuve%20" + this.solucionado.titulo + "!%20&amp;hashtags=Hasquiz";
+    this.resultado = true;//%20 window.location.href
+    let preUrl = window.location.href;
+    preUrl = preUrl.replace("#","");
+    preUrl = preUrl.replace("//","/");
+    this.urlShare = "https://twitter.com/intent/tweet?text=¡Obtuve%20" + this.solucionado.titulo + "!%20"+preUrl+";via=hasquiz;";
 
     setTimeout(() => {
       $(".mat-card-header-text")[0].style.width = "100%";

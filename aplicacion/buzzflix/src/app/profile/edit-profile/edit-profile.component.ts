@@ -37,8 +37,8 @@ export class EditProfileComponent implements OnInit {
   creaFormulario() {
     this.profileForm = new FormGroup({
       nombre: new FormControl(null, [Validators.required, Validators.minLength(2),Validators.maxLength(20)]),
-      oldPass: new FormControl(null, [Validators.required, Validators.minLength(6),Validators.maxLength(30)]),
-      newPass: new FormControl(null, [Validators.required, Validators.minLength(6),Validators.maxLength(30)]),
+      oldPass: new FormControl(null, [Validators.minLength(6),Validators.maxLength(30)]),
+      newPass: new FormControl(null, [Validators.minLength(6),Validators.maxLength(30)]),
       avatar: new FormControl(null,null)
     });
   }
@@ -46,13 +46,13 @@ export class EditProfileComponent implements OnInit {
   editProfile() {
     let datos: any = [];
     let cambios = false;
-    if (this.authService.getAuthUser().name != this.profileForm.get("nombreFC").value) {
-      datos["nombre"] = this.profileForm.get("nombreFC").value;
+    if (this.authService.getAuthUser().name != this.profileForm.get("nombre").value) {
+      datos["nombre"] = this.profileForm.get("nombre").value;
       cambios = true;
     }
-    if (this.profileForm.get("oldPassFC").value != "" && this.profileForm.get("newPassFC").value != "") {
-      datos["oldpass"] = this.profileForm.get("oldPassFC").value;
-      datos["newpass"] = this.profileForm.get("newPassFC").value;
+    if (this.profileForm.get("oldPass").value != "" && this.profileForm.get("newPass").value != "") {
+      datos["oldpass"] = this.profileForm.get("oldPass").value;
+      datos["newpass"] = this.profileForm.get("newPass").value;
       cambios = true;
     }
     if (this.file != null || this.file != undefined) {

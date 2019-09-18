@@ -1,27 +1,20 @@
-var cors = require('cors')
-const express = require('express'), nodeMailer = require('nodemailer');;
-const router = express.Router();
+const express = require('express'), nodeMailer = require('nodemailer');
 const app = express();
-var jwt = require('jsonwebtoken');
-var crypto = require('crypto')
-app.use(cors())
+const router = express.Router();
 const algorithm = 'aes-192-cbc';
+var cors = require('cors')
 
-const { validationResult } = require('express-validator');
-var tokenService = require('../tokenService');
-let secretWord = tokenService;
 
-const listaQuerys = require('../querys');
+const queryService = require('../controllers/queryController');
+const logroService = require('../controllers/logroController');
+const tokenService = require('../controllers/tokenController');
 const listaValidaciones = require('../validaciones');
-const mysqlConnection = require('../database.js');
 
-function creaToken(id) {
-  var token = jwt.sign({ id: id }, secretWord, {
-    expiresIn: 86400 // expires in 24 hours
-  });
-  console.log(token)
-  return token;
-}
+
+app.use(cors())
+var crypto = require('crypto')
+
+
 
 function enviaCorreo() {
   console.log("Procedo a enviar un correo??")
@@ -50,31 +43,6 @@ function enviaCorreo() {
   });
 }
 
-function verificaToken(headers, res, verdad) {
-  let bearerHeader = headers["authorization"];
-  if (typeof bearerHeader !== 'undefined') {
-    const bearer = bearerHeader.split(" ");
-    const bearerToken = bearer[1];
-    try {
-      let decoded = jwt.verify(bearerToken, secretWord)
-      return decoded.id;
-    } catch (err) {
-      if (verdad) {
-        return 0;
-      }
-      console.log("Es un token erroneo");
-      gestionaEnvioErrores(2, res);
-      return false;
-    }
-  } else {
-    console.log("Es un token invalido");
-    gestionaEnvioErrores(2, res);
-    return false;
-
-
-  }
-}
-
 function encripta(texto) {
   const passwordraw = crypto.scryptSync(secretWord, texto, 24);
   const iv = Buffer.alloc(16, 0);
@@ -84,129 +52,17 @@ function encripta(texto) {
   return encrypted;
 }
 
-function logroAvatar(id, avatar, oldAvatar, res) {
-  ejecutaConsulta("buscaLogro", [id, 1], res,
-    function (rows) {
-      if (rows) {
-        if (rows.length == 0) {
-          if (oldAvatar != avatar) {
-            ejecutaConsulta("insertLogro", [id, 1], res,
-              function (rows) { console.log("Logro insertado") });
-          }
-        }
-      }
-    });
-}
-
-function logroUsuarios(id, res) {
-  const logrosTipoUsuarios = [6,2];
-  ejecutaConsulta("checkLogrosByUser", [id, id, id], res,
-    function (rows) {
-      if (rows) {
-        for (let i = 0; i < logrosTipoUsuarios.length; i++) {
-          if (rows[0]["logro" + i] != null) {
-            ejecutaConsulta("buscaLogro", [id, logrosTipoUsuarios[i]], res,
-              function (rows2) {
-                if (rows2) {
-                  if (rows2.length == 0) {
-                    ejecutaConsulta("insertLogro", [id, logrosTipoUsuarios[i]], res,
-                      function (rows) { console.log("Logro insertado") });
-                  }
-                }
-              });
-          }
-        }
-      };
-    });
-}
-
-function logroQuizzes(id,res){
-  const logrosTipoQuizzes = [3];
-  ejecutaConsulta("checkLogrosByQuiz", [id, id, id], res,
-    function (rows) {
-      if (rows) {
-        for (let i = 0; i < logrosTipoQuizzes.length; i++) {
-          if (rows[0]["logro" + i] != null) {
-            ejecutaConsulta("buscaLogro", [id, logrosTipoQuizzes[i]], res,
-              function (rows2) {
-                if (rows2) {
-                  if (rows2.length == 0) {
-                    ejecutaConsulta("insertLogro", [id, logrosTipoQuizzes[i]], res,
-                      function (rows) { console.log("Logro insertado") });
-                  }
-                }
-              });
-          }
-        }
-      };
-    });
-}
-
-function compruebaErrores(req, res) {
-  const errores = validationResult(req);
-  if (errores.isEmpty()) {
-    return false;
-  } else {
-    gestionaEnvioErrores(5, res, errores);
-    return true;
-  }
-}
-function gestionaEnvioErrores(opcion, res, errores) {
-  switch (opcion) {
-    case 1:
-      console.log("Error sql");
-      res.statusCode = 500;
-      res.send({ status: "Error sql" });
-      break;
-    case 2:
-      console.log("Token invalido");
-      res.statusCode = 403;
-      res.send({ status: 'Token invalido' })
-      break;
-    case 3:
-      console.log("Duplicate");
-      res.send({ auth: false });
-      break;
-    case 4:
-      console.log("Contraseña incorrecta");
-      res.send({ status: "Wrong password" });
-      break;
-    case 5:
-      console.log("Error en validación de campos")
-      res.status(422).send({ error: errores.array() });
-  }
-}
-
-function ejecutaConsulta(query, valores, res, callback, limite) {
-  let queryElegida = limite == undefined ? listaQuerys[query] : listaQuerys[query] + limite;
-  mysqlConnection.query(queryElegida, valores, (err, rows, fields) => {
-    if (!err) {
-      return callback(rows);
-    } else {
-      console.log("HA OCURRIDO UN ERROR");
-
-      if (err.code == 'ER_DUP_ENTRY') {
-        gestionaEnvioErrores(3, res);
-      } else {
-        console.log(err)
-        gestionaEnvioErrores(1, res);
-      }
-      return callback(false);
-    }
-  });
-}
-
 
 //Petición para registrar un usuario .
 router.post('/api/register', listaValidaciones["registro"], (req, res, next) => {
   console.log("Petición de registro de un usuario")
-  if (!compruebaErrores(req, res)) {
+  if (!queryService.compruebaErrores(req, res)) {
     let { name, email, password } = req.body;
     password = encripta(password);
-    ejecutaConsulta("registro", [name, email, password], res,
+    queryService.ejecutaConsulta("registro", [name, email, password], res,
       function (rows) {
         if (rows) {
-          res.send({ status: "200", auth: true, token: creaToken(rows.insertId), id: rows.insertId });
+          res.send({ status: "200", auth: true, token: tokenService.creaToken(rows.insertId), id: rows.insertId });
         }
       });
   }
@@ -214,13 +70,13 @@ router.post('/api/register', listaValidaciones["registro"], (req, res, next) => 
 //Petición para iniciar sesión
 router.post('/api/authenticate', listaValidaciones["login"], (req, res, next) => {
   console.log("Petición de inicio de sesión")
-  if (!compruebaErrores(req, res)) {
+  if (!queryService.compruebaErrores(req, res)) {
     let { email, password } = req.body;
     password = encripta(password);
-    ejecutaConsulta("login", [email, password], res, function (rows) {
+    queryService.ejecutaConsulta("login", [email, password], res, function (rows) {
       if (rows) {
         if (rows.length > 0) {//Datos correctos
-          res.send({ auth: true, token: creaToken(rows[0].id), respuesta: rows[0] });
+          res.send({ auth: true, token: tokenService.creaToken(rows[0].id), respuesta: rows[0] });
         } else {//Datos incorrectos
           res.send({ auth: false });
         }
@@ -233,21 +89,21 @@ router.post('/api/authenticate', listaValidaciones["login"], (req, res, next) =>
 //Actualizar perfil de un usuario (PROTECTED)
 router.put('/api/usuario/actualizar/:id', listaValidaciones["editar"], (req, res, next) => {
   console.log("Petición para actualizar el perfil de un usuario")
-  if (!compruebaErrores(req, res)) {
-    let permiso = verificaToken(req.headers, res);
+  if (!queryService.compruebaErrores(req, res)) {
+    let permiso = tokenService.verificaToken(req.headers, res);
     if (permiso) {
       let { name, oldpass, newpass, avatar } = req.body;
       const { id } = req.params; 3
       //Logro 1 (Nuevo outfit)
-      ejecutaConsulta("getUsuario", [id], res, function (rows) {
+      queryService.ejecutaConsulta("getUsuario", [id], res, function (rows) {
         if (rows) {
-          logroAvatar(permiso, avatar, rows[0].avatar, res);
+          logroService.logroAvatar(permiso, avatar, rows[0].avatar, res);//Logro 1
         }
       })
       //Logro 1 (Nuevo outfit)
 
       if (oldpass == undefined || newpass == undefined) {//Modificamos solo nombre y avatar
-        ejecutaConsulta("editarPerfil1", [name, avatar, id], res, function (rows) {
+        queryService.ejecutaConsulta("editarPerfil1", [name, avatar, id], res, function (rows) {
           if (rows) {
             res.send({ status: '200' });
           }
@@ -255,16 +111,16 @@ router.put('/api/usuario/actualizar/:id', listaValidaciones["editar"], (req, res
       } else {//Modificamos contraseñas también
         oldpass = encripta(oldpass);
         newpass = encripta(newpass);
-        ejecutaConsulta("editarPerfil2", [oldpass, id], res, function (rows2) {
+        queryService.ejecutaConsulta("editarPerfil2", [oldpass, id], res, function (rows2) {
           if (rows2) {
             if (rows2.length > 0) {
-              ejecutaConsulta("editarPerfil3", [name, newpass, avatar, id], res, function (rows3) {
+              queryService.ejecutaConsulta("editarPerfil3", [name, newpass, avatar, id], res, function (rows3) {
                 if (rows3) {
                   res.send({ status: '200' });
                 }
               });
             } else {//Contraseña incorrecta
-              gestionaEnvioErrores(4, res);
+              queryService.gestionaEnvioErrores(4, res);
             }
           }
         });
@@ -276,11 +132,10 @@ router.put('/api/usuario/actualizar/:id', listaValidaciones["editar"], (req, res
 
 // Ver si un usuario es admin (PROTECTED)
 router.get('/api/usuario/admin', (req, res) => {
-  console.log("Preguntar si un usuario es administrador")
-  enviaCorreo();
-  let permiso = verificaToken(req.headers, res);
+  console.log("Preguntar si un usuario es administrador");
+  let permiso = tokenService.verificaToken(req.headers, res);
   if (permiso) {
-    ejecutaConsulta("isAdmin", [permiso], res, function (rows) {
+    queryService.ejecutaConsulta("isAdmin", [permiso], res, function (rows) {
       if (rows) {
         let respuesta = rows.length > 0 ? true : false;
         res.send({ status: '200', respuesta: respuesta })
@@ -291,14 +146,14 @@ router.get('/api/usuario/admin', (req, res) => {
 //Guarda una acción de reporte (PROTECTED)
 router.post('/api/reportar', listaValidaciones["reporte"], (req, res) => {
   console.log("Guarda una acción de reporte")
-  if (!compruebaErrores(req, res)) {
-    let permiso = verificaToken(req.headers, res);
+  if (!queryService.compruebaErrores(req, res)) {
+    let permiso = tokenService.verificaToken(req.headers, res);
     const { destino, motivo } = req.body;
     if (permiso) {
-      ejecutaConsulta("getReport", [permiso, destino, motivo], res, function (rows) {
+      queryService.ejecutaConsulta("getReport", [permiso, destino, motivo], res, function (rows) {
         if (rows) {
           if (rows.length < 1) {
-            ejecutaConsulta("setReport", [permiso, destino, motivo], res, function (rows) { })
+            queryService.ejecutaConsulta("setReport", [permiso, destino, motivo], res, function (rows) { })
           }
           res.send({ status: '200' })
         }
@@ -310,9 +165,9 @@ router.post('/api/reportar', listaValidaciones["reporte"], (req, res) => {
 // Obtener los logros de un usuario (PROTECTED)
 router.get('/api/usuario/:id/logros', listaValidaciones["numerico"], (req, res) => {
   console.log("Obtener logros de un usuario")
-  if (!compruebaErrores(req, res)) {
+  if (!queryService.compruebaErrores(req, res)) {
     const { id } = req.params;
-    ejecutaConsulta("buscaLogros", [id], res, function (rows) {
+    queryService.ejecutaConsulta("buscaLogros", [id], res, function (rows) {
       if (rows) {
         res.send({ status: '200', respuesta: rows });
       }
@@ -322,9 +177,9 @@ router.get('/api/usuario/:id/logros', listaValidaciones["numerico"], (req, res) 
 // Obtener notificaciones de un usuario (PROTECTED)
 router.get('/api/usuario/notificaciones', (req, res) => {
   console.log("Obtener las notificaciones de un usuario")
-  let permiso = verificaToken(req.headers, res);
+  let permiso = tokenService.verificaToken(req.headers, res);
   if (permiso) {
-    ejecutaConsulta("getNotis", [permiso], res, function (rows) {
+    queryService.ejecutaConsulta("getNotis", [permiso], res, function (rows) {
       if (rows) {
         res.send({ respuesta: rows })
       }
@@ -336,9 +191,9 @@ router.get('/api/usuario/notificaciones', (req, res) => {
 // Obtener un usuario (UNPROTECTED)
 router.get('/api/usuario/:id', listaValidaciones["numerico"], (req, res) => {
   console.log("Obtener un usuario mediante una id")
-  if (!compruebaErrores(req, res)) {
+  if (!queryService.compruebaErrores(req, res)) {
     const { id } = req.params;
-    ejecutaConsulta("getUsuario", [id], res, function (rows) {
+    queryService.ejecutaConsulta("getUsuario", [id], res, function (rows) {
       if (rows) {
         res.send({ status: '200', respuesta: rows[0] })
       };
@@ -348,11 +203,11 @@ router.get('/api/usuario/:id', listaValidaciones["numerico"], (req, res) => {
 // Obtener varios usuarios según nombre (PROTECTED)
 router.get('/api/usuarios/:nombre', listaValidaciones["texto"], (req, res) => {
   console.log("Obtener usuarios por nombre");
-  if (!compruebaErrores(req, res)) {
-    let permiso = verificaToken(req.headers, res);
+  if (!queryService.compruebaErrores(req, res)) {
+    let permiso = tokenService.verificaToken(req.headers, res);
     let { nombre } = req.params;
     if (permiso) {
-      ejecutaConsulta("getUsuariosByNombre", [nombre + "%"], res, function (rows) {
+      queryService.ejecutaConsulta("getUsuariosByNombre", [nombre + "%"], res, function (rows) {
         if (rows) {
           res.send({ status: '200', respuesta: rows })
         };
@@ -363,11 +218,11 @@ router.get('/api/usuarios/:nombre', listaValidaciones["texto"], (req, res) => {
 //Obtener todos los quizz de alguien (SEMI-PROTECTED)
 router.get('/api/usuario/:id/wall', listaValidaciones["numerico"], (req, res) => {
   console.log("Obtener todos los quizz de un perfil")
-  if (!compruebaErrores(req, res)) {
+  if (!queryService.compruebaErrores(req, res)) {
     const { id } = req.params;
-    let permiso = verificaToken(req.headers, res, true);
+    let permiso = tokenService.verificaToken(req.headers, res, true);
     let query = permiso == id ? "getUsuarioWallPrivate" : "getUsuarioWallPublic"
-    ejecutaConsulta(query, [id], res, function (rows) {
+    queryService.ejecutaConsulta(query, [id], res, function (rows) {
       if (rows) {
         res.send({ respuesta: rows });
       }
@@ -382,10 +237,10 @@ router.get('/api/quizz/:id/seguidos/:cadena', (req, res) => {
   limite = "LIMIT " + limite[0] + "," + limite[1];
   let total = 0;
 
-  ejecutaConsulta("getSeguidos1", [id], res, function (rows) {
+  queryService.ejecutaConsulta("getSeguidos1", [id], res, function (rows) {
     if (rows) {
       total = rows[0].pls;
-      ejecutaConsulta("getSeguidos2", [id], res, function (rows2) {
+      queryService.ejecutaConsulta("getSeguidos2", [id], res, function (rows2) {
         if (rows2) {
           res.send({ cont: rows2, total: total });
         }
@@ -400,10 +255,10 @@ router.get('/api/quizz/todos/:cadena', (req, res) => {
   let total = 0;
   let limite = cadena.split("-");
   limite = "LIMIT " + limite[0] + "," + limite[1];
-  ejecutaConsulta("getAllQuizzes1", null, res, function (rows) {
+  queryService.ejecutaConsulta("getAllQuizzes1", null, res, function (rows) {
     if (rows) {
       total = rows[0].pls;
-      ejecutaConsulta("getAllQuizzes2", null, res, function (rows2) {
+      queryService.ejecutaConsulta("getAllQuizzes2", null, res, function (rows2) {
         if (rows2) {
           res.send({ cont: rows2, total: total });
         }
@@ -414,10 +269,10 @@ router.get('/api/quizz/todos/:cadena', (req, res) => {
 
 // Obtener quizzes según nombre 
 router.get('/api/quizzes/:nombre', listaValidaciones["texto"], (req, res) => {
-  if (!compruebaErrores(req, res)) {
+  if (!queryService.compruebaErrores(req, res)) {
     let { nombre } = req.params;
     console.log("Obtener quizzes por nombre " + nombre);
-    ejecutaConsulta("getQuizzesByName", ['%' + nombre + "%"], res, function (rows) {
+    queryService.ejecutaConsulta("getQuizzesByName", ['%' + nombre + "%"], res, function (rows) {
       if (rows) {
         res.send({ respuesta: rows });
       }
@@ -428,9 +283,9 @@ router.get('/api/quizzes/:nombre', listaValidaciones["texto"], (req, res) => {
 //Obtener los quizzes a moderar (UNPROTECTED)
 router.get('/api/quizz/moderacion', (req, res) => {
   console.log("obtener quizzes a moderar")
-  let permiso = verificaToken(req.headers, res);
+  let permiso = tokenService.verificaToken(req.headers, res);
   if (permiso) {
-    ejecutaConsulta("getQuizzesaModerar", [permiso, permiso], res, function (rows) {
+    queryService.ejecutaConsulta("getQuizzesaModerar", [permiso, permiso], res, function (rows) {
       if (rows) {
         res.send({ respuesta: rows });
       }
@@ -440,27 +295,29 @@ router.get('/api/quizz/moderacion', (req, res) => {
 //guarda una accion de moderacion (PROTECTED)
 router.post('/api/modera', listaValidaciones["modera"], (req, res) => {
   console.log("Guarda una acción de moderar")
-  if (!compruebaErrores(req, res)) {
+  if (!queryService.compruebaErrores(req, res)) {
     const { quizz, usuario, decision } = req.body;
     let titulo = null;
     let creador = null;
-    let permiso = verificaToken(req.headers, res);
+    let permiso = tokenService.verificaToken(req.headers, res);
     if (permiso) {
-      ejecutaConsulta("setModerar1", [quizz], res, function (rows) {
+      queryService.ejecutaConsulta("setModerar1", [quizz], res, function (rows) {
         if (rows) {
           creador = rows[0].creador;
           titulo = rows[0].titulo;
-          ejecutaConsulta("setModerar2", [permiso], res, function (rows2) {//Compruebo si el usuario es administrador
+          queryService.ejecutaConsulta("setModerar2", [permiso], res, function (rows2) {//Compruebo si el usuario es administrador
             if (rows2) {
               if (rows2.length > 0) {//Si soy administrador
                 if (decision) {//Si quiero PUBLICAR el quiz
-                  ejecutaConsulta("setModerar3", [quizz], res, function (rows3) {
+                  queryService.ejecutaConsulta("setModerar3", [quizz], res, function (rows3) {
                     if (rows3) {
-                      ejecutaConsulta("setModerar4", [quizz], res, function (rows4) {
+                      queryService.ejecutaConsulta("setModerar4", [quizz], res, function (rows4) {
                         if (rows4) {
                           let mensajito = "¡Enhorabuena, su Quiz " + titulo + " ha sido publicado en la web!";
-                          ejecutaConsulta("setModerar5", [creador, mensajito], res, function (rows5) {
-                            logroUsuarios(creador, res);
+                          queryService.ejecutaConsulta("setModerar5", [creador, mensajito], res, function (rows5) {
+                            logroService.incrementaLogro(permiso, 4, 1, 0, res); //Para el logro 4 (Kami)
+                            logroService.logroUsuarios(creador, res);//Para el logro 8 (Diana)
+
                             if (rows5) {
                               res.send({ status: '200' });
                             }
@@ -470,12 +327,13 @@ router.post('/api/modera', listaValidaciones["modera"], (req, res) => {
                     }
                   });
                 } else {//Si quiero BORRAR el quiz
-                  ejecutaConsulta("setModerar4", [quizz], res, function (rows6) {
+                  queryService.ejecutaConsulta("setModerar4", [quizz], res, function (rows6) {
                     if (rows6) {
-                      ejecutaConsulta("setModerar6", [quizz], res, function (rows7) {
+                      queryService.ejecutaConsulta("setModerar6", [quizz], res, function (rows7) {
                         if (rows7) {
+                          logroService.incrementaLogro(permiso, 4, 0, 1, res); //Para el logro 4 (Kami)
                           let mensajito = "Lo sentimos, su Quiz " + titulo + " no ha superado el proceso de moderación, revisa los criterios e intentalo de nuevo.";
-                          ejecutaConsulta("setModerar7", [creador, mensajito], res, function (rows8) {
+                          queryService.ejecutaConsulta("setModerar7", [creador, mensajito], res, function (rows8) {
                             res.send({ status: '200' });
                           });
                         }
@@ -484,7 +342,8 @@ router.post('/api/modera', listaValidaciones["modera"], (req, res) => {
                   });
                 }
               } else {//SI NO SOY ADMINISTRADOR, GUARDO ACCIÓN MODERAR
-                ejecutaConsulta("setModerar8", [quizz, usuario, decision], res, function (rows8) {
+                queryService.ejecutaConsulta("setModerar8", [quizz, usuario, decision], res, function (rows8) {
+                  logroService.incrementaLogro(permiso,7,1,0,res);
                   res.send({ status: '200' });
                 });
               }
@@ -498,12 +357,11 @@ router.post('/api/modera', listaValidaciones["modera"], (req, res) => {
 
 //Obtener un solo quizz (UNPROTECTED)
 router.get('/api/quizz/:id', listaValidaciones["numerico"], (req, res) => {
-  console.log("Obtener quizz del id")
-  console.log(req.params)
-  if (!compruebaErrores(req, res)) {
+  console.log("Obtener quiz del id")
+  if (!queryService.compruebaErrores(req, res)) {
     const { id } = req.params;
     let query = !isNaN(id) ? "getOneQuizz1" : "getOneQuizz2";
-    ejecutaConsulta(query, [id], res, function (rows) {
+    queryService.ejecutaConsulta(query, [id], res, function (rows) {
       if (rows) {
         res.send({ respuesta: rows[0] });
       }
@@ -514,9 +372,9 @@ router.get('/api/quizz/:id', listaValidaciones["numerico"], (req, res) => {
 //Obtener número de seguidores (UNPROTECTED)
 router.post('/api/usuario/stats', listaValidaciones["stats"], (req, res) => {
   console.log("Obtener estadisticas de un perfil")
-  if (!compruebaErrores(req, res)) {
+  if (!queryService.compruebaErrores(req, res)) {
     const { origen, destino } = req.body;
-    ejecutaConsulta("getEstadisticas", [origen, destino, destino, origen, destino, destino, destino, destino], res, function (rows) {
+    queryService.ejecutaConsulta("getEstadisticas", [origen, destino, destino, origen, destino, destino, destino, destino], res, function (rows) {
       if (rows) {
         res.send({ status: "200", respuesta: rows[0] });
       }
@@ -528,12 +386,13 @@ router.post('/api/usuario/stats', listaValidaciones["stats"], (req, res) => {
 //Peticion para crear un quiz (PROTECTED)
 router.post('/api/creaQuizz', listaValidaciones["creaQuiz"], (req, res, next) => {
   console.log("Petición para crear un quiz")
-  if (!compruebaErrores(req, res)) {
-    let permiso = verificaToken(req.headers, res);
+  if (!queryService.compruebaErrores(req, res)) {
+    let permiso = tokenService.verificaToken(req.headers, res);
     if (permiso) {
       const { creador, titulo, contenido, fecha, privado } = req.body;
-      ejecutaConsulta("setQuiz", [creador, titulo, contenido, fecha, privado], res, function (rows) {
+      queryService.ejecutaConsulta("setQuiz", [creador, titulo, contenido, fecha, privado], res, function (rows) {
         if (rows) {
+          logroService.logroUsuarios(); //Logro 6
           res.send({ respuesta: rows.insertId });
         }
       })
@@ -544,11 +403,11 @@ router.post('/api/creaQuizz', listaValidaciones["creaQuiz"], (req, res, next) =>
 //Peticion para borrar un quizz (PROTECTED)
 router.post('/api/borraQuizz', listaValidaciones["numerico"], (req, res, next) => {
   console.log("Petición para borrar un quizz")
-  if (!compruebaErrores(req, res)) {
+  if (!queryService.compruebaErrores(req, res)) {
     const { id } = req.body;
-    let permiso = verificaToken(req.headers, res);
+    let permiso = tokenService.verificaToken(req.headers, res);
     if (permiso) {
-      ejecutaConsulta("deleteQuiz", [id, permiso], res, function (rows) {
+      queryService.ejecutaConsulta("deleteQuiz", [id, permiso], res, function (rows) {
         if (rows) {
           res.send({ status: '200' });
         }
@@ -561,20 +420,21 @@ router.post('/api/borraQuizz', listaValidaciones["numerico"], (req, res, next) =
 //Peticion para puntuar un test (PROTECTED)
 router.post('/api/vota', listaValidaciones["vota"], (req, res, next) => {
   console.log("Petición para puntuar un test")
-  if (!compruebaErrores(req, res)) {
+  if (!queryService.compruebaErrores(req, res)) {
     const { origen, quizz, cantidad } = req.body;
-    let permiso = verificaToken(req.headers, res);
+    let permiso = tokenService.verificaToken(req.headers, res);
 
     if (permiso) {
-      ejecutaConsulta("setVotacion1", [origen, quizz], res, function (rows) {
+      queryService.ejecutaConsulta("setVotacion1", [origen, quizz], res, function (rows) {
         if (rows) {
-          logroQuizzes(quizz,res); //Procedo a ver si tengo que dar un logro tipo 3 (Artista)
+          logroService.logroQuizzes(quizz, res); //Logro 3 (Artista)
+          logroService.logroUsuarios(permiso,res); //Logro 9 (Crítico)
           if (rows.length == 0) {
-            ejecutaConsulta("setVotacion2", [origen, quizz, cantidad], res, function (rows2) {
+            queryService.ejecutaConsulta("setVotacion2", [origen, quizz, cantidad], res, function (rows2) {
               res.send({});
             });
           } else {
-            ejecutaConsulta("setVotacion3", [cantidad, origen, quizz], res, function (rows3) {
+            queryService.ejecutaConsulta("setVotacion3", [cantidad, origen, quizz], res, function (rows3) {
               res.send({});
             });
           }
@@ -588,9 +448,9 @@ router.post('/api/vota', listaValidaciones["vota"], (req, res, next) => {
 //Peticion post para ver si sigue a x persona (UNPROTECTED)
 router.post('/api/isFollowing', listaValidaciones["stats"], (req, res, next) => {
   console.log("Petición para ver si hay un seguimiento")
-  if (!compruebaErrores(req, res)) {
+  if (!queryService.compruebaErrores(req, res)) {
     const { origen, destino } = req.body;
-    ejecutaConsulta("isFollowing", [origen, destino], res, function (rows) {
+    queryService.ejecutaConsulta("isFollowing", [origen, destino], res, function (rows) {
       if (rows) {
         let verdad = rows.length < 1 ? false : true;
         res.send({ respuesta: verdad });
@@ -602,13 +462,13 @@ router.post('/api/isFollowing', listaValidaciones["stats"], (req, res, next) => 
 //Peticion post para comenzar a seguir (PROTECTED)
 router.post('/api/follow', listaValidaciones["stats"], (req, res, next) => {
   console.log("Petición para comenzar a seguir")
-  if (!compruebaErrores(req, res)) {
+  if (!queryService.compruebaErrores(req, res)) {
     const { origen, destino } = req.body;
-    let permiso = verificaToken(req.headers, res);
+    let permiso = tokenService.verificaToken(req.headers, res);
     if (permiso) {
-      ejecutaConsulta("setFollow", [origen, destino], res, function (rows) {
+      queryService.ejecutaConsulta("setFollow", [origen, destino], res, function (rows) {
         if (rows) {
-          logroUsuarios(destino, res);
+          logroService.logroUsuarios(destino, res);
           res.send({ status: '200' });
         }
       });
@@ -619,9 +479,9 @@ router.post('/api/follow', listaValidaciones["stats"], (req, res, next) => {
 router.post('/api/usuario/read', cors(), (req, res, next) => {
   console.log("Petición para leer una notificación");
   const { mensaje } = req.body;
-  let permiso = verificaToken(req.headers, res);
+  let permiso = tokenService.verificaToken(req.headers, res);
   if (permiso) {
-    ejecutaConsulta("readNoti", [permiso, mensaje], res, function (rows) {
+    queryService.ejecutaConsulta("readNoti", [permiso, mensaje], res, function (rows) {
       if (rows) {
         res.send({ status: '200' });
       }
@@ -633,11 +493,11 @@ router.post('/api/usuario/read', cors(), (req, res, next) => {
 router.post('/api/cambiaTipo', cors(), (req, res, next) => {
   console.log("Petición para cambiar la privacidad")
   const { quizz, privado } = req.body;
-  let permiso = verificaToken(req.headers, res);
+  let permiso = tokenService.verificaToken(req.headers, res);
   let query = privado == null ? "setPrivacidad1" : "setPrivacidad2";
   let valores = privado == null ? [quizz] : [privado, quizz];
   if (permiso) {
-    ejecutaConsulta(query, valores, res, function (rows) {
+    queryService.ejecutaConsulta(query, valores, res, function (rows) {
       if (rows) {
         res.send({ status: '200', cont: rows });
       }
@@ -648,11 +508,11 @@ router.post('/api/cambiaTipo', cors(), (req, res, next) => {
 //Peticion post para borrar un seguimiento (PROTECTED)
 router.post('/api/unfollow', listaValidaciones["stats"], (req, res, next) => {
   console.log("Petición para borrar un seguimiento");
-  if (!compruebaErrores(req, res)) {
+  if (!queryService.compruebaErrores(req, res)) {
     const { origen, destino } = req.body;
-    let permiso = verificaToken(req.headers, res);
+    let permiso = tokenService.verificaToken(req.headers, res);
     if (permiso) {
-      ejecutaConsulta("deleteFollow", [origen, destino], res, function (rows) {
+      queryService.ejecutaConsulta("deleteFollow", [origen, destino], res, function (rows) {
         res.send({ status: '200' });
       });
     }
