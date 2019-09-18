@@ -1,6 +1,8 @@
-<div class="noti alert alert-success" *ngIf="message && message.type == 'success'" >
-  <p class="text-center">{{message.message}}</p>
-</div>
-<div class="noti alert alert-danger" *ngIf="message && message.type == 'error'" >
+<div class="noti_wrapper" *ngIf="message">
+  <div class="noti alert alert-success" *ngIf="message.type == 'success'">
     <p class="text-center">{{message.message}}</p>
   </div>
+  <div class="noti alert alert-danger" *ngIf="message.type == 'error'">
+    <p class="text-center">{{message.message}}</p>
+  </div>
+</div>

@@ -1,5 +1,14 @@
-.noti{
-    position: fixed;
-    left:45%;
-    z-index: 1;  
+.noti {
+  position: fixed;
+  //left:50vw;
+}
+
+.noti_wrapper {
+  z-index: 2;
+  display: flex;
+  width: 100vw;
+  height: 100vh;
+  position: fixed;
+  justify-content: center;
+  align-items: center;
 }

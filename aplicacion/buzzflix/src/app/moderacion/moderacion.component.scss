@@ -21,7 +21,10 @@ mat-icon,
   color: white;
 }
 mat-expansion-panel {
-  background: $fondoSuave;
+  background: $fondoSuave!important;
+}
+mat-expansion-panel:not(.mat-expanded):not([aria-disabled=true]) mat-expansion-panel-header:hover{
+  background: $fondoSuave!important;
 }
 .mat-list-base .mat-list-item .mat-line {
   white-space: normal !important;
@@ -111,7 +114,7 @@ mat-expansion-panel {
 }
 button {
   margin-top: 5%;
-  font-size: 5vh;
+  font-size: 4vh;
   padding: 3vh;
 }
 

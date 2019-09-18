@@ -1,6 +1,9 @@
 const queryService = require('../controllers/queryController');
+const algorithm = 'aes-192-cbc';
 let secretWord = "a670711037";
 var jwt = require('jsonwebtoken');
+var crypto = require('crypto');
+
 class TokenController {
     constructor() { }
     creaToken(id) {
@@ -33,6 +36,14 @@ class TokenController {
 
 
         }
+    }
+    encripta(texto) {
+        const passwordraw = crypto.scryptSync(secretWord, texto, 24);
+        const iv = Buffer.alloc(16, 0);
+        const cipher = crypto.createCipheriv(algorithm, passwordraw, iv);
+        let encrypted = cipher.update('some clear text data', 'utf8', 'hex');
+        encrypted += cipher.final('hex');
+        return encrypted;
     }
 }
 

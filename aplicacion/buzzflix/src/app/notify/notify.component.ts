@@ -20,8 +20,8 @@ export class NotifyComponent implements OnInit {
   newMessageReceived(message:Message){
     this.message=message;
     setTimeout(()=>{
-      this.message= new Message("","");
-    },2000)
+      this.message=null;
+    },3000)
   }
 
   ngOnInit() {

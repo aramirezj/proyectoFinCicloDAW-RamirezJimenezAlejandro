@@ -1,7 +1,6 @@
 const express = require('express'), nodeMailer = require('nodemailer');
 const app = express();
 const router = express.Router();
-const algorithm = 'aes-192-cbc';
 var cors = require('cors')
 
 
@@ -12,7 +11,7 @@ const listaValidaciones = require('../validaciones');
 
 
 app.use(cors())
-var crypto = require('crypto')
+
 
 
 
@@ -43,22 +42,12 @@ function enviaCorreo() {
   });
 }
 
-function encripta(texto) {
-  const passwordraw = crypto.scryptSync(secretWord, texto, 24);
-  const iv = Buffer.alloc(16, 0);
-  const cipher = crypto.createCipheriv(algorithm, passwordraw, iv);
-  let encrypted = cipher.update('some clear text data', 'utf8', 'hex');
-  encrypted += cipher.final('hex');
-  return encrypted;
-}
-
-
 //Petición para registrar un usuario .
 router.post('/api/register', listaValidaciones["registro"], (req, res, next) => {
   console.log("Petición de registro de un usuario")
   if (!queryService.compruebaErrores(req, res)) {
     let { name, email, password } = req.body;
-    password = encripta(password);
+    password = tokenService.encripta(password);
     queryService.ejecutaConsulta("registro", [name, email, password], res,
       function (rows) {
         if (rows) {
@@ -72,7 +61,7 @@ router.post('/api/authenticate', listaValidaciones["login"], (req, res, next) =>
   console.log("Petición de inicio de sesión")
   if (!queryService.compruebaErrores(req, res)) {
     let { email, password } = req.body;
-    password = encripta(password);
+    password = tokenService.encripta(password);
     queryService.ejecutaConsulta("login", [email, password], res, function (rows) {
       if (rows) {
         if (rows.length > 0) {//Datos correctos
@@ -109,8 +98,8 @@ router.put('/api/usuario/actualizar/:id', listaValidaciones["editar"], (req, res
           }
         })
       } else {//Modificamos contraseñas también
-        oldpass = encripta(oldpass);
-        newpass = encripta(newpass);
+        oldpass = tokenService.encripta(oldpass);
+        newpass = tokenService.encripta(newpass);
         queryService.ejecutaConsulta("editarPerfil2", [oldpass, id], res, function (rows2) {
           if (rows2) {
             if (rows2.length > 0) {
