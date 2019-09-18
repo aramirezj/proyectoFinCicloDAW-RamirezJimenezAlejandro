@@ -29,9 +29,9 @@
         <mat-icon class="lupas" (click)="muestraForm()">search</mat-icon>
       </div>
       <span class="menu-spacer"></span>
-      <a mat-button [routerLink]="['ver/todos']">Todos los quizzes </a>
-      <a mat-button [routerLink]="['crear/quizz']">Crear quiz </a>
-      <a mat-button *ngIf="isLoggedIn()" [routerLink]="['moderacion']">Moderación </a>
+      <a class="menuItem" mat-button [routerLink]="['ver/todos']">Todos los quizzes </a>
+      <a class="menuItem" mat-button [routerLink]="['crear/quizz']">Crear quiz </a>
+      <a class="menuItem" mat-button *ngIf="isLoggedIn()" [routerLink]="['moderacion']">Moderación </a>
       <button mat-icon-button (click)="changeColor()" [matMenuTriggerFor]="menu"
         aria-label="Example icon-button with a menu">
         <mat-icon>more_vert</mat-icon>
@@ -41,14 +41,14 @@
       <mat-menu #menu="matMenu">
         <button mat-menu-item *ngIf="isLoggedIn()" [routerLink]="['usuario/perfil',this.authService.getAuthUserId()]">
           <mat-icon *ngIf="isLoggedIn()">account_circle</mat-icon>
-          <span role="button" mat-button>Mi perfil</span>
+          <span role="button" mat-button><a>Mi perfil</a></span>
         </button>
         <mat-accordion *ngIf="isLoggedIn()" (click)="$event.stopPropagation()">
           <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
             <mat-expansion-panel-header style="padding: 16px;">
               <mat-panel-title>
                 <mat-icon style="margin-right: 16px;vertical-align: middle;">mail_outline</mat-icon> <span role="button"
-                  mat-button>Notificaciones <mat-icon *ngIf="notificaciones.length>0">{{this.icono}}
+                  mat-button><a>Notificaciones</a> <mat-icon *ngIf="notificaciones.length>0">{{this.icono}}
                   </mat-icon></span>
               </mat-panel-title>
               <mat-panel-description>
@@ -69,15 +69,15 @@
 
         <button mat-menu-item *ngIf="!isLoggedIn()" routerLink="/auth/register">
           <mat-icon>fiber_new</mat-icon>
-          <span role="button" mat-button>Registrarse</span>
+          <span role="button" mat-button><a>Registrarse</a></span>
         </button>
         <button mat-menu-item *ngIf="!isLoggedIn()" routerLink="/auth/login">
           <mat-icon>accessibility_new</mat-icon>
-          <span role="button" mat-button>Iniciar sesión</span>
+          <span role="button" mat-button><a>Iniciar sesión</a></span>
         </button>
         <button mat-menu-item *ngIf="isLoggedIn()" (click)="logout()">
           <mat-icon>directions_run</mat-icon>
-          <span role="button" mat-button>Cerrar sesión</span>
+          <span role="button" mat-button><a>Cerrar sesión</a></span>
         </button>
       </mat-menu>
     </div>
@@ -113,14 +113,14 @@
       <a mat-list-item *ngIf="isLoggedIn()" [routerLink]="['moderacion']">Moderación </a>
       <button mat-menu-item *ngIf="isLoggedIn()" [routerLink]="['usuario/perfil',this.authService.getAuthUserId()]">
         <mat-icon *ngIf="isLoggedIn()">account_circle</mat-icon>
-        <span role="button" mat-button>Mi perfil</span>
+        <span role="button" mat-button><a>Mi perfil</a></span>
       </button>
       <mat-accordion *ngIf="isLoggedIn()" (click)="$event.stopPropagation()">
         <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
           <mat-expansion-panel-header style="padding: 16px;">
             <mat-panel-title>
               <mat-icon style="margin-right: 16px;vertical-align: middle;">mail_outline</mat-icon> <span role="button"
-                mat-button>Notificaciones <mat-icon *ngIf="notificaciones.length>0">{{this.icono}}
+                mat-button><a>Notificaciones</a> <mat-icon *ngIf="notificaciones.length>0">{{this.icono}}
                 </mat-icon></span>
             </mat-panel-title>
             <mat-panel-description>
@@ -141,15 +141,15 @@
 
       <button mat-menu-item *ngIf="!isLoggedIn()" routerLink="/auth/register">
         <mat-icon>fiber_new</mat-icon>
-        <span role="button" mat-button>Registrarse</span>
+        <span role="button" mat-button><a>Registrarse</a></span>
       </button>
       <button mat-menu-item *ngIf="!isLoggedIn()" routerLink="/auth/login">
         <mat-icon>accessibility_new</mat-icon>
-        <span role="button" mat-button>Iniciar sesión</span>
+        <span role="button" mat-button><a>Iniciar sesión</a></span>
       </button>
       <button mat-menu-item *ngIf="isLoggedIn()" (click)="logout()">
         <mat-icon>directions_run</mat-icon>
-        <span role="button" mat-button>Cerrar sesión</span>
+        <span role="button" mat-button><a>Cerrar sesión</a></span>
       </button>
      <a mat-list-item (click)="sidenav.toggle()" mat-list-item>Cerrar menú</a>
 

@@ -11,7 +11,7 @@ button {
   color: $naranjaRetro;
 }
 img {
-  height: 25vw;
+  height: 20vw;
 }
 .fa-star {
   font-size: 2vw;
@@ -25,7 +25,7 @@ div {
 .card {
   //box-shadow: 1px 3px 2px #46317c;
   width: 48%;
-  margin:1vh;
+  margin: 1vh;
   float: left;
   transition-delay: 0.1s;
   transition: all 0.3s;
@@ -33,6 +33,9 @@ div {
 }
 .card:hover {
   transform: translateY(-5px);
+}
+.card-title {
+  font-size: 1vw !important;
 }
 @media (max-width: 800px) {
   .card {
@@ -43,6 +46,9 @@ div {
   .fa-star {
     font-size: 4vw;
   }
+  .card-title {
+    font-size: 2vh !important;
+  }
 }
 .card:hover {
   box-shadow: 2px 7px 8px #529f82;
@@ -51,7 +57,4 @@ div {
 .card-body {
   text-align: center;
   padding: 1vh;
-}
-.card-title {
-  font-size: 3vh !important;
 }
