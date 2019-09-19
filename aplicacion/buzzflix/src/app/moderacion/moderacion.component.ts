@@ -55,7 +55,6 @@ export class ModeracionComponent implements OnInit {
     let quizz: Quizz;
     this.quizzService.listaModeracion()
       .subscribe(resp => {
-        console.log(resp)
         if (resp != null && resp.length>0) {
           this.rawquizzes=resp;
           

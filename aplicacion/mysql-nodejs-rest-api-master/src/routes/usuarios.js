@@ -3,7 +3,6 @@ const app = express();
 const router = express.Router();
 var cors = require('cors')
 
-
 const queryService = require('../controllers/queryController');
 const logroService = require('../controllers/logroController');
 const tokenService = require('../controllers/tokenController');
@@ -332,7 +331,7 @@ router.post('/api/modera', listaValidaciones["modera"], (req, res) => {
                 }
               } else {//SI NO SOY ADMINISTRADOR, GUARDO ACCIÓN MODERAR
                 queryService.ejecutaConsulta("setModerar8", [quizz, usuario, decision], res, function (rows8) {
-                  logroService.incrementaLogro(permiso,7,1,0,res);
+                  logroService.incrementaLogro(permiso, 7, 1, 0, res);
                   res.send({ status: '200' });
                 });
               }
@@ -417,7 +416,7 @@ router.post('/api/vota', listaValidaciones["vota"], (req, res, next) => {
       queryService.ejecutaConsulta("setVotacion1", [origen, quizz], res, function (rows) {
         if (rows) {
           logroService.logroQuizzes(quizz, res); //Logro 3 (Artista)
-          logroService.logroUsuarios(permiso,res); //Logro 9 (Crítico)
+          logroService.logroUsuarios(permiso, res); //Logro 9 (Crítico)
           if (rows.length == 0) {
             queryService.ejecutaConsulta("setVotacion2", [origen, quizz, cantidad], res, function (rows2) {
               res.send({});

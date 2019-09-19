@@ -209,7 +209,7 @@ export class CreateQuizzComponent implements OnInit {
           let descripcion: string = "pcr" + i;
           grupo = [
             { name: titulo, control: new FormControl(null, [Validators.required, Validators.maxLength(125)]) },
-            { name: descripcion, control: new FormControl(null, [Validators.required, Validators.max(20)]) }
+            { name: descripcion, control: new FormControl(null, [Validators.required,Validators.min(2), Validators.max(20)]) }
           ]
           grupo.forEach(f => {
             this.quizzForm.addControl(f.name, f.control);

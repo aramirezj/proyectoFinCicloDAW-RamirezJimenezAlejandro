@@ -120,7 +120,7 @@
                       <div class="input-group-btn">
                         <span style="margin-top: 2vh;" class="fileUpload btn btn-success">
                           <span class="upl" id="upload">Subir imagen</span>
-                          <input type="file" class="upload up" (change)="onFileChanged($event,i)"
+                          <input type="file" class="upload up"  accept="image/*" (change)="onFileChanged($event,i)"
                             [formControlName]="generaId('si',i)" id="up" />
                         </span>
                       </div>
