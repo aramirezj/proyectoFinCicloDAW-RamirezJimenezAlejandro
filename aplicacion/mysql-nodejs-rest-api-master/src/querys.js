@@ -49,7 +49,7 @@ querys["setReport"] = "INSERT INTO reportes (origen,destino,motivo) values (?,?,
 
 
 //Querys de quizzes
-querys["getOneQuizz1"] = "SELECT * FROM quizz WHERE id = ? and publicado = 1";
+querys["getOneQuizz1"] = "SELECT * FROM quizz WHERE id = ?";
 querys["getOneQuizz2"] = "SELECT * FROM quizz where privado = ?";
 querys["getAllQuizzes1"] = "SELECT count(id) as pls from quizz where publicado=1 and privado IS NULL";
 querys["getAllQuizzes2"] = "SELECT q.*,COALESCE(SUM(v.cantidad),0) as estrellas, (SELECT count(quizz) FROM votaciones WHERE quizz = q.id OR quizz in(SELECT id from quizz where privado = q.id)) as votantes ,u.name as nombre FROM quizz q LEFT JOIN votaciones v on q.id=v.quizz LEFT JOIN users u on q.creador= u.id where publicado = 1 and privado is null GROUP BY q.id DESC ";

@@ -69,6 +69,7 @@ export class VerQuizzComponent implements OnInit {
     let totales: Array<number> = [];
     let id = 0;
     let ganador = 0;
+    let foundWinner=false;
     let cp = this.quizz.preguntas.length;
 
     let prerespondidas = $(".activado");
@@ -100,11 +101,13 @@ export class VerQuizzComponent implements OnInit {
       if (totales[q] > ganador) {
         ganador = totales[q];
         id = q;
+        foundWinner=true;
       }
     }
-    id--;
+    if(foundWinner){
+      id--;
+    }
     this.solucionado = this.quizz.soluciones[id];
-
     this.solucionado.image = this.afStorage.ref(this.solucionado.image).getDownloadURL();
     if (this.solucionado.image == null) {
       this.solucionado.image = "hehexd.png"

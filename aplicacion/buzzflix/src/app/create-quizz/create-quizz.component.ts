@@ -1,5 +1,5 @@
-import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
-import { FormGroup, FormControl, FormBuilder, Validators } from '@angular/forms'
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, ɵConsole } from '@angular/core';
+import { FormGroup, FormControl, FormBuilder, Validators, FormArray } from '@angular/forms'
 import { QuizzService } from '../services/quizz.service';
 import { Solucion } from '../modelo/Solucion';
 import { NgProgress } from 'ngx-progressbar';
@@ -133,7 +133,7 @@ export class CreateQuizzComponent implements OnInit {
 
   createForm() {
     this.quizzForm = new FormGroup({
-      titulo: new FormControl(null, [Validators.required, Validators.minLength(10),Validators.maxLength(75)]),
+      titulo: new FormControl(null, [Validators.required, Validators.minLength(10), Validators.maxLength(75)]),
       cp: new FormControl(null, [Validators.required, Validators.min(4), Validators.max(10)]),
       cs: new FormControl(null, [Validators.required, Validators.min(2), Validators.max(5)]),
       banner: new FormControl(null, [Validators.required]),
@@ -153,7 +153,7 @@ export class CreateQuizzComponent implements OnInit {
     if (this.aux > 1 && this.aux < 6) {
       this.reseteaCondRespuestas();
       this.secondStep = false;
-      this.ref.detach();
+      // this.ref.detach();
       this.bar.start();
       let grupo: any
 
@@ -162,24 +162,24 @@ export class CreateQuizzComponent implements OnInit {
         let descripcion: string = "sd" + i;
         let image: string = "si" + i;
         grupo = [
-          { name: titulo, control: new FormControl(null, [Validators.required]) },
-          { name: descripcion, control: new FormControl(null, []) },
-          { name: image, control: new FormControl(null, []) },
+          { name: titulo, control: new FormControl(null, [Validators.required, Validators.maxLength(50)]) },
+          { name: descripcion, control: new FormControl(null, [Validators.required,Validators.maxLength(125)]) },
+          { name: image, control: new FormControl(null, [Validators.required]) },
         ]
         grupo.forEach(f => {
           this.quizzForm.addControl(f.name, f.control)
-          this.quizzForm.controls[f.name].setValidators([Validators.required]);
+          //this.quizzForm.controls[f.name].setValidators([Validators.required]);
           this.quizzForm.controls[f.name].updateValueAndValidity();
         });
       }
       this.firstStep = true;
-      setTimeout(() => {
-        this.max = this.quizzForm.get('cs').value;
-        this.ref.detectChanges();
-        this.ref.reattach();
-        this.bar.done();
-        
-      }, 500);
+      // setTimeout(() => {
+      this.max = this.quizzForm.get('cs').value;
+      //  this.ref.detectChanges();
+      //  this.ref.reattach();
+      this.bar.done();
+
+      // }, 500);
     } else {
       this.notifyService.notify("El máximo de soluciones son 5, y el mínimo son 2", "error");
     }
@@ -190,10 +190,9 @@ export class CreateQuizzComponent implements OnInit {
 
   //Generación de las preguntas por el boton
   generaPreguntas() {
-
     let verdad = true;
     for (let i = 1; i <= this.quizzForm.get('cs').value; i++) {
-      if (this.quizzForm.get('st' + i).value == null) {
+      if (this.quizzForm.get('st' + i).status == "INVALID") {
         verdad = false;
       }
     }
@@ -201,7 +200,7 @@ export class CreateQuizzComponent implements OnInit {
     if (verdad) {
       if (this.aux > 1 && this.aux < 11) {
         this.reseteaFullRespuestas();
-        this.ref.detach();
+        //this.ref.detach();
         this.bar.start();
         let grupo: any
         this.aux = this.quizzForm.get('cp').value;
@@ -209,12 +208,12 @@ export class CreateQuizzComponent implements OnInit {
           let titulo: string = "pt" + i;
           let descripcion: string = "pcr" + i;
           grupo = [
-            { name: titulo, control: new FormControl(null, []) },
-            { name: descripcion, control: new FormControl(null, []) }
+            { name: titulo, control: new FormControl(null, [Validators.required, Validators.maxLength(125)]) },
+            { name: descripcion, control: new FormControl(null, [Validators.required, Validators.max(20)]) }
           ]
           grupo.forEach(f => {
             this.quizzForm.addControl(f.name, f.control);
-            this.quizzForm.controls[f.name].setValidators([Validators.required]);
+            //this.quizzForm.controls[f.name].setValidators([Validators.required]);
             this.quizzForm.controls[f.name].updateValueAndValidity();
             let eje = i;
             eje--;
@@ -222,17 +221,17 @@ export class CreateQuizzComponent implements OnInit {
           });
         }
         this.secondStep = true;
-        setTimeout(() => {
-          this.maxp = this.quizzForm.get('cp').value;
-          this.ref.detectChanges();
-          this.ref.reattach();
-          this.bar.done();
-        }, 500);
+        // setTimeout(() => {
+        this.maxp = this.quizzForm.get('cp').value;
+        // this.ref.detectChanges();
+        //this.ref.reattach();
+        this.bar.done();
+        //  }, 500);
       } else {
         this.notifyService.notify("El máximo de preguntas son 10, y el mínimo son 2", "error");
       }
     } else {
-      this.notifyService.notify("Por favor, rellena al menos los titulos de las soluciones", "error");
+      this.notifyService.notify("Por favor, rellena al menos los titulos de las soluciones (máximo 40 caracteres)", "error");
     }
 
 
@@ -244,51 +243,54 @@ export class CreateQuizzComponent implements OnInit {
   generaRespuestas(id: number) {
     this.maxs = this.quizzForm.get('cs').value;
     this.maxr = this.quizzForm.value["pcr" + id];
-    if (this.maxr < 21 && this.maxr > 1) {
-      this.thirdStep = true;
-      this.reseteaRespuestas(id);
-      this.bar.start();
-      let grupo: any;
-      let listita = [];
+    if (this.quizzForm.get('pt' + id).status == "INVALID") {
+      this.notifyService.notify("Los titulos de las preguntas son obligatorios", "error");
+    } else {
+      if (this.maxr < 21 && this.maxr > 1) {
+        this.thirdStep = true;
+        this.reseteaRespuestas(id);
+        this.bar.start();
+        let grupo: any;
+        let listita = [];
 
-      this.aux = this.maxr;
-      this.quizzForm.value["pcr" + id];
-      this.ref.detach();
-      for (let i = 1; i <= this.aux; i++) {
-        let titulo: string = "r" + i + "p" + id;
-        let a1: string = "p" + id + "rs" + i + "a" + 1;
-        let a2: string = "p" + id + "rs" + i + "a" + 2;
-        let a3: string = "p" + id + "rs" + i + "a" + 3;
-        let a4: string = "p" + id + "rs" + i + "a" + 4;
-        let a5: string = "p" + id + "rs" + i + "a" + 5;
-        grupo = [
-          { name: titulo, control: new FormControl(null, []) },
-          { name: a1, control: new FormControl(null, []) },
-          { name: a2, control: new FormControl(null, []) },
-          { name: a3, control: new FormControl(null, []) },
-          { name: a4, control: new FormControl(null, []) },
-          { name: a5, control: new FormControl(null, []) },
-        ]
-        grupo.forEach(f => {
-          this.quizzForm.addControl(f.name, f.control)
-          if (f.name[0] == "r") {
-            this.quizzForm.controls[f.name].setValidators([Validators.required]);
-          }
+        this.aux = this.maxr;
+        this.quizzForm.value["pcr" + id];
+        // this.ref.detach();
+        for (let i = 1; i <= this.aux; i++) {
+          let titulo: string = "r" + i + "p" + id;
+          let a1: string = "p" + id + "rs" + i + "a" + 1;
+          let a2: string = "p" + id + "rs" + i + "a" + 2;
+          let a3: string = "p" + id + "rs" + i + "a" + 3;
+          let a4: string = "p" + id + "rs" + i + "a" + 4;
+          let a5: string = "p" + id + "rs" + i + "a" + 5;
+          grupo = [
+            { name: titulo, control: new FormControl(null, []) },
+            { name: a1, control: new FormControl(null, []) },
+            { name: a2, control: new FormControl(null, []) },
+            { name: a3, control: new FormControl(null, []) },
+            { name: a4, control: new FormControl(null, []) },
+            { name: a5, control: new FormControl(null, []) },
+          ]
+          grupo.forEach(f => {
+            this.quizzForm.addControl(f.name, f.control)
+            if (f.name[0] == "r") {
+              this.quizzForm.controls[f.name].setValidators([Validators.required, Validators.maxLength(100)]);
+            }
 
-          this.quizzForm.controls[f.name].updateValueAndValidity();
-          let eje = i;
-          eje--;
-          let aux2 = id;
-          aux2--;
-          this.verdades[aux2].respuestas[eje].generado = true;
-          listita.push(eje);
-        });
+            this.quizzForm.controls[f.name].updateValueAndValidity();
+            let eje = i;
+            eje--;
+            let aux2 = id;
+            aux2--;
+            this.verdades[aux2].respuestas[eje].generado = true;
+            listita.push(eje);
+          });
 
-      }
-      let aux3 = id;
-      aux3--;
-      this.generaArray(aux3);
-      setTimeout(() => {
+        }
+        let aux3 = id;
+        aux3--;
+        this.generaArray(aux3);
+        // setTimeout(() => {
         for (let x = 0; x < listita.length; x++) {
           let aux2 = id;
           aux2--;
@@ -296,13 +298,16 @@ export class CreateQuizzComponent implements OnInit {
 
         }
         this.maxr = this.quizzForm.get('pcr' + id).value;
-        this.ref.detectChanges();
-        this.ref.reattach();
+        //this.ref.detectChanges();
+        //this.ref.reattach();
         this.bar.done();
-      }, 200);
-    } else {
-      this.notifyService.notify("El máximo de respuestas es 20 y el mínimo 2, ¿Razonable no?", "error");
+        // }, 200);
+      } else {
+        this.notifyService.notify("El máximo de respuestas es 20 y el mínimo 2, ¿Razonable no?", "error");
+      }
     }
+
+
 
   }
 
@@ -344,12 +349,29 @@ export class CreateQuizzComponent implements OnInit {
       }
     }
   }
-
+  //Busqueda de controles con errores
+  findInvalidControlsRecursive(formToInvestigate:FormGroup|FormArray):string[] {
+    var invalidControls:string[] = [];
+    let recursiveFunc = (form:FormGroup|FormArray) => {
+      Object.keys(form.controls).forEach(field => { 
+        const control = form.get(field);
+        if (control.invalid) invalidControls.push(field);
+        if (control instanceof FormGroup) {
+          recursiveFunc(control);
+        } else if (control instanceof FormArray) {
+          recursiveFunc(control);
+        }        
+      });
+    }
+    recursiveFunc(formToInvestigate);
+    return invalidControls;
+  }
 
   compruebaValidaciones() {
-    this.ref.detectChanges();
+    let errores = this.findInvalidControlsRecursive(this.quizzForm);
+    this.quizzForm.markAllAsTouched();
+
     this.estado = this.quizzForm.invalid;
-    this.ref.detectChanges();
     if (!this.estado) {
       this.compruebaRespuestasMinimas();
       this.notifyService.notify("¡Hora de mostrarle esta maravilla al mundo!", "success");
@@ -394,7 +416,7 @@ export class CreateQuizzComponent implements OnInit {
     let array = Array(aux).fill(0).map((x, i) => i);
     array.shift();
     this.learray[pos] = array;
-    this.ref.detectChanges();
+    //this.ref.detectChanges();
   }
 
   makeId() {
