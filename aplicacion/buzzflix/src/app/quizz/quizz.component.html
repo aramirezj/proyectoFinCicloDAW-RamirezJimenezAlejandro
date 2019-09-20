@@ -5,9 +5,9 @@
     <h4 class="card-title" role="button">{{quizz.titulo}}</h4>
     <span *ngFor="let item of [].constructor(estrellas)" class="fa fa-star checked"></span>
     <span *ngFor="let item of [].constructor(5-estrellas)" class="fa fa-star"></span>({{quizz.estrellas}})
-    <p class="card-text" style="text-align:left" *ngIf="!this.isCreador"><small class="">Autor: </small><a
+    <p class="card-text" style="text-align:left" *ngIf="!this.isCreador">Autor: <a
         [routerLink]="['/usuario/perfil',usuario.id]">{{this.usuario.name}}</a><span class="pull-right">Fecha:
-        {{this.quizz.fechacreacion | PrettyDate}}</span></p>
+        {{this.quizz.fechacreacion | date}}</span></p>
     <button mat-button [matMenuTriggerFor]="menu" *ngIf="this.isCreador">Acciones</button>
     <mat-menu #menu="matMenu">
       <button mat-menu-item (click)="openDialog()">Eliminar</button>

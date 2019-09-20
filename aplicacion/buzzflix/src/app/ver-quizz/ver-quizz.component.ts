@@ -114,8 +114,7 @@ export class VerQuizzComponent implements OnInit {
     }
     this.resultado = true;//%20 window.location.href
     let preUrl = window.location.href;
-    preUrl = preUrl.replace("#","");
-    preUrl = preUrl.replace("//","/");
+    preUrl = preUrl.replace("/#","");
     this.urlShare = "https://twitter.com/intent/tweet?text=¡Obtuve%20" + this.solucionado.titulo + "!%20"+preUrl+";via=hasquiz;";
 
     setTimeout(() => {

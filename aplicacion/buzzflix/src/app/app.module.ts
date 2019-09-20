@@ -2,7 +2,7 @@ import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatToolbarModule, MatIconModule, MatSidenavModule, MatListModule, MatButtonModule } from  '@angular/material';
 
-import { NgModule } from '@angular/core';
+import { NgModule,LOCALE_ID } from '@angular/core';
 import { RouterModule } from '@angular/router'
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -63,7 +63,9 @@ import { DashboardQuizComponent } from './dashboard-quiz/dashboard-quiz.componen
 import { NotFoundComponent } from './not-found/not-found.component';
 import { LogrosComponent } from './profile/logros/logros.component';
 import { InfolegalComponent } from './infolegal/infolegal.component';
-import { HashLocationStrategy, LocationStrategy } from '@angular/common';
+import { HashLocationStrategy, LocationStrategy,registerLocaleData  } from '@angular/common';
+import localePy from '@angular/common/locales/es-PY';
+registerLocaleData(localePy, 'es');
 @NgModule({
   declarations: [
     AppComponent,
@@ -121,7 +123,7 @@ import { HashLocationStrategy, LocationStrategy } from '@angular/common';
     AngularFireDatabaseModule
   ],
   exports: [RouterModule],
-  providers: [AuthService, AuthGuard, AuthedGuard, QuizzService, NotifyService, UserService, FollowService, RestService, AngularFirestore, AngularFireStorage, { provide: MatPaginatorIntl, useClass: MatPaginatorIntlCro },{provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher},{provide: LocationStrategy, useClass: HashLocationStrategy}],
+  providers: [AuthService, AuthGuard, AuthedGuard, QuizzService, NotifyService, UserService, FollowService, RestService, AngularFirestore, AngularFireStorage, { provide: MatPaginatorIntl, useClass: MatPaginatorIntlCro },{provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher},{provide: LocationStrategy, useClass: HashLocationStrategy},{ provide: LOCALE_ID, useValue: 'es-Ar' }],
   bootstrap: [AppComponent],
   entryComponents: [DialogboxComponent]
 })

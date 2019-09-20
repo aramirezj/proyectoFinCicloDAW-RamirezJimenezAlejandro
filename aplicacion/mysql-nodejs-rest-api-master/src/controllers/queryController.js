@@ -1,6 +1,21 @@
 const mysqlConnection = require('../database.js');
 const listaQuerys = require('../querys');
 const { validationResult } = require('express-validator');
+var winston = require('winston');
+const { createLogger, format, transports } = require('winston');
+const { combine, timestamp, label, prettyPrint } = format;
+const logger = winston.createLogger({
+    level: 'info',
+    format: combine(
+        //label({ label: 'right meow!' }),
+        timestamp(),
+        prettyPrint()
+    ),
+    defaultMeta: { Componente: 'Query Controller' },
+    transports: [
+        new winston.transports.File({ filename: 'logs/errores.log', level: 'error' }),
+    ]
+});
 
 class QueryController {
     constructor() { }
@@ -10,7 +25,10 @@ class QueryController {
             if (!err) {
                 return callback(rows);
             } else {
-                console.log("HA OCURRIDO UN ERROR");
+                logger.log({
+                    level: 'error',
+                    message: err
+                });
                 if (err.code == 'ER_DUP_ENTRY') {
                     this.gestionaEnvioErrores(3, res);
                 } else {
