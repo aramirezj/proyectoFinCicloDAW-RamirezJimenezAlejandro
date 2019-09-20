@@ -47,6 +47,7 @@ export class CreateQuizzComponent implements OnInit {
   checked = false;
   labelPosition = 'before';
   indeterminate = false;
+  private quizCookie: Quizz = JSON.parse(localStorage.getItem("quizCookie"));
   private quizz: Quizz;
   private estado: boolean = true;
   private max: number
@@ -78,7 +79,7 @@ export class CreateQuizzComponent implements OnInit {
   ) {
 
     this.files = [];
-    this.createForm();
+    this.max = 0;
     this.verdades = [];
     this.learray = [];
     this.learray[0] = null;
@@ -131,23 +132,37 @@ export class CreateQuizzComponent implements OnInit {
 
   }
 
+  ngOnInit() {
+    this.createForm();
+  }
+
   createForm() {
+
+    let titulo = this.quizCookie != null ? this.quizCookie.titulo : null;
+    let cp = this.quizCookie != null ? this.quizCookie.preguntas.length : null;
+    let cs = this.quizCookie != null ? this.quizCookie.soluciones.length : null;
+
     this.quizzForm = new FormGroup({
-      titulo: new FormControl(null, [Validators.required, Validators.minLength(10), Validators.maxLength(75)]),
-      cp: new FormControl(null, [Validators.required, Validators.min(4), Validators.max(10)]),
-      cs: new FormControl(null, [Validators.required, Validators.min(2), Validators.max(5)]),
+      titulo: new FormControl(titulo, [Validators.required, Validators.minLength(10), Validators.maxLength(75)]),
+      cp: new FormControl(cp, [Validators.required, Validators.min(4), Validators.max(10)]),
+      cs: new FormControl(cs, [Validators.required, Validators.min(2), Validators.max(5)]),
       banner: new FormControl(null, [Validators.required]),
       privado: new FormControl(null, [])
     });
+    if (this.quizCookie != null) {
+      this.preparaCookie();
+      this.generaSoluciones(true);
+      this.generaPreguntas(true);
+    }
   }
 
-  ngOnInit() {
-    this.max = 0;
+  preparaCookie() {
+
   }
 
 
   //Generación de las soluciones al pulsar el boton
-  generaSoluciones() {
+  generaSoluciones(cookie?: boolean) {
     this.aux = this.quizzForm.get('cs').value;
     this.quizzForm.value.privado;
     if (this.aux > 1 && this.aux < 6) {
@@ -156,14 +171,18 @@ export class CreateQuizzComponent implements OnInit {
       // this.ref.detach();
       this.bar.start();
       let grupo: any
-
+      this.aux = cookie ? this.quizCookie.soluciones.length : this.aux;
       for (let i = 1; i <= this.aux; i++) {
         let titulo: string = "st" + i;
         let descripcion: string = "sd" + i;
         let image: string = "si" + i;
+
+        let tituloC = cookie ? this.quizCookie.soluciones[(i - 1)].titulo : null;
+        let descripcionC = cookie ? this.quizCookie.soluciones[(i - 1)].descripcion : null;
+
         grupo = [
-          { name: titulo, control: new FormControl(null, [Validators.required, Validators.maxLength(50)]) },
-          { name: descripcion, control: new FormControl(null, [Validators.required,Validators.maxLength(125)]) },
+          { name: titulo, control: new FormControl(tituloC, [Validators.required, Validators.maxLength(50)]) },
+          { name: descripcion, control: new FormControl(descripcionC, [Validators.required, Validators.maxLength(125)]) },
           { name: image, control: new FormControl(null, [Validators.required]) },
         ]
         grupo.forEach(f => {
@@ -189,40 +208,52 @@ export class CreateQuizzComponent implements OnInit {
 
 
   //Generación de las preguntas por el boton
-  generaPreguntas() {
+  generaPreguntas(cookie?: boolean) {
     let verdad = true;
     for (let i = 1; i <= this.quizzForm.get('cs').value; i++) {
       if (this.quizzForm.get('st' + i).status == "INVALID") {
         verdad = false;
       }
     }
-    this.aux = this.quizzForm.get('cp').value;
+    this.aux = cookie ? this.quizCookie.preguntas.length : this.quizzForm.get('cp').value;
+    console.log(this.quizCookie.preguntas)
     if (verdad) {
       if (this.aux > 1 && this.aux < 11) {
+        this.bar.start();
         this.reseteaFullRespuestas();
         //this.ref.detach();
-        this.bar.start();
+
         let grupo: any
-        this.aux = this.quizzForm.get('cp').value;
+        console.log(this.aux)
         for (let i = 1; i <= this.aux; i++) {
           let titulo: string = "pt" + i;
-          let descripcion: string = "pcr" + i;
+          let cantidad: string = "pcr" + i;
+          console.log(titulo)
+          let tituloC = cookie ? this.quizCookie.preguntas[(i - 1)].enunciado : null;
+          let cantidadC = cookie ? this.quizCookie.preguntas[(i - 1)].respuestas.length : null;
+
           grupo = [
-            { name: titulo, control: new FormControl(null, [Validators.required, Validators.maxLength(125)]) },
-            { name: descripcion, control: new FormControl(null, [Validators.required, Validators.max(20)]) }
+            { name: titulo, control: new FormControl(tituloC, [Validators.required, Validators.maxLength(125)]) },
+            { name: cantidad, control: new FormControl(cantidadC, [Validators.required, Validators.max(20)]) }
           ]
           grupo.forEach(f => {
             this.quizzForm.addControl(f.name, f.control);
-            //this.quizzForm.controls[f.name].setValidators([Validators.required]);
             this.quizzForm.controls[f.name].updateValueAndValidity();
             let eje = i;
             eje--;
             this.verdades[eje].creada = true;
           });
+
+          if (cookie) {
+            if (this.quizCookie.preguntas[(i - 1)].respuestas.length > 0) {
+              this.generaRespuestas(i, true);
+            }
+          }
+
         }
         this.secondStep = true;
         // setTimeout(() => {
-        this.maxp = this.quizzForm.get('cp').value;
+        this.maxp = cookie ? this.quizCookie.preguntas.length : this.quizzForm.get('cp').value;
         // this.ref.detectChanges();
         //this.ref.reattach();
         this.bar.done();
@@ -234,13 +265,15 @@ export class CreateQuizzComponent implements OnInit {
       this.notifyService.notify("Por favor, rellena al menos los titulos de las soluciones (máximo 40 caracteres)", "error");
     }
 
-
+    console.log(this.quizzForm)
 
   }
 
 
   //Generación de las respuestas por el boton
-  generaRespuestas(id: number) {
+  generaRespuestas(id: number, cookie?: boolean) {
+    console.log("ENTRO FUNCION GR" + id)
+    if (!cookie) { this.guardaCookie() };
     this.maxs = this.quizzForm.get('cs').value;
     this.maxr = this.quizzForm.value["pcr" + id];
     if (this.quizzForm.get('pt' + id).status == "INVALID") {
@@ -253,30 +286,39 @@ export class CreateQuizzComponent implements OnInit {
         let grupo: any;
         let listita = [];
 
-        this.aux = this.maxr;
-        this.quizzForm.value["pcr" + id];
-        // this.ref.detach();
-        for (let i = 1; i <= this.aux; i++) {
+        let aux = cookie ? this.quizCookie.preguntas[(id - 1)].respuestas.length : this.maxr;
+
+        console.log("PROCEDO A GENERAR TANDA DE RESPUESTAS de la pregunta " + id)
+        for (let i = 1; i <= aux; i++) {
           let titulo: string = "r" + i + "p" + id;
           let a1: string = "p" + id + "rs" + i + "a" + 1;
           let a2: string = "p" + id + "rs" + i + "a" + 2;
           let a3: string = "p" + id + "rs" + i + "a" + 3;
           let a4: string = "p" + id + "rs" + i + "a" + 4;
           let a5: string = "p" + id + "rs" + i + "a" + 5;
+          let tituloC = cookie ? this.quizCookie.preguntas[(id - 1)].respuestas[(i - 1)].enunciado : null;
+          console.log(this.quizCookie.preguntas[(id - 1)].respuestas[(i - 1)].afinidades)
+          console.log("cantidad" in this.quizCookie.preguntas[(id - 1)].respuestas[(i - 1)].afinidades[0])
+          let a1C = cookie && this.quizCookie.preguntas[(id - 1)].respuestas[(i - 1)].afinidades[0] != null ? this.quizCookie.preguntas[(id - 1)].respuestas[(i - 1)].afinidades[0].cantidad : 0;
+          let a2C = cookie && this.quizCookie.preguntas[(id - 1)].respuestas[(i - 1)].afinidades[1] != null ? this.quizCookie.preguntas[(id - 1)].respuestas[(i - 1)].afinidades[1].cantidad : 0;
+          let a3C = cookie && this.quizCookie.preguntas[(id - 1)].respuestas[(i - 1)].afinidades[2] != null ? this.quizCookie.preguntas[(id - 1)].respuestas[(i - 1)].afinidades[2].cantidad : 0;
+          let a4C = cookie && this.quizCookie.preguntas[(id - 1)].respuestas[(i - 1)].afinidades[3] != null ? this.quizCookie.preguntas[(id - 1)].respuestas[(i - 1)].afinidades[3].cantidad : 0;
+          let a5C = cookie && this.quizCookie.preguntas[(id - 1)].respuestas[(i - 1)].afinidades[4] != null ? this.quizCookie.preguntas[(id - 1)].respuestas[(i - 1)].afinidades[4].cantidad : 0;
+
           grupo = [
-            { name: titulo, control: new FormControl(null, []) },
-            { name: a1, control: new FormControl(null, []) },
-            { name: a2, control: new FormControl(null, []) },
-            { name: a3, control: new FormControl(null, []) },
-            { name: a4, control: new FormControl(null, []) },
-            { name: a5, control: new FormControl(null, []) },
+            { name: titulo, control: new FormControl(tituloC, []) },
+            { name: a1, control: new FormControl(a1C, []) },
+            { name: a2, control: new FormControl(a2C, []) },
+            { name: a3, control: new FormControl(a3C, []) },
+            { name: a4, control: new FormControl(a4C, []) },
+            { name: a5, control: new FormControl(a5C, []) },
           ]
           grupo.forEach(f => {
             this.quizzForm.addControl(f.name, f.control)
             if (f.name[0] == "r") {
               this.quizzForm.controls[f.name].setValidators([Validators.required, Validators.maxLength(100)]);
             }
-
+            
             this.quizzForm.controls[f.name].updateValueAndValidity();
             let eje = i;
             eje--;
@@ -290,18 +332,15 @@ export class CreateQuizzComponent implements OnInit {
         let aux3 = id;
         aux3--;
         this.generaArray(aux3);
-        // setTimeout(() => {
         for (let x = 0; x < listita.length; x++) {
           let aux2 = id;
           aux2--;
           this.verdades[aux2].respuestas[listita[x]] = { generado: true, mostrado: true }
-
         }
-        this.maxr = this.quizzForm.get('pcr' + id).value;
-        //this.ref.detectChanges();
-        //this.ref.reattach();
+        this.maxr = cookie ? this.quizCookie.preguntas[(id - 1)].respuestas.length : this.quizzForm.get('pcr' + id).value;
         this.bar.done();
-        // }, 200);
+        this.quizzForm.updateValueAndValidity();
+        
       } else {
         this.notifyService.notify("El máximo de respuestas es 20 y el mínimo 2, ¿Razonable no?", "error");
       }
@@ -350,17 +389,17 @@ export class CreateQuizzComponent implements OnInit {
     }
   }
   //Busqueda de controles con errores
-  findInvalidControlsRecursive(formToInvestigate:FormGroup|FormArray):string[] {
-    var invalidControls:string[] = [];
-    let recursiveFunc = (form:FormGroup|FormArray) => {
-      Object.keys(form.controls).forEach(field => { 
+  findInvalidControlsRecursive(formToInvestigate: FormGroup | FormArray): string[] {
+    var invalidControls: string[] = [];
+    let recursiveFunc = (form: FormGroup | FormArray) => {
+      Object.keys(form.controls).forEach(field => {
         const control = form.get(field);
         if (control.invalid) invalidControls.push(field);
         if (control instanceof FormGroup) {
           recursiveFunc(control);
         } else if (control instanceof FormArray) {
           recursiveFunc(control);
-        }        
+        }
       });
     }
     recursiveFunc(formToInvestigate);
@@ -426,7 +465,7 @@ export class CreateQuizzComponent implements OnInit {
 
 
   //Preparo las soluciones para el modelo Quizz
-  preparaSoluciones(): Array<Solucion> {
+  preparaSoluciones(cookie?: boolean): Array<Solucion> {
     let soluciones: Array<Solucion> = [];
     let solcant = this.quizzForm.value.cs;
     for (let i = 1; i <= solcant; i++) {
@@ -435,7 +474,9 @@ export class CreateQuizzComponent implements OnInit {
       solucion.id = id;
       solucion.titulo = this.quizzForm.value['st' + id];
       solucion.descripcion = this.quizzForm.value['sd' + id];
-      solucion.image = this.files[id].name;
+      if (!cookie) {
+        solucion.image = this.files[id].name;
+      }
       soluciones.push(solucion);
     }
     return soluciones;
@@ -500,6 +541,14 @@ export class CreateQuizzComponent implements OnInit {
       .subscribe(resp => {
         this.router.navigate(['/usuario/perfil', this.authService.getAuthUserId()])
       })
+  }
+
+
+  guardaCookie() {
+    let quizCookie: Quizz;
+    quizCookie = new Quizz(null, this.authService.getAuthUserId(), this.quizzForm.value.titulo, this.files[0].name,
+      this.preparaSoluciones(true), this.preparaPreguntas(), 0, null);
+    localStorage.setItem("quizCookie", JSON.stringify(quizCookie));
   }
 
 }

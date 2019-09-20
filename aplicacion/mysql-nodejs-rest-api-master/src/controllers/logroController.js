@@ -32,16 +32,16 @@ class LogroController {
     }
     logroIncremento(id, res) {
         const logrosTipoIncr = [4, 5, 7];
-        ejecutaConsulta("checkLogrosByIncr", [id, id, id, id], res,
+        queryService.ejecutaConsulta("checkLogrosByIncr", [id, id, id, id], res,
             function (rows) {
                 if (rows) {
                     for (let i = 0; i < logrosTipoIncr.length; i++) {
                         if (rows[0]["logro" + i] != null) {
-                            ejecutaConsulta("buscaLogro", [id, logrosTipoIncr[i]], res,
+                            queryService.ejecutaConsulta("buscaLogro", [id, logrosTipoIncr[i]], res,
                                 function (rows2) {
                                     if (rows2) {
                                         if (rows2.length == 0) {
-                                            ejecutaConsulta("insertLogro", [id, logrosTipoIncr[i]], res,
+                                            queryService.ejecutaConsulta("insertLogro", [id, logrosTipoIncr[i]], res,
                                                 function (rows) { console.log("Logro insertado") });
                                         }
                                     }

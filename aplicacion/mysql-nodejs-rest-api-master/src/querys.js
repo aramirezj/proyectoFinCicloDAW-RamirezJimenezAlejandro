@@ -8,7 +8,7 @@ querys["buscaLogros"] = "SELECT L.*,(SELECT fecha from logros_obtenidos where us
 //SELECT v.origen from votaciones v where v.origen = ? having count(v.origen)>29 ;
 querys["checkLogrosByUser"] = "SELECT (SELECT DISTINCT Q.creador from quizz Q where Q.publicado=1 and Q.creador = ?) as logro0, (SELECT Q.creador from quizz Q where creador = ?  group by Q.creador having COUNT(*) >=5) as logro1, (SELECT F.destino from follows F where destino = ? having count(*) >= 5) as logro2, (SELECT v.origen from votaciones v where v.origen = ? having count(v.origen)>29) as logro3 from dual"
 querys["checkLogrosByQuiz"] = "SELECT (SELECT U.id from users U where U.id in (SELECT Q.creador from quizz Q where Q.id in (SELECT V.quizz from votaciones V where V.quizz = ? having count(*) > 10 ) )) as logro1" //Logro 3
-querys["checkLogrosByIncr"] = "SELECT (SELECT LP.usuario as usuario from logros_proceso LP where LP.logro = 4 AND LP.cantidad>14 AND LP.cantidad2>14 AND LP.usuario = ?) as logro1, (SELECT LP.usuario as usuario from logros_proceso LP where LP.logro = 5 AND LP.cantidad>29 AND LP.usuario = ?) as logro2, (SELECT LP.usuario as usuario from logros_proceso LP where LP.logro = 7 AND LP.cantidad>99 AND LP.usuario = ?) as logro3, (SELECT LP.usuario as usuario from logros_proceso LP where LP.logro = 9 AND LP.cantidad>29 AND LP.usuario = ?) as logro4 from dual"
+querys["checkLogrosByIncr"] = "SELECT (SELECT LP.usuario as usuario from logros_proceso LP where LP.logro = 4 AND LP.cantidad1>14 AND LP.cantidad2>14 AND LP.usuario = ?) as logro1, (SELECT LP.usuario as usuario from logros_proceso LP where LP.logro = 5 AND LP.cantidad1>29 AND LP.usuario = ?) as logro2, (SELECT LP.usuario as usuario from logros_proceso LP where LP.logro = 7 AND LP.cantidad1>99 AND LP.usuario = ?) as logro3, (SELECT LP.usuario as usuario from logros_proceso LP where LP.logro = 9 AND LP.cantidad1>29 AND LP.usuario = ?) as logro4 from dual"
 
 
 querys["setLogroProceso"] = "INSERT INTO logros_proceso (usuario,logro,cantidad1,cantidad2) values(?,?,?,?)";
@@ -19,10 +19,10 @@ querys["checkLogro1"] = "SELECT count(*) as total from quizz where creador = ? a
 querys["checkLogro2"] = "SELECT count(*) as total from follows where destino = ? having total>10";
 querys["checkLogro3"] = "SELECT max(counted) FROM (SELECT count(*) as counted from votaciones where quizz in (SELECT id as elid from quizz where creador = ?) group by quizz having counted > 10 ) as counts";
 querys["checkLogro4"] = "SELECT moderacion.usuario from moderacion where moderacion.quizz = ?";
-querys["checkLogro4"] = "SELECT LP.usuario as usuario from logros_proceso LP where LP.logro = 4 AND LP.cantidad>14 AND LP.cantidad2>14 AND LP.usuario = ?"
-querys["checkLogro5"] = "SELECT LP.usuario as usuario from logros_proceso LP where LP.logro = 5 AND LP.cantidad>29 AND LP.usuario = ?"
-querys["checkLogro7"] = "SELECT LP.usuario as usuario from logros_proceso LP where LP.logro = 7 AND LP.cantidad>99 AND LP.usuario = ?"
-querys["checkLogro9"] = "SELECT LP.usuario as usuario from logros_proceso LP where LP.logro = 9 AND LP.cantidad>29 AND LP.usuario = ?"
+querys["checkLogro4"] = "SELECT LP.usuario as usuario from logros_proceso LP where LP.logro = 4 AND LP.cantidad1>14 AND LP.cantidad2>14 AND LP.usuario = ?"
+querys["checkLogro5"] = "SELECT LP.usuario as usuario from logros_proceso LP where LP.logro = 5 AND LP.cantidad1>29 AND LP.usuario = ?"
+querys["checkLogro7"] = "SELECT LP.usuario as usuario from logros_proceso LP where LP.logro = 7 AND LP.cantidad1>99 AND LP.usuario = ?"
+querys["checkLogro9"] = "SELECT LP.usuario as usuario from logros_proceso LP where LP.logro = 9 AND LP.cantidad1>29 AND LP.usuario = ?"
 */
 
 querys["insertLogro"] = "INSERT INTO logros_obtenidos (usuario,logro) values (?,?) ";
