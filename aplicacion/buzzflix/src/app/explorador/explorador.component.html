@@ -1,11 +1,11 @@
 <div *ngIf="!quizzs && this.isLoaded">
   <p class="empty">Mmm, no hay quizzes de nadie, ¡Vaya sitio triste!</p>
 </div>
-<div *ngIf="quizzs && this.isLoaded">
-  <div *ngFor="let quizz of quizzs">
+<div class="padreQuiz" *ngIf="quizzs && this.isLoaded">
+  <div class="cajaQuiz" *ngFor="let quizz of quizzs">
     <app-quizz [quizz]="quizz"></app-quizz>
   </div>
   <div style="clear:both;"></div>
-  <mat-paginator [length]="this.totalQuizzes" [pageSize]="3" (page)="pageEvent = $event;muevoPagina()">
+  <mat-paginator [length]="this.totalQuizzes" [pageSize]="10" (page)="pageEvent = $event;muevoPagina()">
   </mat-paginator>
 </div>

@@ -13,7 +13,7 @@ export class DashboardComponent implements OnInit {
   isLoaded:boolean=false;
   inicio:number=0;
   fin:number=2;
-  quizporPagina:number=2;
+  quizporPagina:number=10;
   totalQuizzes:number=0;
   pageEvent: PageEvent;
   constructor(

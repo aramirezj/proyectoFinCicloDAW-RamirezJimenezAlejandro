@@ -13,7 +13,7 @@ export class ExploradorComponent implements OnInit  {
   isLoaded:boolean=false;
   inicio:number=0;
   fin:number=3;
-  quizporPagina:number=3;
+  quizporPagina:number=10;
   totalQuizzes:number=0;
   pageEvent: PageEvent;
   constructor(

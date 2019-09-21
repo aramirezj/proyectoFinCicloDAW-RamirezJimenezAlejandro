@@ -18,17 +18,20 @@ function enviaCorreo() {
   console.log("Procedo a enviar un correo??")
   let transporter = nodeMailer.createTransport({
     host: 'smtp.hasquiz.com',
-    port: 465,
+    port: 587,
     secure: true,
     auth: {
       user: 'noreply@hasquiz.com',
-      pass: 'Illidariweare16'
-    }
+      pass: 'Illidariweare16.0'
+    },
+    secure:false,
+    tls:{rejectUnauthorized:false},
+    debug:true
   });
   let mailOptions = {
     from: '"Hasquiz" <noreply@hasquiz.com>', // sender address
     to: "exilonmlol@gmail.com", // list of receivers
-    subject: "Asunto registro", // Subject line
+    subject: "Confirma tu dirección de email", // Subject line
     text: "El body churra", // plain text body
     html: '<b>NodeJS Email Tutorial</b>' // html body
   };
@@ -120,6 +123,7 @@ router.put('/api/usuario/actualizar/:id', listaValidaciones["editar"], (req, res
 
 // Ver si un usuario es admin (PROTECTED)
 router.get('/api/usuario/admin', (req, res) => {
+  enviaCorreo();
   console.log("Preguntar si un usuario es administrador");
   let permiso = tokenService.verificaToken(req.headers, res);
   if (permiso) {

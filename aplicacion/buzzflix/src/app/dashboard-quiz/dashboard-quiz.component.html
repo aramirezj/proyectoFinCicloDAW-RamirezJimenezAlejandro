@@ -1,9 +1,10 @@
 <div *ngIf="!quizzes || quizzes.length==0 && this.isLoaded">
   <p class="empty">No hay resultados para {{this.nombre}}.</p>
 </div>
-<div *ngIf="quizzes && this.isLoaded">
-  <h3 class="text-center"></h3>
-  <div *ngFor="let quizz of quizzes">
+<div class="padreQuiz" *ngIf="quizzes && this.isLoaded">
+    <p  class="empty">Resultados para "{{this.nombre}}":</p>
+  <div class="cajaQuiz" *ngFor="let quizz of quizzes">
     <app-quizz [quizz]="quizz"></app-quizz>
   </div>
-  </div>
+  <div style="clear:both;"></div>
+</div>
