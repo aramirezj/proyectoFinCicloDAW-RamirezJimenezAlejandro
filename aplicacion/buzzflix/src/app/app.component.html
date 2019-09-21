@@ -2,24 +2,24 @@
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
   integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
 
-  <app-notify></app-notify>
+<app-notify></app-notify>
 <mat-toolbar class="barra" color="primary">
   <mat-toolbar-row>
     <button class="menuBoton" mat-icon-button>
       <mat-icon (click)="sidenav.toggle()">menu</mat-icon>
     </button>
-    <img src="assets/logo.png" role="button" routerLink="dashboard">
+    <img src="assets/logo.png" role="button" [routerLink]="['ver/seguidos']">
     <span class="menu-spacer"></span>
     <div class="menuExpandido">
       <form class="form-inline" id="form1" *ngIf="this.showSU" [formGroup]="miniForm">
-        <input maxLength=20 maxLength=20 class="form-control mr-sm-2" formControlName="nombre" type="search" placeholder="Buscar usuarios"
-          aria-label="Search" />
+        <input maxLength=20 maxLength=20 class="form-control mr-sm-2" formControlName="nombre" type="search"
+          placeholder="Buscar usuarios" aria-label="Search" />
         <button type="submit" class="btn btn-default" (click)="onSubmit()">Buscar</button>
       </form>
       <!--Formulario Quizzes-->
       <form class="form-inline" id="form2" *ngIf="this.showSQ" [formGroup]="miniForm2">
-        <input maxLength=20 class="form-control mr-sm-2" formControlName="nombre2" type="search" placeholder="Buscar quizzes"
-          aria-label="Search" />
+        <input maxLength=20 class="form-control mr-sm-2" formControlName="nombre2" type="search"
+          placeholder="Buscar quizzes" aria-label="Search" />
         <button type="submit" class="btn btn-default" (click)="onSubmit2()">Buscar</button>
       </form>
       <div style="display: inline;margin-right:4%;" *ngIf="(!this.showSQ && !this.showSU)">
@@ -36,23 +36,26 @@
         aria-label="Example icon-button with a menu">
         <mat-icon>more_vert</mat-icon>
       </button>
-      
+
       <!--Menú derecha-->
       <mat-menu #menu="matMenu">
         <button mat-menu-item *ngIf="isLoggedIn()" [routerLink]="['usuario/perfil',this.authService.getAuthUserId()]">
           <mat-icon *ngIf="isLoggedIn()">account_circle</mat-icon>
           <span role="button" mat-button><a>Mi perfil</a></span>
         </button>
+
+        <!--Notificaciones-->
         <mat-accordion *ngIf="isLoggedIn()" (click)="$event.stopPropagation()">
           <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
             <mat-expansion-panel-header style="padding: 16px;">
               <mat-panel-title>
                 <mat-icon style="margin-right: 16px;vertical-align: middle;">mail_outline</mat-icon> <span role="button"
-                  mat-button><a>Notificaciones</a> <mat-icon *ngIf="notificaciones.length>0">{{this.icono}}
-                  </mat-icon></span>
+                  mat-button><a>Notificaciones</a>
+                  <mat-icon *ngIf="notificaciones.length>0">{{this.icono}}
+                  </mat-icon>
+                </span>
               </mat-panel-title>
               <mat-panel-description>
-
               </mat-panel-description>
             </mat-expansion-panel-header>
             <mat-list>
@@ -67,6 +70,8 @@
           </mat-expansion-panel>
         </mat-accordion>
 
+        
+
         <button mat-menu-item *ngIf="!isLoggedIn()" routerLink="/auth/register">
           <mat-icon>fiber_new</mat-icon>
           <span role="button" mat-button><a>Registrarse</a></span>
@@ -79,6 +84,46 @@
           <mat-icon>directions_run</mat-icon>
           <span role="button" mat-button><a>Cerrar sesión</a></span>
         </button>
+        <!--Contacto-->
+        <mat-accordion (click)="$event.stopPropagation()">
+            <mat-expansion-panel (opened)="panelOpenState2 = true" (closed)="panelOpenState2 = false">
+              <mat-expansion-panel-header style="padding: 16px;">
+                <mat-panel-title>
+                  <mat-icon style="margin-right: 16px;vertical-align: middle;">contact_support</mat-icon> <span
+                    role="button" mat-button><a>Acerca de Hasquiz</a>
+                  </span>
+                </mat-panel-title>
+                <mat-panel-description>
+                </mat-panel-description>
+              </mat-expansion-panel-header>
+              <mat-list>
+                <mat-list-item>
+                  <button mat-menu-item [routerLink]="['/info',4]">
+                    <mat-icon>share</mat-icon>
+                    <span role="button" mat-button><a>Redes sociales</a></span>
+                  </button>
+                </mat-list-item>
+                <mat-list-item>
+                  <button mat-menu-item [routerLink]="['/info',3]">
+                    <mat-icon>feedback</mat-icon>
+                    <span role="button" mat-button><a>Contacto</a></span>
+                  </button>
+                </mat-list-item>
+                <mat-list-item>
+                  <button mat-menu-item [routerLink]="['/info',1]">
+                    <mat-icon>info</mat-icon>
+                    <span role="button" mat-button><a>Terminos de uso</a></span>
+                  </button>
+                </mat-list-item>
+                <mat-list-item>
+                  <button mat-menu-item [routerLink]="['/info',2]">
+                    <mat-icon>lock</mat-icon>
+                    <span role="button" mat-button><a>Politica de privacidad</a></span>
+                  </button>
+                </mat-list-item>
+              </mat-list>
+            </mat-expansion-panel>
+          </mat-accordion>
       </mat-menu>
     </div>
   </mat-toolbar-row>
@@ -88,26 +133,26 @@
 <!--EL SIDENAVVVVV-->
 <mat-sidenav-container>
   <mat-sidenav #sidenav>
-    <mat-nav-list >
-      
-        <form class="form-inline" id="form1" *ngIf="this.showSU" [formGroup]="miniForm">
-            <input maxLength=20 class="form-control mr-sm-2" formControlName="nombre" type="search" placeholder="Buscar usuarios"
-              aria-label="Search" />
-            <button type="submit" class="btn btn-default" (click)="onSubmit()">Buscar</button>
-          </form>
-          <!--Formulario Quizzes-->
-          <form class="form-inline" id="form2" *ngIf="this.showSQ" [formGroup]="miniForm2">
-            <input maxLength=20 class="form-control mr-sm-2" formControlName="nombre2" type="search" placeholder="Buscar quizzes"
-              aria-label="Search" />
-            <button type="submit" class="btn btn-default" (click)="onSubmit2()">Buscar</button>
-          </form>
-          <div style="display: inline;margin-right:4%;" *ngIf="(!this.showSQ && !this.showSU)">
-            <mat-icon class="lupas" (click)="muestraForm2()">image_search</mat-icon>
-          </div>
-          <div style="display: inline;margin-right: 2%;" *ngIf="(!this.showSQ && !this.showSU)">
-            <mat-icon class="lupas" (click)="muestraForm()">search</mat-icon>
-          </div>
-        
+    <mat-nav-list>
+
+      <form class="form-inline" id="form1" *ngIf="this.showSU" [formGroup]="miniForm">
+        <input maxLength=20 class="form-control mr-sm-2" formControlName="nombre" type="search"
+          placeholder="Buscar usuarios" aria-label="Search" />
+        <button type="submit" class="btn btn-default" (click)="onSubmit()">Buscar</button>
+      </form>
+      <!--Formulario Quizzes-->
+      <form class="form-inline" id="form2" *ngIf="this.showSQ" [formGroup]="miniForm2">
+        <input maxLength=20 class="form-control mr-sm-2" formControlName="nombre2" type="search"
+          placeholder="Buscar quizzes" aria-label="Search" />
+        <button type="submit" class="btn btn-default" (click)="onSubmit2()">Buscar</button>
+      </form>
+      <div style="display: inline;margin-right:4%;" *ngIf="(!this.showSQ && !this.showSU)">
+        <mat-icon class="lupas" (click)="muestraForm2()">image_search</mat-icon>
+      </div>
+      <div style="display: inline;margin-right: 2%;" *ngIf="(!this.showSQ && !this.showSU)">
+        <mat-icon class="lupas" (click)="muestraForm()">search</mat-icon>
+      </div>
+
       <a mat-list-item [routerLink]="['ver/todos']">Todos los quizzes </a>
       <a mat-list-item [routerLink]="['crear/quizz']">Crear quiz </a>
       <a mat-list-item *ngIf="isLoggedIn()" [routerLink]="['moderacion']">Moderación </a>
@@ -115,16 +160,21 @@
         <mat-icon *ngIf="isLoggedIn()">account_circle</mat-icon>
         <span role="button" mat-button><a>Mi perfil</a></span>
       </button>
+
+
+
+      <!--Notificaciones-->
       <mat-accordion *ngIf="isLoggedIn()" (click)="$event.stopPropagation()">
         <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
           <mat-expansion-panel-header style="padding: 16px;">
             <mat-panel-title>
               <mat-icon style="margin-right: 16px;vertical-align: middle;">mail_outline</mat-icon> <span role="button"
-                mat-button><a>Notificaciones</a> <mat-icon *ngIf="notificaciones.length>0">{{this.icono}}
-                </mat-icon></span>
+                mat-button><a>Notificaciones</a>
+                <mat-icon *ngIf="notificaciones.length>0">{{this.icono}}
+                </mat-icon>
+              </span>
             </mat-panel-title>
             <mat-panel-description>
-              
             </mat-panel-description>
           </mat-expansion-panel-header>
           <mat-list>
@@ -138,6 +188,8 @@
           </mat-list>
         </mat-expansion-panel>
       </mat-accordion>
+      
+      
 
       <button mat-menu-item *ngIf="!isLoggedIn()" routerLink="/auth/register">
         <mat-icon>fiber_new</mat-icon>
@@ -151,15 +203,55 @@
         <mat-icon>directions_run</mat-icon>
         <span role="button" mat-button><a>Cerrar sesión</a></span>
       </button>
-     <a mat-list-item (click)="sidenav.toggle()" mat-list-item>Cerrar menú</a>
+      <!--Contacto-->
+      <mat-accordion (click)="$event.stopPropagation()">
+          <mat-expansion-panel (opened)="panelOpenState2 = true" (closed)="panelOpenState2 = false">
+            <mat-expansion-panel-header style="padding: 16px;">
+              <mat-panel-title>
+                <mat-icon style="margin-right: 16px;vertical-align: middle;">contact_support</mat-icon> <span
+                  role="button" mat-button><a>Acerca de Hasquiz</a>
+                </span>
+              </mat-panel-title>
+              <mat-panel-description>
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+            <mat-list>
+              <mat-list-item>
+                <button mat-menu-item [routerLink]="['/info',4]">
+                  <mat-icon>share</mat-icon>
+                  <span role="button" mat-button><a>Redes sociales</a></span>
+                </button>
+              </mat-list-item>
+              <mat-list-item>
+                <button mat-menu-item [routerLink]="['/info',3]">
+                  <mat-icon>feedback</mat-icon>
+                  <span role="button" mat-button><a>Contacto</a></span>
+                </button>
+              </mat-list-item>
+              <mat-list-item>
+                <button mat-menu-item [routerLink]="['/info',1]">
+                  <mat-icon>info</mat-icon>
+                  <span role="button" mat-button><a>Terminos de uso</a></span>
+                </button>
+              </mat-list-item>
+              <mat-list-item>
+                <button mat-menu-item [routerLink]="['/info',2]">
+                  <mat-icon>lock</mat-icon>
+                  <span role="button" mat-button><a>Politica de privacidad</a></span>
+                </button>
+              </mat-list-item>
+            </mat-list>
+          </mat-expansion-panel>
+        </mat-accordion>
+      <a mat-list-item (click)="sidenav.toggle()" mat-list-item>Cerrar menú</a>
 
     </mat-nav-list>
   </mat-sidenav>
   <mat-sidenav-content>
-      <div class="container">
-         
-        <router-outlet></router-outlet>
-      </div>
+    <div class="container">
+
+      <router-outlet></router-outlet>
+    </div>
 
   </mat-sidenav-content>
 </mat-sidenav-container>

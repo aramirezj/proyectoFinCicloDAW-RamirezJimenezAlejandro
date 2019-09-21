@@ -27,6 +27,13 @@ export class RegistroComponent implements OnInit {
       password2: new FormControl(null, [Validators.required, Validators.minLength(6),Validators.maxLength(30)])
     });
   }
+  onSignIn(googleUser) {
+    var profile = googleUser.getBasicProfile();
+    console.log('ID: ' + profile.getId()); // Do not send to your backend! Use an ID token instead.
+    console.log('Name: ' + profile.getName());
+    console.log('Image URL: ' + profile.getImageUrl());
+    console.log('Email: ' + profile.getEmail()); // This is null if the 'email' scope is not present.
+  }
 
   onSubmit() {
     if (!this.registroForm.invalid) {

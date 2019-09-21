@@ -2,6 +2,8 @@ import { Component, OnInit, Injectable } from '@angular/core';
 import { Quizz } from '../modelo/Quizz';
 import { QuizzService } from '../services/quizz.service';
 import { MatPaginatorIntl, PageEvent } from '@angular/material/paginator';
+import { ActivatedRoute } from '@angular/router';
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-explorador',
@@ -9,6 +11,7 @@ import { MatPaginatorIntl, PageEvent } from '@angular/material/paginator';
   styleUrls: ['./explorador.component.scss']
 })
 export class ExploradorComponent implements OnInit  {
+  opcion:String
   quizzs:Array<Quizz>
   isLoaded:boolean=false;
   inicio:number=0;
@@ -17,16 +20,22 @@ export class ExploradorComponent implements OnInit  {
   totalQuizzes:number=0;
   pageEvent: PageEvent;
   constructor(
-    private quizzService: QuizzService
+    private authService:AuthService,
+    private quizzService: QuizzService,
+    private router: ActivatedRoute
   ) {
-
+    
    }
    ngOnInit() {
-    this.getQuizzes();
+    this.router.params.subscribe((params) => {
+      this.opcion = params['opcion'];
+      this.getQuizzes();
+    })
+    
   }
 
   getQuizzes(){
-    this.quizzService.obtenerAllQuizz(this.inicio,this.quizporPagina)
+    this.quizzService.ObtenerQuizzes(this.opcion,this.inicio+"-"+this.quizporPagina)
     .subscribe(resp=>{
       this.totalQuizzes=resp["total"];
       this.quizzs = resp["cont"].length>0 ? resp["cont"] : null;

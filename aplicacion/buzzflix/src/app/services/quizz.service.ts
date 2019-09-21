@@ -4,7 +4,7 @@ import { AuthService } from './auth.service';
 import { CONFIG } from './../config/config';
 import { Quizz } from '../modelo/Quizz';
 import { NotifyService } from './notify.service';
-import { AngularFireStorage} from 'angularfire2/storage';
+import { AngularFireStorage } from 'angularfire2/storage';
 import * as firebase from 'firebase';
 import 'firebase/firestore';
 import { RestService } from './rest.service';
@@ -35,9 +35,9 @@ export class QuizzService {
         }
     }
 
-    reportarQuiz(id:number):Observable<void>{
+    reportarQuiz(id: number): Observable<void> {
         let url = `${CONFIG.apiUrl}reportar`;
-        let body = { origen: this.authService.getAuthUserId(), destino: id,motivo:"quiz" };
+        let body = { origen: this.authService.getAuthUserId(), destino: id, motivo: "quiz" };
 
         return Observable.create(observer => {
             this.restService.peticionHttp(url, body).subscribe(response => {
@@ -84,6 +84,17 @@ export class QuizzService {
             this.restService.peticionHttp(url, body).subscribe(response => {
                 this.uploadImage(files);
                 observer.next(response.respuesta)
+                observer.complete();
+            })
+        });
+    }
+
+    ObtenerQuizzes(opcion: String, cadena: string): Observable<Array<Quizz>> {
+        let url = opcion == "todos" ? `${CONFIG.apiUrl}quizz/todos/${cadena}` :
+            `${CONFIG.apiUrl}quizz/${this.authService.getAuthUserId()}/seguidos/${cadena}`
+        return Observable.create(observer => {
+            this.restService.peticionHttp(url).subscribe(response => {
+                observer.next(response)
                 observer.complete();
             })
         });
@@ -159,7 +170,7 @@ export class QuizzService {
 
 
     listaModeracion(): Observable<Array<Quizz>> {
-    
+
         let url = `${CONFIG.apiUrl}quizz/moderacion`;
         return Observable.create(observer => {
             this.restService.peticionHttp(url).subscribe(response => {

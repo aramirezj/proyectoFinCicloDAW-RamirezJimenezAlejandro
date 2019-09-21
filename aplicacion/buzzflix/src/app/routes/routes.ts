@@ -1,5 +1,4 @@
 import { RegistroComponent } from '../registro/registro.component';
-import { DashboardComponent } from '../dashboard/dashboard.component';
 import { LoginComponent } from '../login/login.component';
 import { AuthGuard } from '../guards/auth.guard';
 import { AuthedGuard } from '../guards/authed.guard';
@@ -33,11 +32,6 @@ export const ROUTES = [
         canActivate: [AuthedGuard]
     },
     {
-        path: 'dashboard',
-        component: DashboardComponent,
-        canActivate: [AuthGuard]
-    },
-    {
         path: 'crear/quizz',
         component: CreateQuizzComponent,
         canActivate: [AuthGuard]
@@ -64,7 +58,7 @@ export const ROUTES = [
         component: VerQuizzComponent
     },
     {
-        path: 'infolegal/:opcion',
+        path: 'info/:opcion',
         component: InfolegalComponent
     },
     {
@@ -82,7 +76,7 @@ export const ROUTES = [
         CanActivate: [AuthGuard]
     },
     {
-        path: 'ver/todos',
+        path: 'ver/:opcion',
         component: ExploradorComponent,
         CanActivate: [AuthGuard]
     },

@@ -1,5 +1,5 @@
 <div *ngIf="!quizzs && this.isLoaded">
-  <p class="empty">Mmm, no hay quizzes de nadie, ¡Vaya sitio triste!</p>
+  <p class="empty">En este apartado verás los quizzes que los usuarios a los que sigues van creando. ¡Prueba a seguir a un par de usuarios!</p>
 </div>
 <div class="padreQuiz" *ngIf="quizzs && this.isLoaded">
   <div class="cajaQuiz" *ngFor="let quizz of quizzs">

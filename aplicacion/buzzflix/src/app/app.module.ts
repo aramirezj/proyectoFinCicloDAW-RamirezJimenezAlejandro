@@ -12,7 +12,6 @@ import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from './services/auth.service';
 import { HttpModule } from '@angular/http';
 import { HttpClientModule } from '@angular/common/http';
-import { DashboardComponent } from './dashboard/dashboard.component';
 import { LoginComponent } from './login/login.component';
 import { AuthGuard } from './guards/auth.guard';
 import { AuthedGuard } from './guards/authed.guard';
@@ -70,7 +69,6 @@ registerLocaleData(localePy, 'es');
   declarations: [
     AppComponent,
     RegistroComponent,
-    DashboardComponent,
     LoginComponent,
     NotifyComponent,
     ProfileComponent,
