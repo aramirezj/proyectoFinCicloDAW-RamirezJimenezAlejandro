@@ -8,7 +8,8 @@ validaciones["registro"] = [
     check('name').isLength({ min: 4 }),
     check('name').isLength({ max: 20 }),
     check('password').isLength({ min: 6 }),
-    check('password').isLength({ max: 30 })
+    check('password').isLength({ max: 30 }),
+    check('confirm').trim()
 ];
 validaciones["login"] = [
     check('email').isEmail(),

@@ -14,21 +14,26 @@ export class AuthService {
         private notifyService: NotifyService,
         private restService: RestService,
     ) {
+
     }
 
+    makeId(): String {//Generación de codigos
+        let text = Math.random().toString(36).substring(2) + Math.random().toString(36).substring(2);
+        return text;
+    }
     getAuthUser(): Usuario {
         return JSON.parse(localStorage.getItem('usuario'))
     }
 
     getAuthUserId(): number {
         let user = JSON.parse(localStorage.getItem('usuario'));
-        let id = user==null?0:user.id;
+        let id = user == null ? 0 : user.id;
         return id;
     }
 
-    register(name: string, email: string, password: string): Observable<Usuario> {
+    register(name: string, email: string, password: string): Observable<Boolean> {
         let url = `${CONFIG.apiUrl}register`;
-        let body = { name: name, email: email, password: password };
+        let body = { name: name, email: email, password: password, confirm: this.makeId() };
 
         return Observable.create(observer => {
             this.restService.peticionHttp(url, body).subscribe(response => {
@@ -37,11 +42,9 @@ export class AuthService {
                     observer.next(null)
                     return null;
                 }
-                let user: Usuario = new Usuario(response.id, name, email, null);
-                localStorage.setItem("token", response.token);
-
-                observer.next(user)
+                observer.next(true)
                 observer.complete();
+                this.router.navigate(['/auth/login/waiting']);
             })
         });
     }
@@ -49,6 +52,26 @@ export class AuthService {
     login(email: string, password: string): Observable<Usuario> {
         let body = { email: email, password: password };
         let url = `${CONFIG.apiUrl}authenticate`;
+
+        return Observable.create(observer => {
+            this.restService.peticionHttp(url, body).subscribe(response => {
+                if (response.auth) {
+                    let aux: Usuario = response.respuesta;
+                    localStorage.setItem("token", response.token);
+                    observer.next(aux);
+                } else {
+                    observer.next(null);
+                    return null;
+                }
+                observer.complete();
+            })
+        });
+    }
+
+    confirmaEmail(confirmacion: String) {
+        let body = { confirmacion: confirmacion };
+        let url = `${CONFIG.apiUrl}confirma`;
+
 
         return Observable.create(observer => {
             this.restService.peticionHttp(url, body).subscribe(response => {
@@ -104,6 +127,7 @@ export class AuthService {
         this.router.navigate(['/auth/login']);
     }
     logUserIn(aux: Usuario): void {
+        console.log(aux)
         if (aux == null) {
             this.notifyService.notify("Datos incorrectos", "error");
         } else {

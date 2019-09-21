@@ -28,6 +28,11 @@ export const ROUTES = [
         canActivate: [AuthedGuard]
     },
     {
+        path: 'auth/login/:confirmacion',
+        component: LoginComponent,
+        canActivate: [AuthedGuard]
+    },
+    {
         path: 'dashboard',
         component: DashboardComponent,
         canActivate: [AuthGuard]

@@ -31,10 +31,7 @@ export class RegistroComponent implements OnInit {
   onSubmit() {
     if (!this.registroForm.invalid) {
       this.authService.register(this.registroForm.get('nombre').value, this.registroForm.get('email').value, this.registroForm.get('password').value)
-        .subscribe((usuario) => {
-          if (usuario != null) {
-            this.authService.logUserIn(usuario);
-          }
+        .subscribe((verdad) => {
         })
     }
   }

@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../services/auth.service';
 import { FormControl, Validators, FormGroup } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material';
+import { ActivatedRoute } from '@angular/router';
 
 
 @Component({
@@ -12,11 +13,24 @@ import { ErrorStateMatcher } from '@angular/material';
 export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   matcher = new ErrorStateMatcher();
+  confirmacion: String
   constructor(
-    private authService: AuthService
+    private authService: AuthService,
+    private router: ActivatedRoute
   ) { }
 
   ngOnInit() {
+    this.router.params.subscribe((params) => {
+      this.confirmacion = params['confirmacion'];
+    })
+    if (this.confirmacion != null) {
+      if (this.confirmacion == "waiting") {
+      } else {
+        this.authService.confirmaEmail(this.confirmacion).subscribe((user) => {
+          this.authService.logUserIn(user);
+        });
+      }
+    }
     this.createForm();
   }
 

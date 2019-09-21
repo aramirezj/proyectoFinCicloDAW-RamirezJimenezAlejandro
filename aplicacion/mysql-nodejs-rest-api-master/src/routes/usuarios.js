@@ -1,4 +1,4 @@
-const express = require('express'), nodeMailer = require('nodemailer');
+const express = require('express');
 const app = express();
 const router = express.Router();
 var cors = require('cors')
@@ -6,54 +6,23 @@ var cors = require('cors')
 const queryService = require('../controllers/queryController');
 const logroService = require('../controllers/logroController');
 const tokenService = require('../controllers/tokenController');
+const mailService = require('../controllers/mailController');
 const listaValidaciones = require('../validaciones');
 
 
 app.use(cors())
 
-
-
-
-function enviaCorreo() {
-  console.log("Procedo a enviar un correo??")
-  let transporter = nodeMailer.createTransport({
-    host: 'smtp.hasquiz.com',
-    port: 587,
-    secure: true,
-    auth: {
-      user: 'noreply@hasquiz.com',
-      pass: 'Illidariweare16.0'
-    },
-    secure:false,
-    tls:{rejectUnauthorized:false},
-    debug:true
-  });
-  let mailOptions = {
-    from: '"Hasquiz" <noreply@hasquiz.com>', // sender address
-    to: "exilonmlol@gmail.com", // list of receivers
-    subject: "Confirma tu dirección de email", // Subject line
-    text: "El body churra", // plain text body
-    html: '<b>NodeJS Email Tutorial</b>' // html body
-  };
-  transporter.sendMail(mailOptions, (error, info) => {
-    if (error) {
-      return console.log(error);
-    }
-    console.log('Message %s sent: %s', info.messageId, info.response);
-    //res.render('index');
-  });
-}
-
 //Petición para registrar un usuario .
 router.post('/api/register', listaValidaciones["registro"], (req, res, next) => {
   console.log("Petición de registro de un usuario")
   if (!queryService.compruebaErrores(req, res)) {
-    let { name, email, password } = req.body;
+    let { name, email, password, confirm } = req.body;
     password = tokenService.encripta(password);
-    queryService.ejecutaConsulta("registro", [name, email, password], res,
+    queryService.ejecutaConsulta("registro", [name, email, password, confirm], res,
       function (rows) {
         if (rows) {
-          res.send({ status: "200", auth: true, token: tokenService.creaToken(rows.insertId), id: rows.insertId });
+          mailService.enviaCorreo(email, "https://www.hasquiz.com/auth/login/" + confirm)
+          res.send({ status: "200", auth: true });
         }
       });
   }
@@ -74,7 +43,22 @@ router.post('/api/authenticate', listaValidaciones["login"], (req, res, next) =>
       }
     });
   }
+});
 
+//Petición para registrar un usuario .
+router.post('/api/confirma', (req, res, next) => {
+  console.log("Petición para confirmar el correo de un usuario")
+  let { confirmacion } = req.body;
+  queryService.ejecutaConsulta("confirmaEmail", [confirmacion], res,
+    function (rows) {
+      if (rows) {
+        if (rows.length > 0) {
+          res.send({ auth: true, token: tokenService.creaToken(rows[0].id), respuesta: rows[0] });
+        } else {
+          res.send({ auth: false });
+        }
+      }
+    });
 });
 
 //Actualizar perfil de un usuario (PROTECTED)
@@ -123,7 +107,6 @@ router.put('/api/usuario/actualizar/:id', listaValidaciones["editar"], (req, res
 
 // Ver si un usuario es admin (PROTECTED)
 router.get('/api/usuario/admin', (req, res) => {
-  enviaCorreo();
   console.log("Preguntar si un usuario es administrador");
   let permiso = tokenService.verificaToken(req.headers, res);
   if (permiso) {
