@@ -157,7 +157,6 @@ export class VerQuizzComponent implements OnInit {
     if (totalRespondidas == this.quizz.preguntas.length) {
       this.onSubmit();
     } else {
-      console.log(id)
       let nextId: number = id[0];
       let elemento = null
       nextId++;

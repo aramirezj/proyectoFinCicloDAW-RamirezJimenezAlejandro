@@ -34,7 +34,6 @@ import { ExploradorComponent } from './explorador/explorador.component';
 import { MatPaginatorIntlCro } from './explorador/explorador.component';
 
 import { UsuarioComponent } from './usuario/usuario.component';
-import { DashboardUsersComponent } from './dashboard-users/dashboard-users.component';
 import { VotarComponent } from './ver-quizz/votar/votar.component';
 
 import { ErrorStateMatcher,ShowOnDirtyErrorStateMatcher } from '@angular/material/core';
@@ -58,13 +57,13 @@ import { environment } from '../environments/environment';
 import { AngularFireStorage } from 'angularfire2/storage';
 import { DialogboxComponent } from './dialogbox/dialogbox.component';
 import { ModeracionComponent } from './moderacion/moderacion.component';
-import { DashboardQuizComponent } from './dashboard-quiz/dashboard-quiz.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { LogrosComponent } from './profile/logros/logros.component';
 import { InfolegalComponent } from './infolegal/infolegal.component';
 import { HashLocationStrategy, LocationStrategy,registerLocaleData  } from '@angular/common';
 import localePy from '@angular/common/locales/es-PY';
 import { ForgetComponent } from './forget/forget.component';
+import { BuscadorComponent } from './buscador/buscador.component';
 registerLocaleData(localePy, 'es');
 @NgModule({
   declarations: [
@@ -82,15 +81,14 @@ registerLocaleData(localePy, 'es');
     VerQuizzComponent,
     ExploradorComponent,
     UsuarioComponent,
-    DashboardUsersComponent,
     VotarComponent,
     DialogboxComponent,
     ModeracionComponent,
-    DashboardQuizComponent,
     NotFoundComponent,
     LogrosComponent,
     InfolegalComponent,
     ForgetComponent,
+    BuscadorComponent,
   ],
   imports: [
     BrowserModule,

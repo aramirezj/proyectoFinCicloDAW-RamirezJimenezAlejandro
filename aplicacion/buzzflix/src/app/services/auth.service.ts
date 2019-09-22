@@ -140,7 +140,6 @@ export class AuthService {
         this.router.navigate(['/auth/login']);
     }
     logUserIn(aux: Usuario): void {
-        console.log(aux)
         if (aux == null) {
             this.notifyService.notify("Datos incorrectos", "error");
         } else {

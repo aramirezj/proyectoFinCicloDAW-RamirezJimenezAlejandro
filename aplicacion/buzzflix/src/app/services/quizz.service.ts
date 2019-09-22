@@ -139,7 +139,7 @@ export class QuizzService {
         });
     }
 
-    getQuizzes(nombre: string): Observable<Array<Quizz>> {
+    getQuizzes(nombre: String): Observable<Array<Quizz>> {
         let url = `${CONFIG.apiUrl}quizzes/${nombre}`;
 
         return Observable.create(observer => {

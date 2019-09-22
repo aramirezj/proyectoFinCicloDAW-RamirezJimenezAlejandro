@@ -133,7 +133,6 @@ router.put('/api/usuario/actualizar/:id', listaValidaciones["editar"], (req, res
 // Ver si un usuario es admin (PROTECTED)
 router.get('/api/usuario/admin', (req, res) => {
   console.log("Preguntar si un usuario es administrador");
-  mailService.correoRegistro('exilonmlol@gmail.com', "https://www.hasquiz.com/#/auth/login/")
   let permiso = tokenService.verificaToken(req.headers, res);
   if (permiso) {
     queryService.ejecutaConsulta("isAdmin", [permiso], res, function (rows) {

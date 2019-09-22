@@ -9,13 +9,12 @@ import { EditProfileComponent } from './../profile/edit-profile/edit-profile.com
 import { CreateQuizzComponent } from '../create-quizz/create-quizz.component';
 import { VerQuizzComponent } from '../ver-quizz/ver-quizz.component';
 import { ExploradorComponent } from '../explorador/explorador.component';
-import { DashboardUsersComponent } from '../dashboard-users/dashboard-users.component';
 import { ModeracionComponent } from '../moderacion/moderacion.component';
-import { DashboardQuizComponent } from '../dashboard-quiz/dashboard-quiz.component';
 import { NotFoundComponent } from '../not-found/not-found.component';
 import { ForgetComponent } from '../forget/forget.component';
 import { LogrosComponent } from '../profile/logros/logros.component';
 import { InfolegalComponent } from '../infolegal/infolegal.component';
+import { BuscadorComponent } from '../buscador/buscador.component';
 export const ROUTES = [
     {
         path: 'auth/register',
@@ -73,13 +72,14 @@ export const ROUTES = [
         component: InfolegalComponent
     },
     {
-        path: 'ver/usuarios/:nombre',
-        component: DashboardUsersComponent,
+        path: 'buscador',
+        component: BuscadorComponent,
         canActivate: [AuthGuard]
     },
     {
-        path: 'ver/quizzes/:nombre',
-        component: DashboardQuizComponent
+        path: 'buscador/:nombre',
+        component: BuscadorComponent,
+        canActivate: [AuthGuard]
     },
     {
         path: '',

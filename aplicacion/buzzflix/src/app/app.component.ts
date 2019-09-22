@@ -15,12 +15,11 @@ export interface Section {
   styleUrls: ['./app.component.scss']
 })
 export class AppComponent {
-  @ViewChild(MatMenuTrigger,{static: true}) trigger: MatMenuTrigger;
+  @ViewChild(MatMenuTrigger, { static: true }) trigger: MatMenuTrigger;
 
   public miniForm: FormGroup
   public miniForm2: FormGroup
   usuario: Usuario
-  showSQ: boolean = false;
   showSU: boolean = false;
   vacio: boolean = false;
   notificaciones: Section[];
@@ -37,10 +36,6 @@ export class AppComponent {
   ) {
     this.miniForm = this.fb.group({
       nombre: ['', [
-      ]]
-    })
-    this.miniForm2 = this.fb.group({
-      nombre2: ['', [
       ]]
     })
     this.userService.userProfileUpdated.subscribe((usuario) => {
@@ -66,25 +61,10 @@ export class AppComponent {
   onSubmit() {
     let nombre = this.miniForm.get('nombre').value;
     if (nombre != "") {
-      this.showSQ = false;
-      this.showSU = false;
-      this.router.navigate(['ver/usuarios/' + nombre]);
-    } else {
-      this.showSQ = false;
-      this.showSU = false;
+      this.router.navigate(['buscador/' + nombre]);
     }
   }
-  onSubmit2() {
-    let nombre = this.miniForm2.get('nombre2').value;
-    if (nombre != "") {
-      this.showSQ = false;
-      this.showSU = false;
-      this.router.navigate(['ver/quizzes/' + nombre]);
-    } else {
-      this.showSQ = false;
-      this.showSU = false;
-    }
-  }
+
 
   isLoggedIn(): boolean {
     return this.authService.isLoggedIn();
@@ -114,10 +94,8 @@ export class AppComponent {
               this.icono = "filter_" + this.notificaciones.length;
             }
           }
-
         }))
     }
-
   }
 
   read(notificacion) {
@@ -134,15 +112,5 @@ export class AppComponent {
         this.icono = "filter_" + this.notificaciones.length;
       }
     }
-
   }
-
-  muestraForm() {
-    this.showSU = true;
-  }
-  muestraForm2() {
-    this.showSQ = true;
-  }
-
-
 }

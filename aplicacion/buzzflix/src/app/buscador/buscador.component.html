@@ -1,0 +1,50 @@
+<div *ngIf="this.aBuscar==null">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-12">
+                <div class="panel panel-default">
+                    <div class="panel-heading">Busqueda de quizzes y usuarios</div>
+                    <div class="panel-body">
+                        <form class="example-form" [formGroup]="this.busquedaForm" (ngSubmit)="onSubmit()">
+                            <mat-form-field class="example-full-width" style="width: 100%;">
+                                <input matInput placeholder="Busqueda" required formControlName="busqueda"
+                                    [errorStateMatcher]="matcher" >
+                                <mat-hint></mat-hint>
+                            </mat-form-field>
+                            <br>
+                            <button [disabled]="this.busquedaForm.invalid" mat-raised-button color="primary">Buscar</button>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+
+
+<div *ngIf="this.isLoaded">
+    <p class="empty">Resultados para ' {{this.aBuscar}} ' :</p>
+    <div *ngIf="this.quizzes">
+        <p class="text-center seccion">Quizzes</p>
+        <div *ngIf="this.quizzes.length==0 && this.isLoaded">
+            <p class="empty">Sin resultados.</p>
+        </div>
+        <div class="padreQuiz" *ngIf="quizzes && this.isLoaded">
+            <div class="cajaQuiz" *ngFor="let quizz of quizzes">
+                <app-quizz [quizz]="quizz"></app-quizz>
+            </div>
+        </div>
+    </div>
+    <div style="clear:both;"></div>
+    <p class="text-center seccion">Usuarios</p>
+    <div *ngIf="this.usuarios">
+        <div *ngIf="this.usuarios.length==0" style="padding:1%">
+            <p class="empty">Sin resultados.</p>
+        </div>
+        <div *ngFor="let usuario of usuarios">
+            <app-usuario [usuario]="usuario"></app-usuario>
+        </div>
+    </div>
+</div>

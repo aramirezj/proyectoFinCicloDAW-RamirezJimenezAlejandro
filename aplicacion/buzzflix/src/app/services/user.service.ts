@@ -107,7 +107,7 @@ export class UserService {
         });
 
     }
-    getUsuarios(nombre: string): Observable<Array<Usuario>> {  //PROTEGIDO
+    getUsuarios(nombre: String): Observable<Array<Usuario>> {  //PROTEGIDO
         let url = `${CONFIG.apiUrl}usuarios/${nombre}`;
         nombre = nombre == "" ? "EVERYTHINGPLEASE" : nombre;
 
