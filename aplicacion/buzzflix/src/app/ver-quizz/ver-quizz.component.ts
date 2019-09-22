@@ -157,6 +157,7 @@ export class VerQuizzComponent implements OnInit {
     if (totalRespondidas == this.quizz.preguntas.length) {
       this.onSubmit();
     } else {
+      console.log(id)
       let nextId: number = id[0];
       let elemento = null
       nextId++;
@@ -168,7 +169,8 @@ export class VerQuizzComponent implements OnInit {
         lastR--;
         elemento = document.getElementById(lastP + "" + lastR);
       } else {
-        elemento = document.getElementById('p' + nextId);
+        nextId--;
+        elemento = document.getElementById(nextId+"1");
       }
       elemento.scrollIntoView(false);
     }

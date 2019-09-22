@@ -4,8 +4,9 @@
       <div class="panel panel-default">
         <div class="panel-heading">Inicio de sesión</div>
         <div class="panel-body">
-          <p *ngIf="this.confirmacion" style=color:#529f82;padding:1vh;>Le hemos enviado un correo a su dirección de correo electronico, para completar el registro.</p>
-          <form class="example-form" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+          <p *ngIf="this.confirmacion=='waiting'" style=color:#529f82;padding:1vh;>Le hemos enviado un correo a su
+            dirección de correo electronico, para completar el registro.</p>
+          <form class="example-form" [formGroup]="this.loginForm" (ngSubmit)="onSubmit()">
             <mat-form-field class="example-full-width">
               <input matInput placeholder="Correo electronico" required formControlName="email"
                 [errorStateMatcher]="matcher">
@@ -21,7 +22,8 @@
             <mat-form-field class="example-full-width">
               <input type="password" matInput placeholder="Contraseña" required formControlName="password"
                 [errorStateMatcher]="matcher">
-              <mat-hint></mat-hint>
+              <mat-hint><a [routerLink]="['/auth/forget']" class="forgetPassword" role="button">¿Olvidaste tu
+                  contraseña?</a></mat-hint>
               <mat-error *ngIf="loginForm.get('password').hasError('required')">
                 La contraseña es <strong>obligatoria</strong>
               </mat-error>

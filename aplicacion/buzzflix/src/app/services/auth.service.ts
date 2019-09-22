@@ -68,10 +68,9 @@ export class AuthService {
         });
     }
 
-    confirmaEmail(confirmacion: String) {
+    confirmaEmail(confirmacion: String):Observable<Usuario> {
         let body = { confirmacion: confirmacion };
         let url = `${CONFIG.apiUrl}confirma`;
-
 
         return Observable.create(observer => {
             this.restService.peticionHttp(url, body).subscribe(response => {
@@ -86,6 +85,20 @@ export class AuthService {
                 observer.complete();
             })
         });
+    }
+
+    forgetPassword(email: String,password:String,cod:String):Observable<Boolean> {
+        let codigo = cod != null ? cod:this.makeId();
+        let body = { email: email, codigo: codigo,password:password };
+        let url = `${CONFIG.apiUrl}forget`;
+
+        return Observable.create(observer => {
+            this.restService.peticionHttp(url, body).subscribe(response => {
+                observer.next(response.final)
+                observer.complete();
+            })
+        });
+
     }
 
     getNotificaciones(): Observable<String[]> {

@@ -12,6 +12,7 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class LoginComponent implements OnInit {
   loginForm: FormGroup;
+  forgetForm: FormGroup;
   matcher = new ErrorStateMatcher();
   confirmacion: String
   constructor(
@@ -23,15 +24,20 @@ export class LoginComponent implements OnInit {
     this.router.params.subscribe((params) => {
       this.confirmacion = params['confirmacion'];
     })
-    if (this.confirmacion != null) {
-      if (this.confirmacion == "waiting") {
-      } else {
+
+    switch (this.confirmacion) {
+      case undefined:
+        this.createForm();
+        break;
+      case "waiting":
+        this.createForm();
+        break;
+      default:
+        this.createForm();
         this.authService.confirmaEmail(this.confirmacion).subscribe((user) => {
           this.authService.logUserIn(user);
         });
-      }
     }
-    this.createForm();
   }
 
   createForm() {

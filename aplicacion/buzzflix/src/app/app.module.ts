@@ -64,6 +64,7 @@ import { LogrosComponent } from './profile/logros/logros.component';
 import { InfolegalComponent } from './infolegal/infolegal.component';
 import { HashLocationStrategy, LocationStrategy,registerLocaleData  } from '@angular/common';
 import localePy from '@angular/common/locales/es-PY';
+import { ForgetComponent } from './forget/forget.component';
 registerLocaleData(localePy, 'es');
 @NgModule({
   declarations: [
@@ -89,6 +90,7 @@ registerLocaleData(localePy, 'es');
     NotFoundComponent,
     LogrosComponent,
     InfolegalComponent,
+    ForgetComponent,
   ],
   imports: [
     BrowserModule,

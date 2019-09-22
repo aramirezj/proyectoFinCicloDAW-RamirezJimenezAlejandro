@@ -21,7 +21,7 @@ router.post('/api/register', listaValidaciones["registro"], (req, res, next) => 
     queryService.ejecutaConsulta("registro", [name, email, password, confirm], res,
       function (rows) {
         if (rows) {
-          mailService.enviaCorreo(email, "https://www.hasquiz.com/auth/login/" + confirm)
+          mailService.correoRegistro(email, confirm)
           res.send({ status: "200", auth: true });
         }
       });
@@ -53,12 +53,37 @@ router.post('/api/confirma', (req, res, next) => {
     function (rows) {
       if (rows) {
         if (rows.length > 0) {
+          queryService.ejecutaConsulta("confirmaEmail2", [rows[0].id], res,
+            function (rows2) { });
           res.send({ auth: true, token: tokenService.creaToken(rows[0].id), respuesta: rows[0] });
         } else {
           res.send({ auth: false });
         }
       }
     });
+});
+
+//Petición para iniciar olvido contraseña
+router.post('/api/forget', (req, res, next) => {
+  console.log("Petición para restablecer contraseña")
+  let { email, codigo, password } = req.body;
+  if (password) {
+    password = tokenService.encripta(password);
+    queryService.ejecutaConsulta("endRecuperacion", [password, codigo], res,
+      function (rows) {
+        if (rows) {
+          res.send({ final:true });
+        }
+      });
+  } else {
+    queryService.ejecutaConsulta("setRecuperacion", [codigo, email], res,
+      function (rows) {
+        if (rows) {
+          mailService.correoRecuperacion(email, codigo);
+          res.send({ final:false });
+        }
+      });
+  }
 });
 
 //Actualizar perfil de un usuario (PROTECTED)
@@ -108,6 +133,7 @@ router.put('/api/usuario/actualizar/:id', listaValidaciones["editar"], (req, res
 // Ver si un usuario es admin (PROTECTED)
 router.get('/api/usuario/admin', (req, res) => {
   console.log("Preguntar si un usuario es administrador");
+  mailService.correoRegistro('exilonmlol@gmail.com', "https://www.hasquiz.com/#/auth/login/")
   let permiso = tokenService.verificaToken(req.headers, res);
   if (permiso) {
     queryService.ejecutaConsulta("isAdmin", [permiso], res, function (rows) {

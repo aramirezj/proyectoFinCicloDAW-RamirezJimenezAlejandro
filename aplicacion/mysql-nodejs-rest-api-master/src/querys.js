@@ -20,6 +20,9 @@ querys["insertLogro"] = "INSERT INTO logros_obtenidos (usuario,logro) values (?,
 querys["registro"] = "INSERT INTO users (name,email,password,confirmado) VALUES(?,?,?,?)";
 querys["login"] = "SELECT id,name,email,avatar FROM users where email = ? AND password = ?";
 querys["confirmaEmail"] = "SELECT id,name,email,avatar from users where confirmado = ?";
+querys["confirmaEmail2"] = "UPDATE users set confirmado = 1 where id =?";
+querys["setRecuperacion"] = "UPDATE users set recuperacion = ? where email = ?";
+querys["endRecuperacion"] = "UPDATE users set password = ?, recuperacion = NULL where recuperacion = ?";
 querys["editarPerfil1"] = "UPDATE users set name = ?, avatar = ? WHERE id = ?";
 querys["editarPerfil2"] = "SELECT password FROM users where password = ? AND id = ?";
 querys["editarPerfil3"] = "UPDATE users set name = ? , password = ?, avatar = ? WHERE id = ?";

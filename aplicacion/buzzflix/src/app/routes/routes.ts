@@ -13,6 +13,7 @@ import { DashboardUsersComponent } from '../dashboard-users/dashboard-users.comp
 import { ModeracionComponent } from '../moderacion/moderacion.component';
 import { DashboardQuizComponent } from '../dashboard-quiz/dashboard-quiz.component';
 import { NotFoundComponent } from '../not-found/not-found.component';
+import { ForgetComponent } from '../forget/forget.component';
 import { LogrosComponent } from '../profile/logros/logros.component';
 import { InfolegalComponent } from '../infolegal/infolegal.component';
 export const ROUTES = [
@@ -29,6 +30,16 @@ export const ROUTES = [
     {
         path: 'auth/login/:confirmacion',
         component: LoginComponent,
+        canActivate: [AuthedGuard]
+    },
+    {
+        path: 'auth/forget/:confirmacion',
+        component: ForgetComponent,
+        canActivate: [AuthedGuard]
+    },
+    {
+        path: 'auth/forget',
+        component: ForgetComponent,
         canActivate: [AuthedGuard]
     },
     {

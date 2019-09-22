@@ -42,7 +42,7 @@ export class UserService {
     changeMessage(id: number): void {
         this.idPaquete.next(id)
     }
-    
+
     isAdmin(): Observable<boolean> {
         let url = `${CONFIG.apiUrl}usuario/admin`;
         return Observable.create(observer => {
@@ -54,9 +54,9 @@ export class UserService {
 
     }
 
-    reportarUsuario(destino:number):Observable<void>{
+    reportarUsuario(destino: number): Observable<void> {
         let url = `${CONFIG.apiUrl}reportar`;
-        let body = { origen: this.authService.getAuthUserId(), destino: destino,motivo:"perfil" };
+        let body = { origen: this.authService.getAuthUserId(), destino: destino, motivo: "perfil" };
 
         return Observable.create(observer => {
             this.restService.peticionHttp(url, body).subscribe(response => {
@@ -120,7 +120,6 @@ export class UserService {
     }
 
     updateProfile(datos: any): Observable<Usuario> { //PROTECTED
-
         const OLDUSUARIO = this.authService.getAuthUser();
         let id = +this.authService.getAuthUserId();
         let file = datos["file"];
