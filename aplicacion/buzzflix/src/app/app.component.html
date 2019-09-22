@@ -124,15 +124,15 @@
 </mat-toolbar>
 
 
-<!--Menú pequeñito-->
+<!--Menú pequeño-->
 <mat-sidenav-container>
   <mat-sidenav #sidenav>
     <mat-nav-list>
-      <a mat-list-item [routerLink]="['buscador']">Buscador</a>
-      <a mat-list-item [routerLink]="['ver/todos']">Todos los quizzes</a>
-      <a mat-list-item [routerLink]="['crear/quizz']">Crear quiz</a>
-      <a mat-list-item *ngIf="isLoggedIn()" [routerLink]="['moderacion']">Moderación </a>
-      <button mat-menu-item *ngIf="isLoggedIn()" [routerLink]="['usuario/perfil',this.authService.getAuthUserId()]">
+      <a mat-list-item [routerLink]="['buscador']" (click)="sidenav.toggle()">Buscador</a>
+      <a mat-list-item [routerLink]="['ver/todos']" (click)="sidenav.toggle()">Todos los quizzes</a>
+      <a mat-list-item [routerLink]="['crear/quizz']" (click)="sidenav.toggle()">Crear quiz</a>
+      <a mat-list-item *ngIf="isLoggedIn()" [routerLink]="['moderacion']" (click)="sidenav.toggle()">Moderación </a>
+      <button mat-menu-item *ngIf="isLoggedIn()" [routerLink]="['usuario/perfil',this.authService.getAuthUserId()]" (click)="sidenav.toggle()">
         <mat-icon *ngIf="isLoggedIn()">account_circle</mat-icon>
         <span role="button" mat-button><a>Mi perfil</a></span>
       </button>
@@ -164,15 +164,15 @@
 
 
 
-      <button mat-menu-item *ngIf="!isLoggedIn()" routerLink="/auth/register">
+      <button mat-menu-item *ngIf="!isLoggedIn()" routerLink="/auth/register" (click)="sidenav.toggle()">
         <mat-icon>fiber_new</mat-icon>
         <span role="button" mat-button><a>Registrarse</a></span>
       </button>
-      <button mat-menu-item *ngIf="!isLoggedIn()" routerLink="/auth/login">
+      <button mat-menu-item *ngIf="!isLoggedIn()" routerLink="/auth/login" (click)="sidenav.toggle()">
         <mat-icon>accessibility_new</mat-icon>
         <span role="button" mat-button><a>Iniciar sesión</a></span>
       </button>
-      <button mat-menu-item *ngIf="isLoggedIn()" (click)="logout()">
+      <button mat-menu-item *ngIf="isLoggedIn()" (click)="logout();sidenav.toggle()" >
         <mat-icon>directions_run</mat-icon>
         <span role="button" mat-button><a>Cerrar sesión</a></span>
       </button>
@@ -189,25 +189,25 @@
             </mat-panel-description>
           </mat-expansion-panel-header>
           <mat-list>
-            <mat-list-item>
+            <mat-list-item (click)="sidenav.toggle()">
               <button mat-menu-item [routerLink]="['/info',4]">
                 <mat-icon>share</mat-icon>
                 <span role="button" mat-button><a>Redes sociales</a></span>
               </button>
             </mat-list-item>
-            <mat-list-item>
+            <mat-list-item (click)="sidenav.toggle()">
               <button mat-menu-item [routerLink]="['/info',3]">
                 <mat-icon>feedback</mat-icon>
                 <span role="button" mat-button><a>Contacto</a></span>
               </button>
             </mat-list-item>
-            <mat-list-item>
+            <mat-list-item (click)="sidenav.toggle()">
               <button mat-menu-item [routerLink]="['/info',1]">
                 <mat-icon>info</mat-icon>
                 <span role="button" mat-button><a>Terminos de uso</a></span>
               </button>
             </mat-list-item>
-            <mat-list-item>
+            <mat-list-item (click)="sidenav.toggle()">
               <button mat-menu-item [routerLink]="['/info',2]">
                 <mat-icon>lock</mat-icon>
                 <span role="button" mat-button><a>Politica de privacidad</a></span>
