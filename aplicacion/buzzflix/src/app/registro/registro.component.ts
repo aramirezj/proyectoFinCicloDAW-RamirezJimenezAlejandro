@@ -1,8 +1,8 @@
 import { Component, OnInit } from '@angular/core';
-import { AuthService } from '../services/auth.service';
+import { AuthService as AuthWeb } from '../services/auth.service';
 import { FormControl, Validators, FormGroup } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material';
-
+import { AuthService, GoogleLoginProvider } from "angularx-social-login";
 @Component({
   selector: 'app-registro',
   templateUrl: './registro.component.html',
@@ -12,11 +12,15 @@ export class RegistroComponent implements OnInit {
   registroForm: FormGroup;
   matcher = new ErrorStateMatcher();
   constructor(
-    private authService: AuthService
+    private authService: AuthService,
+    private authWeb:AuthWeb
   ) { }
 
   ngOnInit() {
     this.createForm();
+  }
+  signInWithGoogle(): void {
+    this.authService.signIn(GoogleLoginProvider.PROVIDER_ID);
   }
 
   createForm() {
@@ -37,7 +41,7 @@ export class RegistroComponent implements OnInit {
 
   onSubmit() {
     if (!this.registroForm.invalid) {
-      this.authService.register(this.registroForm.get('nombre').value, this.registroForm.get('email').value, this.registroForm.get('password').value)
+      this.authWeb.register(this.registroForm.get('nombre').value, this.registroForm.get('email').value, this.registroForm.get('password').value)
         .subscribe((verdad) => {
         })
     }

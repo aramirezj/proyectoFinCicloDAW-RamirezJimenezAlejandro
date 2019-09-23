@@ -1,8 +1,8 @@
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatToolbarModule, MatIconModule, MatSidenavModule, MatListModule, MatButtonModule } from  '@angular/material';
+import { MatToolbarModule, MatIconModule, MatSidenavModule, MatListModule, MatButtonModule } from '@angular/material';
 
-import { NgModule,LOCALE_ID } from '@angular/core';
+import { NgModule, LOCALE_ID } from '@angular/core';
 import { RouterModule } from '@angular/router'
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -36,7 +36,7 @@ import { MatPaginatorIntlCro } from './explorador/explorador.component';
 import { UsuarioComponent } from './usuario/usuario.component';
 import { VotarComponent } from './ver-quizz/votar/votar.component';
 
-import { ErrorStateMatcher,ShowOnDirtyErrorStateMatcher } from '@angular/material/core';
+import { ErrorStateMatcher, ShowOnDirtyErrorStateMatcher } from '@angular/material/core';
 
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatSelectModule } from '@angular/material/select';
@@ -60,10 +60,34 @@ import { ModeracionComponent } from './moderacion/moderacion.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { LogrosComponent } from './profile/logros/logros.component';
 import { InfolegalComponent } from './infolegal/infolegal.component';
-import { HashLocationStrategy, LocationStrategy,registerLocaleData  } from '@angular/common';
+import { HashLocationStrategy, LocationStrategy, registerLocaleData } from '@angular/common';
 import localePy from '@angular/common/locales/es-PY';
 import { ForgetComponent } from './forget/forget.component';
 import { BuscadorComponent } from './buscador/buscador.component';
+
+
+import { SocialLoginModule, AuthServiceConfig } from "angularx-social-login";
+import { GoogleLoginProvider, FacebookLoginProvider } from "angularx-social-login";
+
+
+
+let config = new AuthServiceConfig([
+  {
+    id: GoogleLoginProvider.PROVIDER_ID,
+    provider: new GoogleLoginProvider("AIzaSyD0doNEJDBrNeQHFsgMvjnIFl8TKDIAtZ4")
+  },
+  {
+    id: FacebookLoginProvider.PROVIDER_ID,
+    provider: new FacebookLoginProvider("Facebook-App-Id")
+  }
+]);
+
+export function provideConfig() {
+  return config;
+}
+
+
+
 registerLocaleData(localePy, 'es');
 @NgModule({
   declarations: [
@@ -91,9 +115,10 @@ registerLocaleData(localePy, 'es');
     BuscadorComponent,
   ],
   imports: [
+    SocialLoginModule,
     BrowserModule,
     AppRoutingModule,
-    RouterModule.forRoot(ROUTES, { onSameUrlNavigation: 'reload',useHash: true }),
+    RouterModule.forRoot(ROUTES, { onSameUrlNavigation: 'reload', useHash: true }),
     FormsModule,
     ReactiveFormsModule,
     HttpModule,
@@ -121,7 +146,11 @@ registerLocaleData(localePy, 'es');
     AngularFireDatabaseModule
   ],
   exports: [RouterModule],
-  providers: [AuthService, AuthGuard, AuthedGuard, QuizzService, NotifyService, UserService, FollowService, RestService, AngularFirestore, AngularFireStorage, { provide: MatPaginatorIntl, useClass: MatPaginatorIntlCro },{provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher},{provide: LocationStrategy, useClass: HashLocationStrategy},{ provide: LOCALE_ID, useValue: 'es-Ar' }],
+  providers: [AuthService, AuthGuard, AuthedGuard, QuizzService, NotifyService, UserService, FollowService, RestService,
+    AngularFirestore, AngularFireStorage, { provide: MatPaginatorIntl, useClass: MatPaginatorIntlCro },
+    { provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher },
+    { provide: LocationStrategy, useClass: HashLocationStrategy }, { provide: LOCALE_ID, useValue: 'es-Ar' },
+    { provide: AuthServiceConfig, useFactory: provideConfig }],
   bootstrap: [AppComponent],
   entryComponents: [DialogboxComponent]
 })

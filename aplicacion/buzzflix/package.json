@@ -27,6 +27,7 @@
     "@angular/router": "^9.0.0-next.4",
     "angular1-star-rating": "^1.2.11",
     "angularfire2": "^5.2.1",
+    "angularx-social-login": "^1.2.7",
     "core-js": "^3.2.1",
     "express": "^4.17.1",
     "firebase": "^6.5.0",
