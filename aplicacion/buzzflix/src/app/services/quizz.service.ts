@@ -18,17 +18,24 @@ export class QuizzService {
     ) {
     }
 
+
+    convierteModelo(rawQuiz:any){
+        let quiz:Quizz = JSON.parse(rawQuiz.contenido)
+        return quiz;
+    }
+
     uploadImage(files): void {
         for (let i = 0; i < files.length; i++) {
             let ref = this.afStorage.ref(files[i].name);
             ref.put(files[i]);
         }
     }
-    deleteImages(quizz: Quizz): void {
+    deleteImages(quiz: any): void {
+        quiz = this.convierteModelo(quiz);
         let files: string[] = [];
-        files.push(quizz.image);
-        for (let i = 0; i < quizz.soluciones.length; i++) {
-            files.push(quizz.soluciones[i].image);
+        files.push(quiz.image);
+        for (let i = 0; i < quiz.soluciones.length; i++) {
+            files.push(quiz.soluciones[i].image);
         }
         for (let j = 0; j < files.length; j++) {
             this.afStorage.ref(files[j]).delete();
@@ -152,14 +159,14 @@ export class QuizzService {
 
 
 
-    borraQuizz(quizz: Quizz) {
-        let url = `${CONFIG.apiUrl}borraQuizz`;
-        let body = { id: quizz.id };
+    borraQuizz(quiz: Quizz) {
+        let url = `${CONFIG.apiUrl}borraQuiz`;
+        let body = { id: quiz.id };
 
         return Observable.create(observer => {
             this.restService.peticionHttp(url, body).subscribe(response => {
                 this.notifyService.notify("Has borrado tu quizz correctamente, una gran perdida...", "success");
-                this.deleteImages(quizz);
+                this.deleteImages(quiz);
                 location.reload();
                 observer.next()
                 observer.complete();

@@ -23,7 +23,8 @@ export class QuizzComponent implements OnInit {
   usuario: Usuario
   isCreador: boolean
   downloadURL: any
-  privado: boolean
+  privado: String;
+  urlClick:String|number;
   constructor(
     private quizzService: QuizzService,
     private authService: AuthService,
@@ -34,7 +35,6 @@ export class QuizzComponent implements OnInit {
 
   ngOnInit() {
     this.id = this.quizz.id;
-    this.privado = false;
     this.isCreador = this.quizz.creador == this.authService.getAuthUserId() ? true : false;
     this.usuario = new Usuario(this.quizz.creador, this.quizz.nombre, null, null);
     this.estrellas = this.quizz.estrellas / this.quizz.votantes;
@@ -43,10 +43,11 @@ export class QuizzComponent implements OnInit {
     this.quizz.image = JSON.parse(this.quizz.contenido).image;
     this.quizz.image = this.quizz.image == null ? "hehexd.jpg":this.afStorage.ref(this.quizz.image).getDownloadURL();
     
+    this.urlClick = this.quizz.privado != null ? this.quizz.privado:this.id;
+
+
     if (this.quizz.privado != null) {
       this.quizz.titulo = this.quizz.titulo + " (Quiz privado)";
-      this.quizz.id = this.quizz.privado;
-      this.privado = true;
     } else if (this.quizz.publicado == 0) {
       this.quizz.titulo = this.quizz.titulo + " (Pendiente de moderación)";
     }
@@ -88,7 +89,7 @@ export class QuizzComponent implements OnInit {
       .subscribe((resp) => { });
   }
   obtenerURL() {
-    var url = "localhost:4200/ver/quizz/" + this.quizz.id;
+    var url = window.location.protocol+"//"+window.location.hostname+"/ver/quizz/" + this.urlClick;
     var textArea = document.createElement("textarea");
     textArea.value = url;
     document.body.appendChild(textArea);

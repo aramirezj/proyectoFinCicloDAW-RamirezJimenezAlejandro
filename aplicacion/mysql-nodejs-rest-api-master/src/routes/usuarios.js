@@ -72,7 +72,7 @@ router.post('/api/forget', (req, res, next) => {
     queryService.ejecutaConsulta("endRecuperacion", [password, codigo], res,
       function (rows) {
         if (rows) {
-          res.send({ final:true });
+          res.send({ final: true });
         }
       });
   } else {
@@ -80,7 +80,7 @@ router.post('/api/forget', (req, res, next) => {
       function (rows) {
         if (rows) {
           mailService.correoRecuperacion(email, codigo);
-          res.send({ final:false });
+          res.send({ final: false });
         }
       });
   }
@@ -401,18 +401,16 @@ router.post('/api/creaQuizz', listaValidaciones["creaQuiz"], (req, res, next) =>
 });
 
 //Peticion para borrar un quizz (PROTECTED)
-router.post('/api/borraQuizz', listaValidaciones["numerico"], (req, res, next) => {
-  console.log("Petición para borrar un quizz")
-  if (!queryService.compruebaErrores(req, res)) {
-    const { id } = req.body;
-    let permiso = tokenService.verificaToken(req.headers, res);
-    if (permiso) {
-      queryService.ejecutaConsulta("deleteQuiz", [id, permiso], res, function (rows) {
-        if (rows) {
-          res.send({ status: '200' });
-        }
-      });
-    }
+router.post('/api/borraQuiz', (req, res, next) => {
+  console.log("Petición para borrar un quiz")
+  const { id } = req.body;
+  let permiso = tokenService.verificaToken(req.headers, res);
+  if (permiso) {
+    queryService.ejecutaConsulta("deleteQuiz", [id, permiso], res, function (rows) {
+      if (rows) {
+        res.send({ status: '200' });
+      }
+    });
   }
 });
 

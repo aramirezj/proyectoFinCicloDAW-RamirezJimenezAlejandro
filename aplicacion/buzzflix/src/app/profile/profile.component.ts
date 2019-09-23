@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { UserService } from '../services/user.service';
 import { Usuario } from '../modelo/Usuario';
@@ -35,7 +35,6 @@ export class ProfileComponent implements OnInit {
     private afStorage: AngularFireStorage,
     public dialog: MatDialog
   ) {
-
     this.userService.userProfileUpdated.subscribe((usuario) => {
       this.usuario = usuario;
       if (this.usuario.avatar == "" || this.usuario.avatar == null) {
@@ -43,6 +42,7 @@ export class ProfileComponent implements OnInit {
       } else if (this.usuario.avatar != null) {
         this.usuario.avatar = this.afStorage.ref(this.usuario.avatar).getDownloadURL();
       }
+      this.cargaStats();
     })
   }
 
