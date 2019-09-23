@@ -1,5 +1,5 @@
 <div class="card mb-3" *ngIf="quizz && usuario">
-  <img [routerLink]="['/ver/quizz',quizz.id]" role="button" *ngIf="this.quizz.image | async; let url" [src]="url"
+  <img alt="Imagen principal del quiz" [routerLink]="['/ver/quizz',quizz.id]" role="button" *ngIf="this.quizz.image | async; let url" [src]="url"
     class="card-img-top">
   <div class="card-body">
     <h4 class="card-title" role="button">{{quizz.titulo}}</h4>

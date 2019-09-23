@@ -8,7 +8,7 @@
     <button class="menuBoton" mat-icon-button>
       <mat-icon (click)="sidenav.toggle()">menu</mat-icon>
     </button>
-    <img src="assets/logo.png" role="button" [routerLink]="['ver/seguidos']">
+    <img src="assets/logo.png" alt="Logo de la web" role="button" [routerLink]="['ver/seguidos']">
     <span class="menu-spacer"></span>
     <div class="menuExpandido">
       <form class="form-inline" id="form1" *ngIf="this.showSU" [formGroup]="miniForm">

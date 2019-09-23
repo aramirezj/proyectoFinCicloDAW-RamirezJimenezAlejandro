@@ -23,7 +23,7 @@
         </p>
       </mat-card-title>
     </mat-card-header>
-    <img mat-card-image *ngIf="this.solucionado.image | async; let url" [src]="url" width="200px">
+    <img alt="Imagen de la solucion adquirida" mat-card-image *ngIf="this.solucionado.image | async; let url" [src]="url" width="200px">
     <mat-card-content>
       <p class="descSolu">
         {{this.solucionado.descripcion}}

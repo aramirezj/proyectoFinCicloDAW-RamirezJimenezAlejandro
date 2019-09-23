@@ -33,7 +33,7 @@
     <mat-card-header>
       <mat-card-title class="mat-card-header-text">{{solucion.titulo}}</mat-card-title>
     </mat-card-header>
-    <img mat-card-image *ngIf="this.imagenes[this.indiceImagenes] | async; let url" [src]="url" width="200px">
+    <img alt="Imagen de la solución" mat-card-image *ngIf="this.imagenes[this.indiceImagenes] | async; let url" [src]="url" width="200px">
     {{this.controlImagenes(1)}}
     <mat-card-content>
       <p class="descSolu">

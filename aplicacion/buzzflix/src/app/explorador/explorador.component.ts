@@ -35,6 +35,7 @@ export class ExploradorComponent implements OnInit  {
   }
 
   getQuizzes(){
+    this.opcion = this.opcion==null ? "todos":this.opcion;
     this.quizzService.ObtenerQuizzes(this.opcion,this.inicio+"-"+this.quizporPagina)
     .subscribe(resp=>{
       this.totalQuizzes=resp["total"];

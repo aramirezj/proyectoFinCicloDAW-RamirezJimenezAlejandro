@@ -1,6 +1,6 @@
 <div class="col-md-4" *ngFor="let logro of this.listaLogros">
   <div class="card mb-2">
-    <img (mouseover)="setGif(logro.id)" [id]="'img'+logro.id" (mouseleave)="deleteGif(logro.id)" [class]="isPendiente(logro)" [src]="'assets/logros/logro'+logro.id+'.png'" width="100"/>
+    <img [alt]="'Logro '+logro.nombre" (mouseover)="setGif(logro.id)" [id]="'img'+logro.id" (mouseleave)="deleteGif(logro.id)" [class]="isPendiente(logro)" [src]="'assets/logros/logro'+logro.id+'.png'" width="100"/>
     <div class="card-body">
       <h4 class="card-title">{{logro.nombre}}</h4>
       <p class="card-text">{{logro.descripcion}}</p>
