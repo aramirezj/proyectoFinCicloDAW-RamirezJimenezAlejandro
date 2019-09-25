@@ -39,7 +39,7 @@ export class ProfileComponent implements OnInit {
       this.usuario = usuario;
       if (this.usuario.avatar == "" || this.usuario.avatar == null) {
         this.usuario.avatar = this.afStorage.ref("hehexd.PNG").getDownloadURL();
-      } else if (this.usuario.avatar != null) {
+      } else if (typeof this.usuario.avatar == "string") {
         this.usuario.avatar = this.afStorage.ref(this.usuario.avatar).getDownloadURL();
       }
       this.cargaStats();
@@ -50,8 +50,15 @@ export class ProfileComponent implements OnInit {
     return +this.id === +this.authService.getAuthUserId();
   }
 
+  gestionaPosicion(){
+    this.showLogros =  window.location.href.indexOf("logros") == -1 ? true : false;
+    this.showEditar =  window.location.href.indexOf("edit") == -1 ? true : false;
+    this.showWall =  window.location.href.indexOf("wall") == -1 ? true : false;
+  }
 
   ngOnInit() {
+    this.gestionaPosicion();
+    
     this.router.params.subscribe((params) => {
       this.id = +params['id'];
       this.userService.changeMessage(this.id);

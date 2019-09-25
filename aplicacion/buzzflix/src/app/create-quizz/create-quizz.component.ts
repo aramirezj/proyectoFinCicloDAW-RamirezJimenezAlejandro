@@ -13,7 +13,7 @@ import { NotifyService } from '../services/notify.service';
 import * as $ from 'jquery';
 import { ErrorStateMatcher } from '@angular/material';
 import { Section } from '../moderacion/moderacion.component';
-
+import { NgxImageCompressService } from 'ngx-image-compress';
 
 export interface Numero {
   value: number;
@@ -68,6 +68,8 @@ export class CreateQuizzComponent implements OnInit {
 
   public files: Array<File>;
   public file: File;
+  imgResultBeforeCompress: string;
+  imgResultAfterCompress: string;
 
   constructor(
     private fb: FormBuilder,
@@ -77,6 +79,7 @@ export class CreateQuizzComponent implements OnInit {
     private bar: NgProgress,
     private ref: ChangeDetectorRef,
     private notifyService: NotifyService,
+    private imageCompress: NgxImageCompressService
   ) {
 
     this.files = [];
@@ -95,6 +98,25 @@ export class CreateQuizzComponent implements OnInit {
 
     }
   }
+
+  compressFile() {
+
+    this.imageCompress.uploadFile().then(({ image, orientation }) => {
+
+      this.imgResultBeforeCompress = image;
+      console.warn('Size in bytes was:', this.imageCompress.byteCount(image));
+
+      this.imageCompress.compressFile(image, orientation, 50, 50).then(
+        result => {
+          this.imgResultAfterCompress = result;
+          console.warn('Size in bytes is now:', this.imageCompress.byteCount(result));
+        }
+      );
+
+    });
+
+  }
+
   onFileChanged(event: any, n: number) {
     let verdad = true;
     let nameInput = event.target.getAttribute("ng-reflect-name");
@@ -123,15 +145,10 @@ export class CreateQuizzComponent implements OnInit {
           destino.src = target.result;
         };
         reader.readAsDataURL(file);
-        destino.src = file;
-
         this.errores.splice(this.errores.indexOf("si" + (n + 1)))
-        let button = $("#si" + (n+1))[0];
+        let button = $("#si" + (n + 1))[0];
         button.className = "fileUpload btn btn-success"
-
-
       }
-
     } else {
       this.notifyService.notify("Los formatos aceptados son PNG,JPG,JPEG", "error");
       this.quizzForm.get(nameInput).reset();
@@ -528,7 +545,7 @@ export class CreateQuizzComponent implements OnInit {
     this.quizzService.createQuizz(this.quizz, this.files, privado)
       .subscribe(resp => {
         localStorage.removeItem("quizCookie");
-        this.router.navigate(['/usuario/perfil', this.authService.getAuthUserId()])
+        this.router.navigate(['/usuario/perfil', this.authService.getAuthUserId(),"logros"])
       })
   }
 

@@ -1,6 +1,7 @@
 const express = require('express');
 const app = express();
 const router = express.Router();
+const path = require("path");
 var cors = require('cors')
 
 const queryService = require('../controllers/queryController');
@@ -11,6 +12,42 @@ const listaValidaciones = require('../validaciones');
 
 
 app.use(cors())
+
+router.get("/api/userImages", express.static(path.join(__dirname, "../userImages")));
+
+
+
+router.post("/api/upload/user", (req, res,next) => {
+  console.log("peticion para subir una imagen")
+  console.log(req.file)
+    const tempPath = req.file.path;
+    const targetPath = path.join(__dirname, "../userImages/image.png");
+
+    if (path.extname(req.file.originalname).toLowerCase() === ".png") {
+      fs.rename(tempPath, targetPath, err => {
+        if (err) return handleError(err, res);
+
+        res
+          .status(200)
+          .contentType("text/plain")
+          .end("File uploaded!");
+      });
+    } else {
+      fs.unlink(tempPath, err => {
+        if (err) return handleError(err, res);
+
+        res
+          .status(403)
+          .contentType("text/plain")
+          .end("Only .png files are allowed!");
+      });
+    }
+  }
+);
+
+
+
+
 
 //Petición para registrar un usuario .
 router.post('/api/register', listaValidaciones["registro"], (req, res, next) => {

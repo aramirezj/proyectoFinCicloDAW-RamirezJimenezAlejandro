@@ -10,6 +10,7 @@ import { RegistroComponent } from './registro/registro.component';
 import { ROUTES } from './routes/routes';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from './services/auth.service';
+import { ImageService } from './services/image.service';
 import { HttpModule } from '@angular/http';
 import { HttpClientModule } from '@angular/common/http';
 import { LoginComponent } from './login/login.component';
@@ -65,7 +66,7 @@ import localePy from '@angular/common/locales/es-PY';
 import { ForgetComponent } from './forget/forget.component';
 import { BuscadorComponent } from './buscador/buscador.component';
 
-
+import { NgxImageCompressService } from 'ngx-image-compress';
 import { SocialLoginModule, AuthServiceConfig } from "angularx-social-login";
 import { GoogleLoginProvider, FacebookLoginProvider } from "angularx-social-login";
 
@@ -146,11 +147,11 @@ registerLocaleData(localePy, 'es');
     AngularFireDatabaseModule
   ],
   exports: [RouterModule],
-  providers: [AuthService, AuthGuard, AuthedGuard, QuizzService, NotifyService, UserService, FollowService, RestService,
+  providers: [AuthService, AuthGuard, AuthedGuard, QuizzService, NotifyService, UserService, FollowService, RestService, ImageService,
     AngularFirestore, AngularFireStorage, { provide: MatPaginatorIntl, useClass: MatPaginatorIntlCro },
     { provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher },
     { provide: LocationStrategy, useClass: HashLocationStrategy }, { provide: LOCALE_ID, useValue: 'es-Ar' },
-    { provide: AuthServiceConfig, useFactory: provideConfig }],
+    { provide: AuthServiceConfig, useFactory: provideConfig }, NgxImageCompressService],
   bootstrap: [AppComponent],
   entryComponents: [DialogboxComponent]
 })
