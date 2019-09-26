@@ -53,7 +53,9 @@ export class ProfileComponent implements OnInit {
   gestionaPosicion(){
     this.showLogros =  window.location.href.indexOf("logros") == -1 ? true : false;
     this.showEditar =  window.location.href.indexOf("edit") == -1 ? true : false;
-    this.showWall =  window.location.href.indexOf("wall") == -1 ? true : false;
+    if(window.location.href.indexOf("logros") != -1 || window.location.href.indexOf("edit") != -1){
+      this.showWall=true;
+    }
   }
 
   ngOnInit() {
