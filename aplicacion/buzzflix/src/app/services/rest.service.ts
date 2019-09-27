@@ -1,4 +1,4 @@
-import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { NotifyService } from './notify.service';
@@ -6,15 +6,9 @@ import { NgProgress } from 'ngx-progressbar';
 import { Router } from '@angular/router';
 import { LOCAL_STORAGE } from '@ng-toolkit/universal';
 import { isPlatformBrowser } from '@angular/common';
-export enum Tipos {
-    Get,
-    Post,
-    Put
-}
 
 @Injectable()
 export class RestService {
-    tipos: typeof Tipos = Tipos;
     private headers: HttpHeaders;
     constructor(
         @Inject(PLATFORM_ID) private platformId: Object,

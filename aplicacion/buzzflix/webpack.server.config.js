@@ -3,9 +3,11 @@
 const path = require('path');
 const webpack = require('webpack');
 const regex = /firebase\/(app|firestore)/;
+var nodeExternals = require('webpack-node-externals');
+
 module.exports = {
   mode: 'none',
-  externals: [/node_modules/, function(context, request, callback) {
+  externals: [nodeExternals(),/node_modules/, function(context, request, callback) {
 
     // exclude firebase products from being bundled, so they will be loaded using require() at runtime.
     if(regex.test(request)) {

@@ -1,4 +1,6 @@
 import 'zone.js/dist/zone-node';
+(global as any).WebSocket = require('ws');
+(global as any).XMLHttpRequest = require('xhr2');
 import {enableProdMode} from '@angular/core';
 // Express Engine
 import {ngExpressEngine} from '@nguniversal/express-engine';

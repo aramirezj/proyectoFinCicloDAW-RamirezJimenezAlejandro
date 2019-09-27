@@ -52,9 +52,9 @@ export class ProfileComponent implements OnInit {
   }
 
   gestionaPosicion(){
-    this.showLogros =  this.window.location.href.indexOf("logros") == -1 ? true : false;
-    this.showEditar =  this.window.location.href.indexOf("edit") == -1 ? true : false;
-    if(this.window.location.href.indexOf("logros") != -1 || this.window.location.href.indexOf("edit") != -1){
+    this.showLogros =  window.location.href.indexOf("logros") == -1 ? true : false;
+    this.showEditar =  window.location.href.indexOf("edit") == -1 ? true : false;
+    if(window.location.href.indexOf("logros") != -1 || window.location.href.indexOf("edit") != -1){
       this.showWall=true;
     }
   }

@@ -14,7 +14,6 @@ import { AuthService } from './services/auth.service';
 import { ImageService } from './services/image.service';
 import { FileService } from './services/file.service';
 import { HttpModule } from '@angular/http';
-import { HttpClientModule } from '@angular/common/http';
 import { LoginComponent } from './login/login.component';
 import { AuthGuard } from './guards/auth.guard';
 import { AuthedGuard } from './guards/authed.guard';
@@ -41,7 +40,6 @@ import { VotarComponent } from './ver-quizz/votar/votar.component';
 
 import { ErrorStateMatcher, ShowOnDirtyErrorStateMatcher } from '@angular/material/core';
 
-import { FlexLayoutModule } from '@angular/flex-layout';
 import { MatSelectModule } from '@angular/material/select';
 import { MatInputModule } from '@angular/material/input';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
@@ -71,7 +69,8 @@ import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
 import { NgxImageCompressService } from 'ngx-image-compress';
 import { SocialLoginModule, AuthServiceConfig } from "angularx-social-login";
 import { GoogleLoginProvider, FacebookLoginProvider } from "angularx-social-login";
-
+import { HttpClientModule } from '@angular/common/http';
+import { WINDOW } from '@ng-toolkit/universal';
 
 
 let config = new AuthServiceConfig([
@@ -120,7 +119,9 @@ registerLocaleData(localePy, 'es');
   imports: [
     BrowserModule.withServerTransition({
       appId: 'ng-universal-demystified'
-  }),
+    }),
+    HttpClientModule,
+  
     SocialLoginModule,
     AppRoutingModule,
     RouterModule.forRoot(ROUTES, { onSameUrlNavigation: 'reload', useHash: true }),
@@ -128,10 +129,8 @@ registerLocaleData(localePy, 'es');
     FormsModule,
     ReactiveFormsModule,
     HttpModule,
-    HttpClientModule,
     NgProgressModule,
     BrowserAnimationsModule,
-    FlexLayoutModule,
     MatSelectModule,
     MatInputModule,
     MatButtonModule,
@@ -155,11 +154,11 @@ registerLocaleData(localePy, 'es');
   exports: [RouterModule],
   providers: [
     AuthService, AuthGuard, AuthedGuard, QuizzService, NotifyService, UserService, FollowService,
-     RestService, ImageService,FileService, AngularFirestore, AngularFireStorage, 
+    RestService, ImageService, FileService, AngularFirestore, AngularFireStorage,
     { provide: MatPaginatorIntl, useClass: MatPaginatorIntlCro },
     { provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher },
     { provide: LocationStrategy, useClass: HashLocationStrategy }, { provide: LOCALE_ID, useValue: 'es-Ar' },
-    { provide: AuthServiceConfig, useFactory: provideConfig }, NgxImageCompressService],
+    { provide: AuthServiceConfig, useFactory: provideConfig },{provide: WINDOW, useValue: {}}, NgxImageCompressService],
   bootstrap: [AppComponent],
   entryComponents: [DialogboxComponent]
 })

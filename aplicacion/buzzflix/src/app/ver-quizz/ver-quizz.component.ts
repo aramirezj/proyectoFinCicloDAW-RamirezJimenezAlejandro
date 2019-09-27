@@ -112,7 +112,9 @@ export class VerQuizzComponent implements OnInit {
     this.solucionado.image = this.afStorage.ref(this.solucionado.image).getDownloadURL();
 
     this.resultado = true;
-    let preUrl = this.window.location.href;
+
+
+    let preUrl = window.location.href;
     this.urlShare = "https://twitter.com/intent/tweet?text=¡Obtuve%20" + this.solucionado.titulo + "!%20" + preUrl + ";via=hasquiz;";
 
     setTimeout(() => {

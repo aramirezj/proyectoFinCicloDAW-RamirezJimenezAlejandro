@@ -142,8 +142,8 @@ export class AuthService {
         let usuario = null;
         let token = null;
         if (isPlatformBrowser(this.platformId)) {
-            localStorage.getItem("usuario");
-            localStorage.getItem("token");
+            usuario = localStorage.getItem("usuario");
+            token = localStorage.getItem("token");
         }
 
         if (usuario && token) {
@@ -168,7 +168,7 @@ export class AuthService {
             if (isPlatformBrowser(this.platformId)) {
                 localStorage.setItem("usuario", JSON.stringify(aux));
             }
-            
+
             this.notifyService.notify("Has iniciado sesión correctamente", "success");
             this.router.navigate(['/ver/todos']);
         }
