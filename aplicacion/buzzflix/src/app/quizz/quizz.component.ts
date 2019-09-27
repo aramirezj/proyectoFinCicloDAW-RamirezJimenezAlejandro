@@ -25,6 +25,7 @@ export class QuizzComponent implements OnInit {
   downloadURL: any
   privado: String;
   urlClick:String|number;
+  urlShare:String;
   constructor(
     private quizzService: QuizzService,
     private authService: AuthService,
@@ -44,13 +45,14 @@ export class QuizzComponent implements OnInit {
     this.quizz.image = this.quizz.image == null ? "hehexd.jpg":this.afStorage.ref(this.quizz.image).getDownloadURL();
     
     this.urlClick = this.quizz.privado != null ? this.quizz.privado:this.id;
-
+    
 
     if (this.quizz.privado != null) {
       this.quizz.titulo = this.quizz.titulo + " (Quiz privado)";
     } else if (this.quizz.publicado == 0) {
       this.quizz.titulo = this.quizz.titulo + " (Pendiente de moderación)";
     }
+    this.obtenerURL();
   }
 
   openDialog() {
@@ -86,19 +88,10 @@ export class QuizzComponent implements OnInit {
     }
     this.quizz.id = this.id;
     this.quizzService.cambiaTipo(this.quizz, privado)
-      .subscribe((resp) => { });
+      .subscribe();
   }
   obtenerURL() {
-    var url = window.location.protocol+"//"+window.location.hostname+"/ver/quizz/" + this.urlClick;
-    var textArea = document.createElement("textarea");
-    textArea.value = url;
-    document.body.appendChild(textArea);
-    textArea.focus();
-    textArea.select();
-    document.execCommand("copy");
-    $(textArea).remove();
-    this.notifyService.notify("¡Enlace copiado!", "success");
-
+    this.urlShare = window.location.protocol+"//"+window.location.hostname+"/ver/quizz/" + this.urlClick;
   }
 
 }

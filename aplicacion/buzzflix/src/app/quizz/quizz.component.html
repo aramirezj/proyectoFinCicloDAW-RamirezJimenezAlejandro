@@ -13,7 +13,7 @@
       <button mat-menu-item (click)="openDialog()">Eliminar</button>
       <button mat-menu-item (click)="cambiar()" *ngIf="!this.privado">Privatizar</button>
       <button mat-menu-item (click)="cambiar()" *ngIf="this.privado">Desprivatizar</button>
-      <button mat-menu-item (click)="obtenerURL()" *ngIf="this.privado">Copiar URL</button>
+      <button mat-menu-item ngxClipboard [cbContent]="this.urlShare">Copiar URL</button>
     </mat-menu>
   </div>
 </div>

@@ -1,7 +1,7 @@
 const queryService = require('../controllers/queryController');
 
 /*
-Documentación de implementación de Logros
+Doc de implementación de Logros
 (USUARIOS: 2,6,8,9) (QUIZZES: 3) (UNICO: 1) (INCR+: 4,5,7,)
 
 Logro 1 (Nuevo outfit) : /api/usuario/actualizar/:id

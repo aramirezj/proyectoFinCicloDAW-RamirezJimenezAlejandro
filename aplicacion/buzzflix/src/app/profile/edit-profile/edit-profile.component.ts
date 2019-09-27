@@ -4,42 +4,45 @@ import { AuthService } from './../../services/auth.service';
 import { UserService } from 'src/app/services/user.service';
 import { NotifyService } from 'src/app/services/notify.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { ReactiveFormsModule } from '@angular/forms';
 import { NgProgress } from 'ngx-progressbar';
 import * as $ from 'jquery';
+import { FileService } from 'src/app/services/file.service';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-edit-profile',
   templateUrl: './edit-profile.component.html',
   styleUrls: ['./edit-profile.component.scss']
 })
 export class EditProfileComponent implements OnInit {
-  usuario: Usuario
-  file: File
-  profileForm: FormGroup
-  textInput: String
+  usuario: Usuario;
+  file: File;
+  profileForm: FormGroup;
+  textInput: String;
+  loaded: boolean = false;
+
   constructor(
+    private fileService: FileService,
     private authService: AuthService,
     private userService: UserService,
     private notifyService: NotifyService,
     private bar: NgProgress,
-
-  ) {
-    this.textInput = "Sube aquí tu nuevo avatar.";
-    this.creaFormulario();
-
-
-  }
+    private router: Router
+  ) { }
 
   ngOnInit() {
+    this.textInput = "Sube aquí tu nuevo avatar.";
     this.usuario = this.authService.getAuthUser();
-    $('html,body').animate({scrollTop: document.body.scrollHeight},"medium");
+    this.creaFormulario();
+    this.loaded = true;
   }
 
   creaFormulario() {
     this.profileForm = new FormGroup({
-      nombre: new FormControl(null, [Validators.required, Validators.minLength(2),Validators.maxLength(20)]),
-      oldPass: new FormControl(null, [Validators.minLength(6),Validators.maxLength(30)]),
-      newPass: new FormControl(null, [Validators.minLength(6),Validators.maxLength(30)]),
-      avatar: new FormControl(null,null)
+      nombre: new FormControl(this.usuario.name, [Validators.required, Validators.minLength(2), Validators.maxLength(20)]),
+      oldPass: new FormControl(null, [Validators.minLength(6), Validators.maxLength(30)]),
+      newPass: new FormControl(null, [Validators.minLength(6), Validators.maxLength(30)]),
+      avatar: new FormControl(null, null)
     });
   }
 
@@ -63,55 +66,27 @@ export class EditProfileComponent implements OnInit {
       }
     }
 
-
     if (cambios) {
       this.bar.start();
       this.userService.updateProfile(datos)
         .subscribe((usuario) => {
+          this.bar.done();
           if (usuario != null) {
             this.usuario = usuario;
           } else {
             this.usuario.avatar = "";
           }
-          this.bar.done();
         })
     }
-    $('html,body').animate({scrollBottom: document.body.scrollHeight},"medium");
   }
 
-
-  onFileChanged(event) {
-    const file = event.target.files[0];
-    this.textInput = file.name;
-    let randomId = Math.random().toString(36).substring(2);
-    let ext = file.name.split(".")[1];
-    let aux = ext.toUpperCase();
-    if (aux === "JPG" || aux === "JPEG" || aux === "PNG") {
-      randomId = randomId + "." + ext;
-      Object.defineProperty(file, "name", {
-        value: randomId,
-        writable: false
-      })
-      this.file = file;
-    } else {
+  onFileChange(event) {
+    const [rawFile] = event.target.files;
+    this.file = this.fileService.prepareFile(rawFile);
+    this.textInput = this.file != null ? this.file.name : "Sube aquí tu nuevo avatar.";
+    if (this.file == null) {
       this.notifyService.notify("Los formatos aceptados son PNG,JPG,JPEG", "error");
       this.profileForm.get("avatar").reset();
     }
   }
 }
-
-
-$(document).on('change', '.up', function () {
-  var names: any = [];
-  var length = $(this).get(0).files.length;
-  for (var i = 0; i < $(this).get(0).files.length; ++i) {
-    names.push($(this).get(0).files[i].name);
-  }
-  if (length > 2) {
-    var fileName = names.join(', ');
-    $(this).closest('.form-group').find('.form-control').attr("value", length + " files selected");
-  }
-  else {
-    $(this).closest('.form-group').find('.form-control').attr("value", names);
-  }
-});

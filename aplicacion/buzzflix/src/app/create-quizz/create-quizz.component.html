@@ -1,6 +1,6 @@
 <div class="row">
   <div class="col-md-12 box">
-      <!--<div>
+    <!--<div>
           <button (click)="compressFile()">Upload and compress Image</button>
           <img *ngIf="imgResultBeforeCompress" [src]="imgResultBeforeCompress" alt="">
           <img *ngIf="imgResultAfterCompress" [src]="imgResultAfterCompress" alt="">
@@ -47,11 +47,13 @@
             </mat-form-field>
             <div class="form-group"><br>
               <div class="input-group">
-                <input type="text" class="form-control" placeholder="Banner del Quiz *" readonly>
+                <input type="text" *ngIf="this.files[0] == null" class="form-control"
+                  placeholder="Banner del Quiz *" readonly>
+                <input type="text" *ngIf="this.files[0]" [value]="this.files[0].name" class="form-control" readonly>
                 <div class="input-group-btn">
                   <span class="fileUpload btn btn-success">
                     <span class="upl" id="upload">Subir imagen</span>
-                    <input type="file" class="upload up" accept="image/*" (change)="onFileChanged($event,50)"
+                    <input type="file" class="upload up" accept="image/*" (change)="onFileChanged($event,100)"
                       formControlName="banner" id="up" />
                   </span>
                 </div>
@@ -124,11 +126,12 @@
                         readonly>
                       <div class="input-group-btn">
                         <span style="margin-top: 2vh;" class="fileUpload btn btn-success" [id]="generaId('si',i)">
-                          <span class="upl" >Subir imagen</span>
-                          <input type="file" class="upload up"  accept="image/*" (change)="onFileChanged($event,i)"
-                            [formControlName]="generaId('si',i)"  />
+                          <span class="upl">Subir imagen</span>
+                          <input type="file" class="upload up" accept="image/*" (change)="onFileChanged($event,i)"
+                            [formControlName]="generaId('si',i)" />
                         </span>
-                      </div><mat-error *ngIf="this.errores.indexOf(generaId('si',i))!=-1">La imagen es obligatoria</mat-error>
+                      </div>
+                      <mat-error *ngIf="this.errores.indexOf(generaId('si',i))!=-1">La imagen es obligatoria</mat-error>
                       <br>
                       <img alt="Imagen de una solución" [id]="'img'+i" mat-card-image>
                     </mat-card-title>
@@ -214,8 +217,8 @@
                       </mat-error>
                       <div class="form-group afinidad-box" *ngFor="let x of [].constructor(this.maxs); let p = index">
                         <label for="exampleFormControlSelect1">Afinidad {{this.quizzForm.get('st'+(p+1)).value}}</label>
-                        <select [id] = "generaIdRR('p',i,'rs',n,'a',p)"  [formControlName]="generaIdRR('p',i,'rs',n,'a',p)" class="form-control"
-                          id="exampleFormControlSelect1">
+                        <select [id]="generaIdRR('p',i,'rs',n,'a',p)" [formControlName]="generaIdRR('p',i,'rs',n,'a',p)"
+                          class="form-control" id="exampleFormControlSelect1">
                           <option *ngFor="let q of [0,1,2,3,4,5,6,7,8,9,10]; let l = index">{{q}}</option>
                         </select>
                       </div>

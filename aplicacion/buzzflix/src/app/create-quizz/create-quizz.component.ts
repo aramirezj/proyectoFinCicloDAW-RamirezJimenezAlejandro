@@ -1,4 +1,4 @@
-import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, ɵConsole } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder, Validators, FormArray } from '@angular/forms'
 import { QuizzService } from '../services/quizz.service';
 import { Solucion } from '../modelo/Solucion';
@@ -13,7 +13,7 @@ import { NotifyService } from '../services/notify.service';
 import * as $ from 'jquery';
 import { ErrorStateMatcher } from '@angular/material';
 import { Section } from '../moderacion/moderacion.component';
-import { NgxImageCompressService } from 'ngx-image-compress';
+import { FileService } from '../services/file.service';
 
 export interface Numero {
   value: number;
@@ -68,8 +68,7 @@ export class CreateQuizzComponent implements OnInit {
 
   public files: Array<File>;
   public file: File;
-  imgResultBeforeCompress: string;
-  imgResultAfterCompress: string;
+  private names:Array<String>=[];
 
   constructor(
     private fb: FormBuilder,
@@ -77,9 +76,8 @@ export class CreateQuizzComponent implements OnInit {
     private router: Router,
     private quizzService: QuizzService,
     private bar: NgProgress,
-    private ref: ChangeDetectorRef,
     private notifyService: NotifyService,
-    private imageCompress: NgxImageCompressService
+    private fileService: FileService
   ) {
 
     this.files = [];
@@ -99,61 +97,31 @@ export class CreateQuizzComponent implements OnInit {
     }
   }
 
-  compressFile() {
+  onFileChanged(event: any, posicion: number) {
+    let banner = posicion == 100 ? true : false;
+    posicion = posicion == 100 ? 0 : posicion +1;
+    const rawFile = event.target.files[0];
+    let file = this.fileService.prepareFile(rawFile);
 
-    this.imageCompress.uploadFile().then(({ image, orientation }) => {
-
-      this.imgResultBeforeCompress = image;
-      console.warn('Size in bytes was:', this.imageCompress.byteCount(image));
-
-      this.imageCompress.compressFile(image, orientation, 50, 50).then(
-        result => {
-          this.imgResultAfterCompress = result;
-          console.warn('Size in bytes is now:', this.imageCompress.byteCount(result));
-        }
-      );
-
-    });
-
-  }
-
-  onFileChanged(event: any, n: number) {
-    let verdad = true;
-    let nameInput = event.target.getAttribute("ng-reflect-name");
-    if (n != 50) {
-      n++;
-    } else {
-      n = 0;
-      verdad = false;;
-    }
-
-    const file = event.target.files[0];
-    let formato = file.name.split(".")[1];
-    let aux = formato.toUpperCase();
-    if (aux === "JPG" || aux === "JPEG" || aux === "PNG") {
-      Object.defineProperty(file, "name", {
-        value: this.makeId() + "." + formato,
-        writable: false
-      })
-      this.files[n] = file;
-      if (verdad) {
-        n--;
-        let destino: any = $("#img" + n)[0];
+    if (file != null) {
+      this.files[posicion] = file;
+      this.names[posicion] = file.name;
+      if (!banner) {
+        let destino: any = $("#img" + (posicion - 1))[0];
         var reader = new FileReader();
         reader.onload = function (event) {
           let target: any = event.target;
           destino.src = target.result;
         };
         reader.readAsDataURL(file);
-        this.errores.splice(this.errores.indexOf("si" + (n + 1)))
-        let button = $("#si" + (n + 1))[0];
+        this.errores.splice(this.errores.indexOf("si" + (posicion)))
+        let button = $("#si" + (posicion))[0];
         button.className = "fileUpload btn btn-success"
       }
     } else {
       this.notifyService.notify("Los formatos aceptados son PNG,JPG,JPEG", "error");
-      this.quizzForm.get(nameInput).reset();
+      this.quizzForm.get(event.target.getAttribute("ng-reflect-name")).reset();
     }
-
   }
 
   ngOnInit() {
@@ -545,7 +513,7 @@ export class CreateQuizzComponent implements OnInit {
     this.quizzService.createQuizz(this.quizz, this.files, privado)
       .subscribe(resp => {
         localStorage.removeItem("quizCookie");
-        this.router.navigate(['/usuario/perfil', this.authService.getAuthUserId(),"logros"])
+        this.router.navigate(['/usuario/perfil', this.authService.getAuthUserId(), "logros"])
       })
   }
 
@@ -557,18 +525,3 @@ export class CreateQuizzComponent implements OnInit {
     localStorage.setItem("quizCookie", JSON.stringify(quizCookie));
   }
 }
-
-
-$(document).on('change', '.up', function () {
-  var names: any = [];
-  var length = $(this).get(0).files.length;
-  for (var i = 0; i < $(this).get(0).files.length; ++i) {
-    names.push($(this).get(0).files[i].name);
-  }
-  if (length > 2) {
-    $(this).closest('.form-group').find('.form-control').attr("value", length + " files selected");
-  }
-  else {
-    $(this).closest('.form-group').find('.form-control').attr("value", names);
-  }
-});

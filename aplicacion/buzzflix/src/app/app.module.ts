@@ -3,7 +3,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatToolbarModule, MatIconModule, MatSidenavModule, MatListModule, MatButtonModule } from '@angular/material';
 
 import { NgModule, LOCALE_ID } from '@angular/core';
-import { RouterModule } from '@angular/router'
+import { RouterModule } from '@angular/router';
+import { ClipboardModule } from 'ngx-clipboard';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { RegistroComponent } from './registro/registro.component';
@@ -11,6 +12,7 @@ import { ROUTES } from './routes/routes';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { AuthService } from './services/auth.service';
 import { ImageService } from './services/image.service';
+import { FileService } from './services/file.service';
 import { HttpModule } from '@angular/http';
 import { HttpClientModule } from '@angular/common/http';
 import { LoginComponent } from './login/login.component';
@@ -65,7 +67,7 @@ import { HashLocationStrategy, LocationStrategy, registerLocaleData } from '@ang
 import localePy from '@angular/common/locales/es-PY';
 import { ForgetComponent } from './forget/forget.component';
 import { BuscadorComponent } from './buscador/buscador.component';
-
+import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
 import { NgxImageCompressService } from 'ngx-image-compress';
 import { SocialLoginModule, AuthServiceConfig } from "angularx-social-login";
 import { GoogleLoginProvider, FacebookLoginProvider } from "angularx-social-login";
@@ -120,6 +122,7 @@ registerLocaleData(localePy, 'es');
     BrowserModule,
     AppRoutingModule,
     RouterModule.forRoot(ROUTES, { onSameUrlNavigation: 'reload', useHash: true }),
+    ScrollToModule.forRoot(),
     FormsModule,
     ReactiveFormsModule,
     HttpModule,
@@ -142,13 +145,13 @@ registerLocaleData(localePy, 'es');
     MatCheckboxModule,
     MatIconModule,
     MatExpansionModule,
-
+    ClipboardModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireDatabaseModule
   ],
   exports: [RouterModule],
   providers: [AuthService, AuthGuard, AuthedGuard, QuizzService, NotifyService, UserService, FollowService, RestService, ImageService,
-    AngularFirestore, AngularFireStorage, { provide: MatPaginatorIntl, useClass: MatPaginatorIntlCro },
+    , FileService, AngularFirestore, AngularFireStorage, { provide: MatPaginatorIntl, useClass: MatPaginatorIntlCro },
     { provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher },
     { provide: LocationStrategy, useClass: HashLocationStrategy }, { provide: LOCALE_ID, useValue: 'es-Ar' },
     { provide: AuthServiceConfig, useFactory: provideConfig }, NgxImageCompressService],

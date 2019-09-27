@@ -32,17 +32,17 @@ export class VerQuizzComponent implements OnInit {
   public quizzForm: FormGroup
 
   constructor(
+    private authService:AuthService, //Usado en visto
     private quizzService: QuizzService,
-    private authService:AuthService,
     private router: ActivatedRoute,
     private fb: FormBuilder,
     private bar: NgProgress,
     private afStorage: AngularFireStorage,
     public dialog: MatDialog
-    ) {
+  ) {
     this.resultado = false;
     this.cargado = false;
-    
+
     this.quizzForm = this.fb.group({})
   }
 
@@ -69,7 +69,7 @@ export class VerQuizzComponent implements OnInit {
     let totales: Array<number> = [];
     let id = 0;
     let ganador = 0;
-    let foundWinner=false;
+    let foundWinner = false;
     let cp = this.quizz.preguntas.length;
 
     let prerespondidas = $(".activado");
@@ -101,26 +101,22 @@ export class VerQuizzComponent implements OnInit {
       if (totales[q] > ganador) {
         ganador = totales[q];
         id = q;
-        foundWinner=true;
+        foundWinner = true;
       }
     }
-    if(foundWinner){
+    if (foundWinner) {
       id--;
     }
     this.solucionado = this.quizz.soluciones[id];
     this.solucionado.image = this.afStorage.ref(this.solucionado.image).getDownloadURL();
-    if (this.solucionado.image == null) {
-      this.solucionado.image = "hehexd.png"
-    }
-    this.resultado = true;//%20 window.location.href
+
+    this.resultado = true;
     let preUrl = window.location.href;
-    preUrl = preUrl.replace("/#","");
-    this.urlShare = "https://twitter.com/intent/tweet?text=¡Obtuve%20" + this.solucionado.titulo + "!%20"+preUrl+";via=hasquiz;";
+    this.urlShare = "https://twitter.com/intent/tweet?text=¡Obtuve%20" + this.solucionado.titulo + "!%20" + preUrl + ";via=hasquiz;";
 
     setTimeout(() => {
       $(".mat-card-header-text")[0].style.width = "100%";
       $(".mat-card-header-text")[0].style.margin = "0";
-      document.getElementById("shareme").setAttribute("href", this.urlShare);
     }, 100);
 
     this.cargado = false;
@@ -158,7 +154,6 @@ export class VerQuizzComponent implements OnInit {
       this.onSubmit();
     } else {
       let nextId: number = id[0];
-      let elemento = null
       nextId++;
       nextId++;
       if (nextId >= this.quizz.preguntas.length) {
@@ -166,12 +161,7 @@ export class VerQuizzComponent implements OnInit {
         lastP--;
         let lastR = this.quizz.preguntas[lastP].respuestas.length;
         lastR--;
-        elemento = document.getElementById(lastP + "" + lastR);
-      } else {
-        nextId--;
-        elemento = document.getElementById(nextId+"1");
       }
-      elemento.scrollIntoView(false);
     }
 
   }
@@ -195,8 +185,8 @@ export class VerQuizzComponent implements OnInit {
     );
   }
 
-  reportar(accion){
-    if(accion){
+  reportar(accion) {
+    if (accion) {
       this.quizzService.reportarQuiz(this.id).subscribe();
     }
   }

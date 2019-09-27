@@ -33,11 +33,9 @@ export class LogrosComponent implements OnInit {
   }
   setGif(idLogro) {
     $("#img"+idLogro)[0].setAttribute("src", "assets/logros/logro"+idLogro+".gif");
-    //document.getElementById("img"+idLogro).setAttribute("src", "assets/logros/ilu.gif");
   }
   deleteGif(idLogro) {
     $("#img"+idLogro)[0].setAttribute("src", "assets/logros/logro"+idLogro+".png");
-    //pendientes[idLogro].setAttribute("src", "assets/logros/ilu.png");
   }
 }
 

@@ -1,4 +1,4 @@
-<div class="col-md-12 box" *ngIf="usuario">
+<div class="col-md-12 box" *ngIf="this.loaded">
   <div class="panel panel-default">
     <div class="panel-heading">
       Editar perfil
@@ -6,7 +6,7 @@
     <div class="panel-body">
       <form class="example-form" [formGroup]="this.profileForm" (ngSubmit)="editProfile()">
         <mat-form-field class="example-full-width">
-          <input matInput [(ngModel)]="usuario.name" placeholder="Nombre de usuario" formControlName="nombre"
+          <input matInput placeholder="Nombre de usuario" formControlName="nombre"
             [errorStateMatcher]="matcher">
           <mat-hint></mat-hint>
           <mat-error *ngIf="profileForm.get('nombre').hasError('required')">
@@ -53,8 +53,7 @@
           <div class="input-group-btn">
             <span class="fileUpload btn btn-success">
               <span class="upl" id="upload">Subir imagen</span>
-              <input type="file" class="upload up" formControlName="avatar" accept="image/*"
-                (change)="onFileChanged($event)" id="up" />
+              <input type="file" class="upload up" accept="image/*" (change)="onFileChange($event)" />
             </span>
           </div>
         </div>
