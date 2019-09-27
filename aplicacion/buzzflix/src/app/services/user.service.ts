@@ -1,5 +1,5 @@
 import { Observable } from 'rxjs';
-import { Injectable, EventEmitter } from '@angular/core';
+import { Injectable, EventEmitter, Inject, PLATFORM_ID } from '@angular/core';
 import { AuthService } from './auth.service';
 import { CONFIG } from './../config/config';
 import { Usuario } from '../modelo/Usuario';
@@ -15,7 +15,8 @@ import { finalize } from 'rxjs/operators';
 import { Logro } from '../modelo/Logro';
 import { BehaviorSubject } from 'rxjs';
 import { RestService } from './rest.service';
-
+import { LOCAL_STORAGE } from '@ng-toolkit/universal';
+import { isPlatformBrowser } from '@angular/common';
 @Injectable()
 export class UserService {
     public idPaquete = new BehaviorSubject(0);
@@ -26,6 +27,8 @@ export class UserService {
     image: Observable<Image[]>;
     successMsg = 'Data successfully saved.';
     constructor(
+        //@Inject(LOCAL_STORAGE) private localStorage: any, 
+        @Inject(PLATFORM_ID) private platformId: Object,
         private authService: AuthService,
         private bar: NgProgress,
         private notifyService: NotifyService,
@@ -148,7 +151,10 @@ export class UserService {
                 let aux = this.authService.getAuthUser();
                 aux.name = datos["nombre"];
                 aux.avatar = avatar;
-                localStorage.setItem("usuario", JSON.stringify(aux));
+                if (isPlatformBrowser(this.platformId)) {
+                    localStorage.setItem("usuario", JSON.stringify(aux));
+                }
+
 
                 if (file != undefined) {
                     let ref = this.afStorage.ref(avatar);

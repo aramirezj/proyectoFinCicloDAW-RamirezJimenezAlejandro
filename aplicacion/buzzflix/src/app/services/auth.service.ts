@@ -1,15 +1,18 @@
 import { Observable } from 'rxjs';
-import { Injectable } from '@angular/core';
+import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { CONFIG } from '../config/config';
 import { Router } from '@angular/router'
 import { Usuario } from '../modelo/Usuario';
 import { NotifyService } from './notify.service';
 import { RestService } from './rest.service';
-
+import { LOCAL_STORAGE } from '@ng-toolkit/universal';
+import { isPlatformBrowser } from '@angular/common';
 
 @Injectable()
 export class AuthService {
     constructor(
+        @Inject(PLATFORM_ID) private platformId: Object,
+        //@Inject(LOCAL_STORAGE) private localStorage: any, 
         private router: Router,
         private notifyService: NotifyService,
         private restService: RestService,
@@ -22,13 +25,19 @@ export class AuthService {
         return text;
     }
     getAuthUser(): Usuario {
-        return JSON.parse(localStorage.getItem('usuario'))
+        if (isPlatformBrowser(this.platformId)) {
+            return JSON.parse(localStorage.getItem('usuario'));
+        }
+
     }
 
     getAuthUserId(): number {
-        let user = JSON.parse(localStorage.getItem('usuario'));
-        let id = user == null ? 0 : user.id;
-        return id;
+        if (isPlatformBrowser(this.platformId)) {
+            let user = JSON.parse(localStorage.getItem('usuario'));
+            let id = user == null ? 0 : user.id;
+            return id;
+        }
+
     }
 
     register(name: string, email: string, password: string): Observable<Boolean> {
@@ -57,7 +66,10 @@ export class AuthService {
             this.restService.peticionHttp(url, body).subscribe(response => {
                 if (response.auth) {
                     let aux: Usuario = response.respuesta;
-                    localStorage.setItem("token", response.token);
+                    if (isPlatformBrowser(this.platformId)) {
+                        localStorage.setItem("token", response.token);
+                    }
+
                     observer.next(aux);
                 } else {
                     observer.next(null);
@@ -68,7 +80,7 @@ export class AuthService {
         });
     }
 
-    confirmaEmail(confirmacion: String):Observable<Usuario> {
+    confirmaEmail(confirmacion: String): Observable<Usuario> {
         let body = { confirmacion: confirmacion };
         let url = `${CONFIG.apiUrl}confirma`;
 
@@ -76,7 +88,10 @@ export class AuthService {
             this.restService.peticionHttp(url, body).subscribe(response => {
                 if (response.auth) {
                     let aux: Usuario = response.respuesta;
-                    localStorage.setItem("token", response.token);
+                    if (isPlatformBrowser(this.platformId)) {
+                        localStorage.setItem("token", response.token);
+                    }
+
                     observer.next(aux);
                 } else {
                     observer.next(null);
@@ -87,9 +102,9 @@ export class AuthService {
         });
     }
 
-    forgetPassword(email: String,password:String,cod:String):Observable<Boolean> {
-        let codigo = cod != null ? cod:this.makeId();
-        let body = { email: email, codigo: codigo,password:password };
+    forgetPassword(email: String, password: String, cod: String): Observable<Boolean> {
+        let codigo = cod != null ? cod : this.makeId();
+        let body = { email: email, codigo: codigo, password: password };
         let url = `${CONFIG.apiUrl}forget`;
 
         return Observable.create(observer => {
@@ -124,8 +139,13 @@ export class AuthService {
     }
 
     isLoggedIn(): boolean {
-        let usuario = localStorage.getItem("usuario");
-        let token = localStorage.getItem("token");
+        let usuario = null;
+        let token = null;
+        if (isPlatformBrowser(this.platformId)) {
+            localStorage.getItem("usuario");
+            localStorage.getItem("token");
+        }
+
         if (usuario && token) {
             return true
         } else {
@@ -134,8 +154,10 @@ export class AuthService {
     }
 
     logout(): void {
-        localStorage.removeItem("usuario");
-        localStorage.removeItem("token");
+        if (isPlatformBrowser(this.platformId)) {
+            localStorage.removeItem("usuario");
+            localStorage.removeItem("token");
+        }
         this.notifyService.notify("Has cerrado la sesión correctamente", "success");
         this.router.navigate(['/auth/login']);
     }
@@ -143,7 +165,10 @@ export class AuthService {
         if (aux == null) {
             this.notifyService.notify("Datos incorrectos", "error");
         } else {
-            localStorage.setItem("usuario", JSON.stringify(aux));
+            if (isPlatformBrowser(this.platformId)) {
+                localStorage.setItem("usuario", JSON.stringify(aux));
+            }
+            
             this.notifyService.notify("Has iniciado sesión correctamente", "success");
             this.router.navigate(['/ver/todos']);
         }

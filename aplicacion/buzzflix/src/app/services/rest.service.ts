@@ -1,10 +1,11 @@
 import { HttpClient, HttpHeaders, HttpErrorResponse } from '@angular/common/http';
 import { Observable } from 'rxjs';
-import { Injectable } from '@angular/core';
+import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { NotifyService } from './notify.service';
 import { NgProgress } from 'ngx-progressbar';
 import { Router } from '@angular/router';
-
+import { LOCAL_STORAGE } from '@ng-toolkit/universal';
+import { isPlatformBrowser } from '@angular/common';
 export enum Tipos {
     Get,
     Post,
@@ -16,6 +17,8 @@ export class RestService {
     tipos: typeof Tipos = Tipos;
     private headers: HttpHeaders;
     constructor(
+        @Inject(PLATFORM_ID) private platformId: Object,
+        //@Inject(LOCAL_STORAGE) private localStorage: any, 
         private http: HttpClient,
         private notifyService: NotifyService,
         private bar: NgProgress,
@@ -23,8 +26,10 @@ export class RestService {
     ) {
         this.headers = new HttpHeaders({ 'Authorization': `Bearer ${this.getToken()}` });
     }
-    getToken(): string {
-        return localStorage.getItem('token');
+    getToken(): String {
+        if (isPlatformBrowser(this.platformId)) {
+            return localStorage.getItem('token');
+        }
     }
     setToken(): void {
         this.headers = new HttpHeaders({ 'Authorization': `Bearer ${this.getToken()}` });
@@ -38,7 +43,7 @@ export class RestService {
             this.http.get(url, { observe: 'body', headers: this.headers }) :
             this.http.post(url, valores, { observe: 'body', headers: this.headers })
         peticion = tipo == "put" ? this.http.put(url, valores, { observe: 'body', headers: this.headers }) : peticion;
-        
+
         return Observable.create(observer => {
             peticion.subscribe((response: any) => {
                 this.bar.done();
@@ -57,11 +62,14 @@ export class RestService {
             this.notifyService.notify("Error en el servidor", "error");
         } else if (error.status == 403) {
             this.notifyService.notify("Error de sesión", "error");
-            localStorage.removeItem("usuario");
-            localStorage.removeItem("token");
+            if (isPlatformBrowser(this.platformId)) {
+                localStorage.removeItem("usuario");
+                localStorage.removeItem("token");
+            }
+
             this.router.navigate(['/auth/login']);
-        } else if (error.status == 422){
-            this.notifyService.notify("Hubo un error, comprueba que todos los campos son validos","error");
+        } else if (error.status == 422) {
+            this.notifyService.notify("Hubo un error, comprueba que todos los campos son validos", "error");
         }
     }
 

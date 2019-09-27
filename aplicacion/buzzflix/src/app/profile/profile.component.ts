@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild} from '@angular/core';
+import { Component, OnInit, ViewChild, Inject} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { UserService } from '../services/user.service';
 import { Usuario } from '../modelo/Usuario';
@@ -9,6 +9,7 @@ import 'firebase/firestore';
 import { LogrosComponent } from './logros/logros.component';
 import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
 import { DialogboxComponent } from '../dialogbox/dialogbox.component';
+import { WINDOW } from '@ng-toolkit/universal';
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
@@ -28,7 +29,7 @@ export class ProfileComponent implements OnInit {
   showLogros:boolean=true;
   showWall:boolean=false;
   @ViewChild(LogrosComponent,{static: false}) child;
-  constructor(
+  constructor(@Inject(WINDOW) private window: Window, 
     private router: ActivatedRoute,
     private userService: UserService,
     private authService: AuthService,
@@ -51,9 +52,9 @@ export class ProfileComponent implements OnInit {
   }
 
   gestionaPosicion(){
-    this.showLogros =  window.location.href.indexOf("logros") == -1 ? true : false;
-    this.showEditar =  window.location.href.indexOf("edit") == -1 ? true : false;
-    if(window.location.href.indexOf("logros") != -1 || window.location.href.indexOf("edit") != -1){
+    this.showLogros =  this.window.location.href.indexOf("logros") == -1 ? true : false;
+    this.showEditar =  this.window.location.href.indexOf("edit") == -1 ? true : false;
+    if(this.window.location.href.indexOf("logros") != -1 || this.window.location.href.indexOf("edit") != -1){
       this.showWall=true;
     }
   }

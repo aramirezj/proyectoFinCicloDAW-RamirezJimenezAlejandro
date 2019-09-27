@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Inject, PLATFORM_ID } from '@angular/core';
 import { Usuario } from '../modelo/Usuario';
 import { QuizzService } from '../services/quizz.service';
 import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
@@ -9,6 +9,7 @@ import 'firebase/firestore';
 import * as $ from 'jquery';
 import { NotifyService } from '../services/notify.service';
 import { AuthService } from '../services/auth.service';
+import { isPlatformBrowser } from '@angular/common';
 @Component({
   selector: 'app-quizz',
   templateUrl: './quizz.component.html',
@@ -24,9 +25,10 @@ export class QuizzComponent implements OnInit {
   isCreador: boolean
   downloadURL: any
   privado: String;
-  urlClick:String|number;
-  urlShare:String;
+  urlClick: String | number;
+  urlShare: String;
   constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
     private quizzService: QuizzService,
     private authService: AuthService,
     private afStorage: AngularFireStorage,
@@ -39,13 +41,13 @@ export class QuizzComponent implements OnInit {
     this.isCreador = this.quizz.creador == this.authService.getAuthUserId() ? true : false;
     this.usuario = new Usuario(this.quizz.creador, this.quizz.nombre, null, null);
     this.estrellas = this.quizz.estrellas / this.quizz.votantes;
-    this.estrellas = isNaN(this.estrellas) ? 0:Math.round(this.estrellas);
-    
+    this.estrellas = isNaN(this.estrellas) ? 0 : Math.round(this.estrellas);
+
     this.quizz.image = JSON.parse(this.quizz.contenido).image;
-    this.quizz.image = this.quizz.image == null ? "hehexd.jpg":this.afStorage.ref(this.quizz.image).getDownloadURL();
-    
-    this.urlClick = this.quizz.privado != null ? this.quizz.privado:this.id;
-    
+    this.quizz.image = this.quizz.image == null ? "hehexd.jpg" : this.afStorage.ref(this.quizz.image).getDownloadURL();
+
+    this.urlClick = this.quizz.privado != null ? this.quizz.privado : this.id;
+
 
     if (this.quizz.privado != null) {
       this.quizz.titulo = this.quizz.titulo + " (Quiz privado)";
@@ -91,7 +93,10 @@ export class QuizzComponent implements OnInit {
       .subscribe();
   }
   obtenerURL() {
-    this.urlShare = window.location.protocol+"//"+window.location.hostname+"/ver/quizz/" + this.urlClick;
+    if (isPlatformBrowser(this.platformId)) {
+      this.urlShare = "https://www.hasquiz.com/#/ver/quizz/" + this.urlClick;
+    }
+
   }
 
 }

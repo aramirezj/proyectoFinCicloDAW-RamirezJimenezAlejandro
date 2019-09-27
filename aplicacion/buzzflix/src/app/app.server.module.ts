@@ -1,0 +1,17 @@
+import { NgModule } from '@angular/core';
+import { ServerModule, ServerTransferStateModule } from '@angular/platform-server';
+
+import { AppBrowserModule } from './app.browser.module';
+import { AppComponent } from './app.component';
+import { ModuleMapLoaderModule } from '@nguniversal/module-map-ngfactory-loader';
+
+@NgModule({
+  imports: [
+    AppBrowserModule,
+    ServerModule,
+    ModuleMapLoaderModule,
+    ServerTransferStateModule,
+  ],
+  bootstrap: [AppComponent],
+})
+export class AppServerModule {}

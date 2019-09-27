@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder, Validators, FormArray } from '@angular/forms'
 import { QuizzService } from '../services/quizz.service';
 import { Solucion } from '../modelo/Solucion';
@@ -14,7 +14,8 @@ import * as $ from 'jquery';
 import { ErrorStateMatcher } from '@angular/material';
 import { Section } from '../moderacion/moderacion.component';
 import { FileService } from '../services/file.service';
-
+import { LOCAL_STORAGE } from '@ng-toolkit/universal';
+import { isPlatformBrowser } from '@angular/common';
 export interface Numero {
   value: number;
   viewValue: number;
@@ -48,7 +49,7 @@ export class CreateQuizzComponent implements OnInit {
   labelPosition = 'before';
   indeterminate = false;
   private errores: Array<String> = [];
-  private quizCookie: Quizz = JSON.parse(localStorage.getItem("quizCookie"));
+  private quizCookie: Quizz = null;
   private quizz: Quizz;
   private estado: boolean = true;
   private max: number
@@ -68,9 +69,11 @@ export class CreateQuizzComponent implements OnInit {
 
   public files: Array<File>;
   public file: File;
-  private names:Array<String>=[];
+  private names: Array<String> = [];
 
   constructor(
+    @Inject(PLATFORM_ID) private platformId: Object,
+    //@Inject(LOCAL_STORAGE) private localStorage: any, 
     private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
@@ -99,7 +102,7 @@ export class CreateQuizzComponent implements OnInit {
 
   onFileChanged(event: any, posicion: number) {
     let banner = posicion == 100 ? true : false;
-    posicion = posicion == 100 ? 0 : posicion +1;
+    posicion = posicion == 100 ? 0 : posicion + 1;
     const rawFile = event.target.files[0];
     let file = this.fileService.prepareFile(rawFile);
 
@@ -125,6 +128,9 @@ export class CreateQuizzComponent implements OnInit {
   }
 
   ngOnInit() {
+    if (isPlatformBrowser(this.platformId)) {
+      this.quizCookie = JSON.parse(localStorage.getItem("quizCookie"));
+    }
     this.createForm();
   }
 
@@ -512,7 +518,9 @@ export class CreateQuizzComponent implements OnInit {
     this.quizz = new Quizz(null, this.authService.getAuthUserId(), titulo, this.files[0].name, this.preparaSoluciones(), this.preparaPreguntas(), 0, null);
     this.quizzService.createQuizz(this.quizz, this.files, privado)
       .subscribe(resp => {
-        localStorage.removeItem("quizCookie");
+        if (isPlatformBrowser(this.platformId)) {
+          localStorage.removeItem("quizCookie");
+        }
         this.router.navigate(['/usuario/perfil', this.authService.getAuthUserId(), "logros"])
       })
   }
@@ -522,6 +530,9 @@ export class CreateQuizzComponent implements OnInit {
     let quizCookie: Quizz;
     quizCookie = new Quizz(null, this.authService.getAuthUserId(), this.quizzForm.value.titulo, null,
       this.preparaSoluciones(true), this.preparaPreguntas(), 0, null);
-    localStorage.setItem("quizCookie", JSON.stringify(quizCookie));
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.setItem("quizCookie", JSON.stringify(quizCookie));
+    }
+
   }
 }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Quizz } from '../modelo/Quizz';
 import { QuizzService } from '../services/quizz.service';
@@ -14,6 +14,7 @@ import 'firebase/firestore';
 import { MatDialogConfig, MatDialog } from '@angular/material/dialog';
 import { DialogboxComponent } from '../dialogbox/dialogbox.component';
 import { AuthService } from '../services/auth.service';
+import { WINDOW } from '@ng-toolkit/universal';
 
 @Component({
   selector: 'app-ver-quizz',
@@ -31,7 +32,7 @@ export class VerQuizzComponent implements OnInit {
   urlShare: string
   public quizzForm: FormGroup
 
-  constructor(
+  constructor(@Inject(WINDOW) private window: Window, 
     private authService:AuthService, //Usado en visto
     private quizzService: QuizzService,
     private router: ActivatedRoute,
@@ -111,7 +112,7 @@ export class VerQuizzComponent implements OnInit {
     this.solucionado.image = this.afStorage.ref(this.solucionado.image).getDownloadURL();
 
     this.resultado = true;
-    let preUrl = window.location.href;
+    let preUrl = this.window.location.href;
     this.urlShare = "https://twitter.com/intent/tweet?text=¡Obtuve%20" + this.solucionado.titulo + "!%20" + preUrl + ";via=hasquiz;";
 
     setTimeout(() => {

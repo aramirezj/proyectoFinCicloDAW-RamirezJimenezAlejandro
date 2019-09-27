@@ -1,4 +1,4 @@
-import { BrowserModule } from '@angular/platform-browser';
+import { BrowserModule, BrowserTransferStateModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatToolbarModule, MatIconModule, MatSidenavModule, MatListModule, MatButtonModule } from '@angular/material';
 
@@ -118,8 +118,10 @@ registerLocaleData(localePy, 'es');
     BuscadorComponent,
   ],
   imports: [
+    BrowserModule.withServerTransition({
+      appId: 'ng-universal-demystified'
+  }),
     SocialLoginModule,
-    BrowserModule,
     AppRoutingModule,
     RouterModule.forRoot(ROUTES, { onSameUrlNavigation: 'reload', useHash: true }),
     ScrollToModule.forRoot(),
@@ -147,15 +149,18 @@ registerLocaleData(localePy, 'es');
     MatExpansionModule,
     ClipboardModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
-    AngularFireDatabaseModule
+    AngularFireDatabaseModule,
+    BrowserTransferStateModule
   ],
   exports: [RouterModule],
-  providers: [AuthService, AuthGuard, AuthedGuard, QuizzService, NotifyService, UserService, FollowService, RestService, ImageService,
-    , FileService, AngularFirestore, AngularFireStorage, { provide: MatPaginatorIntl, useClass: MatPaginatorIntlCro },
+  providers: [
+    AuthService, AuthGuard, AuthedGuard, QuizzService, NotifyService, UserService, FollowService,
+     RestService, ImageService,FileService, AngularFirestore, AngularFireStorage, 
+    { provide: MatPaginatorIntl, useClass: MatPaginatorIntlCro },
     { provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher },
     { provide: LocationStrategy, useClass: HashLocationStrategy }, { provide: LOCALE_ID, useValue: 'es-Ar' },
     { provide: AuthServiceConfig, useFactory: provideConfig }, NgxImageCompressService],
   bootstrap: [AppComponent],
   entryComponents: [DialogboxComponent]
 })
-export class AppModule { }
+export class AppBrowserModule { }
