@@ -266,3 +266,41 @@
       'SELECT id,name,email,avatar from users where confirmado = `confirmacion` = \'s\'' },
   Componente: 'Query Controller',
   timestamp: '2019-09-21T16:49:21.842Z' }
+{ level: 'error',
+  message:
+   { Error: connect ECONNREFUSED 127.0.0.1:3306
+       at TCPConnectWrap.afterConnect [as oncomplete] (net.js:1097:14)
+       --------------------
+       at Protocol._enqueue (F:\Escritorio\proyectoFinCicloDAW-RamirezJimenezAlejandro\aplicacion\mysql-nodejs-rest-api-master\node_modules\mysql\lib\protocol\Protocol.js:144:48)
+       at Protocol.handshake (F:\Escritorio\proyectoFinCicloDAW-RamirezJimenezAlejandro\aplicacion\mysql-nodejs-rest-api-master\node_modules\mysql\lib\protocol\Protocol.js:51:23)
+       at Connection.connect (F:\Escritorio\proyectoFinCicloDAW-RamirezJimenezAlejandro\aplicacion\mysql-nodejs-rest-api-master\node_modules\mysql\lib\Connection.js:119:18)
+       at Object.<anonymous> (F:\Escritorio\proyectoFinCicloDAW-RamirezJimenezAlejandro\aplicacion\mysql-nodejs-rest-api-master\src\database.js:11:17)
+       at Module._compile (internal/modules/cjs/loader.js:701:30)
+       at Object.Module._extensions..js (internal/modules/cjs/loader.js:712:10)
+       at Module.load (internal/modules/cjs/loader.js:600:32)
+       at tryModuleLoad (internal/modules/cjs/loader.js:539:12)
+       at Function.Module._load (internal/modules/cjs/loader.js:531:3)
+       at Module.require (internal/modules/cjs/loader.js:637:17)
+     errno: 'ECONNREFUSED',
+     code: 'ECONNREFUSED',
+     syscall: 'connect',
+     address: '127.0.0.1',
+     port: 3306,
+     fatal: true },
+  Componente: 'Query Controller',
+  timestamp: '2019-09-28T13:00:14.407Z' }
+{ level: 'error',
+  message:
+   { Error: Cannot enqueue Query after fatal error.
+       at Protocol._validateEnqueue (F:\Escritorio\proyectoFinCicloDAW-RamirezJimenezAlejandro\aplicacion\mysql-nodejs-rest-api-master\node_modules\mysql\lib\protocol\Protocol.js:212:16)
+       at Protocol._enqueue (F:\Escritorio\proyectoFinCicloDAW-RamirezJimenezAlejandro\aplicacion\mysql-nodejs-rest-api-master\node_modules\mysql\lib\protocol\Protocol.js:138:13)
+       at Connection.query (F:\Escritorio\proyectoFinCicloDAW-RamirezJimenezAlejandro\aplicacion\mysql-nodejs-rest-api-master\node_modules\mysql\lib\Connection.js:201:25)
+       at QueryController.ejecutaConsulta (F:\Escritorio\proyectoFinCicloDAW-RamirezJimenezAlejandro\aplicacion\mysql-nodejs-rest-api-master\src\controllers\queryController.js:24:25)
+       at router.get (F:\Escritorio\proyectoFinCicloDAW-RamirezJimenezAlejandro\aplicacion\mysql-nodejs-rest-api-master\src\routes\usuarios.js:295:16)
+       at Layer.handle [as handle_request] (F:\Escritorio\proyectoFinCicloDAW-RamirezJimenezAlejandro\aplicacion\mysql-nodejs-rest-api-master\node_modules\express\lib\router\layer.js:95:5)
+       at next (F:\Escritorio\proyectoFinCicloDAW-RamirezJimenezAlejandro\aplicacion\mysql-nodejs-rest-api-master\node_modules\express\lib\router\route.js:137:13)
+       at Route.dispatch (F:\Escritorio\proyectoFinCicloDAW-RamirezJimenezAlejandro\aplicacion\mysql-nodejs-rest-api-master\node_modules\express\lib\router\route.js:112:3)
+       at Layer.handle [as handle_request] (F:\Escritorio\proyectoFinCicloDAW-RamirezJimenezAlejandro\aplicacion\mysql-nodejs-rest-api-master\node_modules\express\lib\router\layer.js:95:5)
+       at F:\Escritorio\proyectoFinCicloDAW-RamirezJimenezAlejandro\aplicacion\mysql-nodejs-rest-api-master\node_modules\express\lib\router\index.js:281:22 code: 'PROTOCOL_ENQUEUE_AFTER_FATAL_ERROR', fatal: false },
+  Componente: 'Query Controller',
+  timestamp: '2019-09-28T13:00:18.080Z' }

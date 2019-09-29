@@ -1,1 +1,11 @@
 https://github.com/firebase/firebase-js-sdk/issues/1455
+
+Open node_modules/protobufjs/src/util/minimal.js (it's NOT inside the @grpc package).
+Change the following line util.isNode = Boolean(util.global.process && util.global.process.versions && util.global.process.versions.node); to util.isNode = true;
+
+nano node_modules/protobufjs/src/util/minimal.js
+
+sudo kill -9 `sudo lsof -t -i:4202`
+sudo kill -9 $(sudo lsof -t -i:403)
+
+Hn4TqPQFjF
