@@ -61,12 +61,6 @@ export class VerQuizzComponent implements OnInit {
       }
 
     });
-
-    /*this.router.params.subscribe((params) => {
-      this.rawid = params['id'];
-      this.getQuizz();
-    });*/
-
   }
 
   generaFormulario() {

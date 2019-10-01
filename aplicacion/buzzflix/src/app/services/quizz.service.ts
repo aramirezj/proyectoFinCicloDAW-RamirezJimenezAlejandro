@@ -34,7 +34,8 @@ export class QuizzService {
     }
 
     resolveUrl(cadena:String):String{
-        return cadena.split("?n=")[1];
+        let id = cadena.split("?n=")[1] != null ? cadena.split("?n=")[1]:cadena.split("%3D")[1];
+        return id;
     }
 
     convierteModelo(rawQuiz: any) {
