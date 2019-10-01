@@ -32,8 +32,8 @@ export class VerQuizzComponent implements OnInit {
   urlShare: string
   public quizzForm: FormGroup
 
-  constructor(@Inject(WINDOW) private window: Window, 
-    private authService:AuthService, //Usado en visto
+  constructor(@Inject(WINDOW) private window: Window,
+    private authService: AuthService, //Usado en visto
     private quizzService: QuizzService,
     private router: ActivatedRoute,
     private fb: FormBuilder,
@@ -48,10 +48,24 @@ export class VerQuizzComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.router.params.subscribe((params) => {
+
+    this.router.queryParams.subscribe(() => {
+      this.rawid = window.location.href;
+      if (this.rawid == null) {
+        this.router.params.subscribe((params) => {
+          this.rawid = params['id'];
+          this.getQuizz();
+        });
+      } else {
+        this.getQuizz();
+      }
+
+    });
+
+    /*this.router.params.subscribe((params) => {
       this.rawid = params['id'];
       this.getQuizz();
-    });
+    });*/
 
   }
 
