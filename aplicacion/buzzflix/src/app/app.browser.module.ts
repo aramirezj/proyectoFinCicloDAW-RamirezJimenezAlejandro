@@ -124,7 +124,7 @@ registerLocaleData(localePy, 'es');
   
     SocialLoginModule,
     AppRoutingModule,
-    RouterModule.forRoot(ROUTES, { onSameUrlNavigation: 'reload', useHash: true }),
+    RouterModule.forRoot(ROUTES, { onSameUrlNavigation: 'reload' }),
     ScrollToModule.forRoot(),
     FormsModule,
     ReactiveFormsModule,
@@ -157,7 +157,7 @@ registerLocaleData(localePy, 'es');
     RestService, ImageService, FileService, AngularFirestore, AngularFireStorage,
     { provide: MatPaginatorIntl, useClass: MatPaginatorIntlCro },
     { provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher },
-    { provide: LocationStrategy, useClass: HashLocationStrategy }, { provide: LOCALE_ID, useValue: 'es-Ar' },
+     { provide: LOCALE_ID, useValue: 'es-Ar' },
     { provide: AuthServiceConfig, useFactory: provideConfig },{provide: WINDOW, useValue: {}}, NgxImageCompressService],
   bootstrap: [AppComponent],
   entryComponents: [DialogboxComponent]

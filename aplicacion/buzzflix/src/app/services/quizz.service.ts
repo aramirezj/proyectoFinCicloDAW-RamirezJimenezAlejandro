@@ -19,8 +19,26 @@ export class QuizzService {
     }
 
 
-    convierteModelo(rawQuiz:any){
-        let quiz:Quizz = JSON.parse(rawQuiz.contenido)
+    buildUrl(titulo: String, id: String | number):String {
+        titulo = titulo.trim();
+        titulo = titulo.replace(/ /g,"-");
+        titulo = titulo.replace("¿","");
+        titulo = titulo.replace("?","");
+        titulo = titulo.replace("á","a");
+        titulo = titulo.replace("é","e");
+        titulo = titulo.replace("í","i");
+        titulo = titulo.replace("ó","o");
+        titulo = titulo.replace("ú","u");
+        titulo += "?n="+id;
+        return titulo;
+    }
+
+    resolveUrl(cadena:String):String{
+        return cadena.split("?n=")[1];
+    }
+
+    convierteModelo(rawQuiz: any) {
+        let quiz: Quizz = JSON.parse(rawQuiz.contenido)
         return quiz;
     }
 
@@ -133,8 +151,7 @@ export class QuizzService {
     }
 
     getQuizz(id: string): Observable<Quizz> {
-        let url = `${CONFIG.apiUrl}quizz/${id}`;
-
+        let url = `${CONFIG.apiUrl}quizz/${this.resolveUrl(id)}`;
         return Observable.create(observer => {
             this.restService.peticionHttp(url).subscribe(response => {
                 let rawquiz = response.respuesta;

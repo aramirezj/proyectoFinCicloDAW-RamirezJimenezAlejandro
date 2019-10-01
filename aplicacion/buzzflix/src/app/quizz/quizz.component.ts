@@ -27,6 +27,7 @@ export class QuizzComponent implements OnInit {
   privado: String;
   urlClick: String | number;
   urlShare: String;
+  urlName: String;
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
     private quizzService: QuizzService,
@@ -47,7 +48,7 @@ export class QuizzComponent implements OnInit {
     this.quizz.image = this.quizz.image == null ? "hehexd.jpg" : this.afStorage.ref(this.quizz.image).getDownloadURL();
 
     this.urlClick = this.quizz.privado != null ? this.quizz.privado : this.id;
-
+    this.urlName = this.quizz.privado != null ? this.quizzService.buildUrl(this.quizz.titulo, this.quizz.privado) : this.quizzService.buildUrl(this.quizz.titulo, this.quizz.id);
 
     if (this.quizz.privado != null) {
       this.quizz.titulo = this.quizz.titulo + " (Quiz privado)";
