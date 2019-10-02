@@ -66,12 +66,11 @@ import localePy from '@angular/common/locales/es-PY';
 import { ForgetComponent } from './forget/forget.component';
 import { BuscadorComponent } from './buscador/buscador.component';
 import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
-import { NgxImageCompressService } from 'ngx-image-compress';
 import { SocialLoginModule, AuthServiceConfig } from "angularx-social-login";
 import { GoogleLoginProvider, FacebookLoginProvider } from "angularx-social-login";
 import { HttpClientModule } from '@angular/common/http';
 import { WINDOW } from '@ng-toolkit/universal';
-
+import {NgxImageCompressService} from 'ngx-image-compress';
 
 let config = new AuthServiceConfig([
   {
@@ -158,7 +157,7 @@ registerLocaleData(localePy, 'es');
     { provide: MatPaginatorIntl, useClass: MatPaginatorIntlCro },
     { provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher },
      { provide: LOCALE_ID, useValue: 'es-Ar' },
-    { provide: AuthServiceConfig, useFactory: provideConfig },{provide: WINDOW, useValue: {}}, NgxImageCompressService],
+    { provide: AuthServiceConfig, useFactory: provideConfig },{provide: WINDOW, useValue: {}},NgxImageCompressService],
   bootstrap: [AppComponent],
   entryComponents: [DialogboxComponent]
 })

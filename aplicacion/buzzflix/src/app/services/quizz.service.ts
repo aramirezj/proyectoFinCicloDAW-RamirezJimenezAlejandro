@@ -8,33 +8,36 @@ import { AngularFireStorage } from 'angularfire2/storage';
 import * as firebase from 'firebase';
 import 'firebase/firestore';
 import { RestService } from './rest.service';
+import { finalize } from 'rxjs/operators';
+import { NgProgress } from 'ngx-progressbar';
 @Injectable()
 export class QuizzService {
     constructor(
         private authService: AuthService,
         private restService: RestService,
         private notifyService: NotifyService,
-        private afStorage: AngularFireStorage
+        private afStorage: AngularFireStorage,
+        private bar: NgProgress
     ) {
     }
 
 
-    buildUrl(titulo: String, id: String | number):String {
+    buildUrl(titulo: String, id: String | number): String {
         titulo = titulo.trim();
-        titulo = titulo.replace(/ /g,"-");
-        titulo = titulo.replace("¿","");
-        titulo = titulo.replace("?","");
-        titulo = titulo.replace("á","a");
-        titulo = titulo.replace("é","e");
-        titulo = titulo.replace("í","i");
-        titulo = titulo.replace("ó","o");
-        titulo = titulo.replace("ú","u");
-        titulo += "?n="+id;
+        titulo = titulo.replace(/ /g, "-");
+        titulo = titulo.replace("¿", "");
+        titulo = titulo.replace("?", "");
+        titulo = titulo.replace("á", "a");
+        titulo = titulo.replace("é", "e");
+        titulo = titulo.replace("í", "i");
+        titulo = titulo.replace("ó", "o");
+        titulo = titulo.replace("ú", "u");
+        titulo += "?n=" + id;
         return titulo;
     }
 
-    resolveUrl(cadena:String):String{
-        let id = cadena.split("?n=")[1] != null ? cadena.split("?n=")[1]:cadena.split("%3D")[1];
+    resolveUrl(cadena: String): String {
+        let id = cadena.split("?n=")[1] != null ? cadena.split("?n=")[1] : cadena.split("%3D")[1];
         return id;
     }
 
@@ -43,11 +46,30 @@ export class QuizzService {
         return quiz;
     }
 
-    uploadImage(files): void {
-        for (let i = 0; i < files.length; i++) {
-            let ref = this.afStorage.ref(files[i].name);
-            ref.put(files[i]);
-        }
+    uploadImage(files): Observable<String> {
+
+        return Observable.create(observer => {
+            for (let i = 0; i < files.length; i++) {
+                let ref = this.afStorage.ref(files[i].name);
+                let task = ref.put(files[i]);
+                task.snapshotChanges().pipe(
+                    finalize(() => {
+                        ref.getDownloadURL().subscribe(url => {
+                           // if (i == (files.length - 1)) {
+                               // if (i == 0) {
+                                    observer.next(url)
+                                    observer.complete();
+                                //}
+                                
+                           // }
+                        });
+                    })
+                ).subscribe();
+
+
+            }
+        })
+
     }
     deleteImages(quiz: any): void {
         quiz = this.convierteModelo(quiz);
@@ -97,6 +119,7 @@ export class QuizzService {
     }
 
     createQuizz(quizz: Quizz, files: File[], privado: string): Observable<any> {
+        this.bar.start();
         let id = this.authService.getAuthUserId();
         let fecha = new Date();
         quizz.fechacreacion = fecha;
@@ -104,15 +127,18 @@ export class QuizzService {
         let prep = JSON.stringify(quizz);
 
         let url = `${CONFIG.apiUrl}creaQuizz`;
-        let body = { creador: this.authService.getAuthUserId(), titulo: quizz.titulo, contenido: prep, fecha: fecha, privado: privado };
 
-        return Observable.create(observer => {
-            this.restService.peticionHttp(url, body).subscribe(response => {
-                this.uploadImage(files);
-                observer.next(response.respuesta)
-                observer.complete();
-            })
-        });
+        return Observable.create(observer2 => {
+            this.uploadImage(files).subscribe(resp => {
+                let body = { creador: this.authService.getAuthUserId(), titulo: quizz.titulo, contenido: prep, fecha: fecha, privado: privado,banner:resp };
+                this.restService.peticionHttp(url, body).subscribe(response => {
+                    this.bar.done();
+                    observer2.next(response.respuesta)
+                    observer2.complete();
+                })
+
+            });
+        })
     }
 
     ObtenerQuizzes(opcion: String, cadena: string): Observable<Array<Quizz>> {

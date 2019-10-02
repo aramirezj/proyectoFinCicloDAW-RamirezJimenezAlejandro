@@ -123,7 +123,7 @@ export class VerQuizzComponent implements OnInit {
 
 
     let preUrl = window.location.href;
-    this.urlShare = "https://twitter.com/intent/tweet?text=¡Obtuve%20" + this.solucionado.titulo + "!%20" + preUrl + ";via=hasquiz;";
+    this.urlShare = "https://twitter.com/intent/tweet?text=¡Obtuve%20" + this.solucionado.titulo + "!%20" + preUrl;
 
     setTimeout(() => {
       $(".mat-card-header-text")[0].style.width = "100%";

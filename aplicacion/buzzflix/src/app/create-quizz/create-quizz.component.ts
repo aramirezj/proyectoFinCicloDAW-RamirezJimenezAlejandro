@@ -286,7 +286,7 @@ export class CreateQuizzComponent implements OnInit {
           grupo.forEach(f => {
             this.quizzForm.addControl(f.name, f.control)
             if (f.name[0] == "r") {
-              this.quizzForm.controls[f.name].setValidators([Validators.required, Validators.maxLength(100)]);
+              this.quizzForm.controls[f.name].setValidators([Validators.required, Validators.maxLength(70)]);
             }
 
             this.quizzForm.controls[f.name].updateValueAndValidity();
@@ -385,20 +385,17 @@ export class CreateQuizzComponent implements OnInit {
           button.className = "fileUpload btn btn-success error"
 
         }
-
       }
     }
-    this.quizzForm.markAllAsTouched();
 
-    this.estado = this.quizzForm.invalid;
-    if (!this.estado) {
-      this.compruebaRespuestasMinimas();
+    this.quizzForm.markAllAsTouched();
+    this.estado = !this.quizzForm.invalid;
+    let minimo = this.compruebaRespuestasMinimas();
+    if (this.estado && minimo) {
       this.notifyService.notify("¡Hora de mostrarle esta maravilla al mundo!", "success");
-      setTimeout(() => {
         this.onSubmit();
-      }, 700);
     } else {
-      //this.notifyService.notify("No dejes ningún campo vacio", "error");
+      this.notifyService.notify("No dejes ningún campo vacio", "error");
     }
   }
 
@@ -406,7 +403,8 @@ export class CreateQuizzComponent implements OnInit {
     let verdad = true;
     for (let i = 0; i < this.verdades.length; i++) {
       if (this.verdades[i].creada) {
-        verdad = this.verdades[i].respuestas[1].mostrado;
+        if (!this.verdades[i].respuestas[1].mostrado)
+          verdad = false;
       }
     }
     return verdad;
@@ -521,7 +519,7 @@ export class CreateQuizzComponent implements OnInit {
         if (isPlatformBrowser(this.platformId)) {
           localStorage.removeItem("quizCookie");
         }
-        this.router.navigate(['/usuario/perfil', this.authService.getAuthUserId(), "logros"])
+        this.router.navigate(['/usuario/perfil', this.authService.getAuthUserId()])
       })
   }
 

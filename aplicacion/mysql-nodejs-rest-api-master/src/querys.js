@@ -61,7 +61,7 @@ querys["setModerar6"] = "DELETE FROM quizz where id = ?";
 querys["setModerar7"] = "INSERT INTO notificaciones (usuario,mensaje) values(?,?)";
 querys["setModerar8"] = "INSERT INTO moderacion (quizz,usuario,decision) VALUES(?,?,?)";
 
-querys["setQuiz"] = "INSERT INTO quizz (creador,titulo,contenido,fechacreacion,publicado,privado) VALUES(?,?,?,?,0,?)";
+querys["setQuiz"] = "INSERT INTO quizz (creador,titulo,contenido,fechacreacion,publicado,privado,banner) VALUES(?,?,?,?,0,?,?)";
 querys["deleteQuiz"] = "DELETE FROM quizz WHERE id = ? AND creador = ?";
 querys["setPrivacidad1"] = "UPDATE quizz set privado = null where id = ?";
 querys["setPrivacidad2"] = "UPDATE quizz set privado = ? where id = ?";

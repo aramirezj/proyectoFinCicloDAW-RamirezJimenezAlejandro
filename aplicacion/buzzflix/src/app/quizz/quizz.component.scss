@@ -19,7 +19,9 @@ img {
 div {
   background: linear-gradient(to left, #46317c, #529f82, #46317c);
   color: white;
-  text-transform: capitalize;
+}
+h4::first-letter {
+  text-transform: uppercase;
 }
 .card-text{
   font-size: 1.5vh;

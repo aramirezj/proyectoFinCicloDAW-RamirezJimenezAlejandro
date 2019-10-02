@@ -24,7 +24,6 @@ export class QuizzComponent implements OnInit {
   usuario: Usuario
   isCreador: boolean
   downloadURL: any
-  privado: String;
   urlClick: String | number;
   urlShare: String;
   urlName: String;

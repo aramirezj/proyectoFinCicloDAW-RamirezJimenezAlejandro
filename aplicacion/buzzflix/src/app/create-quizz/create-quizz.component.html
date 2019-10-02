@@ -213,7 +213,7 @@
                       </mat-error>
                       <mat-error
                         *ngIf="quizzForm.get('r'+n+'p'+(i+1)).hasError('maxlength') && quizzForm.get('r'+n+'p'+(i+1)).touched">
-                        El máximo de caracteres es <strong>100</strong>
+                        El máximo de caracteres es <strong>70</strong>
                       </mat-error>
                       <div class="form-group afinidad-box" *ngFor="let x of [].constructor(this.maxs); let p = index">
                         <label for="exampleFormControlSelect1">Afinidad {{this.quizzForm.get('st'+(p+1)).value}}</label>

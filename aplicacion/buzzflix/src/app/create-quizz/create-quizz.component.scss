@@ -260,15 +260,36 @@ option {
   margin: auto;
   background-color: #cbddd6 !important;
 }
+h1,
+h4,
+mat-panel-title,
+mat-icon,
+.empty {
+  color: white;
+}
 .mat-card-header-text,
 mat-card-header,
 mat-card-title {
+  color:white!important;
   width: 100% !important;
   margin-left: 0px !important;
   text-align: center !important;
 }
 mat-card-actions {
   min-height: 3em;
+}
+mat-expansion-panel {
+  background: $fondoSuave!important;
+}
+mat-expansion-panel:not(.mat-expanded):not([aria-disabled=true]) mat-expansion-panel-header:hover{
+  background: $fondoSuave!important;
+}
+.mat-list-base .mat-list-item .mat-line {
+  white-space: normal !important;
+}
+.mensaje {
+  font-weight: bold;
+  margin-bottom: 5%;
 }
 i {
   font-size: 3em;

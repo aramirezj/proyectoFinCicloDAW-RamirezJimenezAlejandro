@@ -1,6 +1,6 @@
 <div class="col-md-12" *ngIf="quizz && cargado">
   <div class="panel-body">
-
+    
     <div class="cajaPregunta" *ngFor="let pregunta of this.quizz.preguntas;let i = index">
       <h4 [id]="'p'+i">{{pregunta.enunciado}}</h4>
       <div class="clear"></div>
@@ -10,6 +10,7 @@
       </div>
       <div class="clear"></div>
     </div>
+    
   </div>
 </div>
 

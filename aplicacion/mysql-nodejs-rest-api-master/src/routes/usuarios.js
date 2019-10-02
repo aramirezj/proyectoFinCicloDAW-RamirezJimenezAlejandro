@@ -426,8 +426,8 @@ router.post('/api/creaQuizz', listaValidaciones["creaQuiz"], (req, res, next) =>
   if (!queryService.compruebaErrores(req, res)) {
     let permiso = tokenService.verificaToken(req.headers, res);
     if (permiso) {
-      const { creador, titulo, contenido, fecha, privado } = req.body;
-      queryService.ejecutaConsulta("setQuiz", [creador, titulo, contenido, fecha, privado], res, function (rows) {
+      const { creador, titulo, contenido, fecha, privado,banner } = req.body;
+      queryService.ejecutaConsulta("setQuiz", [creador, titulo, contenido, fecha, privado,banner], res, function (rows) {
         if (rows) {
           logroService.logroUsuarios(); //Logro 6
           res.send({ respuesta: rows.insertId });
