@@ -17,32 +17,32 @@ router.get("/api/userImages", express.static(path.join(__dirname, "../userImages
 
 
 
-router.post("/api/upload/user", (req, res,next) => {
+router.post("/api/upload/user", (req, res, next) => {
   console.log("peticion para subir una imagen")
   console.log(req.file)
-    const tempPath = req.file.path;
-    const targetPath = path.join(__dirname, "../userImages/image.png");
+  const tempPath = req.file.path;
+  const targetPath = path.join(__dirname, "../userImages/image.png");
 
-    if (path.extname(req.file.originalname).toLowerCase() === ".png") {
-      fs.rename(tempPath, targetPath, err => {
-        if (err) return handleError(err, res);
+  if (path.extname(req.file.originalname).toLowerCase() === ".png") {
+    fs.rename(tempPath, targetPath, err => {
+      if (err) return handleError(err, res);
 
-        res
-          .status(200)
-          .contentType("text/plain")
-          .end("File uploaded!");
-      });
-    } else {
-      fs.unlink(tempPath, err => {
-        if (err) return handleError(err, res);
+      res
+        .status(200)
+        .contentType("text/plain")
+        .end("File uploaded!");
+    });
+  } else {
+    fs.unlink(tempPath, err => {
+      if (err) return handleError(err, res);
 
-        res
-          .status(403)
-          .contentType("text/plain")
-          .end("Only .png files are allowed!");
-      });
-    }
+      res
+        .status(403)
+        .contentType("text/plain")
+        .end("Only .png files are allowed!");
+    });
   }
+}
 );
 
 
@@ -81,7 +81,37 @@ router.post('/api/authenticate', listaValidaciones["login"], (req, res, next) =>
     });
   }
 });
-
+//Petición para iniciar/registrar un usuario mediente RED SOCIAL
+router.post('/api/socialLogin', (req, res, next) => {
+  console.log("Petición de inicio/registro social de un usuario")
+  //if (!queryService.compruebaErrores(req, res)) {
+  let { id, email, nombre, origen } = req.body;
+  queryService.ejecutaConsulta("checkSocialUser", [id, email], res,
+    function (rows) {
+      if (rows) {
+        if (rows.length == 0) { //Registro usuario
+          let nickname = email.split("@")[0]+Math.floor((Math.random() * 100) + 1);
+          console.log(nickname)
+          queryService.ejecutaConsulta("setSocialUser", [nickname,nombre, email, origen, id], res,
+            function (rows) {
+              if (rows) {
+                res.send({ auth: true, token: tokenService.creaToken(rows.insertId),id:rows.insertId });
+              }
+            })
+        } else {
+          queryService.ejecutaConsulta("loginSocialUser", [email, id], res,
+            function (rows) {
+              if (rows) {
+                if (rows.length > 0) {
+                  res.send({ auth: true, token: tokenService.creaToken(rows[0].id),respuesta: rows[0] });
+                }
+              }
+            })
+        }
+      }
+    });
+  //}
+});
 //Petición para registrar un usuario .
 router.post('/api/confirma', (req, res, next) => {
   console.log("Petición para confirmar el correo de un usuario")
@@ -426,8 +456,8 @@ router.post('/api/creaQuizz', listaValidaciones["creaQuiz"], (req, res, next) =>
   if (!queryService.compruebaErrores(req, res)) {
     let permiso = tokenService.verificaToken(req.headers, res);
     if (permiso) {
-      const { creador, titulo, contenido, fecha, privado,banner } = req.body;
-      queryService.ejecutaConsulta("setQuiz", [creador, titulo, contenido, fecha, privado,banner], res, function (rows) {
+      const { creador, titulo, contenido, fecha, privado, banner } = req.body;
+      queryService.ejecutaConsulta("setQuiz", [creador, titulo, contenido, fecha, privado, banner], res, function (rows) {
         if (rows) {
           logroService.logroUsuarios(); //Logro 6
           res.send({ respuesta: rows.insertId });

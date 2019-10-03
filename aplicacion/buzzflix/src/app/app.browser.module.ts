@@ -10,7 +10,7 @@ import { AppComponent } from './app.component';
 import { RegistroComponent } from './registro/registro.component';
 import { ROUTES } from './routes/routes';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-import { AuthService } from './services/auth.service';
+import { AuthService as AuthWeb } from './services/auth.service';
 import { ImageService } from './services/image.service';
 import { FileService } from './services/file.service';
 import { HttpModule } from '@angular/http';
@@ -61,29 +61,35 @@ import { ModeracionComponent } from './moderacion/moderacion.component';
 import { NotFoundComponent } from './not-found/not-found.component';
 import { LogrosComponent } from './profile/logros/logros.component';
 import { InfolegalComponent } from './infolegal/infolegal.component';
-import { HashLocationStrategy, LocationStrategy, registerLocaleData } from '@angular/common';
+import { registerLocaleData } from '@angular/common';
 import localePy from '@angular/common/locales/es-PY';
 import { ForgetComponent } from './forget/forget.component';
 import { BuscadorComponent } from './buscador/buscador.component';
 import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
-import { SocialLoginModule, AuthServiceConfig } from "angularx-social-login";
-import { GoogleLoginProvider, FacebookLoginProvider } from "angularx-social-login";
+
 import { HttpClientModule } from '@angular/common/http';
 import { WINDOW } from '@ng-toolkit/universal';
-import {NgxImageCompressService} from 'ngx-image-compress';
+import { NgxImageCompressService } from 'ngx-image-compress';
 
-let config = new AuthServiceConfig([
-  {
-    id: GoogleLoginProvider.PROVIDER_ID,
-    provider: new GoogleLoginProvider("AIzaSyD0doNEJDBrNeQHFsgMvjnIFl8TKDIAtZ4")
-  },
-  {
-    id: FacebookLoginProvider.PROVIDER_ID,
-    provider: new FacebookLoginProvider("Facebook-App-Id")
-  }
-]);
 
-export function provideConfig() {
+import { GoogleLoginProvider, FacebookLoginProvider, AuthService } from 'angular-6-social-login';
+import { SocialLoginModule, AuthServiceConfig } from 'angular-6-social-login';
+
+
+
+export function socialConfigs() {
+  const config = new AuthServiceConfig(
+    [
+      /*{  
+        id: FacebookLoginProvider.PROVIDER_ID,  
+        provider: new FacebookLoginProvider('app -id')  
+      },  */
+      {
+        id: GoogleLoginProvider.PROVIDER_ID,
+        provider: new GoogleLoginProvider('801500894032-trdaca331u29nbru10kt0jo57ng56695.apps.googleusercontent.com')
+      }
+    ]
+  );
   return config;
 }
 
@@ -120,8 +126,6 @@ registerLocaleData(localePy, 'es');
       appId: 'ng-universal-demystified'
     }),
     HttpClientModule,
-  
-    SocialLoginModule,
     AppRoutingModule,
     RouterModule.forRoot(ROUTES, { onSameUrlNavigation: 'reload' }),
     ScrollToModule.forRoot(),
@@ -152,12 +156,12 @@ registerLocaleData(localePy, 'es');
   ],
   exports: [RouterModule],
   providers: [
-    AuthService, AuthGuard, AuthedGuard, QuizzService, NotifyService, UserService, FollowService,
+    AuthWeb,AuthService, AuthGuard, AuthedGuard, QuizzService, NotifyService, UserService, FollowService,
     RestService, ImageService, FileService, AngularFirestore, AngularFireStorage,
     { provide: MatPaginatorIntl, useClass: MatPaginatorIntlCro },
     { provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher },
-     { provide: LOCALE_ID, useValue: 'es-Ar' },
-    { provide: AuthServiceConfig, useFactory: provideConfig },{provide: WINDOW, useValue: {}},NgxImageCompressService],
+    { provide: LOCALE_ID, useValue: 'es-Ar' },
+    , { provide: WINDOW, useValue: {} }, { provide: AuthServiceConfig, useFactory: socialConfigs }, NgxImageCompressService],
   bootstrap: [AppComponent],
   entryComponents: [DialogboxComponent]
 })

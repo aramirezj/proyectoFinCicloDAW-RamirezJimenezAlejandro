@@ -7,6 +7,7 @@ import { NotifyService } from './notify.service';
 import { RestService } from './rest.service';
 import { LOCAL_STORAGE } from '@ng-toolkit/universal';
 import { isPlatformBrowser } from '@angular/common';
+import { AuthService as OAuth, GoogleLoginProvider } from 'angular-6-social-login';
 
 @Injectable()
 export class AuthService {
@@ -16,6 +17,7 @@ export class AuthService {
         private router: Router,
         private notifyService: NotifyService,
         private restService: RestService,
+        public OAuth: OAuth,
     ) {
 
     }
@@ -69,7 +71,6 @@ export class AuthService {
                     if (isPlatformBrowser(this.platformId)) {
                         localStorage.setItem("token", response.token);
                     }
-
                     observer.next(aux);
                 } else {
                     observer.next(null);
@@ -139,14 +140,12 @@ export class AuthService {
     }
 
     isLoggedIn(): boolean {
-        let usuario = null;
         let token = null;
         if (isPlatformBrowser(this.platformId)) {
-            usuario = localStorage.getItem("usuario");
             token = localStorage.getItem("token");
         }
 
-        if (usuario && token) {
+        if (token) {
             return true
         } else {
             return false;
@@ -157,6 +156,8 @@ export class AuthService {
         if (isPlatformBrowser(this.platformId)) {
             localStorage.removeItem("usuario");
             localStorage.removeItem("token");
+            this.OAuth.signOut().then(data => {
+            });
         }
         this.notifyService.notify("Has cerrado la sesión correctamente", "success");
         this.router.navigate(['/auth/login']);
@@ -168,7 +169,6 @@ export class AuthService {
             if (isPlatformBrowser(this.platformId)) {
                 localStorage.setItem("usuario", JSON.stringify(aux));
             }
-
             this.notifyService.notify("Has iniciado sesión correctamente", "success");
             this.router.navigate(['/ver/todos']);
         }

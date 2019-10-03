@@ -40,7 +40,10 @@ querys["deleteFollow"] = "DELETE FROM follows where origen = ? AND destino = ?";
 querys["getReport"] = "SELECT * FROM reportes where origen = ? AND destino = ? AND motivo = ?";
 querys["setReport"] = "INSERT INTO reportes (origen,destino,motivo) values (?,?,?)";
 
-
+//Querys social login
+querys["checkSocialUser"] = "SELECT * FROM users where idSocial = ? AND email = ?";
+querys["setSocialUser"] = "INSERT INTO users (nickname,name,email,origen,idSocial) values(?,?,?,?,?)";
+querys["loginSocialUser"] = "SELECT id,name,email,avatar from users where email = ? AND idSocial = ?";
 //Querys de quizzes
 querys["getOneQuizz1"] = "SELECT * FROM quizz WHERE id = ?";
 querys["getOneQuizz2"] = "SELECT * FROM quizz where privado = ?";
