@@ -30,13 +30,10 @@
             </mat-form-field>
             <br>
             <button [disabled]="loginForm.invalid" mat-raised-button color="primary">Iniciar sesión</button>
-            
+            <div role="button" style="display:inline-block" (click)="loginSocial('google')" class="loginBtn loginBtn--google">
+              Acceder con Google
+            </div>
           </form>
-          <div class="col-6 text-right">  
-            <button (click)="loginSocial('google')" class="loginBtn loginBtn--google">  
-                Login with Google  
-            </button>  
-        </div>
         </div>
       </div>
     </div>

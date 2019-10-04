@@ -513,7 +513,7 @@ export class CreateQuizzComponent implements OnInit {
     if (this.quizzForm.value.privado) {
       privado = this.makeId();
     }
-    this.quizz = new Quizz(null, this.authService.getAuthUserId(), titulo, this.files[0].name, this.preparaSoluciones(), this.preparaPreguntas(), 0, null);
+    this.quizz = new Quizz(null, this.authService.getAuthUserId(),null, titulo, this.files[0].name, this.preparaSoluciones(), this.preparaPreguntas(), 0, null);
     this.quizzService.createQuizz(this.quizz, this.files, privado)
       .subscribe(resp => {
         if (isPlatformBrowser(this.platformId)) {
@@ -526,7 +526,7 @@ export class CreateQuizzComponent implements OnInit {
 
   guardaCookie() {
     let quizCookie: Quizz;
-    quizCookie = new Quizz(null, this.authService.getAuthUserId(), this.quizzForm.value.titulo, null,
+    quizCookie = new Quizz(null, this.authService.getAuthUserId(),null, this.quizzForm.value.titulo, null,
       this.preparaSoluciones(true), this.preparaPreguntas(), 0, null);
     if (isPlatformBrowser(this.platformId)) {
       localStorage.setItem("quizCookie", JSON.stringify(quizCookie));

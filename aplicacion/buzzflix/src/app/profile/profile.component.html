@@ -10,6 +10,9 @@
 
     <div class="profile-card__cnt js-profile-cnt">
       <div class="profile-card__name">{{usuario.name}}</div>
+      <span class="profile-card-loc__txt">
+        @{{this.usuario.nickname}}
+      </span>
       <div class="profile-card__txt">
         <p class="profile-card__txt" *ngIf="this.mutualaux">Mutual (También te sigue)</p>
       </div>
@@ -37,7 +40,7 @@
 
       <div class="profile-card-ctr">
         <app-follow class="profile-card__button button--orange" *ngIf="!isAuthUserProfile() && this.authService.
-          isLoggedIn()" (notify)='onNotify($event)' [currentProfileId]="id"></app-follow>
+          isLoggedIn()" (notify)='onNotify($event)' [currentProfileId]="this.usuario.id"></app-follow>
 
 
         <button (click)="this.showEditar=false;this.showWall=true;this.showLogros=true" class="profile-card__button button--blue js-message-btn"

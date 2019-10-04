@@ -1,10 +1,5 @@
 <div class="row">
   <div class="col-md-12 box">
-    <!--<div>
-          <button (click)="compressFile()">Upload and compress Image</button>
-          <img *ngIf="imgResultBeforeCompress" [src]="imgResultBeforeCompress" alt="">
-          <img *ngIf="imgResultAfterCompress" [src]="imgResultAfterCompress" alt="">
-        </div>-->
     <div class="panel-default">
       <div class="panel-heading">
         Creación de Quiz
@@ -31,7 +26,7 @@
           <div class="top-form">
             <mat-form-field class="example-full-width" style="width: 100%">
               <input matInput placeholder="Titulo del quiz" required formControlName="titulo"
-                [errorStateMatcher]="matcher">
+                [errorStateMatcher]="matcher"  pattern="[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ][A-Za-z0-9áéíóúÁÉÍÓÚñÑ ]*">
               <mat-hint>El nombre a mostrar en la web</mat-hint>
               <mat-error *ngIf="quizzForm.get('titulo').hasError('required') && quizzForm.get('titulo').touched">
                 El título es <strong>obligatorio</strong>
@@ -43,6 +38,10 @@
               <mat-error
                 *ngIf="!quizzForm.get('titulo').hasError('required') && quizzForm.get('titulo').hasError('maxlength')">
                 El título no debe superar los <strong>75 caracteres</strong>
+              </mat-error>
+              <mat-error
+                *ngIf="quizzForm.get('titulo').hasError('pattern')">
+                El título solo puede llevar  <strong>letras y números</strong>
               </mat-error>
             </mat-form-field>
             <div class="form-group"><br>

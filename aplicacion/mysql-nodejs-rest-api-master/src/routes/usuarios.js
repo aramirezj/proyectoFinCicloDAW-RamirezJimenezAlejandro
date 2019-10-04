@@ -46,16 +46,30 @@ router.post("/api/upload/user", (req, res, next) => {
 );
 
 
+// Para ver si un nickname esta pillado
+router.get('/api/checkNickname/:nombre', listaValidaciones["texto"], (req, res) => {
+  //console.log("Petición para ver si un nick esta pillado");
+  if (!queryService.compruebaErrores(req, res)) {
+    let { nombre } = req.params;
+    nombre = nombre.toLowerCase();
+    queryService.ejecutaConsulta("checkNickname", [nombre], res, function (rows) {
+      if (rows) {
+        res.send({ status: '200', respuesta: rows.length > 0 })
+      };
+    });
 
+  }
+});
 
 
 //Petición para registrar un usuario .
 router.post('/api/register', listaValidaciones["registro"], (req, res, next) => {
   console.log("Petición de registro de un usuario")
   if (!queryService.compruebaErrores(req, res)) {
-    let { name, email, password, confirm } = req.body;
+    let { name, nickname, email, password, confirm } = req.body;
+    nickname = nickname.toLowerCase();
     password = tokenService.encripta(password);
-    queryService.ejecutaConsulta("registro", [name, email, password, confirm], res,
+    queryService.ejecutaConsulta("registro", [name, nickname, email, password, confirm], res,
       function (rows) {
         if (rows) {
           mailService.correoRegistro(email, confirm)
@@ -90,12 +104,12 @@ router.post('/api/socialLogin', (req, res, next) => {
     function (rows) {
       if (rows) {
         if (rows.length == 0) { //Registro usuario
-          let nickname = email.split("@")[0]+Math.floor((Math.random() * 100) + 1);
+          let nickname = email.split("@")[0] + Math.floor((Math.random() * 100) + 1);
           console.log(nickname)
-          queryService.ejecutaConsulta("setSocialUser", [nickname,nombre, email, origen, id], res,
+          queryService.ejecutaConsulta("setSocialUser", [nickname, nombre, email, origen, id], res,
             function (rows) {
               if (rows) {
-                res.send({ auth: true, token: tokenService.creaToken(rows.insertId),id:rows.insertId });
+                res.send({ auth: true, token: tokenService.creaToken(rows.insertId), id: rows.insertId });
               }
             })
         } else {
@@ -103,7 +117,7 @@ router.post('/api/socialLogin', (req, res, next) => {
             function (rows) {
               if (rows) {
                 if (rows.length > 0) {
-                  res.send({ auth: true, token: tokenService.creaToken(rows[0].id),respuesta: rows[0] });
+                  res.send({ auth: true, token: tokenService.creaToken(rows[0].id), respuesta: rows[0] });
                 }
               }
             })
@@ -256,16 +270,16 @@ router.get('/api/usuario/notificaciones', (req, res) => {
 });
 
 // Obtener un usuario (UNPROTECTED)
-router.get('/api/usuario/:id', listaValidaciones["numerico"], (req, res) => {
-  console.log("Obtener un usuario mediante una id")
-  if (!queryService.compruebaErrores(req, res)) {
-    const { id } = req.params;
-    queryService.ejecutaConsulta("getUsuario", [id], res, function (rows) {
-      if (rows) {
-        res.send({ status: '200', respuesta: rows[0] })
-      };
-    });
-  }
+router.get('/api/usuario/:nickname', (req, res) => {
+  console.log("Obtener un usuario mediante un nickname")
+  //if (!queryService.compruebaErrores(req, res)) {
+  const { nickname } = req.params;
+  queryService.ejecutaConsulta("getUsuario", [nickname], res, function (rows) {
+    if (rows) {
+      res.send({ status: '200', respuesta: rows[0] })
+    };
+  });
+  //}
 });
 // Obtener varios usuarios según nombre (PROTECTED)
 router.get('/api/usuarios/:nombre', listaValidaciones["texto"], (req, res) => {
@@ -283,18 +297,30 @@ router.get('/api/usuarios/:nombre', listaValidaciones["texto"], (req, res) => {
   }
 });
 //Obtener todos los quizz de alguien (SEMI-PROTECTED)
-router.get('/api/usuario/:id/wall', listaValidaciones["numerico"], (req, res) => {
+router.get('/api/usuario/:nickname/wall', (req, res) => {
   console.log("Obtener todos los quizz de un perfil")
-  if (!queryService.compruebaErrores(req, res)) {
-    const { id } = req.params;
-    let permiso = tokenService.verificaToken(req.headers, res, true);
-    let query = permiso == id ? "getUsuarioWallPrivate" : "getUsuarioWallPublic"
-    queryService.ejecutaConsulta(query, [id], res, function (rows) {
-      if (rows) {
-        res.send({ respuesta: rows });
+  //if (!queryService.compruebaErrores(req, res)) {
+  const { nickname } = req.params;
+  let permiso = tokenService.verificaToken(req.headers, res, true);
+
+  queryService.ejecutaConsulta("getUsuario", [nickname], res, function (rows) {
+    if (rows) {
+      if (rows.length > 0) {
+        let id = rows[0].id;
+        let query = permiso == id ? "getUsuarioWallPrivate" : "getUsuarioWallPublic"
+        queryService.ejecutaConsulta(query, [id], res, function (rows) {
+          if (rows) {
+            res.send({ respuesta: rows });
+          }
+        });
+      }else{
+        res.send({ respuesta: null });
       }
-    });
-  }
+    };
+  });
+
+
+  //}
 });
 //Obtener los quizzes de todos los seguidos (UNPROTECTED)
 router.get('/api/quizz/:id/seguidos/:cadena', (req, res) => {

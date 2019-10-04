@@ -64,6 +64,7 @@ export class LoginComponent implements OnInit {
   }
 
   public loginSocial(socialProvider: string): void {
+    console.log("?")
     let socialPlatformProvider;
     if (socialProvider === 'google') {
       socialPlatformProvider = GoogleLoginProvider.PROVIDER_ID;

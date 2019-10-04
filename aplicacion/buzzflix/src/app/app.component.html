@@ -33,7 +33,8 @@
 
       <!--Menú derecha-->
       <mat-menu #menu="matMenu">
-        <button mat-menu-item *ngIf="isLoggedIn()" [routerLink]="['usuario/perfil',this.authService.getAuthUserId()]">
+        <button mat-menu-item *ngIf="isLoggedIn() && this.usuario"
+          [routerLink]="['usuario/perfil',this.usuario.nickname]">
           <mat-icon *ngIf="isLoggedIn()">account_circle</mat-icon>
           <span role="button" mat-button><a>Mi perfil</a></span>
         </button>
@@ -92,25 +93,25 @@
             </mat-expansion-panel-header>
             <mat-list>
               <mat-list-item>
-                <button mat-menu-item [routerLink]="['/info',4]">
+                <button mat-menu-item [routerLink]="['/info','redes']">
                   <mat-icon>share</mat-icon>
                   <span role="button" mat-button><a>Redes sociales</a></span>
                 </button>
               </mat-list-item>
               <mat-list-item>
-                <button mat-menu-item [routerLink]="['/info',3]">
+                <button mat-menu-item [routerLink]="['/info','contacto']">
                   <mat-icon>feedback</mat-icon>
                   <span role="button" mat-button><a>Contacto</a></span>
                 </button>
               </mat-list-item>
               <mat-list-item>
-                <button mat-menu-item [routerLink]="['/info',1]">
+                <button mat-menu-item [routerLink]="['/info','terminos']">
                   <mat-icon>info</mat-icon>
                   <span role="button" mat-button><a>Terminos de uso</a></span>
                 </button>
               </mat-list-item>
               <mat-list-item>
-                <button mat-menu-item [routerLink]="['/info',2]">
+                <button mat-menu-item [routerLink]="['/info','privacidad']">
                   <mat-icon>lock</mat-icon>
                   <span role="button" mat-button><a>Politica de privacidad</a></span>
                 </button>
@@ -128,11 +129,12 @@
 <mat-sidenav-container>
   <mat-sidenav #sidenav>
     <mat-nav-list>
-      <a mat-list-item [routerLink]="['buscador']" (click)="sidenav.toggle()">Buscador</a>
       <a mat-list-item [routerLink]="['ver/todos']" (click)="sidenav.toggle()">Todos los quizzes</a>
       <a mat-list-item [routerLink]="['crear/quizz']" (click)="sidenav.toggle()">Crear quiz</a>
+      <a mat-list-item [routerLink]="['buscador']" (click)="sidenav.toggle()">Buscador</a>
       <a mat-list-item *ngIf="isLoggedIn()" [routerLink]="['moderacion']" (click)="sidenav.toggle()">Moderación </a>
-      <button mat-menu-item *ngIf="isLoggedIn()" [routerLink]="['usuario/perfil',this.authService.getAuthUserId()]" (click)="sidenav.toggle()">
+      <button mat-menu-item *ngIf="isLoggedIn()"
+        [routerLink]="['usuario/perfil',this.authService.getAuthUserNickname()]" (click)="sidenav.toggle()">
         <mat-icon *ngIf="isLoggedIn()">account_circle</mat-icon>
         <span role="button" mat-button><a>Mi perfil</a></span>
       </button>
@@ -172,7 +174,7 @@
         <mat-icon>accessibility_new</mat-icon>
         <span role="button" mat-button><a>Iniciar sesión</a></span>
       </button>
-      <button mat-menu-item *ngIf="isLoggedIn()" (click)="logout();sidenav.toggle()" >
+      <button mat-menu-item *ngIf="isLoggedIn()" (click)="logout();sidenav.toggle()">
         <mat-icon>directions_run</mat-icon>
         <span role="button" mat-button><a>Cerrar sesión</a></span>
       </button>
@@ -190,25 +192,25 @@
           </mat-expansion-panel-header>
           <mat-list>
             <mat-list-item (click)="sidenav.toggle()">
-              <button mat-menu-item [routerLink]="['/info',4]">
+              <button mat-menu-item [routerLink]="['/info','redes']">
                 <mat-icon>share</mat-icon>
                 <span role="button" mat-button><a>Redes sociales</a></span>
               </button>
             </mat-list-item>
             <mat-list-item (click)="sidenav.toggle()">
-              <button mat-menu-item [routerLink]="['/info',3]">
+              <button mat-menu-item [routerLink]="['/info','contacto']">
                 <mat-icon>feedback</mat-icon>
                 <span role="button" mat-button><a>Contacto</a></span>
               </button>
             </mat-list-item>
             <mat-list-item (click)="sidenav.toggle()">
-              <button mat-menu-item [routerLink]="['/info',1]">
+              <button mat-menu-item [routerLink]="['/info','terminos']">
                 <mat-icon>info</mat-icon>
                 <span role="button" mat-button><a>Terminos de uso</a></span>
               </button>
             </mat-list-item>
             <mat-list-item (click)="sidenav.toggle()">
-              <button mat-menu-item [routerLink]="['/info',2]">
+              <button mat-menu-item [routerLink]="['/info','privacidad']">
                 <mat-icon>lock</mat-icon>
                 <span role="button" mat-button><a>Politica de privacidad</a></span>
               </button>

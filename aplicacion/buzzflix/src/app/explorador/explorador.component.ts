@@ -20,7 +20,6 @@ export class ExploradorComponent implements OnInit  {
   totalQuizzes:number=0;
   pageEvent: PageEvent;
   constructor(
-    private authService:AuthService,
     private quizzService: QuizzService,
     private router: ActivatedRoute
   ) {

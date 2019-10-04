@@ -33,18 +33,34 @@ export class AuthService {
 
     }
 
+    checkNickname(nick:string):Observable<boolean>{
+        let url = `${CONFIG.apiUrl}checkNickname/${nick}`;
+        return Observable.create(observer => {
+            this.restService.peticionHttp(url).subscribe(response => {
+                observer.next(response.respuesta)
+                observer.complete();
+            })
+        });
+    }
+
     getAuthUserId(): number {
         if (isPlatformBrowser(this.platformId)) {
             let user = JSON.parse(localStorage.getItem('usuario'));
             let id = user == null ? 0 : user.id;
             return id;
         }
-
+    }
+    getAuthUserNickname(): string {
+        if (isPlatformBrowser(this.platformId)) {
+            let user = JSON.parse(localStorage.getItem('usuario'));
+            let nickname = user == null ? 0 : user.nickname;
+            return nickname;
+        }
     }
 
-    register(name: string, email: string, password: string): Observable<Boolean> {
+    register(name: string,nickname:string, email: string, password: string): Observable<Boolean> {
         let url = `${CONFIG.apiUrl}register`;
-        let body = { name: name, email: email, password: password, confirm: this.makeId() };
+        let body = { name: name,nickname:nickname, email: email, password: password, confirm: this.makeId() };
 
         return Observable.create(observer => {
             this.restService.peticionHttp(url, body).subscribe(response => {
@@ -141,11 +157,13 @@ export class AuthService {
 
     isLoggedIn(): boolean {
         let token = null;
+        let usuario = null;
         if (isPlatformBrowser(this.platformId)) {
             token = localStorage.getItem("token");
+            usuario = localStorage.getItem("usuario");
         }
 
-        if (token) {
+        if (token && usuario) {
             return true
         } else {
             return false;
@@ -156,8 +174,10 @@ export class AuthService {
         if (isPlatformBrowser(this.platformId)) {
             localStorage.removeItem("usuario");
             localStorage.removeItem("token");
-            this.OAuth.signOut().then(data => {
-            });
+            
+            /*this.OAuth.signOut().then(function () {
+                console.log('User signed out.');
+              });*/
         }
         this.notifyService.notify("Has cerrado la sesión correctamente", "success");
         this.router.navigate(['/auth/login']);
@@ -165,7 +185,9 @@ export class AuthService {
     logUserIn(aux: Usuario): void {
         if (aux == null) {
             this.notifyService.notify("Datos incorrectos", "error");
-        } else {
+        } else if(!aux){
+            this.notifyService.notify("Inicia sesión mediante el correo", "error");
+        }else {
             if (isPlatformBrowser(this.platformId)) {
                 localStorage.setItem("usuario", JSON.stringify(aux));
             }

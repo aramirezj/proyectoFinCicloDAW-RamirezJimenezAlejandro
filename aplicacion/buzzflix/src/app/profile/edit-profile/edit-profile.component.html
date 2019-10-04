@@ -6,19 +6,19 @@
     <div class="panel-body">
       <form class="example-form" [formGroup]="this.profileForm" (ngSubmit)="editProfile()">
         <mat-form-field class="example-full-width">
-          <input matInput placeholder="Nombre de usuario" formControlName="nombre"
+          <input matInput placeholder="Nombre" formControlName="nombre"
             [errorStateMatcher]="matcher">
           <mat-hint></mat-hint>
           <mat-error *ngIf="profileForm.get('nombre').hasError('required')">
-            El nombre de usuario es <strong>obligatorio</strong>
+            El nombre es <strong>obligatorio</strong>
           </mat-error>
           <mat-error
             *ngIf="!profileForm.get('nombre').hasError('required')  && profileForm.get('nombre').hasError('minlength')">
-            El nombre de usuario debe tener un mínimo de <strong>3 caracteres</strong>
+            El nombre debe tener un mínimo de <strong>3 caracteres</strong>
           </mat-error>
           <mat-error
             *ngIf="!profileForm.get('nombre').hasError('required')  && profileForm.get('nombre').hasError('maxlength')">
-            El nombre de usuario debe tener un máximo de <strong>20 caracteres</strong>
+            El nombre debe tener un máximo de <strong>20 caracteres</strong>
           </mat-error>
         </mat-form-field>
 

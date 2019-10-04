@@ -16,6 +16,7 @@ import { WINDOW } from '@ng-toolkit/universal';
   styleUrls: ['./profile.component.scss']
 })
 export class ProfileComponent implements OnInit {
+  nickname:string;
   id: number
   usuario: Usuario
   followers: number;
@@ -61,13 +62,14 @@ export class ProfileComponent implements OnInit {
 
   ngOnInit() {
     this.gestionaPosicion();
-    
+    this.usuario=null;
     this.router.params.subscribe((params) => {
-      this.id = +params['id'];
-      this.userService.changeMessage(this.id);
-      this.userService.getUserById(this.id)
+      this.nickname = params['nickname'];
+      this.userService.getUserByNickname(this.nickname)
         .subscribe((usuario) => {
+          this.userService.changeMessage(usuario.id);
           this.usuario = usuario;
+          this.id=this.usuario.id;
           if (this.usuario.avatar == "" || this.usuario.avatar == null) {
             this.usuario.avatar = "hehexd.PNG";
           }
@@ -78,7 +80,7 @@ export class ProfileComponent implements OnInit {
   }
   //Función que cargará la cantidad de seguidores,seguidos y logros obtenidos.
   cargaStats() {
-    this.userService.getUserStats(this.id)
+    this.userService.getUserStats(this.usuario.id)
       .subscribe((resp) => {
         this.follows = resp["seguidos"];
         this.followers = resp["seguidores"];

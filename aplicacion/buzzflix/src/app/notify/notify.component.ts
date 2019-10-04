@@ -21,7 +21,7 @@ export class NotifyComponent implements OnInit {
     this.message=message;
     setTimeout(()=>{
       this.message=null;
-    },3000)
+    },2000)
   }
 
   ngOnInit() {

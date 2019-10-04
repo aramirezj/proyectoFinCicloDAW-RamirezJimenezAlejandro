@@ -38,7 +38,7 @@ export class socialLoginService {
                     observer.next(usuarioWeb)
                     observer.complete();
                 } else {
-                    observer.next(null)
+                    observer.next(false)
                     observer.complete();
                 }
             })

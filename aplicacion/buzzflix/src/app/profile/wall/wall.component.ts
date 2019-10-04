@@ -9,8 +9,8 @@ import { ActivatedRoute } from '@angular/router';
   styleUrls: ['./wall.component.scss']
 })
 export class WallComponent implements OnInit {
-  public quizzs
-  public id: number
+  public quizzes;
+  public nickname;
   isLoaded: boolean = false;
   constructor(
     private userService: UserService,
@@ -20,19 +20,20 @@ export class WallComponent implements OnInit {
 
   ngOnInit() {
     this.router.params.subscribe(params => {
-      this.id = +params['id']
-      if(isNaN(this.id)){
+
+      this.nickname = params['nickname']
+      /*if(isNaN(this.id)){
         this.userService.currentMessage.subscribe(message => this.id = message)
-      }
+      }*/
       this.getUserWall();
     })
 
   }
 
   getUserWall() {
-    this.userService.getUserWall(this.id)
+    this.userService.getUserWall(this.nickname)
       .subscribe(resp => {
-        this.quizzs = resp;
+        this.quizzes = resp;
         this.isLoaded = true;
       })
   }

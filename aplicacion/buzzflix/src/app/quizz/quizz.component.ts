@@ -39,7 +39,7 @@ export class QuizzComponent implements OnInit {
   ngOnInit() {
     this.id = this.quizz.id;
     this.isCreador = this.quizz.creador == this.authService.getAuthUserId() ? true : false;
-    this.usuario = new Usuario(this.quizz.creador, this.quizz.nombre, null, null);
+    this.usuario = new Usuario(this.quizz.creador,null,this.quizz.nickname,null);
     this.estrellas = this.quizz.estrellas / this.quizz.votantes;
     this.estrellas = isNaN(this.estrellas) ? 0 : Math.round(this.estrellas);
 

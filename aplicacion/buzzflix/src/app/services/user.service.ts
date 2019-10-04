@@ -69,8 +69,8 @@ export class UserService {
         });
     }
 
-    getUserWall(id: number): Observable<Array<Quizz>> {
-        let url = `${CONFIG.apiUrl}usuario/${id}/wall`;
+    getUserWall(nickname:string): Observable<Array<Quizz>> {
+        let url = `${CONFIG.apiUrl}usuario/${nickname}/wall`;
         return Observable.create(observer => {
             this.restService.peticionHttp(url).subscribe(response => {
                 observer.next(response.respuesta)
@@ -99,8 +99,8 @@ export class UserService {
         });
     }
 
-    getUserById(id: number): Observable<Usuario> {  //PROTEGIDO
-        let url = `${CONFIG.apiUrl}usuario/${id}`;
+    getUserByNickname(nickname: string): Observable<Usuario> {  //PROTEGIDO
+        let url = `${CONFIG.apiUrl}usuario/${nickname}`;
 
         return Observable.create(observer => {
             this.restService.peticionHttp(url).subscribe(response => {

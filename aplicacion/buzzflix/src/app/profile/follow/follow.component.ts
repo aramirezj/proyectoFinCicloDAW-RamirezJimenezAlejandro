@@ -1,21 +1,24 @@
 import { Component, OnInit, Input, OnChanges, Output, EventEmitter } from '@angular/core';
 import { FollowService } from 'src/app/services/follow.service';
+import { AuthService } from 'src/app/services/auth.service';
+
 
 @Component({
   selector: 'app-follow',
   templateUrl: './follow.component.html',
   styleUrls: ['./follow.component.scss']
 })
-export class FollowComponent implements OnInit,OnChanges {
+export class FollowComponent implements OnInit, OnChanges {
   @Output() notify: EventEmitter<number> = new EventEmitter<number>();
   @Input() currentProfileId
   public isFollowing
   public isLoading: boolean = true
   constructor(
-    private followService:FollowService
+    private followService: FollowService,
+    private authService: AuthService
   ) { }
 
-  ngOnChanges(changes){
+  ngOnChanges(changes) {
     this.checkIfFollowing();
   }
 
@@ -23,30 +26,33 @@ export class FollowComponent implements OnInit,OnChanges {
     this.checkIfFollowing();
   }
 
-  checkIfFollowing(){
-    this.followService.isFollowing(this.currentProfileId)
-    .subscribe(resp=>{
-      this.isLoading=false;
-      this.isFollowing=resp;
-    })
+  checkIfFollowing() {
+    if (this.authService.getAuthUserNickname() != this.currentProfileId) {
+      this.followService.isFollowing(this.currentProfileId)
+        .subscribe(resp => {
+          this.isLoading = false;
+          this.isFollowing = resp;
+        })
+    }
+
   }
 
-  follow(){
+  follow() {
     this.followService.follow(this.currentProfileId)
-    .subscribe(resp=>{
-      this.isFollowing=true;
-      this.notify.emit(1);
-    })
+      .subscribe(resp => {
+        this.isFollowing = true;
+        this.notify.emit(1);
+      })
   }
-  unfollow(){
+  unfollow() {
     this.followService.unfollow(this.currentProfileId)
-    .subscribe(resp=>{
-      this.isFollowing=false;
-      this.notify.emit(-1);
-    })
+      .subscribe(resp => {
+        this.isFollowing = false;
+        this.notify.emit(-1);
+      })
   }
 
-  
+
 
 
 

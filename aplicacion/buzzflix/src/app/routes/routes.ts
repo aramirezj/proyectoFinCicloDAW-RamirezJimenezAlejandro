@@ -47,7 +47,7 @@ export const ROUTES = [
         canActivate: [AuthGuard]
     },
     {
-        path: 'usuario/perfil/:id',
+        path: 'usuario/perfil/:nickname',
         component: ProfileComponent,
         children: [{
             path: '',
@@ -64,7 +64,7 @@ export const ROUTES = [
         }]
     },
     {
-        path: 'ver/quizz/:id',
+        path: 'quiz/:id',
         component: VerQuizzComponent
     },
     {

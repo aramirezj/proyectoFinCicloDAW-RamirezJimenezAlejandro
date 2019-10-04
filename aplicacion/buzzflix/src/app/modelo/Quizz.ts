@@ -4,6 +4,7 @@ export class Quizz{
     constructor(
         public id:number,
         public creador:number,
+        public nickname:string,
         public titulo:string,
         public image:string,
         public soluciones:Array<Solucion>,
