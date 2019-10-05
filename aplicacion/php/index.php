@@ -1,6 +1,6 @@
 <?php
 
-$URL = $GET['url'];
+$URL = $_GET['url'];
 $id = explode("?n=", $URL)[1];
 
 $conexion = new PDO('mysql:host=localhost;dbname=hasquiz;charset=utf8', 'root', '');

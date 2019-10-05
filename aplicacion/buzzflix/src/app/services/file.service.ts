@@ -23,7 +23,8 @@ export class FileService {
 
     prepareFile(file: File) {
      
-        let extension = file.name.split(".")[1].toUpperCase();
+        let extension = file.name.split(".")[(file.name.split(".").length)-1].toUpperCase();
+        
         if (extension === "JPG" || extension === "JPEG" || extension === "PNG") {
             Object.defineProperty(file, "name", {
                 value: this.makeRandomName(extension),

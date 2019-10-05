@@ -72,7 +72,9 @@ export class EditProfileComponent implements OnInit {
         datos["oldfile"] = this.usuario.avatar;
       }
     }
-
+    if(this.profileForm.get('nickname').invalid){
+      cambios=false;
+    }
     if (cambios) {
       this.bar.start();
       this.userService.updateProfile(datos)
