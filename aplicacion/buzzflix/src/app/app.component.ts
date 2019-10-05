@@ -16,7 +16,10 @@ export interface Section {
 })
 export class AppComponent {
   @ViewChild(MatMenuTrigger, { static: true }) trigger: MatMenuTrigger;
+  @ViewChild('cookieLaw', { static: true })
+  private cookieLawEl: any;
 
+  private cookieLawSeen: boolean;
   public miniForm: FormGroup
   public miniForm2: FormGroup
   usuario: Usuario
@@ -32,7 +35,7 @@ export class AppComponent {
     private fb: FormBuilder,
     private authService: AuthService,
     private userService: UserService,
-    private router: Router,
+    private router: Router
   ) {
     this.miniForm = this.fb.group({
       nombre: ['', [
@@ -43,8 +46,12 @@ export class AppComponent {
     })
   }
 
+  public seeCookie(evt: any) {
+    this.cookieLawSeen = evt;
+  }
 
   ngOnInit() {
+    this.cookieLawSeen = this.cookieLawEl.cookieLawSeen;
     this.usuario = this.authService.getAuthUser();
     this.notificaciones = [];
     this.obtenerNotificaciones();

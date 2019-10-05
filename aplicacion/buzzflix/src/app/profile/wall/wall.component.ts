@@ -20,11 +20,12 @@ export class WallComponent implements OnInit {
 
   ngOnInit() {
     this.router.params.subscribe(params => {
-
       this.nickname = params['nickname']
-      /*if(isNaN(this.id)){
-        this.userService.currentMessage.subscribe(message => this.id = message)
-      }*/
+     if(this.nickname==undefined){
+        let nick = window.location.href.split("perfil/")[1];
+        nick = nick.replace("/wall","");
+        this.nickname=nick;
+      }
       this.getUserWall();
     })
 

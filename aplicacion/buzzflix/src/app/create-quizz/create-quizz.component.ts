@@ -519,7 +519,7 @@ export class CreateQuizzComponent implements OnInit {
         if (isPlatformBrowser(this.platformId)) {
           localStorage.removeItem("quizCookie");
         }
-        this.router.navigate(['/usuario/perfil', this.authService.getAuthUserId()])
+        this.router.navigate(['perfil', this.authService.getAuthUserNickname()])
       })
   }
 

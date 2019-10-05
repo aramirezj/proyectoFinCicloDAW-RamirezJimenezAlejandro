@@ -1,5 +1,5 @@
 import { Component, OnInit, ViewChild, Inject} from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '../services/user.service';
 import { Usuario } from '../modelo/Usuario';
 import { AuthService } from '../services/auth.service';
@@ -32,6 +32,7 @@ export class ProfileComponent implements OnInit {
   @ViewChild(LogrosComponent,{static: false}) child;
   constructor(@Inject(WINDOW) private window: Window, 
     private router: ActivatedRoute,
+    private router2: Router,
     private userService: UserService,
     private authService: AuthService,
     private afStorage: AngularFireStorage,
@@ -39,13 +40,17 @@ export class ProfileComponent implements OnInit {
   ) {
     this.userService.userProfileUpdated.subscribe((usuario) => {
       this.usuario = usuario;
+      
       if (this.usuario.avatar == "" || this.usuario.avatar == null) {
         this.usuario.avatar = this.afStorage.ref("hehexd.PNG").getDownloadURL();
       } else if (typeof this.usuario.avatar == "string") {
         this.usuario.avatar = this.afStorage.ref(this.usuario.avatar).getDownloadURL();
       }
       this.cargaStats();
+      this.router2.navigate(['perfil/' + this.usuario.nickname,"edit"]);
+      this.gestionaPosicion();
     })
+  
   }
 
   isAuthUserProfile(): boolean {

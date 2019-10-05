@@ -1,7 +1,14 @@
 <ng-progress [color]="'orange'"></ng-progress>
 <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.8.1/css/all.css"
   integrity="sha384-50oBUHEmvpQ+1lW4y57PTFmhCaXp0ML5d60M1M7uH2+nqUivzIebhndOJK28anvf" crossorigin="anonymous">
-
+<cookie-law (isSeen)="seeCookie($event)" #cookieLaw name="CookiesHasquiz" learnMore="/learn-more" target="_self">
+  Esta web usa cookies propias y de terceros con el fin de mejorar
+  la experiencia del usuario, elaborar información estadística conforme a nuestra 
+  <a role="button" [routerLink]="['/info','privacidad']"> Política de cookies</a> . Si continuas navegando, aceptas su uso.
+  <a role="button" (click)="seeCookie($event)"> Continuar </a>
+  
+  
+</cookie-law>
 <app-notify></app-notify>
 <mat-toolbar class="barra" color="primary">
   <mat-toolbar-row>
@@ -33,9 +40,9 @@
 
       <!--Menú derecha-->
       <mat-menu #menu="matMenu">
-        <button mat-menu-item *ngIf="isLoggedIn() && this.usuario"
-          [routerLink]="['usuario/perfil',this.usuario.nickname]">
-          <mat-icon *ngIf="isLoggedIn()">account_circle</mat-icon>
+        <button mat-menu-item *ngIf="isLoggedIn()"
+          [routerLink]="['perfil',this.usuario.nickname]">
+          <mat-icon>account_circle</mat-icon>
           <span role="button" mat-button><a>Mi perfil</a></span>
         </button>
 
@@ -134,7 +141,7 @@
       <a mat-list-item [routerLink]="['buscador']" (click)="sidenav.toggle()">Buscador</a>
       <a mat-list-item *ngIf="isLoggedIn()" [routerLink]="['moderacion']" (click)="sidenav.toggle()">Moderación </a>
       <button mat-menu-item *ngIf="isLoggedIn()"
-        [routerLink]="['usuario/perfil',this.authService.getAuthUserNickname()]" (click)="sidenav.toggle()">
+        [routerLink]="['perfil',this.authService.getAuthUserNickname()]" (click)="sidenav.toggle()">
         <mat-icon *ngIf="isLoggedIn()">account_circle</mat-icon>
         <span role="button" mat-button><a>Mi perfil</a></span>
       </button>

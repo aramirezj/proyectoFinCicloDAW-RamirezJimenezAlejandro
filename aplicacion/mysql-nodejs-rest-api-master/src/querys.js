@@ -23,13 +23,15 @@ querys["confirmaEmail"] = "SELECT id,name,email,avatar from users where confirma
 querys["confirmaEmail2"] = "UPDATE users set confirmado = 1 where id =?";
 querys["setRecuperacion"] = "UPDATE users set recuperacion = ? where email = ?";
 querys["endRecuperacion"] = "UPDATE users set password = ?, recuperacion = NULL where recuperacion = ?";
-querys["editarPerfil1"] = "UPDATE users set name = ?, avatar = ? WHERE id = ?";
+querys["editarPerfil1"] = "UPDATE users set name = ?, nickname = ?, avatar = ? WHERE id = ?";
 querys["editarPerfil2"] = "SELECT password FROM users where password = ? AND id = ?";
 querys["editarPerfil3"] = "UPDATE users set name = ? , password = ?, avatar = ? WHERE id = ?";
 querys["isAdmin"] = "SELECT id FROM users WHERE id = ? and admin is not null";
 querys["getNotis"] = "SELECT mensaje FROM notificaciones WHERE usuario = ? and leido is null";
 querys["readNoti"] = "UPDATE notificaciones set leido = 1 where usuario = ? AND mensaje = ?";
 querys["getUsuario"] = "SELECT id,nickname,name,avatar FROM users WHERE nickname = ?";
+querys["getUsuarioById"] = "SELECT id,nickname,name,avatar FROM users WHERE id = ?";
+
 querys["getUsuariosByNombre"] = "SELECT nickname FROM users WHERE nickname LIKE ? order by nickname";
 querys["getUsuarioWallPrivate"] = "SELECT q.*,COALESCE(SUM(v.cantidad),0) as estrellas,(SELECT count(quizz) FROM votaciones WHERE quizz = q.id OR quizz in(SELECT id FROM quizz where privado = q.id)) as votantes FROM quizz q left JOIN votaciones v on q.id=v.quizz WHERE creador = ? GROUP BY q.id order by fechacreacion DESC";
 querys["getUsuarioWallPublic"] = "SELECT q.*,COALESCE(SUM(v.cantidad),0) as estrellas,(SELECT count(quizz) FROM votaciones WHERE quizz = q.id OR quizz in(SELECT id FROM quizz where privado = q.id)) as votantes,u.nickname as nickname  FROM quizz q left JOIN votaciones v on q.id=v.quizz LEFT JOIN users u on q.creador= u.id  WHERE creador = ? AND publicado = 1 AND privado is null GROUP BY q.id order by fechacreacion DESC";

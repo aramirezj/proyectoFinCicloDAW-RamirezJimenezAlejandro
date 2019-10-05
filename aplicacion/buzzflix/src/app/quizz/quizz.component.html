@@ -6,7 +6,7 @@
     <span *ngFor="let item of [].constructor(estrellas)" class="fa fa-star checked"></span>
     <span *ngFor="let item of [].constructor(5-estrellas)" class="fa fa-star"></span>({{quizz.estrellas}})
     <p class="card-text" style="text-align:left" *ngIf="!this.isCreador && this.usuario.nickname">Autor: <a
-        [routerLink]="['/usuario/perfil',usuario.nickname]">@{{this.usuario.nickname}}</a><span class="pull-right">Fecha:
+        [routerLink]="['/perfil',usuario.nickname]">@{{this.usuario.nickname}}</a><span class="pull-right">Fecha:
         {{this.quizz.fechacreacion | date}}</span></p>
     <button mat-button [matMenuTriggerFor]="menu" *ngIf="this.isCreador">Acciones</button>
     <mat-menu #menu="matMenu">

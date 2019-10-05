@@ -23,7 +23,10 @@ validaciones["login"] = [
 ];
 validaciones["editar"] = [
     check('name').isLength({ min: 4 }),
-    check('name').isLength({ max: 20 }),
+    check('name').isLength({ max: 30 }),
+    check('nickname').isLength({ min: 5 }),
+    check('nickname').isLength({ max: 30 }),
+    check('nickname').matches(/^([0-9A-z\ \_]+[a-zA-\s])$/, 'g'),
 ];
 validaciones["creaQuiz"] = [
     check('titulo').isLength({ min: 10 }),

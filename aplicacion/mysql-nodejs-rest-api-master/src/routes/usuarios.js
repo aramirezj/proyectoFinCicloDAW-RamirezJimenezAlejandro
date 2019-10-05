@@ -173,18 +173,21 @@ router.put('/api/usuario/actualizar/:id', listaValidaciones["editar"], (req, res
   if (!queryService.compruebaErrores(req, res)) {
     let permiso = tokenService.verificaToken(req.headers, res);
     if (permiso) {
-      let { name, oldpass, newpass, avatar } = req.body;
-      const { id } = req.params; 3
+      let { name, nickname, oldpass, newpass, avatar } = req.body;
+      const { id } = req.params;
       //Logro 1 (Nuevo outfit)
-      queryService.ejecutaConsulta("getUsuario", [id], res, function (rows) {
+      queryService.ejecutaConsulta("getUsuarioById", [id], res, function (rows) {
         if (rows) {
-          logroService.logroAvatar(permiso, avatar, rows[0].avatar, res);//Logro 1
+          if (rows.length > 0) {
+            logroService.logroAvatar(permiso, avatar, rows[0].avatar, res);
+          }
+
         }
       })
       //Logro 1 (Nuevo outfit)
 
-      if (oldpass == undefined || newpass == undefined) {//Modificamos solo nombre y avatar
-        queryService.ejecutaConsulta("editarPerfil1", [name, avatar, id], res, function (rows) {
+      if (oldpass == undefined || newpass == undefined) {//Modificamos solo nombre,nick y avatar
+        queryService.ejecutaConsulta("editarPerfil1", [name, nickname, avatar, id], res, function (rows) {
           if (rows) {
             res.send({ status: '200' });
           }
@@ -313,7 +316,7 @@ router.get('/api/usuario/:nickname/wall', (req, res) => {
             res.send({ respuesta: rows });
           }
         });
-      }else{
+      } else {
         res.send({ respuesta: null });
       }
     };

@@ -47,7 +47,7 @@ export const ROUTES = [
         canActivate: [AuthGuard]
     },
     {
-        path: 'usuario/perfil/:nickname',
+        path: 'perfil/:nickname',
         component: ProfileComponent,
         children: [{
             path: '',

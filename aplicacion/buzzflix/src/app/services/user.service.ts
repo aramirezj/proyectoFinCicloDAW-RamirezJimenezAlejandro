@@ -131,10 +131,14 @@ export class UserService {
         if (datos["nombre"] == undefined) {
             datos["nombre"] = OLDUSUARIO.name;
         }
+        if(datos["nickname"] == undefined){
+            datos["nickname"] = OLDUSUARIO.nickname;
+        }
 
         let url = `${CONFIG.apiUrl}usuario/actualizar/${id}`;
         let body = {
             name: datos["nombre"],
+            nickname:datos["nickname"],
             oldpass: datos["oldpass"],
             newpass: datos["newpass"],
             avatar: avatar
@@ -150,6 +154,7 @@ export class UserService {
 
                 let aux = this.authService.getAuthUser();
                 aux.name = datos["nombre"];
+                aux.nickname= datos["nickname"];
                 aux.avatar = avatar;
                 if (isPlatformBrowser(this.platformId)) {
                     localStorage.setItem("usuario", JSON.stringify(aux));

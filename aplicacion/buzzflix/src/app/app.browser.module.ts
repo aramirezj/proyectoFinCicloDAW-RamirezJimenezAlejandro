@@ -75,6 +75,7 @@ import { NgxImageCompressService } from 'ngx-image-compress';
 import { GoogleLoginProvider, FacebookLoginProvider, AuthService } from 'angular-6-social-login';
 import { SocialLoginModule, AuthServiceConfig } from 'angular-6-social-login';
 
+import { CookieLawModule } from 'angular2-cookie-law';
 
 
 export function socialConfigs() {
@@ -152,7 +153,8 @@ registerLocaleData(localePy, 'es');
     ClipboardModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireDatabaseModule,
-    BrowserTransferStateModule
+    BrowserTransferStateModule,
+    CookieLawModule
   ],
   exports: [RouterModule],
   providers: [

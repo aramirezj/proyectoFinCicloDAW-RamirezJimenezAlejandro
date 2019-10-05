@@ -1659,3 +1659,37 @@
       'INSERT INTO users (nickname,name,email,origen,idSocial) values(\'alejandroramirezjimenez199928\',\'Alejandro Ramírez Jiménez\',\'alejandroramirezjimenez1999@gmail.com\',\'google\',\'111439540376655328327\')' },
   Componente: 'Query Controller',
   timestamp: '2019-10-04T20:08:57.269Z' }
+{ level: 'error',
+  message:
+   { Error: ER_PARSE_ERROR: You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near 'avatar = 'hbi1jf4lkoa.PNG' WHERE id = '40'' at line 1
+       at Query.Sequence._packetToError (F:\Escritorio\proyectoFinCicloDAW-RamirezJimenezAlejandro\aplicacion\mysql-nodejs-rest-api-master\node_modules\mysql\lib\protocol\sequences\Sequence.js:47:14)
+       at Query.ErrorPacket (F:\Escritorio\proyectoFinCicloDAW-RamirezJimenezAlejandro\aplicacion\mysql-nodejs-rest-api-master\node_modules\mysql\lib\protocol\sequences\Query.js:77:18)
+       at Protocol._parsePacket (F:\Escritorio\proyectoFinCicloDAW-RamirezJimenezAlejandro\aplicacion\mysql-nodejs-rest-api-master\node_modules\mysql\lib\protocol\Protocol.js:291:23)
+       at Parser._parsePacket (F:\Escritorio\proyectoFinCicloDAW-RamirezJimenezAlejandro\aplicacion\mysql-nodejs-rest-api-master\node_modules\mysql\lib\protocol\Parser.js:433:10)
+       at Parser.write (F:\Escritorio\proyectoFinCicloDAW-RamirezJimenezAlejandro\aplicacion\mysql-nodejs-rest-api-master\node_modules\mysql\lib\protocol\Parser.js:43:10)
+       at Protocol.write (F:\Escritorio\proyectoFinCicloDAW-RamirezJimenezAlejandro\aplicacion\mysql-nodejs-rest-api-master\node_modules\mysql\lib\protocol\Protocol.js:38:16)
+       at Socket.<anonymous> (F:\Escritorio\proyectoFinCicloDAW-RamirezJimenezAlejandro\aplicacion\mysql-nodejs-rest-api-master\node_modules\mysql\lib\Connection.js:91:28)
+       at Socket.<anonymous> (F:\Escritorio\proyectoFinCicloDAW-RamirezJimenezAlejandro\aplicacion\mysql-nodejs-rest-api-master\node_modules\mysql\lib\Connection.js:525:10)
+       at Socket.emit (events.js:189:13)
+       at addChunk (_stream_readable.js:284:12)
+       --------------------
+       at Protocol._enqueue (F:\Escritorio\proyectoFinCicloDAW-RamirezJimenezAlejandro\aplicacion\mysql-nodejs-rest-api-master\node_modules\mysql\lib\protocol\Protocol.js:144:48)
+       at Connection.query (F:\Escritorio\proyectoFinCicloDAW-RamirezJimenezAlejandro\aplicacion\mysql-nodejs-rest-api-master\node_modules\mysql\lib\Connection.js:201:25)
+       at QueryController.ejecutaConsulta (F:\Escritorio\proyectoFinCicloDAW-RamirezJimenezAlejandro\aplicacion\mysql-nodejs-rest-api-master\src\controllers\queryController.js:24:25)
+       at router.put (F:\Escritorio\proyectoFinCicloDAW-RamirezJimenezAlejandro\aplicacion\mysql-nodejs-rest-api-master\src\routes\usuarios.js:190:22)
+       at Layer.handle [as handle_request] (F:\Escritorio\proyectoFinCicloDAW-RamirezJimenezAlejandro\aplicacion\mysql-nodejs-rest-api-master\node_modules\express\lib\router\layer.js:95:5)
+       at next (F:\Escritorio\proyectoFinCicloDAW-RamirezJimenezAlejandro\aplicacion\mysql-nodejs-rest-api-master\node_modules\express\lib\router\route.js:137:13)
+       at Object.<anonymous> (F:\Escritorio\proyectoFinCicloDAW-RamirezJimenezAlejandro\aplicacion\mysql-nodejs-rest-api-master\node_modules\express-validator\src\middlewares\check.js:23:13)
+       at Generator.next (<anonymous>)
+       at fulfilled (F:\Escritorio\proyectoFinCicloDAW-RamirezJimenezAlejandro\aplicacion\mysql-nodejs-rest-api-master\node_modules\express-validator\src\middlewares\check.js:4:58)
+       at process._tickCallback (internal/process/next_tick.js:68:7)
+     code: 'ER_PARSE_ERROR',
+     errno: 1064,
+     sqlMessage:
+      'You have an error in your SQL syntax; check the manual that corresponds to your MariaDB server version for the right syntax to use near \'avatar = \'hbi1jf4lkoa.PNG\' WHERE id = \'40\'\' at line 1',
+     sqlState: '42000',
+     index: 0,
+     sql:
+      'UPDATE users set name = \'Alejandro Ramírez Jiménez\', nickname = \'Exilon\' avatar = \'hbi1jf4lkoa.PNG\' WHERE id = \'40\'' },
+  Componente: 'Query Controller',
+  timestamp: '2019-10-04T23:46:04.440Z' }

@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { Usuario } from 'src/app/modelo/Usuario';
 import { AuthService } from './../../services/auth.service';
 import { UserService } from 'src/app/services/user.service';
@@ -9,6 +9,7 @@ import { NgProgress } from 'ngx-progressbar';
 import * as $ from 'jquery';
 import { FileService } from 'src/app/services/file.service';
 import { Router } from '@angular/router';
+import { WINDOW } from '@ng-toolkit/universal';
 @Component({
   selector: 'app-edit-profile',
   templateUrl: './edit-profile.component.html',
@@ -22,6 +23,7 @@ export class EditProfileComponent implements OnInit {
   loaded: boolean = false;
 
   constructor(
+    @Inject(WINDOW) private window: Window, 
     private fileService: FileService,
     private authService: AuthService,
     private userService: UserService,
@@ -39,18 +41,23 @@ export class EditProfileComponent implements OnInit {
 
   creaFormulario() {
     this.profileForm = new FormGroup({
-      nombre: new FormControl(this.usuario.name, [Validators.required, Validators.minLength(2), Validators.maxLength(20)]),
+      nombre: new FormControl(this.usuario.name, [Validators.required, Validators.minLength(5), Validators.maxLength(30)]),
+      nickname: new FormControl(this.usuario.nickname, [Validators.minLength(4), Validators.maxLength(15)]),
       oldPass: new FormControl(null, [Validators.minLength(6), Validators.maxLength(30)]),
       newPass: new FormControl(null, [Validators.minLength(6), Validators.maxLength(30)]),
       avatar: new FormControl(null, null)
     });
   }
 
-  editProfile() {
+  editProfile():void {
     let datos: any = [];
     let cambios = false;
     if (this.authService.getAuthUser().name != this.profileForm.get("nombre").value) {
       datos["nombre"] = this.profileForm.get("nombre").value;
+      cambios = true;
+    }
+    if (this.usuario.nickname != this.profileForm.get("nickname").value) {
+      datos["nickname"] = this.profileForm.get("nickname").value;
       cambios = true;
     }
     if (this.profileForm.get("oldPass").value != "" && this.profileForm.get("newPass").value != "") {
@@ -87,6 +94,20 @@ export class EditProfileComponent implements OnInit {
     if (this.file == null) {
       this.notifyService.notify("Los formatos aceptados son PNG,JPG,JPEG", "error");
       this.profileForm.get("avatar").reset();
+    }
+  }
+
+  checkUsed(): void {
+    if (!this.profileForm.get('nickname').invalid && this.profileForm.get('nickname').value != this.usuario.nickname) {
+      this.authService.checkNickname(this.profileForm.get('nickname').value)
+        .subscribe((verdad) => {
+          if (verdad) {
+            this.profileForm.get('nickname').setErrors({ 'incorrect': verdad });
+          } else {
+            this.profileForm.get('nickname').setErrors(null);
+          }
+          this.profileForm.updateValueAndValidity();
+        })
     }
   }
 }
