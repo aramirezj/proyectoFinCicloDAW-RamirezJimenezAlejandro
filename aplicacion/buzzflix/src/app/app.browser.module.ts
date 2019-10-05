@@ -76,6 +76,7 @@ import { GoogleLoginProvider, FacebookLoginProvider, AuthService } from 'angular
 import { SocialLoginModule, AuthServiceConfig } from 'angular-6-social-login';
 
 import { CookieLawModule } from 'angular2-cookie-law';
+import { ImageCropperModule } from 'ngx-image-cropper';
 
 
 export function socialConfigs() {
@@ -154,7 +155,8 @@ registerLocaleData(localePy, 'es');
     AngularFireModule.initializeApp(environment.firebaseConfig),
     AngularFireDatabaseModule,
     BrowserTransferStateModule,
-    CookieLawModule
+    CookieLawModule,
+    ImageCropperModule
   ],
   exports: [RouterModule],
   providers: [

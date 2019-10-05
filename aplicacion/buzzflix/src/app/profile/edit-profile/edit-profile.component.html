@@ -25,27 +25,27 @@
           </mat-error>
         </mat-form-field>
         <mat-form-field class="example-full-width">
-            <input (focusout)="checkUsed();" matInput placeholder="Nombre de usuario" formControlName="nickname"
-              [errorStateMatcher]="matcher" pattern="[a-zA-Z0-9][A-Za-z0-9_-]*">
-            <mat-hint>Será el nombre que verán los otros usuarios</mat-hint>
-            <mat-error *ngIf="profileForm.get('nickname').hasError('required')">
-              El nombre de usuario es <strong>obligatorio</strong>
-            </mat-error>
-            <mat-error
-              *ngIf="!profileForm.get('nickname').hasError('required') && profileForm.get('nickname').hasError('minlength')">
-              El nombre de usuario tiene un mínimo de <strong>4 caracteres</strong>
-            </mat-error>
-            <mat-error
-              *ngIf="!profileForm.get('nickname').hasError('required') && profileForm.get('nickname').hasError('maxlength')">
-              El nombre de usuario tiene un máximo de <strong>15 caracteres</strong>
-            </mat-error>
-            <mat-error *ngIf="profileForm.get('nickname').hasError('incorrect')">
-              El nombre de usuario ya esta usado.
-            </mat-error>
-            <mat-error *ngIf="profileForm.get('nickname').hasError('pattern')">
-              Solo puede tener <strong>letras, números y guiones</strong>
-            </mat-error>
-          </mat-form-field>
+          <input (focusout)="checkUsed();" matInput placeholder="Nombre de usuario" formControlName="nickname"
+            [errorStateMatcher]="matcher" pattern="[a-zA-Z0-9][A-Za-z0-9_-]*">
+          <mat-hint>Será el nombre que verán los otros usuarios</mat-hint>
+          <mat-error *ngIf="profileForm.get('nickname').hasError('required')">
+            El nombre de usuario es <strong>obligatorio</strong>
+          </mat-error>
+          <mat-error
+            *ngIf="!profileForm.get('nickname').hasError('required') && profileForm.get('nickname').hasError('minlength')">
+            El nombre de usuario tiene un mínimo de <strong>4 caracteres</strong>
+          </mat-error>
+          <mat-error
+            *ngIf="!profileForm.get('nickname').hasError('required') && profileForm.get('nickname').hasError('maxlength')">
+            El nombre de usuario tiene un máximo de <strong>15 caracteres</strong>
+          </mat-error>
+          <mat-error *ngIf="profileForm.get('nickname').hasError('incorrect')">
+            El nombre de usuario ya esta usado.
+          </mat-error>
+          <mat-error *ngIf="profileForm.get('nickname').hasError('pattern')">
+            Solo puede tener <strong>letras, números y guiones</strong>
+          </mat-error>
+        </mat-form-field>
 
         <mat-form-field class="example-full-width">
           <input type="password" matInput placeholder="Contraseña antigua" formControlName="oldPass"
@@ -78,12 +78,20 @@
           <div class="input-group-btn">
             <span class="fileUpload btn btn-success">
               <span class="upl" id="upload">Subir imagen</span>
-              <input type="file" class="upload up" accept="image/*" (change)="onFileChange($event)" />
+              <input type="file" class="upload up" accept="image/*" (change)="fileChangeEvent($event)" />
             </span>
           </div>
         </div>
         <button mat-raised-button color="primary">Guardar cambios</button>
       </form>
+
+      <image-cropper style="width:50%;float:left;" [imageChangedEvent]="imageChangedEvent" [maintainAspectRatio]="true"
+        [aspectRatio]="1 / 1" [resizeToWidth]="150" format="jpeg" outputType="both" roundCropper="true" autoCrop="false"
+        (imageCropped)="imageCropped($event)" (imageLoaded)="imageLoaded()" (cropperReady)="cropperReady()"
+        (loadImageFailed)="loadImageFailed()"></image-cropper>
+
+      <img style="float:left;" [src]="croppedImage" style="border-radius: 50%" />
+      <button mat-raised-button color="warn" *ngIf="imageChangedEvent" (click)="recortar()">Recortar</button>
     </div>
   </div>
 </div>

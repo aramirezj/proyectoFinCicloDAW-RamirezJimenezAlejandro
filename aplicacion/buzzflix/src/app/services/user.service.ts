@@ -69,7 +69,7 @@ export class UserService {
         });
     }
 
-    getUserWall(nickname:string): Observable<Array<Quizz>> {
+    getUserWall(nickname: string): Observable<Array<Quizz>> {
         let url = `${CONFIG.apiUrl}usuario/${nickname}/wall`;
         return Observable.create(observer => {
             this.restService.peticionHttp(url).subscribe(response => {
@@ -131,19 +131,18 @@ export class UserService {
         if (datos["nombre"] == undefined) {
             datos["nombre"] = OLDUSUARIO.name;
         }
-        if(datos["nickname"] == undefined){
+        if (datos["nickname"] == undefined) {
             datos["nickname"] = OLDUSUARIO.nickname;
         }
 
         let url = `${CONFIG.apiUrl}usuario/actualizar/${id}`;
         let body = {
             name: datos["nombre"],
-            nickname:datos["nickname"],
+            nickname: datos["nickname"],
             oldpass: datos["oldpass"],
             newpass: datos["newpass"],
             avatar: avatar
         };
-
         return Observable.create(observer => {
             this.restService.peticionHttp(url, body, "put").subscribe(response => {
                 this.bar.done();
@@ -154,12 +153,11 @@ export class UserService {
 
                 let aux = this.authService.getAuthUser();
                 aux.name = datos["nombre"];
-                aux.nickname= datos["nickname"];
+                aux.nickname = datos["nickname"];
                 aux.avatar = avatar;
                 if (isPlatformBrowser(this.platformId)) {
                     localStorage.setItem("usuario", JSON.stringify(aux));
                 }
-
 
                 if (file != undefined) {
                     let ref = this.afStorage.ref(avatar);
@@ -167,7 +165,10 @@ export class UserService {
                     uploadTask.snapshotChanges().pipe(
                         finalize(() => {
                             if (datos["oldfile"] != undefined && datos["oldfile"] != "") {
-                                this.borraImagen(datos["oldfile"]);
+                                if (OLDUSUARIO.avatar != null) {
+                                    this.borraImagen(OLDUSUARIO.avatar);
+                                }
+
                             }
                             this.notifyService.notify("¡Usuario actualizado con exito!", "success");
                             this.userProfileUpdated.emit(aux);
@@ -179,7 +180,7 @@ export class UserService {
                     this.userProfileUpdated.emit(aux);
                     return aux;
                 }
-                observer.next(response.respuesta)
+                //observer.next(response.respuesta)
                 observer.complete();
             })
         });

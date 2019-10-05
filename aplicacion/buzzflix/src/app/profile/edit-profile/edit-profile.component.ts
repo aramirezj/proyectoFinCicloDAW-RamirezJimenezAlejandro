@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, ViewChild } from '@angular/core';
 import { Usuario } from 'src/app/modelo/Usuario';
 import { AuthService } from './../../services/auth.service';
 import { UserService } from 'src/app/services/user.service';
@@ -10,6 +10,7 @@ import * as $ from 'jquery';
 import { FileService } from 'src/app/services/file.service';
 import { Router } from '@angular/router';
 import { WINDOW } from '@ng-toolkit/universal';
+import { ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper';
 @Component({
   selector: 'app-edit-profile',
   templateUrl: './edit-profile.component.html',
@@ -21,9 +22,12 @@ export class EditProfileComponent implements OnInit {
   profileForm: FormGroup;
   textInput: String;
   loaded: boolean = false;
+  imageChangedEvent: any = '';
+  croppedImage: any = '';
+  @ViewChild(ImageCropperComponent, { static: false }) imageCropper: ImageCropperComponent;
 
   constructor(
-    @Inject(WINDOW) private window: Window, 
+    @Inject(WINDOW) private window: Window,
     private fileService: FileService,
     private authService: AuthService,
     private userService: UserService,
@@ -31,6 +35,53 @@ export class EditProfileComponent implements OnInit {
     private bar: NgProgress,
     private router: Router
   ) { }
+
+  public blobToFile = (theBlob: Blob, fileName: string): File => {
+    var b: any = theBlob;
+    b.lastModifiedDate = new Date();
+    let file = <File>theBlob;
+    Object.defineProperty(file, "name", {
+      value: fileName,
+      writable: false,
+      configurable: true
+    })
+    return file;
+  }
+  recortar() {
+    Promise.resolve(this.imageCropper.crop()).then(resp => {
+      this.imageCropped(resp, true);
+    })
+
+  }
+
+  fileChangeEvent(event: any): void {
+    this.imageChangedEvent = event;
+  }
+
+
+
+  imageCropped(event: ImageCroppedEvent, origen?: boolean) {
+    if (origen) {
+      this.croppedImage = event.base64;
+      let ext = event.file.type.split("/")[1];
+      let rawFile = this.blobToFile(event.file, "avatar." + ext);
+      this.file = this.fileService.prepareFile(rawFile);
+      this.textInput = this.file != null ? this.file.name : "Sube aquí tu nuevo avatar.";
+      if (this.file == null) {
+        this.notifyService.notify("Los formatos aceptados son PNG,JPG,JPEG", "error");
+        this.profileForm.get("avatar").reset();
+      }
+    }
+
+  }
+  imageLoaded() {
+    // show cropper
+  }
+  cropperReady() {
+  }
+  loadImageFailed() {
+    // show message
+  }
 
   ngOnInit() {
     this.textInput = "Sube aquí tu nuevo avatar.";
@@ -42,14 +93,14 @@ export class EditProfileComponent implements OnInit {
   creaFormulario() {
     this.profileForm = new FormGroup({
       nombre: new FormControl(this.usuario.name, [Validators.required, Validators.minLength(5), Validators.maxLength(30)]),
-      nickname: new FormControl(this.usuario.nickname, [Validators.minLength(4), Validators.maxLength(15)]),
+      nickname: new FormControl(this.usuario.nickname, [Validators.required,Validators.minLength(4), Validators.maxLength(15)]),
       oldPass: new FormControl(null, [Validators.minLength(6), Validators.maxLength(30)]),
       newPass: new FormControl(null, [Validators.minLength(6), Validators.maxLength(30)]),
       avatar: new FormControl(null, null)
     });
   }
 
-  editProfile():void {
+  editProfile(): void {
     let datos: any = [];
     let cambios = false;
     if (this.authService.getAuthUser().name != this.profileForm.get("nombre").value) {
@@ -60,11 +111,12 @@ export class EditProfileComponent implements OnInit {
       datos["nickname"] = this.profileForm.get("nickname").value;
       cambios = true;
     }
-    if (this.profileForm.get("oldPass").value != "" && this.profileForm.get("newPass").value != "") {
+    if (this.profileForm.get("oldPass").value != null && this.profileForm.get("newPass").value != null) {
       datos["oldpass"] = this.profileForm.get("oldPass").value;
       datos["newpass"] = this.profileForm.get("newPass").value;
       cambios = true;
     }
+
     if (this.file != null || this.file != undefined) {
       datos["file"] = this.file;
       cambios = true;
@@ -72,19 +124,20 @@ export class EditProfileComponent implements OnInit {
         datos["oldfile"] = this.usuario.avatar;
       }
     }
-    if(this.profileForm.get('nickname').invalid){
-      cambios=false;
+    if (this.profileForm.get('nickname').invalid) {
+      cambios = false;
     }
     if (cambios) {
       this.bar.start();
       this.userService.updateProfile(datos)
         .subscribe((usuario) => {
-          this.bar.done();
-          if (usuario != null) {
-            this.usuario = usuario;
-          } else {
-            this.usuario.avatar = "";
-          }
+          console.log(usuario)
+         if(usuario!=null){
+          this.usuario = usuario;
+         }
+
+           
+          
         })
     }
   }

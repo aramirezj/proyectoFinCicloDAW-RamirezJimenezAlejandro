@@ -1,22 +1,28 @@
-@import '../../variables.scss';
+@import "../../variables.scss";
 
-.panel{
-    width: 47%;
-    float:left;
-    margin:0.5%;
+.panel {
+  width: 47%;
+  float: left;
+  margin: 0.5%;
 }
-div{
-    background-color: $naranjaRetro!important;
-    
+@media (max-width: 800px) {
+  .panel {
+    width: 100%;
+    float: none;
+    text-align: center;
+  }
 }
-a{
-    font-weight: bold;
-    text-transform: capitalize;
-    font-size: 1em;
-    letter-spacing: 0.1em;
+div {
+  background-color: $naranjaRetro !important;
 }
-.panel-footer{
-    background-color: $fondoSuave!important;
-    color:white;
-    font-weight: bold;
+a {
+  font-weight: bold;
+  text-transform: capitalize;
+  font-size: 1em;
+  letter-spacing: 0.1em;
+}
+.panel-footer {
+  background-color: $fondoSuave !important;
+  color: white;
+  font-weight: bold;
 }
