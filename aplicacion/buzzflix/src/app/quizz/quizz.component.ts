@@ -54,7 +54,6 @@ export class QuizzComponent implements OnInit {
     } else if (this.quizz.publicado == 0) {
       this.quizz.titulo = this.quizz.titulo + " (Pendiente de moderación)";
     }
-    this.obtenerURL();
   }
 
   openDialog() {
@@ -92,12 +91,7 @@ export class QuizzComponent implements OnInit {
     this.quizzService.cambiaTipo(this.quizz, privado)
       .subscribe();
   }
-  obtenerURL() {
-    if (isPlatformBrowser(this.platformId)) {
-      this.urlShare = "https://www.hasquiz.com/#/ver/quizz/" + this.urlClick;
-    }
 
-  }
 
 }
 

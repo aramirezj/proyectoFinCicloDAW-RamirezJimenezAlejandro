@@ -58,8 +58,7 @@ validaciones["vota"] = [
     check("cantidad").isNumeric()
 ]
 validaciones["stats"] = [ //isFollowing también
-    check("destino").isNumeric(),
-    check("origen").isNumeric(),
+  
 ]
 
 

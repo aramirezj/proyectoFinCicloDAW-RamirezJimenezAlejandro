@@ -48,6 +48,7 @@ export class AppComponent {
 
   public seeCookie(evt: any) {
     this.cookieLawSeen = evt;
+    this.cookieLawEl.dismiss();
   }
 
   ngOnInit() {

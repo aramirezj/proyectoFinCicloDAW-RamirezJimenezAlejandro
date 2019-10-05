@@ -46,7 +46,7 @@ querys["checkNickname"] = "SELECT * from users where nickname = ?";
 //Querys social login
 querys["checkSocialUser"] = "SELECT * FROM users where idSocial = ? AND email = ?";
 querys["setSocialUser"] = "INSERT INTO users (nickname,name,email,origen,idSocial) values(?,?,?,?,?)";
-querys["loginSocialUser"] = "SELECT id,name,email,avatar from users where email = ? AND idSocial = ?";
+querys["loginSocialUser"] = "SELECT id,nickname,name,avatar from users where email = ? AND idSocial = ?";
 //Querys de quizzes
 querys["getOneQuizz1"] = "SELECT * FROM quizz WHERE id = ?";
 querys["getOneQuizz2"] = "SELECT * FROM quizz where privado = ?";

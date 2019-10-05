@@ -40,7 +40,7 @@
 
       <!--Menú derecha-->
       <mat-menu #menu="matMenu">
-        <button mat-menu-item *ngIf="isLoggedIn()"
+        <button mat-menu-item *ngIf="isLoggedIn() && this.usuario"
           [routerLink]="['perfil',this.usuario.nickname]">
           <mat-icon>account_circle</mat-icon>
           <span role="button" mat-button><a>Mi perfil</a></span>
