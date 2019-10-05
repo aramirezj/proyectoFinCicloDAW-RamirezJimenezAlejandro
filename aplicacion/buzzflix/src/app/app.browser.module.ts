@@ -162,8 +162,8 @@ registerLocaleData(localePy, 'es');
     RestService, ImageService, FileService, AngularFirestore, AngularFireStorage,
     { provide: MatPaginatorIntl, useClass: MatPaginatorIntlCro },
     { provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher },
-    { provide: LOCALE_ID, useValue: 'es-Ar' },
-    , { provide: WINDOW, useValue: {} }, { provide: AuthServiceConfig, useFactory: socialConfigs }, NgxImageCompressService],
+    { provide: LOCALE_ID, useValue: 'es-Ar' }, { provide: WINDOW, useValue: {} },
+     { provide: AuthServiceConfig, useFactory: socialConfigs }, NgxImageCompressService],
   bootstrap: [AppComponent],
   entryComponents: [DialogboxComponent]
 })
