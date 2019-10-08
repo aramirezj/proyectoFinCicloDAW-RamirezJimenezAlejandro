@@ -36,35 +36,22 @@ export class EditProfileComponent implements OnInit {
     private router: Router
   ) { }
 
-  public blobToFile = (theBlob: Blob, fileName: string): File => {
-    var b: any = theBlob;
-    b.lastModifiedDate = new Date();
-    let file = <File>theBlob;
-    Object.defineProperty(file, "name", {
-      value: fileName,
-      writable: false,
-      configurable: true
-    })
-    return file;
-  }
+  
   recortar() {
     Promise.resolve(this.imageCropper.crop()).then(resp => {
       this.imageCropped(resp, true);
     })
-
   }
 
   fileChangeEvent(event: any): void {
     this.imageChangedEvent = event;
   }
 
-
-
   imageCropped(event: ImageCroppedEvent, origen?: boolean) {
     if (origen) {
       this.croppedImage = event.base64;
       let ext = event.file.type.split("/")[1];
-      let rawFile = this.blobToFile(event.file, "avatar." + ext);
+      let rawFile = this.fileService.blobToFile(event.file, "avatar." + ext);
       this.file = this.fileService.prepareFile(rawFile);
       this.textInput = this.file != null ? this.file.name : "Sube aquí tu nuevo avatar.";
       if (this.file == null) {
@@ -72,7 +59,6 @@ export class EditProfileComponent implements OnInit {
         this.profileForm.get("avatar").reset();
       }
     }
-
   }
   imageLoaded() {
     // show cropper

@@ -16,6 +16,8 @@ import { Section } from '../moderacion/moderacion.component';
 import { FileService } from '../services/file.service';
 import { LOCAL_STORAGE } from '@ng-toolkit/universal';
 import { isPlatformBrowser } from '@angular/common';
+import { NgxImageCompressService } from 'ngx-image-compress';
+import { Observable } from 'rxjs';
 export interface Numero {
   value: number;
   viewValue: number;
@@ -48,6 +50,8 @@ export class CreateQuizzComponent implements OnInit {
   checked = false;
   labelPosition = 'before';
   indeterminate = false;
+  imgResultBeforeCompress: string;
+  imgResultAfterCompress: string;
   private errores: Array<String> = [];
   private quizCookie: Quizz = null;
   private quizz: Quizz;
@@ -80,7 +84,8 @@ export class CreateQuizzComponent implements OnInit {
     private quizzService: QuizzService,
     private bar: NgProgress,
     private notifyService: NotifyService,
-    private fileService: FileService
+    private fileService: FileService,
+    private imageCompress: NgxImageCompressService
   ) {
 
     this.files = [];
@@ -100,32 +105,111 @@ export class CreateQuizzComponent implements OnInit {
     }
   }
 
+
+  convertImageToCanvas(image) {
+    var canvas = document.createElement("canvas");
+    canvas.width = image.width;
+    canvas.height = image.height;
+    canvas.getContext("2d").drawImage(image, 0, 0);
+    return canvas;
+  }
+
+  convertCanvasToImage(canvas) {
+    var image = new Image();
+    image.src = canvas.toDataURL("image/jpeg");
+    return image;
+  }
+
+
+
+  b64toBlob(b64Data, contentType): Observable<Blob> {
+
+    return Observable.create(observer => {
+      this.imageCompress.compressFile(b64Data, 1, 50, 80).then(
+        result => {
+          result = result.replace(/^data:image\/(png|jpeg|jpg);base64,/, '')
+          let sliceSize = 512
+          const byteCharacters = atob(result);
+          const byteArrays = [];
+          for (let offset = 0; offset < byteCharacters.length; offset += sliceSize) {
+            const slice = byteCharacters.slice(offset, offset + sliceSize);
+            const byteNumbers = new Array(slice.length);
+            for (let i = 0; i < slice.length; i++) {
+              byteNumbers[i] = slice.charCodeAt(i);
+            }
+            const byteArray = new Uint8Array(byteNumbers);
+            byteArrays.push(byteArray);
+          }
+          const blob = new Blob(byteArrays, { type: contentType });
+          observer.next(blob)
+          observer.complete();
+        }
+      );
+    });
+  }
+
   onFileChanged(event: any, posicion: number) {
     let banner = posicion == 100 ? true : false;
     posicion = posicion == 100 ? 0 : posicion + 1;
-    const rawFile = event.target.files[0];
-    let file = this.fileService.prepareFile(rawFile);
+    let file = event.target.files[0];
 
-    if (file != null) {
-      this.files[posicion] = file;
-      this.names[posicion] = file.name;
-      if (!banner) {
-        let destino: any = $("#img" + (posicion - 1))[0];
-        var reader = new FileReader();
-        reader.onload = function (event) {
-          let target: any = event.target;
-          destino.src = target.result;
-        };
-        reader.readAsDataURL(file);
-        this.errores.splice(this.errores.indexOf("si" + (posicion)))
-        let button = $("#si" + (posicion))[0];
-        button.className = "fileUpload btn btn-success"
+    if (this.fileService.formatoValido(file) != null) {
+      let b64 = null;
+      var myReader: FileReader = new FileReader();
+      myReader.onloadend = (e) => {
+        b64 = myReader.result;
+        this.b64toBlob(b64, file.type).subscribe(resp => {
+          let fileNormal = this.fileService.blobToFile(resp, "temp");
+          let fileReady = this.fileService.prepareFile(fileNormal);
+          this.files[posicion] = fileReady;
+          this.names[posicion] = fileReady.name;
+          if (!banner) {
+            let destino: any = $("#img" + (posicion - 1))[0];
+            var reader = new FileReader();
+            reader.onload = function (event) {
+              let target: any = event.target;
+              destino.src = target.result;
+            };
+            reader.readAsDataURL(fileReady);
+            this.errores.splice(this.errores.indexOf("si" + (posicion)))
+            let button = $("#si" + (posicion))[0];
+            button.className = "fileUpload btn btn-success"
+          }
+        })
       }
+      myReader.readAsDataURL(file);
     } else {
       this.notifyService.notify("Los formatos aceptados son PNG,JPG,JPEG", "error");
-      this.quizzForm.get(event.target.getAttribute("ng-reflect-name")).reset();
+      //this.quizzForm.get(event.target.getAttribute("ng-reflect-name")).reset();
     }
   }
+
+  /*onFileChanged(event: any, posicion: number) {
+     let banner = posicion == 100 ? true : false;
+     posicion = posicion == 100 ? 0 : posicion + 1;
+     const rawFile = event.target.files[0];
+     let file = this.fileService.prepareFile(rawFile);
+ 
+     if (file != null) {
+       this.files[posicion] = file;
+       this.names[posicion] = file.name;
+       if (!banner) {
+         let destino: any = $("#img" + (posicion - 1))[0];
+         var reader = new FileReader();
+         reader.onload = function (event) {
+           let target: any = event.target;
+           destino.src = target.result;
+         };
+         reader.readAsDataURL(file);
+         this.errores.splice(this.errores.indexOf("si" + (posicion)))
+         let button = $("#si" + (posicion))[0];
+         button.className = "fileUpload btn btn-success"
+       }
+     } else {
+       this.notifyService.notify("Los formatos aceptados son PNG,JPG,JPEG", "error");
+       this.quizzForm.get(event.target.getAttribute("ng-reflect-name")).reset();
+     }
+  }*/
 
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
@@ -393,7 +477,7 @@ export class CreateQuizzComponent implements OnInit {
     let minimo = this.compruebaRespuestasMinimas();
     if (this.estado && minimo) {
       this.notifyService.notify("¡Hora de mostrarle esta maravilla al mundo!", "success");
-        this.onSubmit();
+      this.onSubmit();
     } else {
       this.notifyService.notify("No dejes ningún campo vacio", "error");
     }
@@ -513,7 +597,7 @@ export class CreateQuizzComponent implements OnInit {
     if (this.quizzForm.value.privado) {
       privado = this.makeId();
     }
-    this.quizz = new Quizz(null, this.authService.getAuthUserId(),null, titulo, this.files[0].name, this.preparaSoluciones(), this.preparaPreguntas(), 0, null);
+    this.quizz = new Quizz(null, this.authService.getAuthUserId(), null, titulo, this.files[0].name, this.preparaSoluciones(), this.preparaPreguntas(), 0, null);
     this.quizzService.createQuizz(this.quizz, this.files, privado)
       .subscribe(resp => {
         if (isPlatformBrowser(this.platformId)) {
@@ -526,7 +610,7 @@ export class CreateQuizzComponent implements OnInit {
 
   guardaCookie() {
     let quizCookie: Quizz;
-    quizCookie = new Quizz(null, this.authService.getAuthUserId(),null, this.quizzForm.value.titulo, null,
+    quizCookie = new Quizz(null, this.authService.getAuthUserId(), null, this.quizzForm.value.titulo, null,
       this.preparaSoluciones(true), this.preparaPreguntas(), 0, null);
     if (isPlatformBrowser(this.platformId)) {
       localStorage.setItem("quizCookie", JSON.stringify(quizCookie));
