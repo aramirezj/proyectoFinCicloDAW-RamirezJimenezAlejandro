@@ -12,7 +12,7 @@ export class AuthedGuard implements CanActivate{
        if(!this.authService.isLoggedIn()){
         return true;
        }
-        this.router.navigate(['dashboard']);
+        this.router.navigate(['/ver/todos']);
         return false;
        
     }

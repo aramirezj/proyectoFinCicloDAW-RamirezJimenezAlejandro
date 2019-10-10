@@ -13,39 +13,6 @@ const listaValidaciones = require('../validaciones');
 
 app.use(cors())
 
-router.get("/api/userImages", express.static(path.join(__dirname, "../userImages")));
-
-
-
-router.post("/api/upload/user", (req, res, next) => {
-  console.log("peticion para subir una imagen")
-  console.log(req.file)
-  const tempPath = req.file.path;
-  const targetPath = path.join(__dirname, "../userImages/image.png");
-
-  if (path.extname(req.file.originalname).toLowerCase() === ".png") {
-    fs.rename(tempPath, targetPath, err => {
-      if (err) return handleError(err, res);
-
-      res
-        .status(200)
-        .contentType("text/plain")
-        .end("File uploaded!");
-    });
-  } else {
-    fs.unlink(tempPath, err => {
-      if (err) return handleError(err, res);
-
-      res
-        .status(403)
-        .contentType("text/plain")
-        .end("Only .png files are allowed!");
-    });
-  }
-}
-);
-
-
 // Para ver si un nickname esta pillado
 router.get('/api/checkNickname/:nombre', listaValidaciones["texto"], (req, res) => {
   //console.log("Petición para ver si un nick esta pillado");
@@ -130,6 +97,7 @@ router.post('/api/socialLogin', (req, res, next) => {
 router.post('/api/confirma', (req, res, next) => {
   console.log("Petición para confirmar el correo de un usuario")
   let { confirmacion } = req.body;
+  console.log(confirmacion)
   queryService.ejecutaConsulta("confirmaEmail", [confirmacion], res,
     function (rows) {
       if (rows) {

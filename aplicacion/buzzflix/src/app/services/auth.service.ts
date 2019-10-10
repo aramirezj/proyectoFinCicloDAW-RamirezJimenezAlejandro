@@ -100,7 +100,6 @@ export class AuthService {
     confirmaEmail(confirmacion: String): Observable<Usuario> {
         let body = { confirmacion: confirmacion };
         let url = `${CONFIG.apiUrl}confirma`;
-
         return Observable.create(observer => {
             this.restService.peticionHttp(url, body).subscribe(response => {
                 if (response.auth) {
@@ -182,7 +181,7 @@ export class AuthService {
         this.notifyService.notify("Has cerrado la sesión correctamente", "success");
         this.router.navigate(['/auth/login']);
     }
-    logUserIn(aux: Usuario): void {
+    logUserIn(aux: Usuario): boolean {
         if (aux == null) {
             this.notifyService.notify("Datos incorrectos", "error");
         } else if(!aux){
@@ -192,8 +191,9 @@ export class AuthService {
                 localStorage.setItem("usuario", JSON.stringify(aux));
             }
             this.notifyService.notify("Has iniciado sesión correctamente", "success");
-            this.router.navigate(['/ver/todos']);
+            return true;
         }
+        return false;
 
     }
 }

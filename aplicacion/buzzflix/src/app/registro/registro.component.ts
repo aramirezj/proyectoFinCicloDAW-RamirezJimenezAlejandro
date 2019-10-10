@@ -5,6 +5,8 @@ import { ErrorStateMatcher } from '@angular/material';
 import { AuthService, GoogleLoginProvider } from 'angular-6-social-login';
 import { socialLoginService } from '../services/socialLogin.service';
 import { Socialusers } from '../modelo/SocialUsers';
+import { UserService } from '../services/user.service';
+import { Router } from '@angular/router';
 @Component({
   selector: 'app-registro',
   templateUrl: './registro.component.html',
@@ -19,7 +21,9 @@ export class RegistroComponent implements OnInit {
   constructor(
     private authWeb: AuthWeb,
     public OAuth: AuthService,
-    private socialLoginService: socialLoginService
+    private userService: UserService,
+    private socialLoginService: socialLoginService,
+    private router: Router
   ) { }
 
   ngOnInit() {
@@ -72,8 +76,11 @@ export class RegistroComponent implements OnInit {
 
   respuestaSocial(socialusers: Socialusers): void {
     this.socialLoginService.loginSocial(socialusers)
-      .subscribe((resp) => {
-        this.authWeb.logUserIn(resp);
+      .subscribe((user) => {
+        if (this.authWeb.logUserIn(user)) {
+          this.userService.userProfileUpdated.emit(user);
+          this.router.navigate(['/ver/todos']);
+        };
       })
   }
 

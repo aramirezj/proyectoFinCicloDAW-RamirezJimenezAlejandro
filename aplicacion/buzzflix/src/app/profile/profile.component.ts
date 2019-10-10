@@ -40,7 +40,6 @@ export class ProfileComponent implements OnInit {
   ) {
     this.userService.userProfileUpdated.subscribe((usuario) => {
       this.usuario = usuario;
-      
       if (this.usuario.avatar == "" || this.usuario.avatar == null) {
         this.usuario.avatar = this.afStorage.ref("hehexd.PNG").getDownloadURL();
       } else if (typeof this.usuario.avatar == "string") {

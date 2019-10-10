@@ -10,7 +10,6 @@ class TokenController {
         var token = jwt.sign({ id: id }, secretWord, {
             expiresIn: (86400*7) // expires in 24 hours
         });
-        console.log(token)
         return token;
     }
     verificaToken(headers, res, verdad) {

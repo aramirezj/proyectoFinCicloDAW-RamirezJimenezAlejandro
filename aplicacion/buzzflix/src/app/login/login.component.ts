@@ -2,11 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService as AuthWeb } from '../services/auth.service';
 import { FormControl, Validators, FormGroup } from '@angular/forms';
 import { ErrorStateMatcher } from '@angular/material';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService, GoogleLoginProvider } from 'angular-6-social-login';
 import { socialLoginService } from '../services/socialLogin.service';
 import { SocialLoginModule, AuthServiceConfig } from 'angular-6-social-login';
 import { Socialusers } from '../modelo/SocialUsers'
+import { UserService } from '../services/user.service';
 
 @Component({
   selector: 'app-login',
@@ -22,16 +23,21 @@ export class LoginComponent implements OnInit {
   socialusers = new Socialusers();
   constructor(
     public OAuth: AuthService,
+    private userService: UserService,
     private socialLoginService: socialLoginService,
     private authService: AuthWeb,
+    private router2: Router,
     private router: ActivatedRoute,
   ) { }
 
   ngOnInit() {
     this.router.params.subscribe((params) => {
       this.confirmacion = params['confirmacion'];
+      this.gestionaPagina();
     })
+  }
 
+  gestionaPagina() {
     switch (this.confirmacion) {
       case undefined:
         this.createForm();
@@ -40,8 +46,10 @@ export class LoginComponent implements OnInit {
         this.createForm();
         break;
       default:
+        console.log(this.confirmacion)
         this.createForm();
         this.authService.confirmaEmail(this.confirmacion).subscribe((user) => {
+          console.log(user)
           this.authService.logUserIn(user);
         });
     }
@@ -52,15 +60,6 @@ export class LoginComponent implements OnInit {
       email: new FormControl(null, [Validators.required, Validators.email]),
       password: new FormControl(null, [Validators.required])
     });
-  }
-
-  onSubmit(): void {
-    if (!this.loginForm.invalid) {
-      this.authService.login(this.loginForm.get('email').value, this.loginForm.get('password').value)
-        .subscribe((user) => {
-          this.authService.logUserIn(user);
-        })
-    }
   }
 
   public loginSocial(socialProvider: string): void {
@@ -75,10 +74,27 @@ export class LoginComponent implements OnInit {
 
   respuestaSocial(socialusers: Socialusers): void {
     this.socialLoginService.loginSocial(socialusers)
-      .subscribe((resp) => {
-        this.authService.logUserIn(resp);
+      .subscribe((user) => {
+        if (this.authService.logUserIn(user)) {
+          this.userService.userProfileUpdated.emit(user);
+          this.router2.navigate(['/ver/todos']);
+        };
       })
   }
+
+  onSubmit(): void {
+    if (!this.loginForm.invalid) {
+      this.authService.login(this.loginForm.get('email').value, this.loginForm.get('password').value)
+        .subscribe((user) => {
+          if (this.authService.logUserIn(user)) {
+            this.userService.userProfileUpdated.emit(user);
+            this.router2.navigate(['/ver/todos']);
+          };
+        })
+    }
+  }
+
+
 
 
 }

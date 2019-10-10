@@ -36,7 +36,14 @@ export class EditProfileComponent implements OnInit {
     private router: Router
   ) { }
 
-  
+  ngOnInit() {
+    this.textInput = "Sube aquí tu nuevo avatar.";
+    this.usuario = this.authService.getAuthUser();
+    this.creaFormulario();
+    this.loaded = true;
+  }
+
+
   recortar() {
     Promise.resolve(this.imageCropper.crop()).then(resp => {
       this.imageCropped(resp, true);
@@ -60,26 +67,11 @@ export class EditProfileComponent implements OnInit {
       }
     }
   }
-  imageLoaded() {
-    // show cropper
-  }
-  cropperReady() {
-  }
-  loadImageFailed() {
-    // show message
-  }
-
-  ngOnInit() {
-    this.textInput = "Sube aquí tu nuevo avatar.";
-    this.usuario = this.authService.getAuthUser();
-    this.creaFormulario();
-    this.loaded = true;
-  }
 
   creaFormulario() {
     this.profileForm = new FormGroup({
       nombre: new FormControl(this.usuario.name, [Validators.required, Validators.minLength(5), Validators.maxLength(30)]),
-      nickname: new FormControl(this.usuario.nickname, [Validators.required,Validators.minLength(4), Validators.maxLength(15)]),
+      nickname: new FormControl(this.usuario.nickname, [Validators.required, Validators.minLength(4), Validators.maxLength(15)]),
       oldPass: new FormControl(null, [Validators.minLength(6), Validators.maxLength(30)]),
       newPass: new FormControl(null, [Validators.minLength(6), Validators.maxLength(30)]),
       avatar: new FormControl(null, null)
@@ -116,15 +108,7 @@ export class EditProfileComponent implements OnInit {
     if (cambios) {
       this.bar.start();
       this.userService.updateProfile(datos)
-        .subscribe((usuario) => {
-          console.log(usuario)
-         if(usuario!=null){
-          this.usuario = usuario;
-         }
-
-           
-          
-        })
+        .subscribe();
     }
   }
 

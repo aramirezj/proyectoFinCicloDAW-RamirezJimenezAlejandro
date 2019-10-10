@@ -16,12 +16,10 @@ export interface Section {
 })
 export class AppComponent {
   @ViewChild(MatMenuTrigger, { static: true }) trigger: MatMenuTrigger;
-  @ViewChild('cookieLaw', { static: true })
-  private cookieLawEl: any;
+  @ViewChild('cookieLaw', { static: true }) cookieLawEl: any;
 
   private cookieLawSeen: boolean;
   public miniForm: FormGroup
-  public miniForm2: FormGroup
   usuario: Usuario
   showSU: boolean = false;
   vacio: boolean = false;
@@ -37,10 +35,7 @@ export class AppComponent {
     private userService: UserService,
     private router: Router
   ) {
-    this.miniForm = this.fb.group({
-      nombre: ['', [
-      ]]
-    })
+    this.miniForm = this.fb.group({nombre: ['', []]});
     this.userService.userProfileUpdated.subscribe((usuario) => {
       this.usuario = usuario;
     })
