@@ -125,7 +125,7 @@ export class CreateQuizzComponent implements OnInit {
   b64toBlob(b64Data, contentType): Observable<Blob> {
 
     return Observable.create(observer => {
-      this.imageCompress.compressFile(b64Data, 1, 50, 80).then(
+      this.imageCompress.compressFile(b64Data, 1, 60, 90).then(
         result => {
           result = result.replace(/^data:image\/(png|jpeg|jpg);base64,/, '')
           let sliceSize = 512

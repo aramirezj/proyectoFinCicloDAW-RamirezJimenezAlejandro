@@ -31,7 +31,7 @@ validaciones["editar"] = [
 validaciones["creaQuiz"] = [
     check('titulo').isLength({ min: 10 }),
     check('titulo').isLength({ max: 75 }),
-    check('titulo').matches(/^[\u00F1\u00d1A-Za-záéíóúÁÉÍÓÚ ]*[\u00F1\u00d1A-Za-záéíóúÁÉÍÓÚ][\u00F1\u00d1A-Za-záéíóúÁÉÍÓÚ ]*$/, 'g'),
+    check('titulo').matches(/^[\u00F1\u00d1A-Za-záéíóúÁÉÍÓÚ¡!?¿ ]*[\u00F1\u00d1A-Za-záéíóúÁÉÍÓÚ¡!?¿][\u00F1\u00d1A-Za-záéíóúÁÉÍÓÚ¡!?¿ ]*$/, 'g'),
     check('creador').isNumeric(),
     check('contenido').isLength({ max: 20000 })
 ];

@@ -26,7 +26,7 @@
           <div class="top-form">
             <mat-form-field class="example-full-width" style="width: 100%">
               <input matInput placeholder="Titulo del quiz" required formControlName="titulo"
-                [errorStateMatcher]="matcher"  pattern="[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ][A-Za-z0-9áéíóúÁÉÍÓÚñÑ ]*">
+                [errorStateMatcher]="matcher"  pattern="[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ¿¡!?][A-Za-z0-9áéíóúÁÉÍÓÚñÑ¿¡!? ]*">
               <mat-hint>El nombre a mostrar en la web</mat-hint>
               <mat-error *ngIf="quizzForm.get('titulo').hasError('required') && quizzForm.get('titulo').touched">
                 El título es <strong>obligatorio</strong>
