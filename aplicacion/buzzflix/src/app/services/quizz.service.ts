@@ -27,6 +27,8 @@ export class QuizzService {
         titulo = titulo.replace(/ /g, "-");
         titulo = titulo.replace("¿", "");
         titulo = titulo.replace("?", "");
+        titulo = titulo.replace("¡","");
+        titulo = titulo.replace("!","");
         titulo = titulo.replace("á", "a");
         titulo = titulo.replace("é", "e");
         titulo = titulo.replace("í", "i");

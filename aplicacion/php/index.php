@@ -26,17 +26,18 @@ $banner = $row['banner'];
 <meta name='twitter:card' content='summary_large_image'>
 <meta name='twitter:site' content='@hasquiz'>
 <meta name='twitter:creator' content='@hasquiz'>
-<?php echo "meta name='twitter:title' content='" . $tituloQuiz . "'>"; ?>
+<?php echo "<meta name='twitter:title' content='" . $tituloQuiz . "'>"; ?>
 <meta name='twitter:description' content='La nueva página web social de quizzes. ¡Crea los tuyos propios!'>
 <?php echo '<meta name="twitter:image" content="' . $banner . '">'; ?>
 <!--Generícas y pa whatsapp y eso-->
 <meta property="og:site_name" content="Hasquiz">
-<?php echo "meta name='og:title' content='" . $tituloQuiz . "'>"; ?>
+<?php echo "<meta property='og:title' content='" . $tituloQuiz . "'>"; ?>
 <meta property="og:description" content="La nueva página web social de quizzes. ¡Crea los tuyos propios!" />
-<?php echo '<meta name="og:image:secure_url"  itemprop="image" content="' . $banner . '">'; ?>
+<?php echo '<meta property="og:image:secure_url"  itemprop="image" content="' . $banner . '">'; ?>
+<?php echo '<meta property="og:image"  itemprop="image" content="' . $banner . '">'; ?>
 <meta property="og:type" content="website" />
 <meta property="og:updated_time" content="1440432930" />
-
+<!--<meta property="og:url" content="https://www.hasquiz.com">-->
 </head>
 
 <body>
