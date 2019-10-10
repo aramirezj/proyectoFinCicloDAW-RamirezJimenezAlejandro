@@ -322,7 +322,7 @@ export class CreateQuizzComponent implements OnInit {
         this.notifyService.notify("El máximo de preguntas son 10, y el mínimo son 2", "error");
       }
     } else {
-      this.notifyService.notify("Por favor, rellena al menos los titulos de las soluciones (máximo 40 caracteres)", "error");
+      this.notifyService.notify("Por favor, rellena al menos los titulos de las soluciones (máximo 50 caracteres)", "error");
     }
   }
 

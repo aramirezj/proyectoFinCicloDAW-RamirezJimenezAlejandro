@@ -110,7 +110,7 @@
                 <mat-card class="example-card">
                   <mat-card-header>
                     <mat-card-title class="mat-card-header-text">Nº {{i+1}}
-                      <input matInput type="text" class="form-control" placeholder="Nombre de la solución"
+                      <input matInput type="text" class="form-control inputSolu" placeholder="Nombre de la solución"
                         [formControlName]="generaId('st',i)" [errorStateMatcher]="matcher">
                       <mat-hint></mat-hint>
                       <mat-error
@@ -126,13 +126,13 @@
                       <div class="input-group-btn">
                         <span style="margin-top: 2vh;" class="fileUpload btn btn-success" [id]="generaId('si',i)">
                           <span class="upl">Subir imagen</span>
-                          <input type="file" class="upload up" accept="image/*" (change)="onFileChanged($event,i)"
+                          <input type="file"  class="upload up" accept="image/*" (change)="onFileChanged($event,i)"
                             [formControlName]="generaId('si',i)" />
                         </span>
                       </div>
                       <mat-error *ngIf="this.errores.indexOf(generaId('si',i))!=-1">La imagen es obligatoria</mat-error>
                       <br>
-                      <img alt="Imagen de una solución" [id]="'img'+i" mat-card-image>
+                      <img mat-card-image style="color:black" [id]="'img'+i" >
                     </mat-card-title>
                   </mat-card-header>
                   <mat-card-content>
