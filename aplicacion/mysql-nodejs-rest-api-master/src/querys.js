@@ -18,8 +18,8 @@ querys["insertLogro"] = "INSERT INTO logros_obtenidos (usuario,logro) values (?,
 
 //Querys de usuarios
 querys["registro"] = "INSERT INTO users (name,nickname,email,password,confirmado) VALUES(?,?,?,?,?)";
-querys["login"] = "SELECT id,name,nickname,avatar FROM users where email = ? AND password = ?";
-querys["confirmaEmail"] = "SELECT id,name,email,avatar from users where confirmado = ?";
+querys["login"] = "SELECT id,name,nickname,avatar,confirmado FROM users where email = ? AND password = ?";
+querys["confirmaEmail"] = "SELECT id,nickname,name,avatar from users where confirmado = ?";
 querys["confirmaEmail2"] = "UPDATE users set confirmado = 1 where id =?";
 querys["setRecuperacion"] = "UPDATE users set recuperacion = ? where email = ?";
 querys["endRecuperacion"] = "UPDATE users set password = ?, recuperacion = NULL where recuperacion = ?";
@@ -63,12 +63,13 @@ querys["setModerar2"] = "SELECT id FROM users WHERE id = ? and admin is not null
 querys["setModerar3"] = "UPDATE quizz set publicado = 1 where id = ?";
 querys["setModerar4"] = "DELETE FROM moderacion WHERE quizz = ?";
 querys["setModerar5"] = "INSERT INTO notificaciones (usuario,mensaje) values(?,?)";
-querys["setModerar6"] = "DELETE FROM quizz where id = ?";
+//querys["setModerar6"] = "DELETE FROM quizz where id = ?";
 querys["setModerar7"] = "INSERT INTO notificaciones (usuario,mensaje) values(?,?)";
 querys["setModerar8"] = "INSERT INTO moderacion (quizz,usuario,decision) VALUES(?,?,?)";
 
 querys["setQuiz"] = "INSERT INTO quizz (creador,titulo,contenido,fechacreacion,publicado,privado,banner) VALUES(?,?,?,?,0,?,?)";
 querys["deleteQuiz"] = "DELETE FROM quizz WHERE id = ? AND creador = ?";
+querys["deleteQuizByAdmin"] = "DELETE FROM quizz WHERE id = ? AND 40 = ?";
 querys["setPrivacidad1"] = "UPDATE quizz set privado = null where id = ?";
 querys["setPrivacidad2"] = "UPDATE quizz set privado = ? where id = ?";
 

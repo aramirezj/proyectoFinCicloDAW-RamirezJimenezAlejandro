@@ -53,10 +53,12 @@ router.post('/api/authenticate', listaValidaciones["login"], (req, res, next) =>
     password = tokenService.encripta(password);
     queryService.ejecutaConsulta("login", [email, password], res, function (rows) {
       if (rows) {
-        if (rows.length > 0) {//Datos correctos
-          res.send({ auth: true, token: tokenService.creaToken(rows[0].id), respuesta: rows[0] });
+        if (rows.length > 0) {//Ha encontrado datos
+          let token = rows[0].confirmado == 1 ? tokenService.creaToken(rows[0].id) : null;
+          let auth = rows[0].confirmado == 1 ? 0 : 2;
+          res.send({ auth: auth, token: token, respuesta: rows[0] });
         } else {//Datos incorrectos
-          res.send({ auth: false });
+          res.send({ auth: 1 });
         }
       }
     });
@@ -383,7 +385,7 @@ router.post('/api/modera', listaValidaciones["modera"], (req, res) => {
                             logroService.logroUsuarios(creador, res);//Para el logro 8 (Diana)
 
                             if (rows5) {
-                              res.send({ status: '200' });
+                              res.send({ status: '200', deleted: false });
                             }
                           });
                         }
@@ -393,22 +395,22 @@ router.post('/api/modera', listaValidaciones["modera"], (req, res) => {
                 } else {//Si quiero BORRAR el quiz
                   queryService.ejecutaConsulta("setModerar4", [quizz], res, function (rows6) {
                     if (rows6) {
-                      queryService.ejecutaConsulta("setModerar6", [quizz], res, function (rows7) {
-                        if (rows7) {
-                          logroService.incrementaLogro(permiso, 4, 0, 1, res); //Para el logro 4 (Kami)
-                          let mensajito = "Lo sentimos, su Quiz " + titulo + " no ha superado el proceso de moderación, revisa los criterios e intentalo de nuevo.";
-                          queryService.ejecutaConsulta("setModerar7", [creador, mensajito], res, function (rows8) {
-                            res.send({ status: '200' });
-                          });
-                        }
-                      })
+                      //queryService.ejecutaConsulta("setModerar6", [quizz], res, function (rows7) {
+                      // if (rows7) {
+                      logroService.incrementaLogro(permiso, 4, 0, 1, res); //Para el logro 4 (Kami)
+                      let mensajito = "Lo sentimos, su Quiz " + titulo + " no ha superado el proceso de moderación, revisa los criterios e intentalo de nuevo.";
+                      queryService.ejecutaConsulta("setModerar7", [creador, mensajito], res, function (rows8) {
+                        res.send({ status: '200', deleted: true });
+                      });
+                      // }
+                      //})
                     }
                   });
                 }
               } else {//SI NO SOY ADMINISTRADOR, GUARDO ACCIÓN MODERAR
                 queryService.ejecutaConsulta("setModerar8", [quizz, usuario, decision], res, function (rows8) {
                   logroService.incrementaLogro(permiso, 7, 1, 0, res);
-                  res.send({ status: '200' });
+                  res.send({ status: '200', deleted: false });
                 });
               }
             }
@@ -467,10 +469,12 @@ router.post('/api/creaQuizz', listaValidaciones["creaQuiz"], (req, res, next) =>
 //Peticion para borrar un quizz (PROTECTED)
 router.post('/api/borraQuiz', (req, res, next) => {
   console.log("Petición para borrar un quiz")
-  const { id } = req.body;
+  const { id, admin } = req.body;
   let permiso = tokenService.verificaToken(req.headers, res);
   if (permiso) {
-    queryService.ejecutaConsulta("deleteQuiz", [id, permiso], res, function (rows) {
+    let query = admin ? "deleteQuizByAdmin" : "deleteQuiz";
+    console.log(query)
+    queryService.ejecutaConsulta(query, [id, permiso], res, function (rows) {
       if (rows) {
         res.send({ status: '200' });
       }

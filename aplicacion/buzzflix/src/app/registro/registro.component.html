@@ -7,7 +7,7 @@
           <form class="example-form" [formGroup]="registroForm" (ngSubmit)="onSubmit()">
             <mat-form-field class="example-full-width">
               <input matInput placeholder="Nombre" required formControlName="nombre" [errorStateMatcher]="matcher"
-                pattern="[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ][A-Za-z0-9áéíóúÁÉÍÓÚñÑ _-]*">
+                pattern="[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ][A-Za-z0-9áéíóúÁÉÍÓÚñÑ _-]*" autocomplete="name">
               <mat-hint></mat-hint>
               <mat-error *ngIf="registroForm.get('nombre').hasError('required')">
                 El nombre es <strong>obligatorio</strong>
@@ -26,7 +26,7 @@
             </mat-form-field>
             <mat-form-field class="example-full-width">
               <input (focusout)="checkUsed();" matInput placeholder="Nombre de usuario" formControlName="nickname"
-                [errorStateMatcher]="matcher" pattern="[a-zA-Z0-9][A-Za-z0-9_-]*">
+                [errorStateMatcher]="matcher" pattern="[a-zA-Z0-9][A-Za-z0-9_-]*" autocomplete="nickname">
               <mat-hint>Será el nombre que verán los otros usuarios</mat-hint>
               <mat-error *ngIf="registroForm.get('nickname').hasError('required')">
                 El nombre de usuario es <strong>obligatorio</strong>
@@ -48,7 +48,7 @@
             </mat-form-field>
             <mat-form-field class="example-full-width">
               <input matInput placeholder="Correo electronico" required formControlName="email"
-                [errorStateMatcher]="matcher">
+                [errorStateMatcher]="matcher" autocomplete="email">
               <mat-hint></mat-hint>
               <mat-error
                 *ngIf="registroForm.get('email').hasError('email') && !registroForm.get('email').hasError('required')">
@@ -63,7 +63,7 @@
             </mat-form-field>
             <mat-form-field class="example-full-width">
               <input type="password" matInput placeholder="Contraseña" required formControlName="password"
-                [errorStateMatcher]="matcher">
+                [errorStateMatcher]="matcher" autocomplete="new-password">
               <mat-hint></mat-hint>
               <mat-error *ngIf="registroForm.get('password').hasError('minlength')">
                 La contraseña debe tener <strong>6 caracteres como mínimo</strong>
@@ -77,7 +77,7 @@
             </mat-form-field>
             <mat-form-field class="example-full-width">
               <input type="password" matInput placeholder="Repite la contraseña" required formControlName="password2"
-                [errorStateMatcher]="matcher" pattern="{{ registroForm.get('password').value }}">
+                [errorStateMatcher]="matcher" pattern="{{ registroForm.get('password').value }}" autocomplete="new-password">
               <mat-hint></mat-hint>
               <mat-error *ngIf="registroForm.get('password2').hasError('pattern')">
                 Las contraseñas deben coincidir

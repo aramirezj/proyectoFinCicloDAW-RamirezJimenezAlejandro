@@ -7,7 +7,7 @@
       <form class="example-form" [formGroup]="this.profileForm" (ngSubmit)="editProfile()">
         <mat-form-field class="example-full-width">
           <input matInput placeholder="Nombre" formControlName="nombre" [errorStateMatcher]="matcher"
-            pattern="[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ][A-Za-z0-9áéíóúÁÉÍÓÚñÑ _-]*">
+            pattern="[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ][A-Za-z0-9áéíóúÁÉÍÓÚñÑ _-]*" autocomplete="name">
           <mat-hint></mat-hint>
           <mat-error *ngIf="profileForm.get('nombre').hasError('required')">
             El nombre es <strong>obligatorio</strong>
@@ -26,7 +26,7 @@
         </mat-form-field>
         <mat-form-field class="example-full-width">
           <input (focusout)="checkUsed();" matInput placeholder="Nombre de usuario" formControlName="nickname"
-            [errorStateMatcher]="matcher" pattern="[a-zA-Z0-9][A-Za-z0-9_-]*">
+            [errorStateMatcher]="matcher" pattern="[a-zA-Z0-9][A-Za-z0-9_-]*" autocomplete="nickname">
           <mat-hint>Será el nombre que verán los otros usuarios</mat-hint>
           <mat-error *ngIf="profileForm.get('nickname').hasError('required')">
             El nombre de usuario es <strong>obligatorio</strong>
@@ -49,7 +49,7 @@
 
         <mat-form-field class="example-full-width">
           <input type="password" matInput placeholder="Contraseña antigua" formControlName="oldPass"
-            [errorStateMatcher]="matcher">
+            [errorStateMatcher]="matcher" autocomplete="current-password">
           <mat-hint></mat-hint>
           <mat-error *ngIf="profileForm.get('oldPass').hasError('minlength')">
             La contraseña debe tener <strong>6 caracteres como mínimo</strong>
@@ -63,7 +63,7 @@
         </mat-form-field>
         <mat-form-field class="example-full-width">
           <input type="password" matInput placeholder="Contraseña nueva" formControlName="newPass"
-            [errorStateMatcher]="matcher">
+            [errorStateMatcher]="matcher" autocomplete="new-password">
           <mat-hint></mat-hint>
           <mat-error *ngIf="profileForm.get('newPass').hasError('minlength')">
             La contraseña debe tener <strong>6 caracteres como mínimo</strong>

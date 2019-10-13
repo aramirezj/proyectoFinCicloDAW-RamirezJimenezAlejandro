@@ -3,7 +3,6 @@ import { ActivatedRoute } from '@angular/router';
 import { Quizz } from '../modelo/Quizz';
 import { QuizzService } from '../services/quizz.service';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
-import { NgProgress } from 'ngx-progressbar';
 import { Respuesta } from '../modelo/Respuesta';
 import { Pregunta } from '../modelo/Pregunta';
 import { Solucion } from '../modelo/Solucion';
@@ -24,31 +23,30 @@ import { WINDOW } from '@ng-toolkit/universal';
 export class VerQuizzComponent implements OnInit {
   rawid: string
   id: number
+  backupQuizz: Quizz
   quizz: Quizz
   resultado: boolean
-  cargado: boolean
+  isLoaded: boolean
   solucionado: Solucion
   downloadURL: any
   urlShare: string
-  public quizzForm: FormGroup
-
-  constructor(@Inject(WINDOW) private window: Window,
-    private authService: AuthService, //Usado en visto
+  urlImg:string|any
+  quizzForm: FormGroup
+  constructor(
+    @Inject(WINDOW) private window: Window,
+    private authService: AuthService, //Usado en vista
     private quizzService: QuizzService,
     private router: ActivatedRoute,
     private fb: FormBuilder,
-    private bar: NgProgress,
     private afStorage: AngularFireStorage,
     public dialog: MatDialog
   ) {
     this.resultado = false;
-    this.cargado = false;
-
+    this.isLoaded = false;
     this.quizzForm = this.fb.group({})
   }
 
   ngOnInit() {
-
     this.router.queryParams.subscribe(() => {
       this.rawid = window.location.href;
       if (this.rawid == null) {
@@ -75,6 +73,7 @@ export class VerQuizzComponent implements OnInit {
   }
 
   onSubmit() {
+    
     let totales: Array<number> = [];
     let id = 0;
     let ganador = 0;
@@ -117,37 +116,29 @@ export class VerQuizzComponent implements OnInit {
       id--;
     }
     this.solucionado = this.quizz.soluciones[id];
-    this.solucionado.image = this.afStorage.ref(this.solucionado.image).getDownloadURL();
+    this.urlImg = this.afStorage.ref(this.solucionado.image).getDownloadURL();
 
     this.resultado = true;
 
-
     let preUrl = window.location.href;
-    this.urlShare = "https://twitter.com/intent/tweet?text=¡Obtuve%20" + this.solucionado.titulo + "!%20" + preUrl +" vía @hasquiz";
+    this.urlShare = "https://twitter.com/intent/tweet?text=¡Obtuve%20" + this.solucionado.titulo + "!%20" + preUrl + " vía @hasquiz";
 
     setTimeout(() => {
       $(".mat-card-header-text")[0].style.width = "100%";
       $(".mat-card-header-text")[0].style.margin = "0";
     }, 100);
-
-    this.cargado = false;
-
-
-
   }
 
   getQuizz() {
     this.quizzService.getQuizz(this.rawid)
       .subscribe(resp => {
         this.quizz = resp;
+        this.backupQuizz = resp;
         if (this.quizz != null) {
           this.id = this.quizz.id;
-          this.bar.start();
           this.generaFormulario();
-          this.cargado = true;
-          this.bar.done();
+          this.isLoaded = true;
         }
-
       })
   }
   seleccion(id) {
@@ -160,21 +151,9 @@ export class VerQuizzComponent implements OnInit {
     $("#" + id).removeClass("desactivado");
     $("#" + id).addClass("activado");
     let totalRespondidas = $(".activado").length;
-
     if (totalRespondidas == this.quizz.preguntas.length) {
       this.onSubmit();
-    } else {
-      let nextId: number = id[0];
-      nextId++;
-      nextId++;
-      if (nextId >= this.quizz.preguntas.length) {
-        let lastP = this.quizz.preguntas.length;
-        lastP--;
-        let lastR = this.quizz.preguntas[lastP].respuestas.length;
-        lastR--;
-      }
     }
-
   }
   openDialog() {
     const dialogConfig = new MatDialogConfig();

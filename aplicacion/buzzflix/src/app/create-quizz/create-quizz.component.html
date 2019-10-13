@@ -136,12 +136,8 @@
                     </mat-card-title>
                   </mat-card-header>
                   <mat-card-content>
-                    <input type="text" matInput class="form-control" placeholder="Explicación de la solución"
+                    <input type="text" matInput class="form-control" placeholder="Explicación de la solución (opcional)"
                       [formControlName]="generaId('sd',i)" [errorStateMatcher]="matcher">
-                    <mat-error
-                      *ngIf="quizzForm.get('sd'+(i+1)).hasError('required') && quizzForm.get('sd'+(i+1)).touched">
-                      El campo es <strong>obligatorio</strong>
-                    </mat-error>
                     <mat-error
                       *ngIf="quizzForm.get('sd'+(i+1)).hasError('maxlength') && quizzForm.get('sd'+(i+1)).touched">
                       El máximo de caracteres es <strong>125</strong>

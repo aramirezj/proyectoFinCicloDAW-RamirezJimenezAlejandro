@@ -257,7 +257,7 @@ export class CreateQuizzComponent implements OnInit {
 
         grupo = [
           { name: titulo, control: new FormControl(tituloC, [Validators.required, Validators.maxLength(50)]) },
-          { name: descripcion, control: new FormControl(descripcionC, [Validators.required, Validators.maxLength(125)]) },
+          { name: descripcion, control: new FormControl(descripcionC, [Validators.maxLength(125)]) },
           { name: image, control: new FormControl(null, [Validators.required]) },
         ]
         grupo.forEach(f => {

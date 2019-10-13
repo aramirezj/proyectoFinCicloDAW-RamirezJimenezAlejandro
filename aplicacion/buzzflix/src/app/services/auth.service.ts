@@ -33,7 +33,7 @@ export class AuthService {
 
     }
 
-    checkNickname(nick:string):Observable<boolean>{
+    checkNickname(nick: string): Observable<boolean> {
         let url = `${CONFIG.apiUrl}checkNickname/${nick}`;
         return Observable.create(observer => {
             this.restService.peticionHttp(url).subscribe(response => {
@@ -58,9 +58,9 @@ export class AuthService {
         }
     }
 
-    register(name: string,nickname:string, email: string, password: string): Observable<Boolean> {
+    register(name: string, nickname: string, email: string, password: string): Observable<Boolean> {
         let url = `${CONFIG.apiUrl}register`;
-        let body = { name: name,nickname:nickname, email: email, password: password, confirm: this.makeId() };
+        let body = { name: name, nickname: nickname, email: email, password: password, confirm: this.makeId() };
 
         return Observable.create(observer => {
             this.restService.peticionHttp(url, body).subscribe(response => {
@@ -82,17 +82,25 @@ export class AuthService {
 
         return Observable.create(observer => {
             this.restService.peticionHttp(url, body).subscribe(response => {
-                if (response.auth) {
-                    let aux: Usuario = response.respuesta;
-                    if (isPlatformBrowser(this.platformId)) {
-                        localStorage.setItem("token", response.token);
-                    }
-                    observer.next(aux);
-                } else {
-                    observer.next(null);
-                    return null;
+                switch (response.auth) {
+                    case 0://Datos correctos
+                        this.notifyService.notify("Has iniciado sesión correctamente", "success");
+                        if (isPlatformBrowser(this.platformId)) {
+                            localStorage.setItem("token", response.token);
+                        }
+                        let aux: Usuario = response.respuesta;
+                        observer.next(aux);
+                        observer.complete();
+                        break;
+                    case 1://Datos incorrectos/no existe
+                        this.notifyService.notify("Datos incorrectos", "error");
+                        observer.next(null);
+                        break;
+                    case 2://Le queda confirmar el correo
+                        observer.next(null);
+                        this.router.navigate(['/auth/login/waiting']);
+                        break;
                 }
-                observer.complete();
             })
         });
     }
@@ -103,17 +111,17 @@ export class AuthService {
         return Observable.create(observer => {
             this.restService.peticionHttp(url, body).subscribe(response => {
                 if (response.auth) {
+                    this.notifyService.notify("Has iniciado sesión correctamente", "success");
                     let aux: Usuario = response.respuesta;
                     if (isPlatformBrowser(this.platformId)) {
                         localStorage.setItem("token", response.token);
                     }
-
                     observer.next(aux);
+                    observer.complete();
                 } else {
                     observer.next(null);
-                    return null;
+                    observer.complete();
                 }
-                observer.complete();
             })
         });
     }
@@ -130,6 +138,46 @@ export class AuthService {
             })
         });
 
+    }
+
+
+
+    isLoggedIn(): boolean {
+        let token = null;
+        let usuario = null;
+        if (isPlatformBrowser(this.platformId)) {
+            token = localStorage.getItem("token");
+            usuario = localStorage.getItem("usuario");
+        }
+
+        if (token && usuario) {
+            return true
+        } else {
+            return false;
+        }
+    }
+
+    logout(): void {
+        if (isPlatformBrowser(this.platformId)) {
+            localStorage.removeItem("usuario");
+            localStorage.removeItem("token");
+
+            /*this.OAuth.signOut().then(function () {
+                console.log('User signed out.');
+              });*/
+        }
+        this.notifyService.notify("Has cerrado la sesión correctamente", "success");
+        this.router.navigate(['/auth/login']);
+    }
+    logUserIn(user: Usuario): boolean {
+        if (user != null) {
+            if (isPlatformBrowser(this.platformId)) {
+                localStorage.setItem("usuario", JSON.stringify(user));
+                return true;
+            }
+
+        }
+        return false;
     }
 
     getNotificaciones(): Observable<String[]> {
@@ -152,48 +200,5 @@ export class AuthService {
                 observer.complete();
             })
         });
-    }
-
-    isLoggedIn(): boolean {
-        let token = null;
-        let usuario = null;
-        if (isPlatformBrowser(this.platformId)) {
-            token = localStorage.getItem("token");
-            usuario = localStorage.getItem("usuario");
-        }
-
-        if (token && usuario) {
-            return true
-        } else {
-            return false;
-        }
-    }
-
-    logout(): void {
-        if (isPlatformBrowser(this.platformId)) {
-            localStorage.removeItem("usuario");
-            localStorage.removeItem("token");
-            
-            /*this.OAuth.signOut().then(function () {
-                console.log('User signed out.');
-              });*/
-        }
-        this.notifyService.notify("Has cerrado la sesión correctamente", "success");
-        this.router.navigate(['/auth/login']);
-    }
-    logUserIn(aux: Usuario): boolean {
-        if (aux == null) {
-            this.notifyService.notify("Datos incorrectos", "error");
-        } else if(!aux){
-            this.notifyService.notify("Inicia sesión mediante el correo", "error");
-        }else {
-            if (isPlatformBrowser(this.platformId)) {
-                localStorage.setItem("usuario", JSON.stringify(aux));
-            }
-            this.notifyService.notify("Has iniciado sesión correctamente", "success");
-            return true;
-        }
-        return false;
-
     }
 }

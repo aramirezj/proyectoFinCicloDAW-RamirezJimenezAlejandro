@@ -46,11 +46,12 @@ export class LoginComponent implements OnInit {
         this.createForm();
         break;
       default:
-        console.log(this.confirmacion)
         this.createForm();
         this.authService.confirmaEmail(this.confirmacion).subscribe((user) => {
-          console.log(user)
-          this.authService.logUserIn(user);
+          if (this.authService.logUserIn(user)) {
+            this.userService.userProfileUpdated.emit(user);
+            this.router2.navigate(['/ver/todos']);
+          };
         });
     }
   }

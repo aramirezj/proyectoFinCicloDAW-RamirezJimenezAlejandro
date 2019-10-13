@@ -27,8 +27,8 @@ export class QuizzService {
         titulo = titulo.replace(/ /g, "-");
         titulo = titulo.replace("¿", "");
         titulo = titulo.replace("?", "");
-        titulo = titulo.replace("¡","");
-        titulo = titulo.replace("!","");
+        titulo = titulo.replace("¡", "");
+        titulo = titulo.replace("!", "");
         titulo = titulo.replace("á", "a");
         titulo = titulo.replace("é", "e");
         titulo = titulo.replace("í", "i");
@@ -57,13 +57,13 @@ export class QuizzService {
                 task.snapshotChanges().pipe(
                     finalize(() => {
                         ref.getDownloadURL().subscribe(url => {
-                           // if (i == (files.length - 1)) {
-                               // if (i == 0) {
-                                    observer.next(url)
-                                    observer.complete();
-                                //}
-                                
-                           // }
+                            // if (i == (files.length - 1)) {
+                            // if (i == 0) {
+                            observer.next(url)
+                            observer.complete();
+                            //}
+
+                            // }
                         });
                     })
                 ).subscribe();
@@ -74,7 +74,7 @@ export class QuizzService {
 
     }
     deleteImages(quiz: any): void {
-        quiz = this.convierteModelo(quiz);
+        quiz = quiz.soluciones == null ? this.convierteModelo(quiz) : quiz; //Compruebo si viene con modelo ya
         let files: string[] = [];
         files.push(quiz.image);
         for (let i = 0; i < quiz.soluciones.length; i++) {
@@ -132,7 +132,7 @@ export class QuizzService {
 
         return Observable.create(observer2 => {
             this.uploadImage(files).subscribe(resp => {
-                let body = { creador: this.authService.getAuthUserId(), titulo: quizz.titulo, contenido: prep, fecha: fecha, privado: privado,banner:resp };
+                let body = { creador: this.authService.getAuthUserId(), titulo: quizz.titulo, contenido: prep, fecha: fecha, privado: privado, banner: resp };
                 this.restService.peticionHttp(url, body).subscribe(response => {
                     this.bar.done();
                     observer2.next(response.respuesta)
@@ -205,9 +205,9 @@ export class QuizzService {
 
 
 
-    borraQuizz(quiz: Quizz) {
+    borraQuizz(quiz: Quizz, admin?: boolean): Observable<void> {
         let url = `${CONFIG.apiUrl}borraQuiz`;
-        let body = { id: quiz.id };
+        let body = { id: quiz.id, admin: admin };
 
         return Observable.create(observer => {
             this.restService.peticionHttp(url, body).subscribe(response => {
@@ -233,11 +233,14 @@ export class QuizzService {
         });
     }
 
-    moderaQuizz(id: number, accion: boolean): Observable<boolean> { //PROTEGIDO
+    moderaQuizz(quiz: Quizz, accion: boolean): Observable<boolean> { //PROTEGIDO
         let url = `${CONFIG.apiUrl}modera`;
-        let body = { quizz: id, usuario: this.authService.getAuthUserId(), decision: accion };
+        let body = { quizz: quiz.id, usuario: this.authService.getAuthUserId(), decision: accion };
         return Observable.create(observer => {
             this.restService.peticionHttp(url, body).subscribe(response => {
+                if (response.deleted) {
+                    this.borraQuizz(quiz, true).subscribe();
+                }
                 this.notifyService.notify("Acción registrada", "success");
                 observer.next()
                 observer.complete();
