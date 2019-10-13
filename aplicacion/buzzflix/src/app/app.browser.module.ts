@@ -60,8 +60,7 @@ import { ImageCropperModule } from 'ngx-image-cropper';
 import { NgxImageCompressService } from 'ngx-image-compress';
 
 //Redes sociales
-import { GoogleLoginProvider, FacebookLoginProvider, AuthService } from 'angular-6-social-login';
-import { AuthServiceConfig } from 'angular-6-social-login';
+import { GoogleLoginProvider, FacebookLoginProvider, AuthService, AuthServiceConfig } from 'angular-6-social-login';
 
 //Necesarios
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
@@ -145,12 +144,12 @@ registerLocaleData(localePy, 'es');
   ],
   exports: [RouterModule],
   providers: [
-    AuthWeb,AuthService, AuthGuard, AuthedGuard, QuizzService, NotifyService, UserService, FollowService,
-    RestService,  FileService, AngularFireStorage,
+    AuthWeb, AuthService, AuthGuard, AuthedGuard, QuizzService, NotifyService, UserService, FollowService,
+    RestService, FileService, AngularFireStorage,
     { provide: MatPaginatorIntl, useClass: MatPaginatorIntlCro },
     { provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher },
     { provide: LOCALE_ID, useValue: 'es-Ar' },
-     { provide: AuthServiceConfig, useFactory: socialConfigs }, NgxImageCompressService],
+    { provide: AuthServiceConfig, useFactory: socialConfigs }, NgxImageCompressService],
   bootstrap: [AppComponent],
   entryComponents: [DialogboxComponent]
 })
