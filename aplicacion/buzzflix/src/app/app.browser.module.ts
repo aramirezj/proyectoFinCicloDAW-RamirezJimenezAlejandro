@@ -130,7 +130,7 @@ registerLocaleData(localePy, 'es');
     LogrosComponent,
     InfolegalComponent,
     ForgetComponent,
-    BuscadorComponent,
+    BuscadorComponent
   ],
   imports: [
     BrowserModule.withServerTransition({

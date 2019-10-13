@@ -34,7 +34,7 @@ import {MatButtonModule} from '@angular/material/button';
     MatListModule,
     MatCheckboxModule,
     MatIconModule,
-    MatExpansionModule,
+    MatExpansionModule
   ],
   exports: [
     MatSelectModule,
@@ -51,7 +51,7 @@ import {MatButtonModule} from '@angular/material/button';
     MatListModule,
     MatCheckboxModule,
     MatIconModule,
-    MatExpansionModule,
+    MatExpansionModule
   ]
 })
 export class AppMaterialModule { }

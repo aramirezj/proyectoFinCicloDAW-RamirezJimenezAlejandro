@@ -15,7 +15,7 @@ export class AuthService {
         private router: Router,
         private notifyService: NotifyService,
         private restService: RestService,
-        public OAuth: OAuth,
+        public OAuth: OAuth
     ) {
 
     }

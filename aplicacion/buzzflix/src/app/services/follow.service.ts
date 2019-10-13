@@ -7,7 +7,7 @@ import { RestService } from './rest.service';
 export class FollowService {
     constructor(
         private authService: AuthService,
-        private restService: RestService,
+        private restService: RestService
     ) {
     }
 

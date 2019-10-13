@@ -11,7 +11,7 @@ export class LogrosComponent implements OnInit {
   public listaLogros: Array<Logro>;
   public id: number;
   constructor(
-    private userService: UserService,
+    private userService: UserService
   ) { }
   ngOnInit() {
     this.userService.currentMessage.subscribe(message => this.id = message)

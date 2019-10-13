@@ -3,7 +3,6 @@ import { RestService } from './rest.service';
 import { SocialUser } from 'angular-6-social-login';
 import { CONFIG } from '../config/config';
 import { Observable } from 'rxjs';
-import { LOCAL_STORAGE } from '@ng-toolkit/universal';
 import { isPlatformBrowser } from '@angular/common';
 import { Usuario } from '../modelo/Usuario';
 
@@ -14,7 +13,7 @@ export class socialLoginService {
     url: string;
     constructor(
         @Inject(PLATFORM_ID) private platformId: Object,
-        private restService: RestService,
+        private restService: RestService
     ) {
 
     }

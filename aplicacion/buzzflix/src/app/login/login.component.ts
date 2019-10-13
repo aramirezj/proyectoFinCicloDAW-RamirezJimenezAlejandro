@@ -26,7 +26,7 @@ export class LoginComponent implements OnInit {
     private socialLoginService: socialLoginService,
     private authService: AuthWeb,
     private router2: Router,
-    private router: ActivatedRoute,
+    private router: ActivatedRoute
   ) { }
 
   ngOnInit() {
