@@ -6,41 +6,27 @@ import { Usuario } from '../modelo/Usuario';
 import { NgProgress } from 'ngx-progressbar';
 import { Quizz } from '../modelo/Quizz';
 import { NotifyService } from './notify.service';
-import { Image } from '../modelo/Image';
-import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
-import * as firebase from 'firebase';
-import 'firebase/firestore';
-import { AngularFireStorage } from 'angularfire2/storage';
+
 import { finalize } from 'rxjs/operators';
 import { Logro } from '../modelo/Logro';
 import { BehaviorSubject } from 'rxjs';
 import { RestService } from './rest.service';
-import { LOCAL_STORAGE } from '@ng-toolkit/universal';
 import { isPlatformBrowser } from '@angular/common';
+import { FileService } from './file.service';
 @Injectable()
 export class UserService {
     public idPaquete = new BehaviorSubject(0);
     currentMessage = this.idPaquete.asObservable();
     public userProfileUpdated: EventEmitter<Usuario>
-    model: Image;
-    imagesRef: AngularFirestoreCollection<Image>;
-    image: Observable<Image[]>;
-    successMsg = 'Data successfully saved.';
     constructor(
-        //@Inject(LOCAL_STORAGE) private localStorage: any, 
         @Inject(PLATFORM_ID) private platformId: Object,
         private authService: AuthService,
         private bar: NgProgress,
         private notifyService: NotifyService,
         private restService: RestService,
-        private firestore: AngularFirestore,
-        private afStorage: AngularFireStorage
+        private fileService:FileService
     ) {
         this.userProfileUpdated = new EventEmitter();
-        this.imagesRef = this.firestore.collection<Image>('imagenes');
-        this.model = {
-            name: ''
-        }
     }
     changeMessage(id: number): void {
         this.idPaquete.next(id)
@@ -110,7 +96,7 @@ export class UserService {
         });
 
     }
-    getUsuarios(nombre: String): Observable<Array<Usuario>> {  //PROTEGIDO
+    getUsuarios(nombre: string): Observable<Array<Usuario>> {  //PROTEGIDO
         let url = `${CONFIG.apiUrl}usuarios/${nombre}`;
         nombre = nombre == "" ? "EVERYTHINGPLEASE" : nombre;
 
@@ -160,7 +146,7 @@ export class UserService {
                 }
 
                 if (file != undefined) {
-                    let ref = this.afStorage.ref(avatar);
+                    let ref = this.fileService.obtenerReferencia(avatar);
                     const uploadTask = ref.put(file);
                     uploadTask.snapshotChanges().pipe(
                         finalize(() => {
@@ -186,7 +172,7 @@ export class UserService {
         });
     }
     borraImagen(avatar: string): void {
-        this.afStorage.ref(avatar).delete();
+        this.fileService.deleteImg(avatar);
     }
 
 }

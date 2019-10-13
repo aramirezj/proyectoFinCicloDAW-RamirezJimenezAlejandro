@@ -5,15 +5,13 @@ import { Router } from '@angular/router'
 import { Usuario } from '../modelo/Usuario';
 import { NotifyService } from './notify.service';
 import { RestService } from './rest.service';
-import { LOCAL_STORAGE } from '@ng-toolkit/universal';
 import { isPlatformBrowser } from '@angular/common';
-import { AuthService as OAuth, GoogleLoginProvider } from 'angular-6-social-login';
+import { AuthService as OAuth} from 'angular-6-social-login';
 
 @Injectable()
 export class AuthService {
     constructor(
         @Inject(PLATFORM_ID) private platformId: Object,
-        //@Inject(LOCAL_STORAGE) private localStorage: any, 
         private router: Router,
         private notifyService: NotifyService,
         private restService: RestService,
@@ -22,7 +20,7 @@ export class AuthService {
 
     }
 
-    makeId(): String {//Generación de codigos
+    makeId(): string {//Generación de codigos
         let text = Math.random().toString(36).substring(2) + Math.random().toString(36).substring(2);
         return text;
     }
@@ -105,7 +103,7 @@ export class AuthService {
         });
     }
 
-    confirmaEmail(confirmacion: String): Observable<Usuario> {
+    confirmaEmail(confirmacion: string): Observable<Usuario> {
         let body = { confirmacion: confirmacion };
         let url = `${CONFIG.apiUrl}confirma`;
         return Observable.create(observer => {
@@ -126,7 +124,7 @@ export class AuthService {
         });
     }
 
-    forgetPassword(email: String, password: String, cod: String): Observable<Boolean> {
+    forgetPassword(email: string, password: string, cod: string): Observable<Boolean> {
         let codigo = cod != null ? cod : this.makeId();
         let body = { email: email, codigo: codigo, password: password };
         let url = `${CONFIG.apiUrl}forget`;

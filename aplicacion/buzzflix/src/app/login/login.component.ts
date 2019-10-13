@@ -5,7 +5,6 @@ import { ErrorStateMatcher } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService, GoogleLoginProvider } from 'angular-6-social-login';
 import { socialLoginService } from '../services/socialLogin.service';
-import { SocialLoginModule, AuthServiceConfig } from 'angular-6-social-login';
 import { Socialusers } from '../modelo/SocialUsers'
 import { UserService } from '../services/user.service';
 
@@ -18,7 +17,7 @@ export class LoginComponent implements OnInit {
   loginForm: FormGroup;
   forgetForm: FormGroup;
   matcher = new ErrorStateMatcher();
-  confirmacion: String;
+  confirmacion: string;
   response;
   socialusers = new Socialusers();
   constructor(

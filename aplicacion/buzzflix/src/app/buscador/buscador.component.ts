@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../services/user.service';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
-import { NotifyService } from '../services/notify.service';
 import { Usuario } from '../modelo/Usuario';
 import { Quizz } from '../modelo/Quizz';
 import { QuizzService } from '../services/quizz.service';
@@ -14,7 +13,7 @@ import { FormGroup, Validators, FormControl } from '@angular/forms';
 })
 export class BuscadorComponent implements OnInit {
   busquedaForm:FormGroup;
-  aBuscar: String;
+  aBuscar: string;
   usuarios: Array<Usuario> = [];
   quizzes: Array<Quizz> = [];
   navigationSubscription;

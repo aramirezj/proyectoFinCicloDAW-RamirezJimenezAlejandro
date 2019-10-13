@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from 'src/app/services/user.service';
 import { Logro } from 'src/app/modelo/Logro';
-import { PrettyDatePipe } from '../../pipes/pretty-date.pipe';
 import * as $ from 'jquery';
 @Component({
   selector: 'app-logros',

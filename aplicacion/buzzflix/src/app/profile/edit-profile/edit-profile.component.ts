@@ -4,9 +4,7 @@ import { AuthService } from './../../services/auth.service';
 import { UserService } from 'src/app/services/user.service';
 import { NotifyService } from 'src/app/services/notify.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { ReactiveFormsModule } from '@angular/forms';
 import { NgProgress } from 'ngx-progressbar';
-import * as $ from 'jquery';
 import { FileService } from 'src/app/services/file.service';
 import { Router } from '@angular/router';
 import { WINDOW } from '@ng-toolkit/universal';
@@ -20,7 +18,7 @@ export class EditProfileComponent implements OnInit {
   usuario: Usuario;
   file: File;
   profileForm: FormGroup;
-  textInput: String;
+  textInput: string;
   loaded: boolean = false;
   imageChangedEvent: any = '';
   croppedImage: any = '';

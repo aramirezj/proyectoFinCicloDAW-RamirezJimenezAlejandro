@@ -1,21 +1,30 @@
-import { BehaviorSubject, Subject, Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
-import { CONFIG } from '../config/config';
-import { Router } from '@angular/router'
-import { NgxImageCompressService } from 'ngx-image-compress';
-
+import * as firebase from 'firebase';
+import 'firebase/firestore';
+import { AngularFireStorage, AngularFireStorageReference } from 'angularfire2/storage';
+import { Observable } from 'rxjs';
 @Injectable({
     providedIn: 'root'
 })
 export class FileService {
 
     constructor(
-        private imageCompress: NgxImageCompressService
+        private afStorage: AngularFireStorage
     ) {
 
     }
 
-    makeRandomName(extension: String): String {
+    obtenerUrl(fileName:string):Observable<any>{
+        return this.afStorage.ref(fileName).getDownloadURL();
+    }
+    obtenerReferencia(fileName:string):AngularFireStorageReference{
+        return this.afStorage.ref(fileName);
+    }
+    deleteImg(fileName:string):Observable<any>{
+        return this.afStorage.ref(fileName).delete();
+    }
+
+    makeRandomName(extension: string): string {
         let name = Math.random().toString(36).substring(2) + "." + extension;
         return name;
     }
@@ -34,7 +43,7 @@ export class FileService {
         }
     }
 
-    formatoValido(file: File): String {
+    formatoValido(file: File): string {
         let extension = file.type.split("/")[1].toUpperCase();
         if (extension === "JPG" || extension === "JPEG" || extension === "PNG") {
             return extension;

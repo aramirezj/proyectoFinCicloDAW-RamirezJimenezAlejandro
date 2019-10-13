@@ -1,15 +1,10 @@
-import { Component, OnInit, Input, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 import { Usuario } from '../modelo/Usuario';
 import { QuizzService } from '../services/quizz.service';
 import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
 import { DialogboxComponent } from '../dialogbox/dialogbox.component';
-import { AngularFireStorage } from 'angularfire2/storage';
-import * as firebase from 'firebase';
-import 'firebase/firestore';
-import * as $ from 'jquery';
-import { NotifyService } from '../services/notify.service';
 import { AuthService } from '../services/auth.service';
-import { isPlatformBrowser } from '@angular/common';
+import { FileService } from '../services/file.service';
 @Component({
   selector: 'app-quizz',
   templateUrl: './quizz.component.html',
@@ -24,15 +19,13 @@ export class QuizzComponent implements OnInit {
   usuario: Usuario
   isCreador: boolean
   downloadURL: any
-  urlClick: String | number;
-  urlShare: String;
-  urlName: String;
+  urlClick: string | number;
+  urlShare: string;
+  urlName: string;
   constructor(
-    @Inject(PLATFORM_ID) private platformId: Object,
     private quizzService: QuizzService,
     private authService: AuthService,
-    private afStorage: AngularFireStorage,
-    private notifyService: NotifyService,
+    private fileService:FileService,
     public dialog: MatDialog
   ) { }
 
@@ -44,7 +37,7 @@ export class QuizzComponent implements OnInit {
     this.estrellas = isNaN(this.estrellas) ? 0 : Math.round(this.estrellas);
 
     this.quizz.image = JSON.parse(this.quizz.contenido).image;
-    this.quizz.image = this.quizz.image == null ? "hehexd.jpg" : this.afStorage.ref(this.quizz.image).getDownloadURL();
+    this.quizz.image = this.quizz.image == null ? "hehexd.jpg" : this.fileService.obtenerUrl(this.quizz.image);
 
     this.urlClick = this.quizz.privado != null ? this.quizz.privado : this.id;
     this.urlName = this.quizz.privado != null ? this.quizzService.buildUrl(this.quizz.titulo, this.quizz.privado) : this.quizzService.buildUrl(this.quizz.titulo, this.quizz.id);

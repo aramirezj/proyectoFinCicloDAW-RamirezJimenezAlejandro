@@ -6,15 +6,12 @@ import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms'
 import { Respuesta } from '../modelo/Respuesta';
 import { Pregunta } from '../modelo/Pregunta';
 import { Solucion } from '../modelo/Solucion';
-import { AngularFireStorage } from 'angularfire2/storage';
-import * as $ from 'jquery';
-import * as firebase from 'firebase';
-import 'firebase/firestore';
 import { MatDialogConfig, MatDialog } from '@angular/material/dialog';
 import { DialogboxComponent } from '../dialogbox/dialogbox.component';
 import { AuthService } from '../services/auth.service';
 import { WINDOW } from '@ng-toolkit/universal';
-
+import { FileService } from '../services/file.service';
+import * as $ from 'jquery';
 @Component({
   selector: 'app-ver-quizz',
   templateUrl: './ver-quizz.component.html',
@@ -38,7 +35,7 @@ export class VerQuizzComponent implements OnInit {
     private quizzService: QuizzService,
     private router: ActivatedRoute,
     private fb: FormBuilder,
-    private afStorage: AngularFireStorage,
+    private fileService:FileService,
     public dialog: MatDialog
   ) {
     this.resultado = false;
@@ -116,7 +113,7 @@ export class VerQuizzComponent implements OnInit {
       id--;
     }
     this.solucionado = this.quizz.soluciones[id];
-    this.urlImg = this.afStorage.ref(this.solucionado.image).getDownloadURL();
+    this.urlImg = this.fileService.obtenerUrl(this.solucionado.image);
 
     this.resultado = true;
 

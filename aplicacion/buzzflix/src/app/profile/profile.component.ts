@@ -3,13 +3,11 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '../services/user.service';
 import { Usuario } from '../modelo/Usuario';
 import { AuthService } from '../services/auth.service';
-import { AngularFireStorage } from 'angularfire2/storage';
-import * as firebase from 'firebase';
-import 'firebase/firestore';
 import { LogrosComponent } from './logros/logros.component';
 import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
 import { DialogboxComponent } from '../dialogbox/dialogbox.component';
 import { WINDOW } from '@ng-toolkit/universal';
+import { FileService } from '../services/file.service';
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
@@ -35,15 +33,15 @@ export class ProfileComponent implements OnInit {
     private router2: Router,
     private userService: UserService,
     private authService: AuthService,
-    private afStorage: AngularFireStorage,
+    private fileService:FileService,
     public dialog: MatDialog
   ) {
     this.userService.userProfileUpdated.subscribe((usuario) => {
       this.usuario = usuario;
       if (this.usuario.avatar == "" || this.usuario.avatar == null) {
-        this.usuario.avatar = this.afStorage.ref("hehexd.PNG").getDownloadURL();
+        this.usuario.avatar = this.fileService.obtenerUrl("hehexd.PNG");
       } else if (typeof this.usuario.avatar == "string") {
-        this.usuario.avatar = this.afStorage.ref(this.usuario.avatar).getDownloadURL();
+        this.usuario.avatar = this.fileService.obtenerUrl(this.usuario.avatar);
       }
       this.cargaStats();
       this.router2.navigate(['perfil/' + this.usuario.nickname,"edit"]);
@@ -77,7 +75,7 @@ export class ProfileComponent implements OnInit {
           if (this.usuario.avatar == "" || this.usuario.avatar == null) {
             this.usuario.avatar = "hehexd.PNG";
           }
-          this.usuario.avatar = this.afStorage.ref(this.usuario.avatar).getDownloadURL();
+          this.usuario.avatar = this.fileService.obtenerUrl(this.usuario.avatar);
           this.cargaStats();
         })
     })

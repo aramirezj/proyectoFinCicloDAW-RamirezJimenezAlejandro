@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../services/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormGroup, FormControl, Validators, Form } from '@angular/forms';
+import { FormGroup, FormControl, Validators} from '@angular/forms';
 import { NotifyService } from '../services/notify.service';
 
 @Component({
@@ -11,8 +11,8 @@ import { NotifyService } from '../services/notify.service';
 })
 export class ForgetComponent implements OnInit {
   forgetForm: FormGroup;
-  confirmacion: String;
-  mensaje: String;
+  confirmacion: string;
+  mensaje: string;
   constructor(
     private authService: AuthService,
     private notifyService: NotifyService,
@@ -51,8 +51,8 @@ export class ForgetComponent implements OnInit {
 
   onSubmit(opcion: Boolean) {
     if (!this.forgetForm.invalid) {
-      let password: String = opcion ? this.forgetForm.get('firstPass').value : null;
-      let email: String = opcion ? null : this.forgetForm.get('email').value;
+      let password: string = opcion ? this.forgetForm.get('firstPass').value : null;
+      let email: string = opcion ? null : this.forgetForm.get('email').value;
       this.authService.forgetPassword(email, password,this.confirmacion)
         .subscribe((res) => {
           if (res) {

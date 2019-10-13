@@ -4,7 +4,6 @@ import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { NotifyService } from './notify.service';
 import { NgProgress } from 'ngx-progressbar';
 import { Router } from '@angular/router';
-import { LOCAL_STORAGE } from '@ng-toolkit/universal';
 import { isPlatformBrowser } from '@angular/common';
 
 @Injectable()
@@ -12,7 +11,6 @@ export class RestService {
     private headers: HttpHeaders;
     constructor(
         @Inject(PLATFORM_ID) private platformId: Object,
-        //@Inject(LOCAL_STORAGE) private localStorage: any, 
         private http: HttpClient,
         private notifyService: NotifyService,
         private bar: NgProgress,
@@ -20,7 +18,7 @@ export class RestService {
     ) {
         this.headers = new HttpHeaders({ 'Authorization': `Bearer ${this.getToken()}` });
     }
-    getToken(): String {
+    getToken(): string {
         if (isPlatformBrowser(this.platformId)) {
             return localStorage.getItem('token');
         }
@@ -30,7 +28,7 @@ export class RestService {
 
     }
 
-    peticionHttp(url: string, valores?: Object, tipo?: String): Observable<any> {
+    peticionHttp(url: string, valores?: Object, tipo?: string): Observable<any> {
         this.bar.start();
         this.setToken();
         let peticion = valores == null ?

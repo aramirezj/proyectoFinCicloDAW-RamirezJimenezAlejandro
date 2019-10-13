@@ -87,8 +87,7 @@
 
       <image-cropper style="width:50%;float:left;" [imageChangedEvent]="imageChangedEvent" [maintainAspectRatio]="true"
         [aspectRatio]="1 / 1" [resizeToWidth]="150" format="jpeg" outputType="both" roundCropper="true" autoCrop="false"
-        (imageCropped)="imageCropped($event)" (imageLoaded)="imageLoaded()" (cropperReady)="cropperReady()"
-        (loadImageFailed)="loadImageFailed()"></image-cropper>
+        (imageCropped)="imageCropped($event)" (loadImageFailed)="loadImageFailed()"></image-cropper>
 
       <img style="float:left;" [src]="croppedImage" style="border-radius: 50%" />
       <button mat-raised-button color="warn" *ngIf="imageChangedEvent" (click)="recortar()">Recortar</button>

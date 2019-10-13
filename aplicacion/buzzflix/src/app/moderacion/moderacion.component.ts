@@ -2,18 +2,12 @@ import { Component, OnInit } from '@angular/core';
 import { Quizz } from '../modelo/Quizz';
 import { QuizzService } from '../services/quizz.service';
 import { NotifyService } from '../services/notify.service';
-import { AngularFireStorage } from 'angularfire2/storage';
-import * as firebase from 'firebase';
-import 'firebase/firestore';
 import * as $ from 'jquery';
 import { UserService } from '../services/user.service';
+import { FileService } from '../services/file.service';
 
 export interface Section {
   name: string;
-}
-interface FoodNode {
-  name: string;
-  children?: FoodNode[];
 }
 @Component({
   selector: 'app-moderacion',
@@ -45,7 +39,7 @@ export class ModeracionComponent implements OnInit {
   isAdmin: boolean
   constructor(
     private quizzService: QuizzService,
-    private afStorage: AngularFireStorage,
+    private fileService:FileService,
     private notifyService: NotifyService,
     private userService: UserService
   ) { }
@@ -67,7 +61,7 @@ export class ModeracionComponent implements OnInit {
           }
           for (let i = 0; i < this.quizzs[0].soluciones.length; i++) {
             let preurl = this.quizzs[0].soluciones[i].image;
-            let newurl = this.afStorage.ref(preurl).getDownloadURL();
+            let newurl = this.fileService.obtenerUrl(preurl);
             this.imagenes.push(newurl);
           }
 

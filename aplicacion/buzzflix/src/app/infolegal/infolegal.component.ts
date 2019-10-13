@@ -8,8 +8,8 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class InfolegalComponent implements OnInit {
   opcion: string;
-  titulos :Array<String> = []
-  mensajes :Array<String> = []
+  titulos :Array<string> = []
+  mensajes :Array<string> = []
   constructor(
     private router: ActivatedRoute
   ) { 

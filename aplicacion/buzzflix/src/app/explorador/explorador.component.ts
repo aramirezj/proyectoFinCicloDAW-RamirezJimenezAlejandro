@@ -3,7 +3,6 @@ import { Quizz } from '../modelo/Quizz';
 import { QuizzService } from '../services/quizz.service';
 import { MatPaginatorIntl, PageEvent } from '@angular/material/paginator';
 import { ActivatedRoute } from '@angular/router';
-import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-explorador',
@@ -11,7 +10,7 @@ import { AuthService } from '../services/auth.service';
   styleUrls: ['./explorador.component.scss']
 })
 export class ExploradorComponent implements OnInit  {
-  opcion:String
+  opcion:string
   quizzs:Array<Quizz>
   isLoaded:boolean=false;
   inicio:number=0;

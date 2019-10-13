@@ -1,5 +1,4 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import React from 'react';
 import { QuizzService } from 'src/app/services/quizz.service';
 import { Router } from '@angular/router';
 

@@ -1,5 +1,5 @@
 import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
-import { FormGroup, FormControl, FormBuilder, Validators, FormArray } from '@angular/forms'
+import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms'
 import { QuizzService } from '../services/quizz.service';
 import { Solucion } from '../modelo/Solucion';
 import { NgProgress } from 'ngx-progressbar';
@@ -14,14 +14,10 @@ import * as $ from 'jquery';
 import { ErrorStateMatcher } from '@angular/material';
 import { Section } from '../moderacion/moderacion.component';
 import { FileService } from '../services/file.service';
-import { LOCAL_STORAGE } from '@ng-toolkit/universal';
 import { isPlatformBrowser } from '@angular/common';
 import { NgxImageCompressService } from 'ngx-image-compress';
 import { Observable } from 'rxjs';
-export interface Numero {
-  value: number;
-  viewValue: number;
-}
+
 @Component({
   selector: 'app-create-quizz',
   templateUrl: './create-quizz.component.html',
@@ -41,18 +37,14 @@ export class CreateQuizzComponent implements OnInit {
     }
   ];
   //PUNTO DE INFLEXION
-  numeros: Numero[] = [
-    { value: 0, viewValue: 0 },
-    { value: 1, viewValue: 1 },
-    { value: 2, viewValue: 2 }
-  ];
+
   matcher = new ErrorStateMatcher();
   checked = false;
   labelPosition = 'before';
   indeterminate = false;
   imgResultBeforeCompress: string;
   imgResultAfterCompress: string;
-  private errores: Array<String> = [];
+  private errores: Array<string> = [];
   private quizCookie: Quizz = null;
   private quizz: Quizz;
   private estado: boolean = true;
@@ -73,12 +65,10 @@ export class CreateQuizzComponent implements OnInit {
 
   public files: Array<File>;
   public file: File;
-  private names: Array<String> = [];
+  private names: Array<string> = [];
 
   constructor(
     @Inject(PLATFORM_ID) private platformId: Object,
-    //@Inject(LOCAL_STORAGE) private localStorage: any, 
-    private fb: FormBuilder,
     private authService: AuthService,
     private router: Router,
     private quizzService: QuizzService,
@@ -180,36 +170,10 @@ export class CreateQuizzComponent implements OnInit {
       myReader.readAsDataURL(file);
     } else {
       this.notifyService.notify("Los formatos aceptados son PNG,JPG,JPEG", "error");
-      //this.quizzForm.get(event.target.getAttribute("ng-reflect-name")).reset();
     }
   }
 
-  /*onFileChanged(event: any, posicion: number) {
-     let banner = posicion == 100 ? true : false;
-     posicion = posicion == 100 ? 0 : posicion + 1;
-     const rawFile = event.target.files[0];
-     let file = this.fileService.prepareFile(rawFile);
- 
-     if (file != null) {
-       this.files[posicion] = file;
-       this.names[posicion] = file.name;
-       if (!banner) {
-         let destino: any = $("#img" + (posicion - 1))[0];
-         var reader = new FileReader();
-         reader.onload = function (event) {
-           let target: any = event.target;
-           destino.src = target.result;
-         };
-         reader.readAsDataURL(file);
-         this.errores.splice(this.errores.indexOf("si" + (posicion)))
-         let button = $("#si" + (posicion))[0];
-         button.className = "fileUpload btn btn-success"
-       }
-     } else {
-       this.notifyService.notify("Los formatos aceptados son PNG,JPG,JPEG", "error");
-       this.quizzForm.get(event.target.getAttribute("ng-reflect-name")).reset();
-     }
-  }*/
+
 
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {

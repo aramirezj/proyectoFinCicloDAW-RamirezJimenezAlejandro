@@ -4,25 +4,23 @@ import { AuthService } from './auth.service';
 import { CONFIG } from './../config/config';
 import { Quizz } from '../modelo/Quizz';
 import { NotifyService } from './notify.service';
-import { AngularFireStorage } from 'angularfire2/storage';
-import * as firebase from 'firebase';
-import 'firebase/firestore';
 import { RestService } from './rest.service';
 import { finalize } from 'rxjs/operators';
 import { NgProgress } from 'ngx-progressbar';
+import { FileService } from './file.service';
 @Injectable()
 export class QuizzService {
     constructor(
         private authService: AuthService,
         private restService: RestService,
         private notifyService: NotifyService,
-        private afStorage: AngularFireStorage,
+        private fileService:FileService,
         private bar: NgProgress
     ) {
     }
 
 
-    buildUrl(titulo: String, id: String | number): String {
+    buildUrl(titulo: string, id: string | number): string {
         titulo = titulo.trim();
         titulo = titulo.replace(/ /g, "-");
         titulo = titulo.replace("¿", "");
@@ -38,7 +36,7 @@ export class QuizzService {
         return titulo;
     }
 
-    resolveUrl(cadena: String): String {
+    resolveUrl(cadena: string): string {
         let id = cadena.split("?n=")[1] != null ? cadena.split("?n=")[1] : cadena.split("%3D")[1];
         return id;
     }
@@ -48,22 +46,17 @@ export class QuizzService {
         return quiz;
     }
 
-    uploadImage(files): Observable<String> {
+    uploadImage(files): Observable<string> {
 
         return Observable.create(observer => {
             for (let i = 0; i < files.length; i++) {
-                let ref = this.afStorage.ref(files[i].name);
+                let ref = this.fileService.obtenerReferencia(files[i].name);
                 let task = ref.put(files[i]);
                 task.snapshotChanges().pipe(
                     finalize(() => {
                         ref.getDownloadURL().subscribe(url => {
-                            // if (i == (files.length - 1)) {
-                            // if (i == 0) {
                             observer.next(url)
                             observer.complete();
-                            //}
-
-                            // }
                         });
                     })
                 ).subscribe();
@@ -81,7 +74,7 @@ export class QuizzService {
             files.push(quiz.soluciones[i].image);
         }
         for (let j = 0; j < files.length; j++) {
-            this.afStorage.ref(files[j]).delete();
+            this.fileService.deleteImg(files[j]);
         }
     }
 
@@ -143,7 +136,7 @@ export class QuizzService {
         })
     }
 
-    ObtenerQuizzes(opcion: String, cadena: string): Observable<Array<Quizz>> {
+    ObtenerQuizzes(opcion: string, cadena: string): Observable<Array<Quizz>> {
         let url = opcion == "todos" ? `${CONFIG.apiUrl}quizz/todos/${cadena}` :
             `${CONFIG.apiUrl}quizz/${this.authService.getAuthUserId()}/seguidos/${cadena}`
         return Observable.create(observer => {
@@ -192,7 +185,7 @@ export class QuizzService {
         });
     }
 
-    getQuizzes(nombre: String): Observable<Array<Quizz>> {
+    getQuizzes(nombre: string): Observable<Array<Quizz>> {
         let url = `${CONFIG.apiUrl}quizzes/${nombre}`;
 
         return Observable.create(observer => {
