@@ -6,8 +6,6 @@ import { NotifyService } from 'src/app/services/notify.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { NgProgress } from 'ngx-progressbar';
 import { FileService } from 'src/app/services/file.service';
-import { Router } from '@angular/router';
-import { WINDOW } from '@ng-toolkit/universal';
 import { ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper';
 @Component({
   selector: 'app-edit-profile',
@@ -25,13 +23,11 @@ export class EditProfileComponent implements OnInit {
   @ViewChild(ImageCropperComponent, { static: false }) imageCropper: ImageCropperComponent;
 
   constructor(
-    @Inject(WINDOW) private window: Window,
     private fileService: FileService,
     private authService: AuthService,
     private userService: UserService,
     private notifyService: NotifyService,
-    private bar: NgProgress,
-    private router: Router
+    private bar: NgProgress
   ) { }
 
   ngOnInit() {

@@ -43,47 +43,39 @@ import { AppMaterialModule } from './app-material/app-material.module';
 import { MatPaginatorIntl } from '@angular/material/paginator';
 import { ErrorStateMatcher, ShowOnDirtyErrorStateMatcher } from '@angular/material/core';
 
-
-import { NgModule, LOCALE_ID } from '@angular/core';
-import { RouterModule } from '@angular/router';
-import { ClipboardModule } from 'ngx-clipboard';
-import { AppRoutingModule } from './app-routing.module';
-
-import { ROUTES } from './routes/routes';
-import { FormsModule, ReactiveFormsModule } from '@angular/forms';
-
-
-import { HttpModule } from '@angular/http';
-
-
-
-
-import { PrettyDatePipe } from './pipes/pretty-date.pipe';
-import { NgProgressModule } from 'ngx-progressbar';
-
-
-
-import { AngularFirestore } from '@angular/fire/firestore';
+//Firebase
 import { AngularFireModule } from '@angular/fire';
-import { AngularFireDatabaseModule } from '@angular/fire/database';
 import { environment } from '../environments/environment';
 import { AngularFireStorage } from 'angularfire2/storage';
 
-import { registerLocaleData } from '@angular/common';
-import localePy from '@angular/common/locales/es-PY';
+//Pipes
+import { PrettyDatePipe } from './pipes/pretty-date.pipe';
 
+//Utilidades
+import { ClipboardModule } from 'ngx-clipboard';
+import { NgProgressModule } from 'ngx-progressbar';
 import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
-
-import { HttpClientModule } from '@angular/common/http';
-import { WINDOW } from '@ng-toolkit/universal';
-import { NgxImageCompressService } from 'ngx-image-compress';
-
-
-import { GoogleLoginProvider, FacebookLoginProvider, AuthService } from 'angular-6-social-login';
-import { SocialLoginModule, AuthServiceConfig } from 'angular-6-social-login';
-
 import { CookieLawModule } from 'angular2-cookie-law';
 import { ImageCropperModule } from 'ngx-image-cropper';
+import { NgxImageCompressService } from 'ngx-image-compress';
+
+//Redes sociales
+import { GoogleLoginProvider, FacebookLoginProvider, AuthService } from 'angular-6-social-login';
+import { AuthServiceConfig } from 'angular-6-social-login';
+
+//Necesarios
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { RouterModule } from '@angular/router';
+import { HttpClientModule } from '@angular/common/http';
+import { NgModule, LOCALE_ID } from '@angular/core';
+
+//Enrutamiento
+import { AppRoutingModule } from './app-routing.module';
+import { ROUTES } from './routes/routes';
+
+//Fecha Española
+import { registerLocaleData } from '@angular/common';
+import localePy from '@angular/common/locales/es-PY';
 
 
 
@@ -142,12 +134,10 @@ registerLocaleData(localePy, 'es');
     ScrollToModule.forRoot(),
     FormsModule,
     ReactiveFormsModule,
-    HttpModule,
     NgProgressModule,
     BrowserAnimationsModule,
     ClipboardModule,
     AngularFireModule.initializeApp(environment.firebaseConfig),
-    AngularFireDatabaseModule,
     BrowserTransferStateModule,
     CookieLawModule,
     ImageCropperModule,
@@ -156,10 +146,10 @@ registerLocaleData(localePy, 'es');
   exports: [RouterModule],
   providers: [
     AuthWeb,AuthService, AuthGuard, AuthedGuard, QuizzService, NotifyService, UserService, FollowService,
-    RestService,  FileService, AngularFirestore, AngularFireStorage,
+    RestService,  FileService, AngularFireStorage,
     { provide: MatPaginatorIntl, useClass: MatPaginatorIntlCro },
     { provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher },
-    { provide: LOCALE_ID, useValue: 'es-Ar' }, { provide: WINDOW, useValue: {} },
+    { provide: LOCALE_ID, useValue: 'es-Ar' },
      { provide: AuthServiceConfig, useFactory: socialConfigs }, NgxImageCompressService],
   bootstrap: [AppComponent],
   entryComponents: [DialogboxComponent]

@@ -9,7 +9,7 @@ import { Solucion } from '../modelo/Solucion';
 import { MatDialogConfig, MatDialog } from '@angular/material/dialog';
 import { DialogboxComponent } from '../dialogbox/dialogbox.component';
 import { AuthService } from '../services/auth.service';
-import { WINDOW } from '@ng-toolkit/universal';
+
 import { FileService } from '../services/file.service';
 import * as $ from 'jquery';
 @Component({
@@ -30,7 +30,6 @@ export class VerQuizzComponent implements OnInit {
   urlImg:string|any
   quizzForm: FormGroup
   constructor(
-    @Inject(WINDOW) private window: Window,
     private authService: AuthService, //Usado en vista
     private quizzService: QuizzService,
     private router: ActivatedRoute,

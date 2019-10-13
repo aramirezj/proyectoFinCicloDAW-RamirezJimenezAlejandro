@@ -6,7 +6,6 @@ import { AuthService } from '../services/auth.service';
 import { LogrosComponent } from './logros/logros.component';
 import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
 import { DialogboxComponent } from '../dialogbox/dialogbox.component';
-import { WINDOW } from '@ng-toolkit/universal';
 import { FileService } from '../services/file.service';
 @Component({
   selector: 'app-profile',
@@ -28,7 +27,7 @@ export class ProfileComponent implements OnInit {
   showLogros:boolean=true;
   showWall:boolean=false;
   @ViewChild(LogrosComponent,{static: false}) child;
-  constructor(@Inject(WINDOW) private window: Window, 
+  constructor(
     private router: ActivatedRoute,
     private router2: Router,
     private userService: UserService,
