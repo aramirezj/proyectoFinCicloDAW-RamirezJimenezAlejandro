@@ -1,5 +1,6 @@
-<div *ngIf="!quizzs && this.isLoaded">
+<div *ngIf="!quizzs && this.isLoaded" >
   <p class="empty">En este apartado verás los quizzes que los usuarios a los que sigues van creando. ¡Prueba a seguir a un par de usuarios!</p>
+  <app-buscador></app-buscador>
 </div>
 <div class="padreQuiz" *ngIf="quizzs && this.isLoaded">
   <div class="cajaQuiz" *ngFor="let quizz of quizzs">

@@ -6,6 +6,7 @@ Change the following line util.isNode = Boolean(util.global.process && util.glob
 nano node_modules/protobufjs/src/util/minimal.js
 
 sudo kill -9 `sudo lsof -t -i:4202`
+sudo kill -9 `sudo lsof -t -i:4000`
 sudo kill -9 $(sudo lsof -t -i:403)
 
 Hn4TqPQFjF

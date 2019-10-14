@@ -1,5 +1,5 @@
-<div *ngIf="this.aBuscar==null">
-    <div class="container">
+<div>
+    <div class="container" style="padding:0!important;">
         <div class="row">
             <div class="col-md-12">
                 <div class="panel panel-default">
@@ -7,8 +7,7 @@
                     <div class="panel-body">
                         <form class="example-form" [formGroup]="this.busquedaForm" (ngSubmit)="onSubmit()">
                             <mat-form-field class="example-full-width" style="width: 100%;">
-                                <input matInput placeholder="Busqueda" required formControlName="busqueda"
-                                    [errorStateMatcher]="matcher" >
+                                <input matInput placeholder="Busqueda" required formControlName="busqueda">
                                 <mat-hint></mat-hint>
                             </mat-form-field>
                             <br>
@@ -24,7 +23,7 @@
 
 
 
-<div *ngIf="this.isLoaded">
+<div *ngIf="this.isLoaded && this.aBuscar!=null">
     <p class="empty">Resultados para ' {{this.aBuscar}} ' :</p>
     <div *ngIf="this.quizzes">
         <p class="text-center seccion">Quizzes</p>

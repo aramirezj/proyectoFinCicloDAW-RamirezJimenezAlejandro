@@ -27,13 +27,16 @@ export class CreateQuizzComponent implements OnInit {
   panelOpenState = false;
   correctas: Section[] = [
     {
-      name: 'La opción de Quiz privado, permite que el quiz no vaya a moderación ni se publique, solo tendrás acceso de tu perfil y podrás compartirlo con tus amigos'
+      name: 'La opción de Quiz privado, permite que el quiz no vaya a moderación ni se publique, solo tendrás acceso desde tu perfil y podrás compartirlo con tus amigos'
     },
     {
-      name: 'Una afinidad de la respuesta, es como de ligada está esa respuesta con una solución.'
+      name: 'Una afinidad de la respuesta, es como de relacionada está esa respuesta con una solución.'
     },
     {
       name: 'Al ir eligiendo las respuestas, se va sumando las afinidades de la respuesta para ir acercando a una solución u otra.'
+    },
+    {
+      name: 'Si no eliges la opción de privado, el quiz pasará a Moderación, donde otros usuarios votaran tu quiz, y cuando pasen 24 horas se decidirá si se publica o no. '
     }
   ];
   //PUNTO DE INFLEXION

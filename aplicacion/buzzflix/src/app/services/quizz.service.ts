@@ -234,7 +234,6 @@ export class QuizzService {
                 if (response.deleted) {
                     this.borraQuizz(quiz, true).subscribe();
                 }
-                this.notifyService.notify("Acción registrada", "success");
                 observer.next()
                 observer.complete();
             })

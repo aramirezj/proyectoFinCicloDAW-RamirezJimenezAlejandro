@@ -1693,3 +1693,37 @@
       'UPDATE users set name = \'Alejandro Ramírez Jiménez\', nickname = \'Exilon\' avatar = \'hbi1jf4lkoa.PNG\' WHERE id = \'40\'' },
   Componente: 'Query Controller',
   timestamp: '2019-10-04T23:46:04.440Z' }
+{ level: 'error',
+  message:
+   { Error: ER_DUP_ENTRY: Duplicate entry 'alejandroramirezjimenez1999@gmail.com' for key 'email'
+       at Query.Sequence._packetToError (F:\Escritorio\proyectoFinCicloDAW-RamirezJimenezAlejandro\aplicacion\mysql-nodejs-rest-api-master\node_modules\mysql\lib\protocol\sequences\Sequence.js:47:14)
+       at Query.ErrorPacket (F:\Escritorio\proyectoFinCicloDAW-RamirezJimenezAlejandro\aplicacion\mysql-nodejs-rest-api-master\node_modules\mysql\lib\protocol\sequences\Query.js:77:18)
+       at Protocol._parsePacket (F:\Escritorio\proyectoFinCicloDAW-RamirezJimenezAlejandro\aplicacion\mysql-nodejs-rest-api-master\node_modules\mysql\lib\protocol\Protocol.js:291:23)
+       at Parser._parsePacket (F:\Escritorio\proyectoFinCicloDAW-RamirezJimenezAlejandro\aplicacion\mysql-nodejs-rest-api-master\node_modules\mysql\lib\protocol\Parser.js:433:10)
+       at Parser.write (F:\Escritorio\proyectoFinCicloDAW-RamirezJimenezAlejandro\aplicacion\mysql-nodejs-rest-api-master\node_modules\mysql\lib\protocol\Parser.js:43:10)
+       at Protocol.write (F:\Escritorio\proyectoFinCicloDAW-RamirezJimenezAlejandro\aplicacion\mysql-nodejs-rest-api-master\node_modules\mysql\lib\protocol\Protocol.js:38:16)
+       at Socket.<anonymous> (F:\Escritorio\proyectoFinCicloDAW-RamirezJimenezAlejandro\aplicacion\mysql-nodejs-rest-api-master\node_modules\mysql\lib\Connection.js:91:28)
+       at Socket.<anonymous> (F:\Escritorio\proyectoFinCicloDAW-RamirezJimenezAlejandro\aplicacion\mysql-nodejs-rest-api-master\node_modules\mysql\lib\Connection.js:525:10)
+       at Socket.emit (events.js:189:13)
+       at addChunk (_stream_readable.js:284:12)
+       --------------------
+       at Protocol._enqueue (F:\Escritorio\proyectoFinCicloDAW-RamirezJimenezAlejandro\aplicacion\mysql-nodejs-rest-api-master\node_modules\mysql\lib\protocol\Protocol.js:144:48)
+       at Connection.query (F:\Escritorio\proyectoFinCicloDAW-RamirezJimenezAlejandro\aplicacion\mysql-nodejs-rest-api-master\node_modules\mysql\lib\Connection.js:201:25)
+       at QueryController.ejecutaConsulta (F:\Escritorio\proyectoFinCicloDAW-RamirezJimenezAlejandro\aplicacion\mysql-nodejs-rest-api-master\src\controllers\queryController.js:24:25)
+       at F:\Escritorio\proyectoFinCicloDAW-RamirezJimenezAlejandro\aplicacion\mysql-nodejs-rest-api-master\src\routes\usuarios.js:78:24
+       at Query.mysqlConnection.query (F:\Escritorio\proyectoFinCicloDAW-RamirezJimenezAlejandro\aplicacion\mysql-nodejs-rest-api-master\src\controllers\queryController.js:26:24)
+       at Query.<anonymous> (F:\Escritorio\proyectoFinCicloDAW-RamirezJimenezAlejandro\aplicacion\mysql-nodejs-rest-api-master\node_modules\mysql\lib\Connection.js:525:10)
+       at Query._callback (F:\Escritorio\proyectoFinCicloDAW-RamirezJimenezAlejandro\aplicacion\mysql-nodejs-rest-api-master\node_modules\mysql\lib\Connection.js:491:16)
+       at Query.Sequence.end (F:\Escritorio\proyectoFinCicloDAW-RamirezJimenezAlejandro\aplicacion\mysql-nodejs-rest-api-master\node_modules\mysql\lib\protocol\sequences\Sequence.js:83:24)
+       at Query._handleFinalResultPacket (F:\Escritorio\proyectoFinCicloDAW-RamirezJimenezAlejandro\aplicacion\mysql-nodejs-rest-api-master\node_modules\mysql\lib\protocol\sequences\Query.js:139:8)
+       at Query.EofPacket (F:\Escritorio\proyectoFinCicloDAW-RamirezJimenezAlejandro\aplicacion\mysql-nodejs-rest-api-master\node_modules\mysql\lib\protocol\sequences\Query.js:123:8)
+     code: 'ER_DUP_ENTRY',
+     errno: 1062,
+     sqlMessage:
+      'Duplicate entry \'alejandroramirezjimenez1999@gmail.com\' for key \'email\'',
+     sqlState: '23000',
+     index: 0,
+     sql:
+      'INSERT INTO users (nickname,name,email,origen,idSocial) values(\'alejandroramirezjimenez199934\',\'Alejandro Ramírez Jiménez\',\'alejandroramirezjimenez1999@gmail.com\',\'google\',\'111439540376655328327\')' },
+  Componente: 'Query Controller',
+  timestamp: '2019-10-14T16:54:10.020Z' }

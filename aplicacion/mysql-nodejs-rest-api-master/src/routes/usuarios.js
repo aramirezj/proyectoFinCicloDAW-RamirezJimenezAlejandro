@@ -73,12 +73,12 @@ router.post('/api/socialLogin', (req, res, next) => {
     function (rows) {
       if (rows) {
         if (rows.length == 0) { //Registro usuario
-          let nickname = email.split("@")[0] + Math.floor((Math.random() * 100) + 1);
-          console.log(nickname)
+          let nickname = Math.floor((Math.random() * 100) + 1)+""+Math.floor((Math.random() * 100) + 1)+email.split("@")[0];
+          nickname= nickname.slice(0,15);
           queryService.ejecutaConsulta("setSocialUser", [nickname, nombre, email, origen, id], res,
             function (rows) {
               if (rows) {
-                res.send({ auth: true, token: tokenService.creaToken(rows.insertId), id: rows.insertId });
+                res.send({ auth: true, token: tokenService.creaToken(rows.insertId), id: rows.insertId,nickname:nickname });
               }
             })
         } else {

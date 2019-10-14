@@ -12,7 +12,7 @@ import { FormGroup, Validators, FormControl } from '@angular/forms';
   styleUrls: ['./buscador.component.scss']
 })
 export class BuscadorComponent implements OnInit {
-  busquedaForm:FormGroup;
+  busquedaForm: FormGroup;
   aBuscar: string;
   usuarios: Array<Usuario> = [];
   quizzes: Array<Quizz> = [];
@@ -35,12 +35,9 @@ export class BuscadorComponent implements OnInit {
   ngOnInit() {
     this.router.params.subscribe((params) => {
       this.aBuscar = params['nombre'];
-      if (this.aBuscar != null) {
-        this.getQuizzes();
-        this.getUsuarios();
-      }else{
-        this.createForm();
-      }
+      this.createForm();
+      this.getQuizzes();
+      this.getUsuarios();
 
     })
   }
@@ -51,13 +48,16 @@ export class BuscadorComponent implements OnInit {
     })
   }
 
-  createForm(){
+  createForm() {
     this.busquedaForm = new FormGroup({
-      busqueda: new FormControl(null, [Validators.required,Validators.minLength(1)])
+      busqueda: new FormControl(this.aBuscar, [])
     });
   }
-  onSubmit(){
-    this.router2.navigate(['buscador/' + this.busquedaForm.get('busqueda').value]);
+  onSubmit() {
+    if (this.busquedaForm.get('busqueda').value.length > 0) {
+      this.router2.navigate(['buscador/' + this.busquedaForm.get('busqueda').value]);
+    }
+
   }
 
   getQuizzes() {

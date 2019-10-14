@@ -28,7 +28,7 @@ export class socialLoginService {
             this.restService.peticionHttp(url, body).subscribe(response => {
                 if (response.auth) {
                     let usuarioWeb: Usuario;
-                    usuarioWeb = response.respuesta == null ? new Usuario(response.id, usuario.name, null, "") : response.respuesta;
+                    usuarioWeb = response.respuesta == null ? new Usuario(response.id, usuario.name, response.nickname, "") : response.respuesta;
 
                     if (isPlatformBrowser(this.platformId)) {
                         localStorage.setItem("token", response.token);
