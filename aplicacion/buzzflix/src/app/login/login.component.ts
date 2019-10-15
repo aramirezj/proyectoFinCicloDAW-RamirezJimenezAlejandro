@@ -7,6 +7,7 @@ import { AuthService, GoogleLoginProvider } from 'angular-6-social-login';
 import { socialLoginService } from '../services/socialLogin.service';
 import { Socialusers } from '../modelo/SocialUsers'
 import { UserService } from '../services/user.service';
+import { Subscription } from 'rxjs/internal/Subscription';
 
 @Component({
   selector: 'app-login',
@@ -20,6 +21,7 @@ export class LoginComponent implements OnInit {
   confirmacion: string;
   response;
   socialusers = new Socialusers();
+  subsRouter: Subscription;
   constructor(
     public OAuth: AuthService,
     private userService: UserService,
@@ -30,10 +32,13 @@ export class LoginComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.router.params.subscribe((params) => {
+    this.subsRouter = this.router.params.subscribe((params) => {
       this.confirmacion = params['confirmacion'];
       this.gestionaPagina();
     })
+  }
+  ngOnDestroy(){
+    this.subsRouter.unsubscribe();
   }
 
   gestionaPagina() {

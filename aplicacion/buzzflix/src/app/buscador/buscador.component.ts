@@ -5,6 +5,7 @@ import { Usuario } from '../modelo/Usuario';
 import { Quizz } from '../modelo/Quizz';
 import { QuizzService } from '../services/quizz.service';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
+import { Subscription } from 'rxjs/internal/Subscription';
 
 @Component({
   selector: 'app-buscador',
@@ -17,7 +18,8 @@ export class BuscadorComponent implements OnInit {
   usuarios: Array<Usuario> = [];
   quizzes: Array<Quizz> = [];
   navigationSubscription;
-  isLoaded: boolean = false
+  isLoaded: boolean = false;
+  subsRouter: Subscription;
   constructor(
     private router2: Router,
     private router: ActivatedRoute,
@@ -33,7 +35,7 @@ export class BuscadorComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.router.params.subscribe((params) => {
+    this.subsRouter = this.router.params.subscribe((params) => {
       this.aBuscar = params['nombre'];
       this.createForm();
       this.getQuizzes();
@@ -42,8 +44,12 @@ export class BuscadorComponent implements OnInit {
     })
   }
 
-  initialiseInvites() {
-    this.router.params.subscribe((params) => {
+  ngOnDestroy() {
+    this.subsRouter.unsubscribe();
+  }
+
+  initialiseInvites() { //Para en la misma ruta ir actualizando la busqueda
+    this.subsRouter = this.router.params.subscribe((params) => {
       this.aBuscar = params['nombre'];
     })
   }

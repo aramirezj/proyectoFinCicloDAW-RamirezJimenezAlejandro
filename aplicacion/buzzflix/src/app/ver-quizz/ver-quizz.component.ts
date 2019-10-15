@@ -12,6 +12,7 @@ import { AuthService } from '../services/auth.service';
 
 import { FileService } from '../services/file.service';
 import * as $ from 'jquery';
+import { Subscription } from 'rxjs/internal/Subscription';
 @Component({
   selector: 'app-ver-quizz',
   templateUrl: './ver-quizz.component.html',
@@ -29,6 +30,8 @@ export class VerQuizzComponent implements OnInit {
   urlShare: string
   urlImg:string|any
   quizzForm: FormGroup
+  subsRouter:Subscription
+  subsRouter2:Subscription
   constructor(
     private authService: AuthService, //Usado en vista
     private quizzService: QuizzService,
@@ -43,18 +46,21 @@ export class VerQuizzComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.router.queryParams.subscribe(() => {
+    this.subsRouter = this.router.queryParams.subscribe(() => {
       this.rawid = window.location.href;
       if (this.rawid == null) {
-        this.router.params.subscribe((params) => {
+        this.subsRouter2 = this.router.params.subscribe((params) => {
           this.rawid = params['id'];
           this.getQuizz();
         });
       } else {
         this.getQuizz();
       }
-
     });
+  }
+  ngOnDestroy(){
+    this.subsRouter.unsubscribe();
+    this.subsRouter2.unsubscribe();
   }
 
   generaFormulario() {

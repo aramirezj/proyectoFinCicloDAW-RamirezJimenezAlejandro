@@ -1,33 +1,31 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { UserService } from 'src/app/services/user.service';
 import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs/internal/Subscription';
 
 @Component({
   selector: 'app-wall',
   templateUrl: './wall.component.html',
   styleUrls: ['./wall.component.scss']
 })
-export class WallComponent implements OnInit {
-  public quizzes;
-  public nickname;
+export class WallComponent {
+  quizzes;
+  nickname: string;
   isLoaded: boolean = false;
+  subsRouter: Subscription;
   constructor(
     private userService: UserService,
     private router: ActivatedRoute
-
   ) { }
 
   ngOnInit() {
-    this.router.params.subscribe(params => {
-      this.nickname = params['nickname']
-     if(this.nickname==undefined){
-        let nick = window.location.href.split("perfil/")[1];
-        nick = nick.replace("/wall","");
-        this.nickname=nick;
-      }
+    this.subsRouter = this.router.parent.params.subscribe((params) => {
+      this.nickname = params["nickname"];
       this.getUserWall();
     })
-
+  }
+  ngOnDestroy() {
+    this.subsRouter.unsubscribe();
   }
 
   getUserWall() {
@@ -37,5 +35,4 @@ export class WallComponent implements OnInit {
         this.isLoaded = true;
       })
   }
-
 }

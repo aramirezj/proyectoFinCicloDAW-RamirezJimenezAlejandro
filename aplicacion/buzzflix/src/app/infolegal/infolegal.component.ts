@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs/internal/Subscription';
 
 @Component({
   selector: 'app-infolegal',
@@ -8,8 +9,9 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class InfolegalComponent implements OnInit {
   opcion: string;
-  titulos :Array<string> = []
-  mensajes :Array<string> = []
+  titulos :Array<string> = [];
+  mensajes :Array<string> = [];
+  subsRouter: Subscription;
   constructor(
     private router: ActivatedRoute
   ) { 
@@ -24,9 +26,12 @@ export class InfolegalComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.router.params.subscribe((params) => {
+    this.subsRouter = this.router.params.subscribe((params) => {
       this.opcion = params['opcion'];
     });
+  }
+  ngOnDestroy(){
+    this.subsRouter.unsubscribe();
   }
 
 }

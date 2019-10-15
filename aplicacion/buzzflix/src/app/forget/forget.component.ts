@@ -3,6 +3,7 @@ import { AuthService } from '../services/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, FormControl, Validators} from '@angular/forms';
 import { NotifyService } from '../services/notify.service';
+import { Subscription } from 'rxjs/internal/Subscription';
 
 @Component({
   selector: 'app-forget',
@@ -13,6 +14,7 @@ export class ForgetComponent implements OnInit {
   forgetForm: FormGroup;
   confirmacion: string;
   mensaje: string;
+  subsRouter: Subscription;
   constructor(
     private authService: AuthService,
     private notifyService: NotifyService,
@@ -23,8 +25,7 @@ export class ForgetComponent implements OnInit {
   }
 
   ngOnInit() {
-
-    this.router.params.subscribe((params) => {
+    this.subsRouter = this.router.params.subscribe((params) => {
       this.confirmacion = params['confirmacion'];
       if (this.confirmacion != null) {
         this.createForm(true);
@@ -33,6 +34,10 @@ export class ForgetComponent implements OnInit {
         this.createForm(false);
       }
     })
+  }
+
+  ngOnDestroy(){
+    this.subsRouter.unsubscribe();
   }
 
   createForm(opcion: Boolean) {

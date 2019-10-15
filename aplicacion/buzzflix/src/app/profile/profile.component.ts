@@ -7,6 +7,7 @@ import { LogrosComponent } from './logros/logros.component';
 import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
 import { DialogboxComponent } from '../dialogbox/dialogbox.component';
 import { FileService } from '../services/file.service';
+import { Subscription } from 'rxjs/internal/Subscription';
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
@@ -26,6 +27,7 @@ export class ProfileComponent implements OnInit {
   showEditar: boolean=true; //Para gestionar el cambio de boton
   showLogros:boolean=true;
   showWall:boolean=false;
+  subsRouter:Subscription
   @ViewChild(LogrosComponent,{static: false}) child;
   constructor(
     private router: ActivatedRoute,
@@ -64,7 +66,7 @@ export class ProfileComponent implements OnInit {
   ngOnInit() {
     this.gestionaPosicion();
     this.usuario=null;
-    this.router.params.subscribe((params) => {
+    this.subsRouter = this.router.params.subscribe((params) => {
       this.nickname = params['nickname'];
       this.userService.getUserByNickname(this.nickname)
         .subscribe((usuario) => {
@@ -78,6 +80,10 @@ export class ProfileComponent implements OnInit {
           this.cargaStats();
         })
     })
+  }
+
+  ngOnDestroy(){
+    this.subsRouter.unsubscribe();
   }
   //Función que cargará la cantidad de seguidores,seguidos y logros obtenidos.
   cargaStats() {
