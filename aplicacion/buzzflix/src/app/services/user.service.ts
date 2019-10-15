@@ -63,9 +63,9 @@ export class UserService {
                 observer.complete();
             })
         });
-    }
-    getLogros(id: number): Observable<Array<Logro>> {
-        let url = `${CONFIG.apiUrl}usuario/${id}/logros`;
+    }   
+    getLogros(nick: string): Observable<Array<Logro>> {
+        let url = `${CONFIG.apiUrl}usuario/${nick}/logros`;
         return Observable.create(observer => {
             this.restService.peticionHttp(url).subscribe(response => {
                 observer.next(response.respuesta)

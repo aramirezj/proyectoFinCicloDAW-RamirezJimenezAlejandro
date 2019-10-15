@@ -91,11 +91,7 @@ export class AppComponent {
               }
               this.notificaciones.push(section);
             }
-            if (this.notificaciones.length > 9) {
-              this.icono = "filter_9_plus";
-            } else {
-              this.icono = "filter_" + this.notificaciones.length;
-            }
+            this.icono = this.notificaciones.length > 9 ? "filter_9_plus" : "filter_" + this.notificaciones.length;
           }
         }))
     }
@@ -109,11 +105,7 @@ export class AppComponent {
     if (this.notificaciones.length == 0) {
       this.vacio = true;
     } else {
-      if (this.notificaciones.length > 9) {
-        this.icono = "filter_9_plus";
-      } else {
-        this.icono = "filter_" + this.notificaciones.length;
-      }
+      this.icono = this.notificaciones.length > 9 ? "filter_9_plus" : "filter_" + this.notificaciones.length;
     }
   }
 }

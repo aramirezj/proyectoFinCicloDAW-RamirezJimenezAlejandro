@@ -217,11 +217,11 @@ router.post('/api/reportar', listaValidaciones["reporte"], (req, res) => {
 
 });
 // Obtener los logros de un usuario (PROTECTED)
-router.get('/api/usuario/:id/logros', listaValidaciones["numerico"], (req, res) => {
+router.get('/api/usuario/:nickname/logros', (req, res) => {
   console.log("Obtener logros de un usuario")
   if (!queryService.compruebaErrores(req, res)) {
-    const { id } = req.params;
-    queryService.ejecutaConsulta("buscaLogros", [id], res, function (rows) {
+    const { nickname } = req.params;
+    queryService.ejecutaConsulta("buscaLogros", [nickname], res, function (rows) {
       if (rows) {
         res.send({ status: '200', respuesta: rows });
       }
