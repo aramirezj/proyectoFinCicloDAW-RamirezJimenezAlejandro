@@ -124,7 +124,9 @@
                       <input type="text" style="display:none" class="form-control" placeholder="Imagen de la solución"
                         readonly>
                       <div class="input-group-btn">
-                        <span style="margin-top: 2vh;" class="fileUpload btn btn-success" [id]="generaId('si',i)">
+                        <span style="margin-top: 2vh;" 
+                        [className]="'fileUpload btn btn-success ' + (this.errores.indexOf('si'+i)!= 1 ? 'error' : '')"
+                         [id]="generaId('si',i)">
                           <span class="upl">Subir imagen</span>
                           <input type="file"  class="upload up" accept="image/*" (change)="onFileChanged($event,i)"
                             [formControlName]="generaId('si',i)" />

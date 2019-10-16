@@ -165,8 +165,9 @@ export class CreateQuizzComponent implements OnInit {
             };
             reader.readAsDataURL(fileReady);
             this.errores.splice(this.errores.indexOf("si" + (posicion)))
+            console.log(this.errores)
             let button = $("#si" + (posicion))[0];
-            button.className = "fileUpload btn btn-success"
+           // button.className = "fileUpload btn btn-success"
           }
         })
       }
@@ -433,12 +434,12 @@ export class CreateQuizzComponent implements OnInit {
       for (let i = 1; i <= this.quizzForm.get("cs").value; i++) {
         if (error == "si" + i) {
           let button = $("#si" + i)[0];
-          button.className = "fileUpload btn btn-success error"
+          //button.className = "fileUpload btn btn-success error"
 
         }
       }
     }
-
+    console.log(this.errores)
     this.quizzForm.markAllAsTouched();
     this.estado = !this.quizzForm.invalid;
     let minimo = this.compruebaRespuestasMinimas();
