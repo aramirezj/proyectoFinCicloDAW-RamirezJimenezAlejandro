@@ -5,7 +5,6 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserService } from './services/user.service';
 import { MatMenuTrigger } from '@angular/material/menu';
-import * as $ from 'jquery';
 export interface Section {
   name: string;
 }
@@ -52,13 +51,6 @@ export class AppComponent {
     this.notificaciones = [];
     this.obtenerNotificaciones();
 
-  }
-
-  changeColor() {
-
-    $(".mat-menu-content").css("background-color", "#5a458d");
-    $(".mat-menu-content").css("color", "white");
-    $(".mat-menu-panel").css("min-width", "350px");
   }
 
   onSubmit() {

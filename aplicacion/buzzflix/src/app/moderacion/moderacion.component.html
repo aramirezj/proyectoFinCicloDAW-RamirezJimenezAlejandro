@@ -21,7 +21,7 @@
 </div>
 
 
-<div class="boxEnunciado" *ngIf="this.isLoaded && this.quizzs!=null" class="text-center">
+<div class="boxEnunciado" *ngIf="this.isLoaded && this.quizzes!=null" class="text-center">
   <div style="margin:auto">
     <app-quizz class="quizModera" [quizz]="this.rawquizzes[this.indice]"></app-quizz>
   </div>
@@ -29,7 +29,7 @@
   <div class="clear"></div>
   {{this.controlImagenes(0)}}
   <p class="text-center seccion">Soluciones</p>
-  <mat-card class="example-card" *ngFor="let solucion of this.quizzs[this.indice].soluciones;let i = index">
+  <mat-card class="example-card" *ngFor="let solucion of this.quizzes[this.indice].soluciones;let i = index">
     <mat-card-header>
       <mat-card-title class="mat-card-header-text">{{solucion.titulo}}</mat-card-title>
     </mat-card-header>
@@ -44,7 +44,7 @@
   <div style="clear:both;"></div>
 
   <p class="text-center seccion">Preguntas</p>
-  <div class="cajaPregunta" *ngFor="let pregunta of this.quizzs[this.indice].preguntas;let i = index">
+  <div class="cajaPregunta" *ngFor="let pregunta of this.quizzes[this.indice].preguntas;let i = index">
     <h4 style="margin-bottom: 1%;">{{pregunta.enunciado}}</h4>
     <div class="clear"></div>
     <div style="margin-bottom: 1%;" class="'box cajaRespuesta"
@@ -64,5 +64,5 @@
       (click)="juzga(true)">Publicar</button>
   </div>
 </div>
-<div *ngIf="this.isLoaded && this.quizzs==null">
+<div *ngIf="this.isLoaded && this.quizzes==null">
   <p class="empty">¡Vaya, no hay ningún Quiz por moderar! Vuelve más tarde o crea el tuyo propio <3</p> </div>

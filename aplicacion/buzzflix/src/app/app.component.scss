@@ -1,6 +1,11 @@
 @import "../variables.scss";
 //Toda la barra de navegación
 //Elementos
+
+
+
+
+
 .barra {
   position: absolute;
   top: 0;
@@ -60,9 +65,17 @@ mat-expansion-panel {
 mat-nav-list{
   margin-top: 13vh!important;
 }
+::ng-deep .mat-menu-content{
+  background-color: $fondoSuave!important;
+  color:white!important;
+}
+::ng-deep .mat-menu-panel{
+  min-width: 350px!important;
+}
 .container {
   margin-top: 16vh;
 }
+
 
 .menuItem {
   color: white !important;

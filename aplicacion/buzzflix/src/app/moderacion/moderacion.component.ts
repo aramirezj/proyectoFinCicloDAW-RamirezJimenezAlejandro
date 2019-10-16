@@ -1,8 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Quizz } from '../modelo/Quizz';
 import { QuizzService } from '../services/quizz.service';
 import { NotifyService } from '../services/notify.service';
-import * as $ from 'jquery';
 import { UserService } from '../services/user.service';
 import { FileService } from '../services/file.service';
 
@@ -14,7 +13,7 @@ export interface Section {
   templateUrl: './moderacion.component.html',
   styleUrls: ['./moderacion.component.scss']
 })
-export class ModeracionComponent implements OnInit {
+export class ModeracionComponent{
   panelOpenState = false;
   correctas: Section[] = [
     {
@@ -30,7 +29,7 @@ export class ModeracionComponent implements OnInit {
       name: 'Que veas que solo hay una solución posible.'
     }
   ];
-  quizzs: Array<Quizz>
+  quizzes: Array<Quizz>
   rawquizzes
   indice: number = 0
   isLoaded: boolean = false;
@@ -45,7 +44,7 @@ export class ModeracionComponent implements OnInit {
   ) { }
 
   ngOnInit() {
-    this.quizzs = [];
+    this.quizzes = [];
     let quizz: Quizz;
     this.quizzService.listaModeracion()
       .subscribe(resp => {
@@ -57,31 +56,25 @@ export class ModeracionComponent implements OnInit {
             quizz = JSON.parse(resp[i]["contenido"]);
             quizz.id = resp[i].id;
             quizz.titulo = resp[i].titulo;
-            this.quizzs.push(quizz);
+            this.quizzes.push(quizz);
           }
-          for (let i = 0; i < this.quizzs[0].soluciones.length; i++) {
-            let preurl = this.quizzs[0].soluciones[i].image;
+          for (let i = 0; i < this.quizzes[0].soluciones.length; i++) {
+            let preurl = this.quizzes[0].soluciones[i].image;
             let newurl = this.fileService.obtenerUrl(preurl);
             this.imagenes.push(newurl);
           }
 
-          for (let i = 0; i < this.quizzs[0].preguntas.length; i++) {
-            for (let j = 0; j < this.quizzs[0].preguntas[i].respuestas.length; j++) {
-              for (let a = 0; a < this.quizzs[0].preguntas[i].respuestas[j].afinidades.length; a++) {
+          for (let i = 0; i < this.quizzes[0].preguntas.length; i++) {
+            for (let j = 0; j < this.quizzes[0].preguntas[i].respuestas.length; j++) {
+              for (let a = 0; a < this.quizzes[0].preguntas[i].respuestas[j].afinidades.length; a++) {
               }
             }
           }
 
         } else {
-          this.quizzs = null
+          this.quizzes = null
         }
         this.isLoaded = true;
-        setTimeout(() => {
-          for (let i = 0; i < $(".mat-card-header-text").length; i++) {
-            $(".mat-card-header-text")[i].style.width = "100%";
-            $(".mat-card-header-text")[i].style.margin = "0";
-          }
-        }, 200);
       })
     this.userService.isAdmin()
     .subscribe(resp => {
@@ -92,13 +85,12 @@ export class ModeracionComponent implements OnInit {
   }
 
   juzga(decision: boolean) {
-    this.quizzService.moderaQuizz(this.quizzs[this.indice], decision)
+    this.quizzService.moderaQuizz(this.quizzes[this.indice], decision)
     .subscribe();
     this.indice++;
-    $("html, body").animate({ scrollTop: 0 }, "fast");
-    if (this.indice == this.quizzs.length) {
+    if (this.indice == this.quizzes.length) {
       this.notifyService.notify("¡Gracias por contribuir en la web! Ya no quedan más para moderar, ¿Por qué no creas el tuyo propio?", "success")
-      this.quizzs = null;
+      this.quizzes = null;
     } else {
       this.notifyService.notify("¡Gracias por contribuir en la web! ¡A por el siguiente!", "success")
     }

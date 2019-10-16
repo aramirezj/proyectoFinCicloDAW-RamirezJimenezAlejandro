@@ -1,18 +1,19 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit} from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
-import { Quizz } from '../modelo/Quizz';
-import { QuizzService } from '../services/quizz.service';
+import { Subscription } from 'rxjs/internal/Subscription';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
+import { MatDialogConfig, MatDialog } from '@angular/material/dialog';
+import { DialogboxComponent } from '../dialogbox/dialogbox.component';
+
+import { AuthService } from '../services/auth.service';
+import { FileService } from '../services/file.service';
+import { QuizzService } from '../services/quizz.service';
+
+import { Quizz } from '../modelo/Quizz';
 import { Respuesta } from '../modelo/Respuesta';
 import { Pregunta } from '../modelo/Pregunta';
 import { Solucion } from '../modelo/Solucion';
-import { MatDialogConfig, MatDialog } from '@angular/material/dialog';
-import { DialogboxComponent } from '../dialogbox/dialogbox.component';
-import { AuthService } from '../services/auth.service';
 
-import { FileService } from '../services/file.service';
-import * as $ from 'jquery';
-import { Subscription } from 'rxjs/internal/Subscription';
 @Component({
   selector: 'app-ver-quizz',
   templateUrl: './ver-quizz.component.html',
@@ -28,16 +29,15 @@ export class VerQuizzComponent implements OnInit {
   solucionado: Solucion
   downloadURL: any
   urlShare: string
-  urlImg:string|any
+  urlImg: string | any
   quizzForm: FormGroup
-  subsRouter:Subscription
-  subsRouter2:Subscription
+  subsRouter: Subscription
   constructor(
     private authService: AuthService, //Usado en vista
     private quizzService: QuizzService,
     private router: ActivatedRoute,
     private fb: FormBuilder,
-    private fileService:FileService,
+    private fileService: FileService,
     public dialog: MatDialog
   ) {
     this.resultado = false;
@@ -49,7 +49,7 @@ export class VerQuizzComponent implements OnInit {
     this.subsRouter = this.router.queryParams.subscribe(() => {
       this.rawid = window.location.href;
       if (this.rawid == null) {
-        this.subsRouter2 = this.router.params.subscribe((params) => {
+        this.router.params.subscribe((params) => {
           this.rawid = params['id'];
           this.getQuizz();
         });
@@ -58,9 +58,8 @@ export class VerQuizzComponent implements OnInit {
       }
     });
   }
-  ngOnDestroy(){
+  ngOnDestroy() {
     this.subsRouter.unsubscribe();
-    this.subsRouter2.unsubscribe();
   }
 
   generaFormulario() {
@@ -74,34 +73,21 @@ export class VerQuizzComponent implements OnInit {
 
   }
 
-  onSubmit() {
-    
+  calcularGanador(): number {
     let totales: Array<number> = [];
     let id = 0;
     let ganador = 0;
     let foundWinner = false;
     let cp = this.quizz.preguntas.length;
-
-    let prerespondidas = $(".activado");
+    let respondidas: Array<Respuesta> = [];
+    for (let pregunta of this.quizz.preguntas) {
+      respondidas.push(pregunta.eleccion);
+    }
 
     for (let x = 1; x <= cp; x++) {
       totales[x] = 0;
     }
-    let preguntas: Array<Pregunta> = this.quizz.preguntas;
-    for (let i = 0; i < cp; i++) {
-      for (let j = 0; j < preguntas[i].respuestas.length; j++) {
-        let p1 = preguntas[i].respuestas[j].enunciado.trim();
-        let p2 = prerespondidas[i].childNodes[0].textContent.trim();
-        if (p1 == p2) {
-          preguntas[i].eleccion = preguntas[i].respuestas[j];
-        }
-      }
-    }
 
-    let respondidas: Array<Respuesta> = []
-    for (let pregunta of preguntas) {
-      respondidas.push(pregunta.eleccion);
-    }
     for (let respuesta of respondidas) {
       for (let afinidad of respuesta.afinidades) {
         totales[afinidad.ids] = +afinidad.cantidad + +totales[afinidad.ids]
@@ -117,18 +103,17 @@ export class VerQuizzComponent implements OnInit {
     if (foundWinner) {
       id--;
     }
-    this.solucionado = this.quizz.soluciones[id];
+    return id;
+  }
+
+  onSubmit() {
+    this.solucionado = this.quizz.soluciones[this.calcularGanador()];
     this.urlImg = this.fileService.obtenerUrl(this.solucionado.image);
 
     this.resultado = true;
 
     let preUrl = window.location.href;
     this.urlShare = "https://twitter.com/intent/tweet?text=¡Obtuve%20" + this.solucionado.titulo + "!%20" + preUrl + " vía @hasquiz";
-
-    setTimeout(() => {
-      $(".mat-card-header-text")[0].style.width = "100%";
-      $(".mat-card-header-text")[0].style.margin = "0";
-    }, 100);
   }
 
   getQuizz() {
@@ -143,19 +128,20 @@ export class VerQuizzComponent implements OnInit {
         }
       })
   }
-  seleccion(id) {
-    let long = this.quizz.preguntas[id[0]].respuestas.length;
-    for (let i = 0; i < long; i++) {
-      let ele = "#" + id[0] + i;
-      $(ele).addClass("desactivado");
-      $(ele).removeClass("activado");
+  seleccion(pregunta: Pregunta, respuesta: Respuesta) {
+
+
+    pregunta.eleccion = respuesta;
+    let verdad = true;
+    for (let pregunta of this.quizz.preguntas) {
+      if (pregunta.eleccion == null) {
+        verdad = false;
+      }
     }
-    $("#" + id).removeClass("desactivado");
-    $("#" + id).addClass("activado");
-    let totalRespondidas = $(".activado").length;
-    if (totalRespondidas == this.quizz.preguntas.length) {
+    if (verdad) {
       this.onSubmit();
     }
+
   }
   openDialog() {
     const dialogConfig = new MatDialogConfig();
@@ -181,6 +167,13 @@ export class VerQuizzComponent implements OnInit {
     if (accion) {
       this.quizzService.reportarQuiz(this.id).subscribe();
     }
+  }
+
+  reiniciaQuiz(){
+    for(let pregunta of this.quizz.preguntas){
+      pregunta.eleccion=null;
+    }
+    this.resultado=false;
   }
 
 

@@ -12,6 +12,10 @@ mat-icon {
   //color: $naranjaRetro !important;
   font-size: 1.25em;
 }
+::ng-deep .mat-card-header-text{
+  width: 100%!important;
+  margin:0%!important;
+}
 
 .desactivado {
   background-color: rgb(88, 87, 87) !important;
