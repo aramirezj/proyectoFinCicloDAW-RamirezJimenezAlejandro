@@ -10,13 +10,12 @@ import { Respuesta } from '../modelo/Respuesta';
 import { Afinidad } from '../modelo/Afinidad';
 import { Quizz } from '../modelo/Quizz';
 import { NotifyService } from '../services/notify.service';
-import * as $ from 'jquery';
 import { ErrorStateMatcher } from '@angular/material';
 import { Section } from '../moderacion/moderacion.component';
 import { FileService } from '../services/file.service';
 import { isPlatformBrowser } from '@angular/common';
 import { NgxImageCompressService } from 'ngx-image-compress';
-import { Observable } from 'rxjs';
+import { Observable } from 'rxjs/Observable';
 
 @Component({
   selector: 'app-create-quizz',
@@ -68,6 +67,7 @@ export class CreateQuizzComponent implements OnInit {
 
   public files: Array<File>;
   public file: File;
+  private srcFiles: Array<string>;
   private names: Array<string> = [];
 
   constructor(
@@ -80,8 +80,8 @@ export class CreateQuizzComponent implements OnInit {
     private fileService: FileService,
     private imageCompress: NgxImageCompressService
   ) {
-
     this.files = [];
+    this.srcFiles = [];
     this.max = 0;
     this.verdades = [];
     this.learray = [];
@@ -151,27 +151,24 @@ export class CreateQuizzComponent implements OnInit {
       var myReader: FileReader = new FileReader();
       myReader.onloadend = (e) => {
         b64 = myReader.result;
+        this.srcFiles[(posicion - 1)] = b64;
         this.b64toBlob(b64, file.type).subscribe(resp => {
           let fileNormal = this.fileService.blobToFile(resp, "temp");
           let fileReady = this.fileService.prepareFile(fileNormal);
           this.files[posicion] = fileReady;
           this.names[posicion] = fileReady.name;
           if (!banner) {
-            let destino: any = $("#img" + (posicion - 1))[0];
             var reader = new FileReader();
             reader.onload = function (event) {
               let target: any = event.target;
-              destino.src = target.result;
             };
             reader.readAsDataURL(fileReady);
             this.errores.splice(this.errores.indexOf("si" + (posicion)))
-            console.log(this.errores)
-            let button = $("#si" + (posicion))[0];
-           // button.className = "fileUpload btn btn-success"
           }
         })
       }
       myReader.readAsDataURL(file);
+
     } else {
       this.notifyService.notify("Los formatos aceptados son PNG,JPG,JPEG", "error");
     }
@@ -430,16 +427,6 @@ export class CreateQuizzComponent implements OnInit {
 
   compruebaValidaciones() {
     this.errores = this.findInvalidControlsRecursive(this.quizzForm);
-    for (let error of this.errores) {
-      for (let i = 1; i <= this.quizzForm.get("cs").value; i++) {
-        if (error == "si" + i) {
-          let button = $("#si" + i)[0];
-          //button.className = "fileUpload btn btn-success error"
-
-        }
-      }
-    }
-    console.log(this.errores)
     this.quizzForm.markAllAsTouched();
     this.estado = !this.quizzForm.invalid;
     let minimo = this.compruebaRespuestasMinimas();

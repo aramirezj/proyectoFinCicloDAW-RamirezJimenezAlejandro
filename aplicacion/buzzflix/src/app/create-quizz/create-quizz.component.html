@@ -121,11 +121,12 @@
                         *ngIf="quizzForm.get('st'+(i+1)).hasError('maxlength') && quizzForm.get('st'+(i+1)).touched">
                         El máximo de caracteres es <strong>50</strong>
                       </mat-error>
+                      
                       <input type="text" style="display:none" class="form-control" placeholder="Imagen de la solución"
                         readonly>
                       <div class="input-group-btn">
                         <span style="margin-top: 2vh;" 
-                        [className]="'fileUpload btn btn-success ' + (this.errores.indexOf('si'+i)!= 1 ? 'error' : '')"
+                        [className]="'fileUpload btn btn-success ' + (errores.indexOf('si'+(i+1)) != -1 ? 'error' : '')"
                          [id]="generaId('si',i)">
                           <span class="upl">Subir imagen</span>
                           <input type="file"  class="upload up" accept="image/*" (change)="onFileChanged($event,i)"
@@ -134,7 +135,7 @@
                       </div>
                       <mat-error *ngIf="this.errores.indexOf(generaId('si',i))!=-1">La imagen es obligatoria</mat-error>
                       <br>
-                      <img mat-card-image style="color:black" [id]="'img'+i" >
+                      <img *ngIf="this.srcFiles[i]" mat-card-image style="color:black" [src]="this.srcFiles[i]" >
                     </mat-card-title>
                   </mat-card-header>
                   <mat-card-content>
