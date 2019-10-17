@@ -56,16 +56,13 @@ export class QuizzComponent implements OnInit {
     };
     dialogConfig.disableClose = true;
     dialogConfig.autoFocus = true;
-
     dialogConfig.data = {
       id: 1,
       title: '¿Estas seguro de querer borrarlo? De la incineradora no lo saca nadie.'
     };
-
     const dialogRef = this.dialog.open(DialogboxComponent, dialogConfig);
     dialogRef.afterClosed().subscribe(
       data => this.borrar(data)
-
     );
   }
 

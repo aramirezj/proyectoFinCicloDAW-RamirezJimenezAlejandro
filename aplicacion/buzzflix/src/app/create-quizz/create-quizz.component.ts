@@ -16,7 +16,8 @@ import { FileService } from '../services/file.service';
 import { isPlatformBrowser } from '@angular/common';
 import { NgxImageCompressService } from 'ngx-image-compress';
 import { Observable } from 'rxjs/Observable';
-
+import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
+import { DialogboxComponent } from '../dialogbox/dialogbox.component';
 @Component({
   selector: 'app-create-quizz',
   templateUrl: './create-quizz.component.html',
@@ -78,7 +79,8 @@ export class CreateQuizzComponent implements OnInit {
     private bar: NgProgress,
     private notifyService: NotifyService,
     private fileService: FileService,
-    private imageCompress: NgxImageCompressService
+    private imageCompress: NgxImageCompressService,
+    public dialog: MatDialog
   ) {
     this.files = [];
     this.srcFiles = [];
@@ -157,35 +159,24 @@ export class CreateQuizzComponent implements OnInit {
           let fileReady = this.fileService.prepareFile(fileNormal);
           this.files[posicion] = fileReady;
           this.names[posicion] = fileReady.name;
-          if (!banner) {
-            var reader = new FileReader();
-            reader.onload = function (event) {
-              let target: any = event.target;
-            };
-            reader.readAsDataURL(fileReady);
-            this.errores.splice(this.errores.indexOf("si" + (posicion)))
-          }
+          let aBorrar = banner ? 'banner':'si'+posicion;
+          this.errores.splice(this.errores.indexOf(aBorrar),1)
         })
       }
       myReader.readAsDataURL(file);
-
     } else {
       this.notifyService.notify("Los formatos aceptados son PNG,JPG,JPEG", "error");
     }
   }
 
-
-
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
       this.quizCookie = JSON.parse(localStorage.getItem("quizCookie"));
-      console.log(this.quizCookie)
     }
     this.createForm();
   }
 
   createForm() {
-
     let titulo = this.quizCookie != null ? this.quizCookie.titulo : null;
     let cp = this.quizCookie != null ? this.quizCookie.preguntas.length : null;
     let cs = this.quizCookie != null ? this.quizCookie.soluciones.length : null;
@@ -237,8 +228,6 @@ export class CreateQuizzComponent implements OnInit {
     } else {
       this.notifyService.notify("El máximo de soluciones son 5, y el mínimo son 2", "error");
     }
-
-
   }
 
 
@@ -264,7 +253,7 @@ export class CreateQuizzComponent implements OnInit {
 
           grupo = [
             { name: titulo, control: new FormControl(tituloC, [Validators.required, Validators.maxLength(125)]) },
-            { name: cantidad, control: new FormControl(cantidadC, [Validators.required,Validators.min(2), Validators.max(20)]) }
+            { name: cantidad, control: new FormControl(cantidadC, [Validators.required, Validators.min(2), Validators.max(20)]) }
           ]
           grupo.forEach(f => {
             this.quizzForm.addControl(f.name, f.control);
@@ -432,7 +421,6 @@ export class CreateQuizzComponent implements OnInit {
     this.estado = !this.quizzForm.invalid;
     let minimo = this.compruebaRespuestasMinimas();
     if (this.estado && minimo) {
-      this.notifyService.notify("¡Hora de mostrarle esta maravilla al mundo!", "success");
       this.onSubmit();
     } else {
       this.notifyService.notify("No dejes ningún campo vacio", "error");
@@ -553,14 +541,22 @@ export class CreateQuizzComponent implements OnInit {
     if (this.quizzForm.value.privado) {
       privado = this.makeId();
     }
-    this.quizz = new Quizz(null, this.authService.getAuthUserId(), null, titulo, this.files[0].name, this.preparaSoluciones(), this.preparaPreguntas(), 0, null);
-    this.quizzService.createQuizz(this.quizz, this.files, privado)
-      .subscribe(resp => {
-        if (isPlatformBrowser(this.platformId)) {
-          localStorage.removeItem("quizCookie");
-        }
-        this.router.navigate(['perfil', this.authService.getAuthUserNickname()])
-      })
+
+    if (this.authService.isLoggedIn()) {
+      this.quizz = new Quizz(null, this.authService.getAuthUserId(), null, titulo, this.files[0].name, this.preparaSoluciones(), this.preparaPreguntas(), 0, null);
+      this.quizzService.createQuizz(this.quizz, this.files, privado)
+        .subscribe(resp => {
+          if (isPlatformBrowser(this.platformId)) {
+            localStorage.removeItem("quizCookie");
+          }
+          this.notifyService.notify("¡Hora de mostrarle esta maravilla al mundo!", "success");
+          this.router.navigate(['perfil', this.authService.getAuthUserNickname()])
+        })
+    }else{
+      this.openDialog();
+    }
+
+
   }
 
 
@@ -573,8 +569,8 @@ export class CreateQuizzComponent implements OnInit {
     }
   }
   reiniciaQuiz() {
-    this.quizzForm.reset();
     this.files = [];
+    this.srcFiles = [];
     this.errores = [];
     this.max = 0;
     this.maxp = 0;
@@ -597,9 +593,29 @@ export class CreateQuizzComponent implements OnInit {
     if (isPlatformBrowser(this.platformId)) {
       localStorage.removeItem("quizCookie");
     }
+    this.createForm();
   }
 
-  isSelected(nPregunta:number,nRespuesta:number,nAfinidad:number){
-    
+  openDialog() {
+    const dialogConfig = new MatDialogConfig();
+    dialogConfig.position = {
+
+    };
+    dialogConfig.disableClose = true;
+    dialogConfig.autoFocus = true;
+    dialogConfig.data = {
+      id: 1,
+      title: 'Para terminar de crear el quiz tienes que iniciar sesión, no te preocupes, cuando vuelvas estará aún aquí. (A excepción de las imagenes)'
+    };
+    const dialogRef = this.dialog.open(DialogboxComponent, dialogConfig);
+    dialogRef.afterClosed().subscribe(
+      data => this.aceptar(data)
+    );
+  }
+  aceptar(accion: Boolean) {
+    if (accion) {
+      this.guardaCookie();
+      this.router.navigate(['auth/login']);
+    }
   }
 }

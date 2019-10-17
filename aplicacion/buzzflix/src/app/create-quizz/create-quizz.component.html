@@ -47,7 +47,7 @@
                   readonly>
                 <input type="text" *ngIf="this.files[0]" [value]="this.files[0].name" class="form-control" readonly>
                 <div class="input-group-btn">
-                  <span class="fileUpload btn btn-success">
+                  <span [className]="'fileUpload btn btn-success ' + (errores.indexOf('banner') != -1 ? 'error' : '')">
                     <span class="upl" id="upload">Subir imagen</span>
                     <input type="file" class="upload up" accept="image/*" (change)="onFileChanged($event,100)"
                       formControlName="banner" id="up" />
@@ -215,11 +215,11 @@
                       </mat-error>
                       <div class="form-group afinidad-box" *ngFor="let x of [].constructor(this.maxs); let p = index">
                         <label for="exampleFormControlSelect1">Afinidad para '{{this.quizzForm.get('st'+(p+1)).value}}'</label>
-                        <select *ngIf="this.quizCookie==null" [id]="generaIdRR('p',i,'rs',n,'a',p)" [formControlName]="generaIdRR('p',i,'rs',n,'a',p)"
+                        <select *ngIf="this.quizCookie==null || this.quizCookie.preguntas[i].respuestas[(n-1)]==null " [id]="generaIdRR('p',i,'rs',n,'a',p)" [formControlName]="generaIdRR('p',i,'rs',n,'a',p)"
                           class="form-control" id="exampleFormControlSelect1">
-                          <option *ngFor="let q of [0,1,2,3,4,5,6,7,8,9,10]; let l = index" [selected]=isSelected(i,n,p) >{{q}}</option>
+                          <option *ngFor="let q of [0,1,2,3,4,5,6,7,8,9,10]; let l = index" >{{q}}</option>
                         </select>
-                        <select *ngIf="this.quizCookie!=null" [id]="generaIdRR('p',i,'rs',n,'a',p)" [formControlName]="generaIdRR('p',i,'rs',n,'a',p)"
+                        <select *ngIf="this.quizCookie!=null && this.quizCookie.preguntas[i].respuestas[(n-1)]!=null" [id]="generaIdRR('p',i,'rs',n,'a',p)" [formControlName]="generaIdRR('p',i,'rs',n,'a',p)"
                           class="form-control" id="exampleFormControlSelect1">
                           <option *ngFor="let q of [0,1,2,3,4,5,6,7,8,9,10]; let l = index" 
                           [selected]="this.quizCookie.preguntas[i].respuestas[(n-1)].afinidades[p].cantidad==q" >{{q}}</option>

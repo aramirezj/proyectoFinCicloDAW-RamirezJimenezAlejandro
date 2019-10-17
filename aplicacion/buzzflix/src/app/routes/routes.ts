@@ -42,7 +42,7 @@ export const ROUTES = [
         canActivate: [AuthedGuard]
     },
     {
-        path: 'crear/quizz',
+        path: 'crear/quiz',
         component: CreateQuizzComponent,
         canActivate: []
     },

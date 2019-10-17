@@ -31,7 +31,7 @@
 
       <span class="menu-spacer"></span>
       <a class="menuItem" mat-button [routerLink]="['ver/todos']">Todos los quizzes </a>
-      <a class="menuItem" mat-button [routerLink]="['crear/quizz']">Crear quiz </a>
+      <a class="menuItem" mat-button [routerLink]="['crear/quiz']">Crear quiz </a>
       <a class="menuItem" mat-button *ngIf="isLoggedIn()" [routerLink]="['moderacion']">Moderación </a>
       <a class="menuItem" mat-button *ngIf="!isLoggedIn()" [routerLink]="['auth/login']">Iniciar sesión </a>
       <button mat-icon-button [matMenuTriggerFor]="menu"
@@ -138,7 +138,7 @@
   <mat-sidenav #sidenav>
     <mat-nav-list>
       <a mat-list-item [routerLink]="['ver/todos']" (click)="sidenav.toggle()">Todos los quizzes</a>
-      <a mat-list-item [routerLink]="['crear/quizz']" (click)="sidenav.toggle()">Crear quiz</a>
+      <a mat-list-item [routerLink]="['crear/quiz']" (click)="sidenav.toggle()">Crear quiz</a>
       <a mat-list-item [routerLink]="['buscador']" (click)="sidenav.toggle()">Buscador</a>
       <a mat-list-item *ngIf="isLoggedIn()" [routerLink]="['moderacion']" (click)="sidenav.toggle()">Moderación </a>
       <button mat-menu-item *ngIf="isLoggedIn() && this.usuario"
