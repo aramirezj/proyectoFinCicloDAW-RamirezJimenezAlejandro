@@ -5,6 +5,9 @@ button {
   background-color: white;
   color: black;
 }
+button:hover{
+  background: white!important;
+}
 .checked {
   color: $naranjaRetro;
 }

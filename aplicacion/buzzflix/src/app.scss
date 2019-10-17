@@ -32,11 +32,16 @@ nav{
 opacity: 0.90;
 }
 .empty{
-  font-size: 1.8em;
+  font-size: 1em;
   font-weight: bold;
   background: $fondoSuave ;
   padding:1%;
   color:White;
+}
+.seccion {
+  color:white;
+  font-weight: bold;
+  text-align:center;
 }
 
 .navbar{

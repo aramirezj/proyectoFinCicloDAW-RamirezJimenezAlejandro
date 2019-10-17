@@ -26,7 +26,7 @@
 <div *ngIf="this.isLoaded && this.aBuscar!=null">
     <p class="empty">Resultados para ' {{this.aBuscar}} ' :</p>
     <div *ngIf="this.quizzes">
-        <p class="text-center seccion">Quizzes</p>
+        <p class="seccion">Quizzes</p>
         <div *ngIf="this.quizzes.length==0 && this.isLoaded">
             <p class="empty">Sin resultados.</p>
         </div>
@@ -37,7 +37,7 @@
         </div>
     </div>
     <div style="clear:both;"></div>
-    <p class="text-center seccion">Usuarios</p>
+    <p class="seccion">Usuarios</p>
     <div *ngIf="this.usuarios">
         <div *ngIf="this.usuarios.length==0" style="padding:1%">
             <p class="empty">Sin resultados.</p>

@@ -20,6 +20,7 @@ export class ExploradorComponent implements OnInit {
   totalQuizzes: number = 0;
   pageEvent: PageEvent;
   subsRouter: Subscription;
+  encabezado: string;
   constructor(
     private quizzService: QuizzService,
     private router: ActivatedRoute
@@ -37,7 +38,8 @@ export class ExploradorComponent implements OnInit {
   }
 
   getQuizzes() {
-    this.opcion = this.opcion == null ? "todos" : this.opcion;
+    this.opcion = (this.opcion == null || this.opcion == "todos") ? "todos" : this.opcion;
+    this.encabezado = this.opcion == "todos" ? "Quizzes de la web" : "Quizzes de los seguidos";
     this.quizzService.ObtenerQuizzes(this.opcion, this.inicio + "-" + this.quizporPagina)
       .subscribe(resp => {
         this.totalQuizzes = resp["total"];

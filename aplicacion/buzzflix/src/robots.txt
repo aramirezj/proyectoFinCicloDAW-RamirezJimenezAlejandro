@@ -1,0 +1,4 @@
+User-agent: googlebot
+Disallow: /environments/
+
+Sitemap: https://www.hasquiz.com/sitemap.xml
