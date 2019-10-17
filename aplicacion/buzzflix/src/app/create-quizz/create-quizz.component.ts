@@ -179,6 +179,7 @@ export class CreateQuizzComponent implements OnInit {
   ngOnInit() {
     if (isPlatformBrowser(this.platformId)) {
       this.quizCookie = JSON.parse(localStorage.getItem("quizCookie"));
+      console.log(this.quizCookie)
     }
     this.createForm();
   }
@@ -263,7 +264,7 @@ export class CreateQuizzComponent implements OnInit {
 
           grupo = [
             { name: titulo, control: new FormControl(tituloC, [Validators.required, Validators.maxLength(125)]) },
-            { name: cantidad, control: new FormControl(cantidadC, [Validators.required, Validators.max(20)]) }
+            { name: cantidad, control: new FormControl(cantidadC, [Validators.required,Validators.min(2), Validators.max(20)]) }
           ]
           grupo.forEach(f => {
             this.quizzForm.addControl(f.name, f.control);
@@ -570,6 +571,35 @@ export class CreateQuizzComponent implements OnInit {
     if (isPlatformBrowser(this.platformId)) {
       localStorage.setItem("quizCookie", JSON.stringify(quizCookie));
     }
+  }
+  reiniciaQuiz() {
+    this.quizzForm.reset();
+    this.files = [];
+    this.errores = [];
+    this.max = 0;
+    this.maxp = 0;
+    this.firstStep = false;
+    this.secondStep = false;
+    this.thirdStep = false;
+    this.verdades = [];
+    this.learray = [];
+    this.learray[0] = null;
+    this.verdades[0] = [];
+    for (let i = 0; i < 10; i++) {
+      this.verdades[i] = { creada: false, respuestas: [] };
+    }
+    for (let i = 0; i < 10; i++) {
+      for (let j = 0; j < 20; j++) {
+        this.verdades[i].respuestas[j] = { generado: false, mostrado: false };
+      }
 
+    }
+    if (isPlatformBrowser(this.platformId)) {
+      localStorage.removeItem("quizCookie");
+    }
+  }
+
+  isSelected(nPregunta:number,nRespuesta:number,nAfinidad:number){
+    
   }
 }

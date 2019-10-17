@@ -33,6 +33,7 @@
       <a class="menuItem" mat-button [routerLink]="['ver/todos']">Todos los quizzes </a>
       <a class="menuItem" mat-button [routerLink]="['crear/quizz']">Crear quiz </a>
       <a class="menuItem" mat-button *ngIf="isLoggedIn()" [routerLink]="['moderacion']">Moderación </a>
+      <a class="menuItem" mat-button *ngIf="!isLoggedIn()" [routerLink]="['auth/login']">Iniciar sesión </a>
       <button mat-icon-button [matMenuTriggerFor]="menu"
         aria-label="Example icon-button with a menu">
         <mat-icon>more_vert</mat-icon>

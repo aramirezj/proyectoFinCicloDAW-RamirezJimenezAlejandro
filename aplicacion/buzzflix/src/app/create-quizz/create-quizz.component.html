@@ -1,7 +1,7 @@
 <div class="row">
   <div class="col-md-12 box">
     <div class="panel-default">
-        <h1 class="seccion text-center">Creación de Quiz</h1>
+      <h1 class="seccion text-center">Creación de quiz</h1>
       <mat-accordion>
         <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
           <mat-expansion-panel-header>
@@ -24,7 +24,7 @@
           <div class="top-form">
             <mat-form-field class="example-full-width" style="width: 100%">
               <input matInput placeholder="Titulo del quiz" required formControlName="titulo"
-                [errorStateMatcher]="matcher"  pattern="[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ¿¡!?][A-Za-z0-9áéíóúÁÉÍÓÚñÑ¿¡!? ]*">
+                [errorStateMatcher]="matcher" pattern="[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ¿¡!?][A-Za-z0-9áéíóúÁÉÍÓÚñÑ¿¡!? ]*">
               <mat-hint>El nombre a mostrar en la web</mat-hint>
               <mat-error *ngIf="quizzForm.get('titulo').hasError('required') && quizzForm.get('titulo').touched">
                 El título es <strong>obligatorio</strong>
@@ -37,15 +37,14 @@
                 *ngIf="!quizzForm.get('titulo').hasError('required') && quizzForm.get('titulo').hasError('maxlength')">
                 El título no debe superar los <strong>75 caracteres</strong>
               </mat-error>
-              <mat-error
-                *ngIf="quizzForm.get('titulo').hasError('pattern')">
-                El título solo puede llevar  <strong>letras y números</strong>
+              <mat-error *ngIf="quizzForm.get('titulo').hasError('pattern')">
+                El título solo puede llevar <strong>letras y números</strong>
               </mat-error>
             </mat-form-field>
             <div class="form-group"><br>
               <div class="input-group">
-                <input type="text" *ngIf="this.files[0] == null" class="form-control"
-                  placeholder="Banner del quiz *" readonly>
+                <input type="text" *ngIf="this.files[0] == null" class="form-control" placeholder="Banner del quiz *"
+                  readonly>
                 <input type="text" *ngIf="this.files[0]" [value]="this.files[0].name" class="form-control" readonly>
                 <div class="input-group-btn">
                   <span class="fileUpload btn btn-success">
@@ -92,11 +91,14 @@
               </mat-checkbox>
             </div>
             <div class="form-group text-center">
+                
               <button *ngIf="firstStep" type="button" mat-raised-button color="primary"
                 (click)="generaSoluciones()">Generar
                 Soluciones</button>
               <button *ngIf="!firstStep" type="button" mat-raised-button color="primary" (click)="generaSoluciones()"
                 [disabled]="quizzForm.invalid">Generar Soluciones</button>
+                <button type="button" style="float:right;" mat-raised-button color="warn" (click)="reiniciaQuiz()" >Reiniciar Quiz</button>
+
             </div>
           </div>
           <!-- FORMULARIO DE SOLUCIONES -->
@@ -119,21 +121,21 @@
                         *ngIf="quizzForm.get('st'+(i+1)).hasError('maxlength') && quizzForm.get('st'+(i+1)).touched">
                         El máximo de caracteres es <strong>50</strong>
                       </mat-error>
-                      
+
                       <input type="text" style="display:none" class="form-control" placeholder="Imagen de la solución"
                         readonly>
                       <div class="input-group-btn">
-                        <span style="margin-top: 2vh;" 
-                        [className]="'fileUpload btn btn-success ' + (errores.indexOf('si'+(i+1)) != -1 ? 'error' : '')"
-                         [id]="generaId('si',i)">
+                        <span style="margin-top: 2vh;"
+                          [className]="'fileUpload btn btn-success ' + (errores.indexOf('si'+(i+1)) != -1 ? 'error' : '')"
+                          [id]="generaId('si',i)">
                           <span class="upl">Subir imagen</span>
-                          <input type="file"  class="upload up" accept="image/*" (change)="onFileChanged($event,i)"
+                          <input type="file" class="upload up" accept="image/*" (change)="onFileChanged($event,i)"
                             [formControlName]="generaId('si',i)" />
                         </span>
                       </div>
                       <mat-error *ngIf="this.errores.indexOf(generaId('si',i))!=-1">La imagen es obligatoria</mat-error>
                       <br>
-                      <img *ngIf="this.srcFiles[i]" mat-card-image style="color:black" [src]="this.srcFiles[i]" >
+                      <img *ngIf="this.srcFiles[i]" mat-card-image style="color:black" [src]="this.srcFiles[i]">
                     </mat-card-title>
                   </mat-card-header>
                   <mat-card-content>
@@ -212,10 +214,15 @@
                         El máximo de caracteres es <strong>70</strong>
                       </mat-error>
                       <div class="form-group afinidad-box" *ngFor="let x of [].constructor(this.maxs); let p = index">
-                        <label for="exampleFormControlSelect1">Afinidad {{this.quizzForm.get('st'+(p+1)).value}}</label>
-                        <select [id]="generaIdRR('p',i,'rs',n,'a',p)" [formControlName]="generaIdRR('p',i,'rs',n,'a',p)"
+                        <label for="exampleFormControlSelect1">Afinidad para '{{this.quizzForm.get('st'+(p+1)).value}}'</label>
+                        <select *ngIf="this.quizCookie==null" [id]="generaIdRR('p',i,'rs',n,'a',p)" [formControlName]="generaIdRR('p',i,'rs',n,'a',p)"
                           class="form-control" id="exampleFormControlSelect1">
-                          <option *ngFor="let q of [0,1,2,3,4,5,6,7,8,9,10]; let l = index">{{q}}</option>
+                          <option *ngFor="let q of [0,1,2,3,4,5,6,7,8,9,10]; let l = index" [selected]=isSelected(i,n,p) >{{q}}</option>
+                        </select>
+                        <select *ngIf="this.quizCookie!=null" [id]="generaIdRR('p',i,'rs',n,'a',p)" [formControlName]="generaIdRR('p',i,'rs',n,'a',p)"
+                          class="form-control" id="exampleFormControlSelect1">
+                          <option *ngFor="let q of [0,1,2,3,4,5,6,7,8,9,10]; let l = index" 
+                          [selected]="this.quizCookie.preguntas[i].respuestas[(n-1)].afinidades[p].cantidad==q" >{{q}}</option>
                         </select>
                       </div>
                       <div class="clear"></div>

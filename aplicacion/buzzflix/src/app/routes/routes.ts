@@ -44,7 +44,7 @@ export const ROUTES = [
     {
         path: 'crear/quizz',
         component: CreateQuizzComponent,
-        canActivate: [AuthGuard]
+        canActivate: []
     },
     {
         path: 'perfil/:nickname',
