@@ -5,7 +5,8 @@ export class Respuesta{
         public id:number,
         public enunciado:string,
         public madre:number,
-        public afinidades:Array<Afinidad>
+        public afinidades:Array<Afinidad>,
+        public correcta:boolean
     ){
         
     }

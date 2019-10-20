@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { UserService } from '../services/user.service';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
 import { Usuario } from '../modelo/Usuario';
-import { Quizz } from '../modelo/Quizz';
-import { QuizzService } from '../services/quizz.service';
+import { Quiz } from '../modelo/Quiz';
+import { QuizService } from '../services/quiz.service';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
 import { Subscription } from 'rxjs/internal/Subscription';
 
@@ -16,14 +16,14 @@ export class BuscadorComponent implements OnInit {
   busquedaForm: FormGroup;
   aBuscar: string;
   usuarios: Array<Usuario> = [];
-  quizzes: Array<Quizz> = [];
+  quizzes: Array<Quiz> = [];
   navigationSubscription;
   isLoaded: boolean = false;
   subsRouter: Subscription;
   constructor(
     private router2: Router,
     private router: ActivatedRoute,
-    private quizzService: QuizzService,
+    private QuizService: QuizService,
     private userService: UserService
   ) {
     this.isLoaded = false;
@@ -67,7 +67,7 @@ export class BuscadorComponent implements OnInit {
   }
 
   getQuizzes() {
-    this.quizzService.getQuizzes(this.aBuscar)
+    this.QuizService.getQuizzes(this.aBuscar)
       .subscribe(resp => {
         this.quizzes = resp;
         this.isLoaded = true;

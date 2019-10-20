@@ -159,7 +159,7 @@ export class AuthService {
         if (isPlatformBrowser(this.platformId)) {
             localStorage.removeItem("usuario");
             localStorage.removeItem("token");
-
+            localStorage.removeItem("quizCookie");
             /*this.OAuth.signOut().then(function () {
                 console.log('User signed out.');
               });*/

@@ -1,4 +1,4 @@
-import { Component, OnInit} from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { FormBuilder, FormGroup, FormControl, Validators } from '@angular/forms';
@@ -7,34 +7,34 @@ import { DialogboxComponent } from '../dialogbox/dialogbox.component';
 
 import { AuthService } from '../services/auth.service';
 import { FileService } from '../services/file.service';
-import { QuizzService } from '../services/quizz.service';
+import { QuizService } from '../services/quiz.service';
 
-import { Quizz } from '../modelo/Quizz';
+import { Quiz } from '../modelo/Quiz';
 import { Respuesta } from '../modelo/Respuesta';
 import { Pregunta } from '../modelo/Pregunta';
 import { Solucion } from '../modelo/Solucion';
 
 @Component({
-  selector: 'app-ver-quizz',
-  templateUrl: './ver-quizz.component.html',
-  styleUrls: ['./ver-quizz.component.scss']
+  selector: 'app-ver-quiz',
+  templateUrl: './ver-quiz.component.html',
+  styleUrls: ['./ver-quiz.component.scss']
 })
-export class VerQuizzComponent implements OnInit {
+export class VerQuizComponent implements OnInit {
   rawid: string
   id: number
-  backupQuizz: Quizz
-  quizz: Quizz
+  quiz: Quiz
   resultado: boolean
   isLoaded: boolean
   solucionado: Solucion
   downloadURL: any
   urlShare: string
   urlImg: string | any
-  quizzForm: FormGroup
+  quizForm: FormGroup
   subsRouter: Subscription
+  aciertos:number
   constructor(
     private authService: AuthService, //Usado en vista
-    private quizzService: QuizzService,
+    private quizService: QuizService,
     private router: ActivatedRoute,
     private fb: FormBuilder,
     private fileService: FileService,
@@ -42,7 +42,7 @@ export class VerQuizzComponent implements OnInit {
   ) {
     this.resultado = false;
     this.isLoaded = false;
-    this.quizzForm = this.fb.group({})
+    this.quizForm = this.fb.group({})
   }
 
   ngOnInit() {
@@ -63,13 +63,13 @@ export class VerQuizzComponent implements OnInit {
   }
 
   generaFormulario() {
-    let cp = this.quizz.preguntas.length;
+    let cp = this.quiz.preguntas.length;
     for (let i = 1; i <= cp; i++) {
       let name: string = "" + i;
-      this.quizzForm.addControl(name, new FormControl(null, []));
-      this.quizzForm.controls[name].setValidators([Validators.required]);
+      this.quizForm.addControl(name, new FormControl(null, []));
+      this.quizForm.controls[name].setValidators([Validators.required]);
     }
-    this.quizz.id = this.id
+    this.quiz.id = this.id
 
   }
 
@@ -78,9 +78,9 @@ export class VerQuizzComponent implements OnInit {
     let id = 0;
     let ganador = 0;
     let foundWinner = false;
-    let cp = this.quizz.preguntas.length;
+    let cp = this.quiz.preguntas.length;
     let respondidas: Array<Respuesta> = [];
-    for (let pregunta of this.quizz.preguntas) {
+    for (let pregunta of this.quiz.preguntas) {
       respondidas.push(pregunta.eleccion);
     }
 
@@ -106,23 +106,37 @@ export class VerQuizzComponent implements OnInit {
     return id;
   }
 
+  resultadoPuntuacion(): number {
+    this.aciertos = 0;
+    for (let pregunta of this.quiz.preguntas) {
+      if (pregunta.eleccion.correcta) {
+        this.aciertos++;
+      }
+    }
+    let porcentaje = Math.round((this.aciertos * 100) / this.quiz.preguntas.length);
+
+    return porcentaje == 100 ? 4 : porcentaje > 75 ? 3 : porcentaje > 50 ? 2 : porcentaje > 25 ? 1 : 0;
+  }
+
   onSubmit() {
-    this.solucionado = this.quizz.soluciones[this.calcularGanador()];
-    this.urlImg = this.fileService.obtenerUrl(this.solucionado.image);
+    if (this.quiz.tipo == 1) {
+      this.solucionado = this.quiz.soluciones[this.calcularGanador()];
+      this.urlImg = this.fileService.obtenerUrl(this.solucionado.image);
 
+    } else {
+      this.solucionado = this.quiz.soluciones[this.resultadoPuntuacion()];
+    }
     this.resultado = true;
-
     let preUrl = window.location.href;
     this.urlShare = "https://twitter.com/intent/tweet?text=¡Obtuve%20" + this.solucionado.titulo + "!%20" + preUrl + " vía @hasquiz";
   }
 
   getQuizz() {
-    this.quizzService.getQuizz(this.rawid)
+    this.quizService.getQuizz(this.rawid)
       .subscribe(resp => {
-        this.quizz = resp;
-        this.backupQuizz = resp;
-        if (this.quizz != null) {
-          this.id = this.quizz.id;
+        this.quiz = resp;
+        if (this.quiz != null) {
+          this.id = this.quiz.id;
           this.generaFormulario();
           this.isLoaded = true;
         }
@@ -130,10 +144,12 @@ export class VerQuizzComponent implements OnInit {
   }
   seleccion(pregunta: Pregunta, respuesta: Respuesta) {
 
+    if (this.quiz.tipo == 1 || pregunta.eleccion == null) {
+      pregunta.eleccion = respuesta;
+    }
 
-    pregunta.eleccion = respuesta;
     let verdad = true;
-    for (let pregunta of this.quizz.preguntas) {
+    for (let pregunta of this.quiz.preguntas) {
       if (pregunta.eleccion == null) {
         verdad = false;
       }
@@ -165,15 +181,15 @@ export class VerQuizzComponent implements OnInit {
 
   reportar(accion) {
     if (accion) {
-      this.quizzService.reportarQuiz(this.id).subscribe();
+      this.quizService.reportarQuiz(this.id).subscribe();
     }
   }
 
-  reiniciaQuiz(){
-    for(let pregunta of this.quizz.preguntas){
-      pregunta.eleccion=null;
+  reiniciaQuiz() {
+    for (let pregunta of this.quiz.preguntas) {
+      pregunta.eleccion = null;
     }
-    this.resultado=false;
+    this.resultado = false;
   }
 
 

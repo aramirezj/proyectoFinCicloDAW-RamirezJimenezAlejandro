@@ -450,13 +450,13 @@ router.post('/api/usuario/stats', listaValidaciones["stats"], (req, res) => {
 
 
 //Peticion para crear un quiz (PROTECTED)
-router.post('/api/creaQuizz', listaValidaciones["creaQuiz"], (req, res, next) => {
+router.post('/api/creaQuiz', listaValidaciones["creaQuiz"], (req, res, next) => {
   console.log("Petición para crear un quiz")
   if (!queryService.compruebaErrores(req, res)) {
     let permiso = tokenService.verificaToken(req.headers, res);
     if (permiso) {
-      const { creador, titulo, contenido, fecha, privado, banner } = req.body;
-      queryService.ejecutaConsulta("setQuiz", [creador, titulo, contenido, fecha, privado, banner], res, function (rows) {
+      const { creador, titulo, contenido, fecha, privado, banner,tipo } = req.body;
+      queryService.ejecutaConsulta("setQuiz", [creador, titulo, contenido, fecha, privado, banner,tipo], res, function (rows) {
         if (rows) {
           logroService.logroUsuarios(); //Logro 6
           res.send({ respuesta: rows.insertId });

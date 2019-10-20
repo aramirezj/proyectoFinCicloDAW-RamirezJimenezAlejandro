@@ -2,19 +2,19 @@ import { Observable } from 'rxjs';
 import { Injectable } from '@angular/core';
 import { AuthService } from './auth.service';
 import { CONFIG } from './../config/config';
-import { Quizz } from '../modelo/Quizz';
+import { Quiz } from '../modelo/Quiz';
 import { NotifyService } from './notify.service';
 import { RestService } from './rest.service';
 import { finalize } from 'rxjs/operators';
 import { NgProgress } from 'ngx-progressbar';
 import { FileService } from './file.service';
 @Injectable()
-export class QuizzService {
+export class QuizService {
     constructor(
         private authService: AuthService,
         private restService: RestService,
         private notifyService: NotifyService,
-        private fileService:FileService,
+        private fileService: FileService,
         private bar: NgProgress
     ) {
     }
@@ -42,7 +42,7 @@ export class QuizzService {
     }
 
     convierteModelo(rawQuiz: any) {
-        let quiz: Quizz = JSON.parse(rawQuiz.contenido)
+        let quiz: Quiz = JSON.parse(rawQuiz.contenido)
         return quiz;
     }
 
@@ -113,19 +113,18 @@ export class QuizzService {
 
     }
 
-    createQuizz(quizz: Quizz, files: File[], privado: string): Observable<any> {
+    createQuiz(quiz: Quiz, files: File[], privado: string): Observable<any> {
         this.bar.start();
         let id = this.authService.getAuthUserId();
         let fecha = new Date();
-        quizz.fechacreacion = fecha;
-        quizz.creador = id;
-        let prep = JSON.stringify(quizz);
-
-        let url = `${CONFIG.apiUrl}creaQuizz`;
+        quiz.fechacreacion = fecha;
+        quiz.creador = id;
+        let prep = JSON.stringify(quiz);
+        let url = `${CONFIG.apiUrl}creaQuiz`;
 
         return Observable.create(observer2 => {
             this.uploadImage(files).subscribe(resp => {
-                let body = { creador: this.authService.getAuthUserId(), titulo: quizz.titulo, contenido: prep, fecha: fecha, privado: privado, banner: resp };
+                let body = { creador: this.authService.getAuthUserId(), titulo: quiz.titulo, contenido: prep, fecha: fecha, privado: privado, banner: resp, tipo: quiz.tipo };
                 this.restService.peticionHttp(url, body).subscribe(response => {
                     this.bar.done();
                     observer2.next(response.respuesta)
@@ -136,7 +135,7 @@ export class QuizzService {
         })
     }
 
-    ObtenerQuizzes(opcion: string, cadena: string): Observable<Array<Quizz>> {
+    ObtenerQuizzes(opcion: string, cadena: string): Observable<Array<Quiz>> {
         let url = opcion == "todos" ? `${CONFIG.apiUrl}quizz/todos/${cadena}` :
             `${CONFIG.apiUrl}quizz/${this.authService.getAuthUserId()}/seguidos/${cadena}`
         return Observable.create(observer => {
@@ -147,7 +146,7 @@ export class QuizzService {
         });
     }
 
-    obtenerQuizzSeguidos(inicio: number, fin: number): Observable<Array<Quizz>> {
+    obtenerQuizzSeguidos(inicio: number, fin: number): Observable<Array<Quiz>> {
         let id = this.authService.getAuthUserId();
         let cadena = inicio + "-" + fin;
         let url = `${CONFIG.apiUrl}quizz/${id}/seguidos/${cadena}`;
@@ -160,7 +159,7 @@ export class QuizzService {
         });
     }
 
-    obtenerAllQuizz(inicio: number, fin: number): Observable<Array<Quizz>> {
+    obtenerAllQuizz(inicio: number, fin: number): Observable<Array<Quiz>> {
         let cadena = inicio + "-" + fin;
         let url = `${CONFIG.apiUrl}quizz/todos/${cadena}`;
 
@@ -172,20 +171,21 @@ export class QuizzService {
         });
     }
 
-    getQuizz(id: string): Observable<Quizz> {
+    getQuizz(id: string): Observable<Quiz> {
         let url = `${CONFIG.apiUrl}quizz/${this.resolveUrl(id)}`;
         return Observable.create(observer => {
             this.restService.peticionHttp(url).subscribe(response => {
                 let rawquiz = response.respuesta;
                 let quiz = JSON.parse(rawquiz.contenido);
                 quiz.id = rawquiz.id;
+                quiz.tipo = rawquiz.tipo;
                 observer.next(quiz)
                 observer.complete();
             })
         });
     }
 
-    getQuizzes(nombre: string): Observable<Array<Quizz>> {
+    getQuizzes(nombre: string): Observable<Array<Quiz>> {
         let url = `${CONFIG.apiUrl}quizzes/${nombre}`;
 
         return Observable.create(observer => {
@@ -198,7 +198,7 @@ export class QuizzService {
 
 
 
-    borraQuizz(quiz: Quizz, admin?: boolean): Observable<void> {
+    borraQuizz(quiz: Quiz, admin?: boolean): Observable<void> {
         let url = `${CONFIG.apiUrl}borraQuiz`;
         let body = { id: quiz.id, admin: admin };
 
@@ -215,7 +215,7 @@ export class QuizzService {
 
 
 
-    listaModeracion(): Observable<Array<Quizz>> {
+    listaModeracion(): Observable<Array<Quiz>> {
 
         let url = `${CONFIG.apiUrl}quizz/moderacion`;
         return Observable.create(observer => {
@@ -226,7 +226,7 @@ export class QuizzService {
         });
     }
 
-    moderaQuizz(quiz: Quizz, accion: boolean): Observable<boolean> { //PROTEGIDO
+    moderaQuizz(quiz: Quiz, accion: boolean): Observable<boolean> { //PROTEGIDO
         let url = `${CONFIG.apiUrl}modera`;
         let body = { quizz: quiz.id, usuario: this.authService.getAuthUserId(), decision: accion };
         return Observable.create(observer => {
@@ -240,7 +240,7 @@ export class QuizzService {
         });
 
     }
-    cambiaTipo(quiz: Quizz, privado: boolean): Observable<void> {
+    cambiaTipo(quiz: Quiz, privado: boolean): Observable<void> {
         let text = privado ? Math.random().toString(36).substring(2) : null;
         let url = `${CONFIG.apiUrl}cambiaTipo`;
         let body = { quizz: quiz.id, privado: text };

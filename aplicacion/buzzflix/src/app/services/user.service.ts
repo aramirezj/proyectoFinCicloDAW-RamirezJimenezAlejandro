@@ -4,7 +4,7 @@ import { AuthService } from './auth.service';
 import { CONFIG } from './../config/config';
 import { Usuario } from '../modelo/Usuario';
 import { NgProgress } from 'ngx-progressbar';
-import { Quizz } from '../modelo/Quizz';
+import { Quiz } from '../modelo/Quiz';
 import { NotifyService } from './notify.service';
 
 import { finalize } from 'rxjs/operators';
@@ -55,7 +55,7 @@ export class UserService {
         });
     }
 
-    getUserWall(nickname: string): Observable<Array<Quizz>> {
+    getUserWall(nickname: string): Observable<Array<Quiz>> {
         let url = `${CONFIG.apiUrl}usuario/${nickname}/wall`;
         return Observable.create(observer => {
             this.restService.peticionHttp(url).subscribe(response => {

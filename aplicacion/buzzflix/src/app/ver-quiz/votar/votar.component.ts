@@ -1,5 +1,5 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
-import { QuizzService } from 'src/app/services/quizz.service';
+import { QuizService } from 'src/app/services/quiz.service';
 import { Router } from '@angular/router';
 
 @Component({
@@ -19,7 +19,7 @@ export class VotarComponent implements OnInit {
   inputName: string;
 
   constructor(
-    private quizzService: QuizzService,
+    private QuizService: QuizService,
     private router: Router,
   ) {
 
@@ -34,12 +34,8 @@ export class VotarComponent implements OnInit {
       itemId: this.itemId,
       rating: rating
     });
-    this.quizzService.votaQuizz(this.id, this.rating)
+    this.QuizService.votaQuizz(this.id, this.rating)
       .subscribe((resp) => {
-        if (resp) {
-          this.router.navigate(['ver/todos'])
-        }
-
       })
 
   }

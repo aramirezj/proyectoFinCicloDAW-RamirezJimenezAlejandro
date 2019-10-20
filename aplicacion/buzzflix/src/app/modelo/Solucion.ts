@@ -3,6 +3,7 @@ export class Solucion{
         public id:number,
         public titulo:string,
         public descripcion:string,
-        public image:string|any
+        public image:string|any,
+        public rango:number
     ){}
 }

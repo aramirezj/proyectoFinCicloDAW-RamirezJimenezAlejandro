@@ -8,7 +8,7 @@ quizzes de la comunidad, compartirlos, y podrás crear los tuyos propios una vez
 </div>
 <div class="padreQuiz" *ngIf="quizzs && this.isLoaded">
   <div class="cajaQuiz" *ngFor="let quizz of quizzs">
-    <app-quizz [quizz]="quizz"></app-quizz>
+    <app-quiz [quizz]="quizz"></app-quiz>
   </div>
   <div style="clear:both;"></div>
   <mat-paginator [length]="this.totalQuizzes" [pageSize]="10" (page)="pageEvent = $event;muevoPagina()">

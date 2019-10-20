@@ -1,7 +1,16 @@
 <div class="row">
   <div class="col-md-12 box">
-    <div class="panel-default">
-      <h1 class="seccion text-center">Creación de quiz</h1>
+    <h1 class="seccion">Creación de quiz</h1>
+    <h2 class="empty text-center">Antes de empezar, tienes dos tipos de quizzes que puedes crear:</h2>
+    <div class="text-center">
+      <button type="button" mat-raised-button color="warn" (click)="openDialog(0)">Personalidad</button>
+      <button type="button" mat-raised-button color="warn" (click)="openDialog(1)">Puntuación</button>
+    </div>
+
+
+
+    <!-- Apartado de la creación de un Quiz de PERSONALIDAD -->
+    <div class="panel-default" *ngIf="this.quizPersonalidad">
       <mat-accordion>
         <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
           <mat-expansion-panel-header>
@@ -91,13 +100,14 @@
               </mat-checkbox>
             </div>
             <div class="form-group text-center">
-                
+
               <button *ngIf="firstStep" type="button" mat-raised-button color="primary"
                 (click)="generaSoluciones()">Generar
                 Soluciones</button>
               <button *ngIf="!firstStep" type="button" mat-raised-button color="primary" (click)="generaSoluciones()"
                 [disabled]="quizzForm.invalid">Generar Soluciones</button>
-                <button type="button" style="float:right;" mat-raised-button color="warn" (click)="reiniciaQuiz()" >Reiniciar Quiz</button>
+              <button type="button" style="float:right;" mat-raised-button color="warn"
+                (click)="reiniciaQuiz()">Reiniciar Quiz</button>
 
             </div>
           </div>
@@ -214,15 +224,19 @@
                         El máximo de caracteres es <strong>70</strong>
                       </mat-error>
                       <div class="form-group afinidad-box" *ngFor="let x of [].constructor(this.maxs); let p = index">
-                        <label for="exampleFormControlSelect1">Afinidad para '{{this.quizzForm.get('st'+(p+1)).value}}'</label>
-                        <select *ngIf="this.quizCookie==null || this.quizCookie.preguntas[i].respuestas[(n-1)]==null " [id]="generaIdRR('p',i,'rs',n,'a',p)" [formControlName]="generaIdRR('p',i,'rs',n,'a',p)"
+                        <label for="exampleFormControlSelect1">Afinidad para
+                          '{{this.quizzForm.get('st'+(p+1)).value}}'</label>
+                        <select *ngIf="this.quizCookie==null || this.quizCookie.preguntas[i].respuestas[(n-1)]==null "
+                          [id]="generaIdRR('p',i,'rs',n,'a',p)" [formControlName]="generaIdRR('p',i,'rs',n,'a',p)"
                           class="form-control" id="exampleFormControlSelect1">
-                          <option *ngFor="let q of [0,1,2,3,4,5,6,7,8,9,10]; let l = index" >{{q}}</option>
+                          <option *ngFor="let q of [0,1,2,3,4,5,6,7,8,9,10]; let l = index">{{q}}</option>
                         </select>
-                        <select *ngIf="this.quizCookie!=null && this.quizCookie.preguntas[i].respuestas[(n-1)]!=null" [id]="generaIdRR('p',i,'rs',n,'a',p)" [formControlName]="generaIdRR('p',i,'rs',n,'a',p)"
+                        <select *ngIf="this.quizCookie!=null && this.quizCookie.preguntas[i].respuestas[(n-1)]!=null"
+                          [id]="generaIdRR('p',i,'rs',n,'a',p)" [formControlName]="generaIdRR('p',i,'rs',n,'a',p)"
                           class="form-control" id="exampleFormControlSelect1">
-                          <option *ngFor="let q of [0,1,2,3,4,5,6,7,8,9,10]; let l = index" 
-                          [selected]="this.quizCookie.preguntas[i].respuestas[(n-1)].afinidades[p].cantidad==q" >{{q}}</option>
+                          <option *ngFor="let q of [0,1,2,3,4,5,6,7,8,9,10]; let l = index"
+                            [selected]="this.quizCookie.preguntas[i].respuestas[(n-1)].afinidades[p].cantidad==q">{{q}}
+                          </option>
                         </select>
                       </div>
                       <div class="clear"></div>
@@ -236,10 +250,208 @@
 
         </form>
       </div>
+      <div class="form-group text-center">
+        <button *ngIf="thirdStep" type="button" class="btn btn-success" (click)="compruebaValidaciones()">Guardar
+          Quizz</button>
+      </div>
     </div>
-    <div class="form-group text-center">
-      <button *ngIf="thirdStep" type="button" class="btn btn-success" (click)="compruebaValidaciones()">Guardar
-        Quizz</button>
+
+    <!--Fin creación Quiz Personalidad-->
+    <!--Inicio creación Quiz Puntuación-->
+    <div class="panel-default" *ngIf="this.quizPuntuacion">
+      <!--Anotaciones y consejos-->
+      <mat-accordion>
+        <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+          <mat-expansion-panel-header>
+            <mat-panel-title>
+              Notas y consejos a la hora de crear un quiz:
+            </mat-panel-title>
+            <mat-panel-description>
+            </mat-panel-description>
+          </mat-expansion-panel-header>
+          <mat-list>
+            <mat-list-item *ngFor="let correcta of correctasPunt">
+              <mat-icon mat-list-icon>stars</mat-icon>
+              <h4 mat-line>{{correcta.name}}</h4>
+            </mat-list-item>
+          </mat-list>
+        </mat-expansion-panel>
+      </mat-accordion>
+      <!--Primer formulario-->
+      <div class="panel-body">
+
+        <form enctype="multipart/form-data" [formGroup]="this.quizFormPunt">
+          <div class="top-form">
+            <mat-form-field class="example-full-width" style="width: 100%">
+              <input matInput placeholder="Titulo del quiz" required formControlName="titulo"
+                [errorStateMatcher]="matcher" pattern="[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ¿¡!?][A-Za-z0-9áéíóúÁÉÍÓÚñÑ¿¡!? ]*">
+              <mat-hint>El nombre a mostrar en la web</mat-hint>
+              <mat-error *ngIf="quizFormPunt.get('titulo').hasError('required') && quizFormPunt.get('titulo').touched">
+                El título es <strong>obligatorio</strong>
+              </mat-error>
+              <mat-error
+                *ngIf="!quizFormPunt.get('titulo').hasError('required') && quizFormPunt.get('titulo').hasError('minlength')">
+                El título debe tener al menos <strong>10 caracteres</strong>
+              </mat-error>
+              <mat-error
+                *ngIf="!quizFormPunt.get('titulo').hasError('required') && quizFormPunt.get('titulo').hasError('maxlength')">
+                El título no debe superar los <strong>75 caracteres</strong>
+              </mat-error>
+              <mat-error *ngIf="quizFormPunt.get('titulo').hasError('pattern')">
+                El título solo puede llevar <strong>letras y números</strong>
+              </mat-error>
+            </mat-form-field>
+            <div class="form-group"><br>
+              <div class="input-group">
+                <input type="text" *ngIf="this.files[0] == null" class="form-control" placeholder="Banner del quiz *"
+                  readonly>
+                <input type="text" *ngIf="this.files[0]" [value]="this.files[0].name" class="form-control" readonly>
+                <div class="input-group-btn">
+                  <span [className]="'fileUpload btn btn-success ' + (errores.indexOf('banner') != -1 ? 'error' : '')">
+                    <span class="upl" id="upload">Subir imagen</span>
+                    <input type="file" class="upload up" accept="image/*" (change)="onFileChanged($event,100)"
+                      formControlName="banner" id="up" />
+                  </span>
+                </div>
+              </div>
+            </div>
+            <mat-form-field class="example-full-width" style="width:100%">
+              <input type="number" matInput placeholder="Nº preguntas" required formControlName="cp"
+                [errorStateMatcher]="matcher">
+              <mat-hint>Preguntas a responder</mat-hint>
+              <mat-error *ngIf="quizFormPunt.get('cp').hasError('required') && quizFormPunt.get('cp').touched">
+                La cantidad de preguntas es <strong>obligatoria</strong>
+              </mat-error>
+              <mat-error *ngIf="!quizFormPunt.get('cp').hasError('required') && quizFormPunt.get('cp').hasError('min')">
+                La cantidad de preguntas mínima son <strong>5</strong>
+              </mat-error>
+              <mat-error *ngIf="!quizFormPunt.get('cp').hasError('required') && quizFormPunt.get('cp').hasError('max')">
+                La cantidad de preguntas máxima son <strong>20</strong>
+              </mat-error>
+            </mat-form-field>
+            <div class="form-group">
+              <label style="display: block;margin-top:4vh;">Configuración</label>
+              <mat-checkbox formControlName="privado" style="font-size:0.9em!important;" (ngModel)="indeterminate"
+                [labelPosition]="labelPosition">
+                Quiz privado
+              </mat-checkbox>
+            </div>
+            <div class="form-group text-center">
+              <button [disabled]="quizFormPunt.invalid" type="button" mat-raised-button color="primary"
+                (click)="generaPreguntasPuntForm()">Generar
+                Preguntas</button>
+              <button type="button" style="float:right;" mat-raised-button color="warn"
+                (click)="reiniciaQuizPunt()">Reiniciar Quiz</button>
+            </div>
+          </div>
+
+          <div *ngIf="showPreguntas" class="preg-box text-center">
+            <h2 class="seccion">Preguntas</h2>
+            <!--Toda la logica en cuanto a la creación de PREGUNTAS-->
+            <div class="cajaPregunta" *ngFor="let pregunta of quizPunt.preguntas">
+              <div class="cont">
+                <p class="text-center apartado">Nº {{(pregunta.id+1)}}</p>
+                <div class="form-group">
+                  <input type="text" matInput class="form-control" placeholder="Enunciado"
+                    [formControlName]="'pt'+pregunta.id" [errorStateMatcher]="matcher">
+                  <mat-error
+                    *ngIf="quizFormPunt.get('pt'+pregunta.id).hasError('required') && quizFormPunt.get('pt'+pregunta.id).touched">
+                    El enunciado de la pregunta es <strong>obligatoria</strong>
+                  </mat-error>
+                  <mat-error
+                    *ngIf="quizFormPunt.get('pt'+pregunta.id).hasError('maxlength') && quizFormPunt.get('pt'+pregunta.id).touched">
+                    El máximo de caracteres es <strong>125</strong>
+                  </mat-error>
+                </div>
+                <div class="form-group">
+                  <input matInput type="number" class="form-control" placeholder="Cantidad respuestas"
+                    [formControlName]="'pcr'+pregunta.id" [errorStateMatcher]="matcher">
+                  <mat-error
+                    *ngIf="quizFormPunt.get('pcr'+pregunta.id).hasError('required') && quizFormPunt.get('pcr'+pregunta.id).touched">
+                    El campo es <strong>obligatorio</strong>
+                  </mat-error>
+                  <mat-error
+                    *ngIf="quizFormPunt.get('pcr'+pregunta.id).hasError('min') && quizFormPunt.get('pcr'+pregunta.id).touched">
+                    El mínimo de respuestas es <strong>2</strong>
+                  </mat-error>
+                  <mat-error
+                    *ngIf="quizFormPunt.get('pcr'+pregunta.id).hasError('max') && quizFormPunt.get('pcr'+pregunta.id).touched">
+                    El máximo de respuestas es <strong>20</strong>
+                  </mat-error>
+                </div>
+              </div>
+              <div class="form-group text-center">
+                <button style="margin-top:1vw;background-color: mediumvioletred;" type="button" mat-raised-button
+                  color="accent" (click)="generaRespuestasPunt(pregunta.id)"
+                  [disabled]="quizFormPunt.get('pcr'+pregunta.id).invalid || quizFormPunt.get('pt'+pregunta.id).invalid">Generar
+                  respuestas</button>
+              </div>
+              <!-- RESPUESTAS -->
+              <div *ngIf="pregunta.enunciado != null">
+                <div *ngFor="let respuesta of pregunta.respuestas" class="resp-box">
+                  <div class="resp-apar">
+                    <div class="form-group">
+                      <label>{{respuesta.id==0?"Respuesta correcta":"Respuesta incorrecta"}}</label>
+                      <input type="text" matInput class="form-control" placeholder="Respuesta"
+                        [formControlName]="'r'+respuesta.id+'p'+pregunta.id" [errorStateMatcher]="matcher">
+                      <mat-error
+                        *ngIf="quizFormPunt.get('r'+respuesta.id+'p'+pregunta.id).hasError('required') && quizFormPunt.get('r'+respuesta.id+'p'+pregunta.id).touched">
+                        El campo es <strong>obligatorio</strong>
+                      </mat-error>
+                      <mat-error
+                        *ngIf="quizFormPunt.get('r'+respuesta.id+'p'+pregunta.id).hasError('maxlength') && quizFormPunt.get('r'+respuesta.id+'p'+pregunta.id).touched">
+                        El máximo de caracteres es <strong>70</strong>
+                      </mat-error>
+                    </div>
+                  </div>
+                </div>
+                <div class="clear"></div>
+              </div>
+
+
+
+
+
+
+
+            </div>
+            <button type="button" mat-raised-button color="primary" (click)="generaSolucionesPuntForm()">Generar
+              Soluciones</button>
+          </div>
+
+
+
+          <div *ngIf="quizPunt!=null && quizPunt.soluciones!=null" class="text-center">
+            <h2 class="seccion">Soluciones</h2>
+            <h3 class="empty text-center" style="background: none;">Ahora, definiremos que mensaje le aparecerá al
+              usuario dependiendo de cuantas preguntas haya acertado:</h3>
+            <div class="solucionPunt text-center" *ngFor="let solucion of quizPunt.soluciones">
+              <div class="form-group">
+                <label *ngIf="solucion.id!=4">{{solucion.rango+"% - "+(solucion.rango+25)+"% acertado" }}</label>
+                <label *ngIf="solucion.id==4">{{solucion.rango+"% de acierto" }}</label>
+                <input type="text" matInput class="form-control" placeholder="Respuesta"
+                  [formControlName]="'sd'+solucion.id" [errorStateMatcher]="matcher">
+                <mat-error *ngIf="quizFormPunt.get('sd'+solucion.id).hasError('required') && quizFormPunt.get('sd'+solucion.id).touched">
+                  Los mensajes de la cantidad de aciertos es <strong>obligatoria</strong>
+                </mat-error>
+                <mat-error *ngIf="quizFormPunt.get('sd'+solucion.id).hasError('maxlength') && quizFormPunt.get('sd'+solucion.id).touched">
+                  El máximo de caracteres es <strong>125</strong>
+                </mat-error>
+              </div>
+            </div>
+            <button type="button" *ngIf="showPreguntas" mat-raised-button (click)="onSubmitPunt()">Terminar
+              quiz</button>
+          </div>
+
+
+
+
+
+
+        </form>
+      </div>
+
+
+
     </div>
   </div>
-</div>

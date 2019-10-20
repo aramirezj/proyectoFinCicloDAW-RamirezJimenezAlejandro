@@ -35,7 +35,8 @@ validaciones["creaQuiz"] = [
     check('titulo').isLength({ max: 75 }),
     check('titulo').matches(/^[\u00F1\u00d10-9A-Za-záéíóúÁÉÍÓÚ¡!?¿ ]*[\u00F1\u00d10-9A-Za-záéíóúÁÉÍÓÚ¡!?¿][\u00F1\u00d10-9A-Za-záéíóúÁÉÍÓÚ¡!?¿ ]*$/, 'g'),
     check('creador').isNumeric(),
-    check('contenido').isLength({ max: 20000 })
+    check('contenido').isLength({ max: 20000 }),
+    check('tipo').isNumeric()
 ];
 validaciones["reporte"] = [
     check('destino').isNumeric(),

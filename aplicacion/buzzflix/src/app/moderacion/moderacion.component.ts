@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
-import { Quizz } from '../modelo/Quizz';
-import { QuizzService } from '../services/quizz.service';
+import { Quiz } from '../modelo/Quiz';
+import { QuizService } from '../services/quiz.service';
 import { NotifyService } from '../services/notify.service';
 import { UserService } from '../services/user.service';
 import { FileService } from '../services/file.service';
@@ -29,7 +29,7 @@ export class ModeracionComponent{
       name: 'Que veas que solo hay una solución posible.'
     }
   ];
-  quizzes: Array<Quizz>
+  quizzes: Array<Quiz>
   rawquizzes
   indice: number = 0
   isLoaded: boolean = false;
@@ -37,7 +37,7 @@ export class ModeracionComponent{
   indiceImagenes: number = 0;
   isAdmin: boolean
   constructor(
-    private quizzService: QuizzService,
+    private QuizService: QuizService,
     private fileService:FileService,
     private notifyService: NotifyService,
     private userService: UserService
@@ -45,8 +45,8 @@ export class ModeracionComponent{
 
   ngOnInit() {
     this.quizzes = [];
-    let quizz: Quizz;
-    this.quizzService.listaModeracion()
+    let quizz: Quiz;
+    this.QuizService.listaModeracion()
       .subscribe(resp => {
         if (resp != null && resp.length>0) {
           this.rawquizzes=resp;
@@ -85,7 +85,7 @@ export class ModeracionComponent{
   }
 
   juzga(decision: boolean) {
-    this.quizzService.moderaQuizz(this.quizzes[this.indice], decision)
+    this.QuizService.moderaQuizz(this.quizzes[this.indice], decision)
     .subscribe();
     this.indice++;
     if (this.indice == this.quizzes.length) {

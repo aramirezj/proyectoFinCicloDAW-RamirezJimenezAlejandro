@@ -8,7 +8,7 @@ import { NotifyService } from './services/notify.service';
 import { RestService } from './services/rest.service';
 import { UserService } from './services/user.service'
 import { FollowService } from './services/follow.service';
-import { QuizzService } from './services/quizz.service';
+import { QuizService } from './services/quiz.service';
 
 //Componentes de la aplicación
 import { AppComponent } from './app.component';
@@ -19,13 +19,13 @@ import { ProfileComponent } from './profile/profile.component';
 import { WallComponent } from './profile/wall/wall.component';
 import { EditProfileComponent } from './profile/edit-profile/edit-profile.component';
 import { FollowComponent } from './profile/follow/follow.component';
-import { CreateQuizzComponent } from './create-quizz/create-quizz.component';
-import { QuizzComponent } from './quizz/quizz.component';
-import { VerQuizzComponent } from './ver-quizz/ver-quizz.component';
+import { CreateQuizComponent } from './create-quiz/create-quiz.component';
+import { QuizComponent } from './quiz/quiz.component';
+import { VerQuizComponent } from './ver-quiz/ver-quiz.component';
 import { ExploradorComponent } from './explorador/explorador.component';
 import { MatPaginatorIntlCro } from './explorador/explorador.component';
 import { UsuarioComponent } from './usuario/usuario.component';
-import { VotarComponent } from './ver-quizz/votar/votar.component';
+import { VotarComponent } from './ver-quiz/votar/votar.component';
 import { DialogboxComponent } from './dialogbox/dialogbox.component';
 import { ModeracionComponent } from './moderacion/moderacion.component';
 import { NotFoundComponent } from './not-found/not-found.component';
@@ -109,9 +109,9 @@ registerLocaleData(localePy, 'es');
     WallComponent,
     EditProfileComponent,
     FollowComponent,
-    CreateQuizzComponent,
-    QuizzComponent,
-    VerQuizzComponent,
+    CreateQuizComponent,
+    QuizComponent,
+    VerQuizComponent,
     ExploradorComponent,
     UsuarioComponent,
     VotarComponent,
@@ -144,7 +144,7 @@ registerLocaleData(localePy, 'es');
   ],
   exports: [RouterModule],
   providers: [
-    AuthWeb, AuthService, AuthGuard, AuthedGuard, QuizzService, NotifyService, UserService, FollowService,
+    AuthWeb, AuthService, AuthGuard, AuthedGuard, QuizService, NotifyService, UserService, FollowService,
     RestService, FileService, AngularFireStorage,
     { provide: MatPaginatorIntl, useClass: MatPaginatorIntlCro },
     { provide: ErrorStateMatcher, useClass: ShowOnDirtyErrorStateMatcher },

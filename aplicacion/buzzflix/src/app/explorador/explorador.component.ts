@@ -1,6 +1,6 @@
 import { Component, OnInit, Injectable } from '@angular/core';
-import { Quizz } from '../modelo/Quizz';
-import { QuizzService } from '../services/quizz.service';
+import { Quiz } from '../modelo/Quiz';
+import { QuizService } from '../services/quiz.service';
 import { MatPaginatorIntl, PageEvent } from '@angular/material/paginator';
 import { ActivatedRoute } from '@angular/router';
 import { Subscription } from 'rxjs/internal/Subscription';
@@ -12,7 +12,7 @@ import { Subscription } from 'rxjs/internal/Subscription';
 })
 export class ExploradorComponent implements OnInit {
   opcion: string
-  quizzs: Array<Quizz>
+  quizzs: Array<Quiz>
   isLoaded: boolean = false;
   inicio: number = 0;
   fin: number = 3;
@@ -22,7 +22,7 @@ export class ExploradorComponent implements OnInit {
   subsRouter: Subscription;
   encabezado: string;
   constructor(
-    private quizzService: QuizzService,
+    private QuizService: QuizService,
     private router: ActivatedRoute
   ) {
 
@@ -40,7 +40,7 @@ export class ExploradorComponent implements OnInit {
   getQuizzes() {
     this.opcion = (this.opcion == null || this.opcion == "todos") ? "todos" : this.opcion;
     this.encabezado = this.opcion == "todos" ? "Quizzes de la web" : "Quizzes de los seguidos";
-    this.quizzService.ObtenerQuizzes(this.opcion, this.inicio + "-" + this.quizporPagina)
+    this.QuizService.ObtenerQuizzes(this.opcion, this.inicio + "-" + this.quizporPagina)
       .subscribe(resp => {
         this.totalQuizzes = resp["total"];
         this.quizzs = resp["cont"].length > 0 ? resp["cont"] : null;

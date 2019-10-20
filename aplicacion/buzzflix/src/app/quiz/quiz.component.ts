@@ -1,16 +1,16 @@
 import { Component, OnInit, Input } from '@angular/core';
 import { Usuario } from '../modelo/Usuario';
-import { QuizzService } from '../services/quizz.service';
+import { QuizService } from '../services/quiz.service';
 import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
 import { DialogboxComponent } from '../dialogbox/dialogbox.component';
 import { AuthService } from '../services/auth.service';
 import { FileService } from '../services/file.service';
 @Component({
-  selector: 'app-quizz',
-  templateUrl: './quizz.component.html',
-  styleUrls: ['./quizz.component.scss']
+  selector: 'app-quiz',
+  templateUrl: './quiz.component.html',
+  styleUrls: ['./quiz.component.scss']
 })
-export class QuizzComponent implements OnInit {
+export class QuizComponent implements OnInit {
   id: number
   idaux: number
   clase: string = "fa fa-star"
@@ -23,7 +23,7 @@ export class QuizzComponent implements OnInit {
   urlShare: string;
   urlName: string;
   constructor(
-    private quizzService: QuizzService,
+    private QuizService: QuizService,
     private authService: AuthService,
     private fileService:FileService,
     public dialog: MatDialog
@@ -40,7 +40,7 @@ export class QuizzComponent implements OnInit {
     this.quizz.image = this.quizz.image == null ? "hehexd.jpg" : this.fileService.obtenerUrl(this.quizz.image);
 
     this.urlClick = this.quizz.privado != null ? this.quizz.privado : this.id;
-    this.urlName = this.quizz.privado != null ? this.quizzService.buildUrl(this.quizz.titulo, this.quizz.privado) : this.quizzService.buildUrl(this.quizz.titulo, this.quizz.id);
+    this.urlName = this.quizz.privado != null ? this.QuizService.buildUrl(this.quizz.titulo, this.quizz.privado) : this.QuizService.buildUrl(this.quizz.titulo, this.quizz.id);
 
     if (this.quizz.privado != null) {
       this.quizz.titulo = this.quizz.titulo + " (Quiz privado)";
@@ -68,7 +68,7 @@ export class QuizzComponent implements OnInit {
 
   borrar(accion) {
     if (accion) {
-      this.quizzService.borraQuizz(this.quizz).subscribe();
+      this.QuizService.borraQuizz(this.quizz).subscribe();
       this.quizz = null;
     }
   }
@@ -78,7 +78,7 @@ export class QuizzComponent implements OnInit {
       privado = true;
     }
     this.quizz.id = this.id;
-    this.quizzService.cambiaTipo(this.quizz, privado)
+    this.QuizService.cambiaTipo(this.quizz, privado)
       .subscribe();
   }
 
