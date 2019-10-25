@@ -58,7 +58,7 @@ import { ScrollToModule } from '@nicky-lenaers/ngx-scroll-to';
 import { CookieLawModule } from 'angular2-cookie-law';
 import { ImageCropperModule } from 'ngx-image-cropper';
 import { NgxImageCompressService } from 'ngx-image-compress';
-
+import {RoundProgressModule} from 'angular-svg-round-progressbar';
 //Redes sociales
 import { GoogleLoginProvider, FacebookLoginProvider, AuthService, AuthServiceConfig } from 'angular-6-social-login';
 
@@ -140,6 +140,7 @@ registerLocaleData(localePy, 'es');
     BrowserTransferStateModule,
     CookieLawModule,
     ImageCropperModule,
+    RoundProgressModule,
     AppMaterialModule
   ],
   exports: [RouterModule],

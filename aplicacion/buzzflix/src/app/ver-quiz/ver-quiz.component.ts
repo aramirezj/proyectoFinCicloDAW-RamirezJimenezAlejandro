@@ -32,6 +32,7 @@ export class VerQuizComponent implements OnInit {
   quizForm: FormGroup
   subsRouter: Subscription
   aciertos:number
+  porcentaje:number
   constructor(
     private authService: AuthService, //Usado en vista
     private quizService: QuizService,
@@ -114,7 +115,7 @@ export class VerQuizComponent implements OnInit {
       }
     }
     let porcentaje = Math.round((this.aciertos * 100) / this.quiz.preguntas.length);
-
+    this.porcentaje = porcentaje;
     return porcentaje == 100 ? 4 : porcentaje > 75 ? 3 : porcentaje > 50 ? 2 : porcentaje > 25 ? 1 : 0;
   }
 

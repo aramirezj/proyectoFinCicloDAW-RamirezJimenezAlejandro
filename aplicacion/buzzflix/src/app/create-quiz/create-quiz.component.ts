@@ -73,8 +73,8 @@ export class CreateQuizComponent implements OnInit {
   private srcFiles: Array<string>;
   private names: Array<string> = [];
 
-  private quizPersonalidad: boolean = false;
-  private quizPuntuacion: boolean = false;
+  public quizPersonalidad: boolean = false;
+  public quizPuntuacion: boolean = false;
 
   //Atributos Quiz Puntuacion
   quizFormPunt: FormGroup; //Formulario

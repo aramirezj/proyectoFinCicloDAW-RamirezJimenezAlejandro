@@ -62,15 +62,24 @@
   <mat-card *ngIf="resultado" class="example-card">
     <mat-card-header>
       <mat-card-title class="mat-card-header-text">{{quiz.titulo}}
-      
+
       </mat-card-title>
     </mat-card-header>
     <mat-card-content>
 
-        ¡Obtuviste {{this.aciertos}} de {{this.quiz.preguntas.length}}!
-        <p class="descSolu">
-            {{this.solucionado.descripcion}}
-          </p>
+      ¡Obtuviste {{this.aciertos}} de {{this.quiz.preguntas.length}}!
+      <div class="progress-wrapper">
+        <round-progress style="margin: auto;" [current]="this.aciertos" [max]="this.quiz.preguntas.length" [color]="'#5a458d'"
+          [background]="'#eaeaea'" [radius]="100" [stroke]="40" [semicircle]="false" [rounded]="true"
+          [clockwise]="true" [responsive]="false" [duration]="2000" [animation]="'easeInOutQuart'"
+          [animationDelay]="0">
+        </round-progress>
+        <div class="text">{{this.porcentaje}}%</div>
+      </div>
+      <p class="descSolu">
+        {{this.solucionado.descripcion}}
+      </p>
+      
     </mat-card-content>
     <mat-card-actions>
 

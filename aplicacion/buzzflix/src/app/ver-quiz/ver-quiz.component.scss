@@ -1,5 +1,21 @@
 @import "../../variables.scss";
 
+.progress-wrapper{
+  position: relative;
+  margin:5vh!important;
+}
+
+.progress-wrapper .text{
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  -webkit-transform: translateY(-50%);
+  text-align: center;
+  width: 100%;
+  z-index: 1;
+  font-weight: bold;
+  font-size: 6vh;
+}
 //Apartado de las preguntas
 .clear {
   clear: both;
