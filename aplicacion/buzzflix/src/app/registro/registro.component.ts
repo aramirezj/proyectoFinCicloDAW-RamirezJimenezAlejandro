@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService as AuthWeb } from '../services/auth.service';
 import { FormControl, Validators, FormGroup } from '@angular/forms';
-import { ErrorStateMatcher } from '@angular/material';
+import { ErrorStateMatcher, MatSnackBar } from '@angular/material';
 import { AuthService, GoogleLoginProvider } from 'angular-6-social-login';
 import { socialLoginService } from '../services/socialLogin.service';
 import { Socialusers } from '../modelo/SocialUsers';
@@ -23,7 +23,8 @@ export class RegistroComponent implements OnInit {
     public OAuth: AuthService,
     private userService: UserService,
     private socialLoginService: socialLoginService,
-    private router: Router
+    private router: Router,
+    private snackBar: MatSnackBar
   ) { }
 
   ngOnInit() {
@@ -61,6 +62,8 @@ export class RegistroComponent implements OnInit {
       this.authWeb.register(this.registroForm.get('nombre').value, this.registroForm.get('nickname').value, this.registroForm.get('email').value, this.registroForm.get('password').value)
         .subscribe((verdad) => {
         })
+    } else {
+      this.snackBar.open('Comprueba que todos los campos son validos', "Cerrar", { duration: 4000, panelClass: 'snackBarWrong' });
     }
   }
 

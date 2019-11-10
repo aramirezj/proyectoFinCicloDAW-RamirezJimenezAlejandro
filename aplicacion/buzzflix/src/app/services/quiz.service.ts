@@ -8,6 +8,7 @@ import { RestService } from './rest.service';
 import { finalize } from 'rxjs/operators';
 import { NgProgress } from 'ngx-progressbar';
 import { FileService } from './file.service';
+import { MatSnackBar } from '@angular/material';
 @Injectable()
 export class QuizService {
     constructor(
@@ -15,7 +16,8 @@ export class QuizService {
         private restService: RestService,
         private notifyService: NotifyService,
         private fileService: FileService,
-        private bar: NgProgress
+        private bar: NgProgress,
+        private snackBar:MatSnackBar
     ) {
     }
 
@@ -104,7 +106,8 @@ export class QuizService {
         } else {
             return Observable.create(observer => {
                 this.restService.peticionHttp(url, body).subscribe(response => {
-                    this.notifyService.notify("Has votado correctamente, ¡Gracias!", "success");
+                    this.snackBar.open('Has votado correctamente. ¡Gracias!', "Cerrar", { duration: 21000, panelClass: 'snackBarSuccess' });
+                    //this.notifyService.notify("Has votado correctamente, ¡Gracias!", "success");
                     observer.next(true)
                     observer.complete();
                 })

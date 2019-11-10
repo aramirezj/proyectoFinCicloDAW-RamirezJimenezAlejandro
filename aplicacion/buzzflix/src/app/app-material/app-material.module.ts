@@ -11,6 +11,8 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatButtonModule } from '@angular/material/button';
+import {MatSnackBarModule} from '@angular/material/snack-bar';
+import {MatSliderModule} from '@angular/material/slider';
 
 @NgModule({
   declarations: [],
@@ -28,7 +30,9 @@ import { MatButtonModule } from '@angular/material/button';
     MatListModule,
     MatCheckboxModule,
     MatIconModule,
-    MatExpansionModule
+    MatExpansionModule,
+    MatSnackBarModule,
+    MatSliderModule
   ]
 })
 export class AppMaterialModule { }

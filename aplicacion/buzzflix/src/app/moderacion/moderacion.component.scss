@@ -1,5 +1,7 @@
-@import "../../variables.scss";
-
+@import "../../estilos/variables.scss";
+*{
+  margin:auto;
+}
 .box {
   font-size: 1.75em;
   padding: 1.5%;
@@ -117,18 +119,26 @@ button {
   font-size: 4vh;
   padding: 3vh;
 }
-
+.soluciones{
+  margin:auto;
+  width: 100%;
+}
 .example-card {
-  background-color: #cbddd6 !important;
+  background-color: $fondoWeb !important;
   color: black;
-  max-width: 500px;
+  width: 300px;
+  max-width: 300px;
   margin-bottom: 2vh;
 }
-.example-card:nth-child(even) {
+.pers:nth-child(even) {
   float: left;
 }
-.example-card:nth-child(odd) {
+.pers:nth-child(odd) {
   float: right;
+}
+.punt{
+  float:left;
+  margin:1vh;
 }
 
 img {
@@ -147,10 +157,8 @@ mat-card-title {
 }
 
 ::ng-deep .quizModera {
-  .card {
-    width: 50% !important;
+  .quiz {
     margin: auto !important;
-    margin-bottom: 2vh!important;
     float: none !important;
   }
   img {
@@ -158,5 +166,28 @@ mat-card-title {
     cursor: default;
   }
 }
+
+
+.progress-wrapper{
+  position: relative;
+  margin:5vh!important;
+}
+
+.progress-wrapper .text{
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  -webkit-transform: translateY(-50%);
+  text-align: center;
+  width: 100%;
+  z-index: 1;
+  font-weight: bold;
+  font-size: 2.5vh;
+}
+round-progress{
+  width: 100px!important;
+  height: 100px!important;
+}
+
 
 

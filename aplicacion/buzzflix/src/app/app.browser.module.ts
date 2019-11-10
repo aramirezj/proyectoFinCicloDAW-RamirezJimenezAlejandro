@@ -75,6 +75,13 @@ import { ROUTES } from './routes/routes';
 //Fecha Española
 import { registerLocaleData } from '@angular/common';
 import localePy from '@angular/common/locales/es-PY';
+import { BarraNavegacionComponent } from './barra-navegacion/barra-navegacion.component';
+import { LayoutModule } from '@angular/cdk/layout';
+import { MatToolbarModule } from '@angular/material/toolbar';
+import { MatButtonModule } from '@angular/material/button';
+import { MatSidenavModule } from '@angular/material/sidenav';
+import { MatIconModule } from '@angular/material/icon';
+import { MatListModule } from '@angular/material/list';
 
 
 
@@ -121,7 +128,8 @@ registerLocaleData(localePy, 'es');
     LogrosComponent,
     InfolegalComponent,
     ForgetComponent,
-    BuscadorComponent
+    BuscadorComponent,
+    BarraNavegacionComponent
   ],
   imports: [
     BrowserModule.withServerTransition({
@@ -141,7 +149,13 @@ registerLocaleData(localePy, 'es');
     CookieLawModule,
     ImageCropperModule,
     RoundProgressModule,
-    AppMaterialModule
+    AppMaterialModule,
+    LayoutModule,
+    MatToolbarModule,
+    MatButtonModule,
+    MatSidenavModule,
+    MatIconModule,
+    MatListModule
   ],
   exports: [RouterModule],
   providers: [

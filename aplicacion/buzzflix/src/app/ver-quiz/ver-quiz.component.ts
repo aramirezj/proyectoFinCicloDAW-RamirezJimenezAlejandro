@@ -52,10 +52,10 @@ export class VerQuizComponent implements OnInit {
       if (this.rawid == null) {
         this.router.params.subscribe((params) => {
           this.rawid = params['id'];
-          this.getQuizz();
+          this.getQuiz();
         });
       } else {
-        this.getQuizz();
+        this.getQuiz();
       }
     });
   }
@@ -132,7 +132,7 @@ export class VerQuizComponent implements OnInit {
     this.urlShare = "https://twitter.com/intent/tweet?text=¡Obtuve%20" + this.solucionado.titulo + "!%20" + preUrl + " vía @hasquiz";
   }
 
-  getQuizz() {
+  getQuiz() {
     this.quizService.getQuizz(this.rawid)
       .subscribe(resp => {
         this.quiz = resp;

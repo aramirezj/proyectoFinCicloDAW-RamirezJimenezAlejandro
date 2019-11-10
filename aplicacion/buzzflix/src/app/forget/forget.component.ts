@@ -4,6 +4,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, FormControl, Validators} from '@angular/forms';
 import { NotifyService } from '../services/notify.service';
 import { Subscription } from 'rxjs/internal/Subscription';
+import { MatSnackBar } from '@angular/material';
 
 @Component({
   selector: 'app-forget',
@@ -19,7 +20,8 @@ export class ForgetComponent implements OnInit {
     private authService: AuthService,
     private notifyService: NotifyService,
     private routerMV: Router,
-    private router: ActivatedRoute
+    private router: ActivatedRoute,
+    private snackBar:MatSnackBar
   ) {
     this.mensaje = "Le enviaremos un correo a su dirección para restablecer la contraseña.";
   }
@@ -68,6 +70,8 @@ export class ForgetComponent implements OnInit {
           }
 
         })
+    }else{
+      this.snackBar.open('Comprueba que todos los campos son validos', "Cerrar", { duration: 4000, panelClass: 'snackBar' });
     }
   }
 

@@ -13,7 +13,7 @@ export interface Section {
   templateUrl: './moderacion.component.html',
   styleUrls: ['./moderacion.component.scss']
 })
-export class ModeracionComponent{
+export class ModeracionComponent {
   panelOpenState = false;
   correctas: Section[] = [
     {
@@ -38,7 +38,7 @@ export class ModeracionComponent{
   isAdmin: boolean
   constructor(
     private QuizService: QuizService,
-    private fileService:FileService,
+    private fileService: FileService,
     private notifyService: NotifyService,
     private userService: UserService
   ) { }
@@ -48,45 +48,38 @@ export class ModeracionComponent{
     let quizz: Quiz;
     this.QuizService.listaModeracion()
       .subscribe(resp => {
-        if (resp != null && resp.length>0) {
-          this.rawquizzes=resp;
-          
+        if (resp != null && resp.length > 0) {
+          this.rawquizzes = resp;
           for (let i = 0; i < resp.length; i++) {
-            
+
             quizz = JSON.parse(resp[i]["contenido"]);
             quizz.id = resp[i].id;
             quizz.titulo = resp[i].titulo;
             this.quizzes.push(quizz);
           }
-          for (let i = 0; i < this.quizzes[0].soluciones.length; i++) {
-            let preurl = this.quizzes[0].soluciones[i].image;
-            let newurl = this.fileService.obtenerUrl(preurl);
-            this.imagenes.push(newurl);
-          }
-
-          for (let i = 0; i < this.quizzes[0].preguntas.length; i++) {
-            for (let j = 0; j < this.quizzes[0].preguntas[i].respuestas.length; j++) {
-              for (let a = 0; a < this.quizzes[0].preguntas[i].respuestas[j].afinidades.length; a++) {
-              }
+          if (this.quizzes[0].tipo == 1) {
+            for (let i = 0; i < this.quizzes[0].soluciones.length; i++) {
+              let preurl = this.quizzes[0].soluciones[i].image;
+              let newurl = this.fileService.obtenerUrl(preurl);
+              this.imagenes.push(newurl);
             }
           }
-
         } else {
           this.quizzes = null
         }
         this.isLoaded = true;
       })
     this.userService.isAdmin()
-    .subscribe(resp => {
-      this.isAdmin=resp;
-    });
-    
-    
+      .subscribe(resp => {
+        this.isAdmin = resp;
+      });
+
+
   }
 
   juzga(decision: boolean) {
     this.QuizService.moderaQuizz(this.quizzes[this.indice], decision)
-    .subscribe();
+      .subscribe();
     this.indice++;
     if (this.indice == this.quizzes.length) {
       this.notifyService.notify("¡Gracias por contribuir en la web! Ya no quedan más para moderar, ¿Por qué no creas el tuyo propio?", "success")

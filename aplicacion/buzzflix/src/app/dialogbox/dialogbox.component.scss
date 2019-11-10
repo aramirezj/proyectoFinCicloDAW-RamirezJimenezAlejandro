@@ -1,0 +1,5 @@
+@import "../../estilos/colores.scss";
+::ng-deep mat-dialog-container{
+    background-color: $fondoWeb!important;
+    height: 100%;
+}

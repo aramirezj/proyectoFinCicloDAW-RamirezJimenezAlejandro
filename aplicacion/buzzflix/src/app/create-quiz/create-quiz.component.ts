@@ -10,7 +10,7 @@ import { Respuesta } from '../modelo/Respuesta';
 import { Afinidad } from '../modelo/Afinidad';
 import { Quiz } from '../modelo/Quiz';
 import { NotifyService } from '../services/notify.service';
-import { ErrorStateMatcher } from '@angular/material';
+import { ErrorStateMatcher, MatSnackBar } from '@angular/material';
 import { Section } from '../moderacion/moderacion.component';
 import { FileService } from '../services/file.service';
 import { isPlatformBrowser } from '@angular/common';
@@ -94,7 +94,8 @@ export class CreateQuizComponent implements OnInit {
     private notifyService: NotifyService,
     private fileService: FileService,
     private imageCompress: NgxImageCompressService,
-    public dialog: MatDialog
+    public dialog: MatDialog,
+    private snackBar: MatSnackBar
   ) {
   }
 
@@ -227,38 +228,46 @@ export class CreateQuizComponent implements OnInit {
 
   //Generación de las soluciones al pulsar el boton
   generaSoluciones(cookie?: boolean) {
-    this.aux = this.quizzForm.get('cs').value;
-    this.quizzForm.value.privado;
-    if (this.aux > 1 && this.aux < 6) {
-      this.reseteaCondRespuestas();
-      this.secondStep = false;
-      this.bar.start();
-      let grupo: any
-      this.aux = cookie ? this.quizCookie.soluciones.length : this.aux;
-      for (let i = 1; i <= this.aux; i++) {
-        let titulo: string = "st" + i;
-        let descripcion: string = "sd" + i;
-        let image: string = "si" + i;
 
-        let tituloC = cookie ? this.quizCookie.soluciones[(i - 1)].titulo : null;
-        let descripcionC = cookie ? this.quizCookie.soluciones[(i - 1)].descripcion : null;
 
-        grupo = [
-          { name: titulo, control: new FormControl(tituloC, [Validators.required, Validators.maxLength(50)]) },
-          { name: descripcion, control: new FormControl(descripcionC, [Validators.maxLength(125)]) },
-          { name: image, control: new FormControl(null, [Validators.required]) },
-        ]
-        grupo.forEach(f => {
-          this.quizzForm.addControl(f.name, f.control)
-          this.quizzForm.controls[f.name].updateValueAndValidity();
-        });
+    if (!this.quizzForm.invalid) {
+      this.aux = this.quizzForm.get('cs').value;
+      this.quizzForm.value.privado;
+      if (this.aux > 1 && this.aux < 6) {
+        this.reseteaCondRespuestas();
+        this.secondStep = false;
+        this.bar.start();
+        let grupo: any
+        this.aux = cookie ? this.quizCookie.soluciones.length : this.aux;
+        for (let i = 1; i <= this.aux; i++) {
+          let titulo: string = "st" + i;
+          let descripcion: string = "sd" + i;
+          let image: string = "si" + i;
+
+          let tituloC = cookie ? this.quizCookie.soluciones[(i - 1)].titulo : null;
+          let descripcionC = cookie ? this.quizCookie.soluciones[(i - 1)].descripcion : null;
+
+          grupo = [
+            { name: titulo, control: new FormControl(tituloC, [Validators.required, Validators.maxLength(50)]) },
+            { name: descripcion, control: new FormControl(descripcionC, [Validators.maxLength(125)]) },
+            { name: image, control: new FormControl(null, [Validators.required]) },
+          ]
+          grupo.forEach(f => {
+            this.quizzForm.addControl(f.name, f.control)
+            this.quizzForm.controls[f.name].updateValueAndValidity();
+          });
+        }
+        this.firstStep = true;
+        this.max = this.quizzForm.get('cs').value;
+        this.bar.done();
+      } else {
+        this.notifyService.notify("El máximo de soluciones son 5, y el mínimo son 2", "error");
       }
-      this.firstStep = true;
-      this.max = this.quizzForm.get('cs').value;
-      this.bar.done();
-    } else {
-      this.notifyService.notify("El máximo de soluciones son 5, y el mínimo son 2", "error");
+    }else{
+      this.quizzForm.markAllAsTouched();
+      this.snackBar.open('Comprueba que todos los campos son validos', "Cerrar", { duration: 4000, panelClass: 'snackBarWrong' });
     }
+
   }
 
 

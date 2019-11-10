@@ -7,6 +7,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { NgProgress } from 'ngx-progressbar';
 import { FileService } from 'src/app/services/file.service';
 import { ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper';
+import { MatSnackBar } from '@angular/material';
 @Component({
   selector: 'app-edit-profile',
   templateUrl: './edit-profile.component.html',
@@ -26,8 +27,8 @@ export class EditProfileComponent implements OnInit {
     private fileService: FileService,
     private authService: AuthService,
     private userService: UserService,
-    private notifyService: NotifyService,
-    private bar: NgProgress
+    private bar: NgProgress,
+    private snackBar: MatSnackBar
   ) { }
 
   ngOnInit() {
@@ -46,17 +47,22 @@ export class EditProfileComponent implements OnInit {
 
   fileChangeEvent(event: any): void {
     this.imageChangedEvent = event;
-  }
 
+  }
+  loadImageFailed() {
+    this.imageChangedEvent = null;
+    this.snackBar.open('Los formatos aceptados son PNG,JPG,JPEG', "Cerrar", { duration: 5000, panelClass: 'snackBarWrong' });
+  }
   imageCropped(event: ImageCroppedEvent, origen?: boolean) {
     if (origen) {
+
       this.croppedImage = event.base64;
       let ext = event.file.type.split("/")[1];
       let rawFile = this.fileService.blobToFile(event.file, "avatar." + ext);
       this.file = this.fileService.prepareFile(rawFile);
       this.textInput = this.file != null ? this.file.name : "Sube aquí tu nuevo avatar.";
       if (this.file == null) {
-        this.notifyService.notify("Los formatos aceptados son PNG,JPG,JPEG", "error");
+        this.snackBar.open('Los formatos aceptados son PNG,JPG,JPEG', "Cerrar", { duration: 5000, panelClass: 'snackBarWrong' });
         this.profileForm.get("avatar").reset();
       }
     }
@@ -75,35 +81,43 @@ export class EditProfileComponent implements OnInit {
   editProfile(): void {
     let datos: any = [];
     let cambios = false;
-    if (this.authService.getAuthUser().name != this.profileForm.get("nombre").value) {
-      datos["nombre"] = this.profileForm.get("nombre").value;
-      cambios = true;
-    }
-    if (this.usuario.nickname != this.profileForm.get("nickname").value) {
-      datos["nickname"] = this.profileForm.get("nickname").value;
-      cambios = true;
-    }
-    if (this.profileForm.get("oldPass").value != null && this.profileForm.get("newPass").value != null) {
-      datos["oldpass"] = this.profileForm.get("oldPass").value;
-      datos["newpass"] = this.profileForm.get("newPass").value;
-      cambios = true;
+
+    if (!this.profileForm.invalid) {
+      if (this.authService.getAuthUser().name != this.profileForm.get("nombre").value) {
+        datos["nombre"] = this.profileForm.get("nombre").value;
+        cambios = true;
+      }
+      if (this.usuario.nickname != this.profileForm.get("nickname").value) {
+        datos["nickname"] = this.profileForm.get("nickname").value;
+        cambios = true;
+      }
+      if (this.profileForm.get("oldPass").value != null && this.profileForm.get("newPass").value != null) {
+        datos["oldpass"] = this.profileForm.get("oldPass").value;
+        datos["newpass"] = this.profileForm.get("newPass").value;
+        cambios = true;
+      }
+
+      if (this.file != null || this.file != undefined) {
+        datos["file"] = this.file;
+        cambios = true;
+        if (this.usuario.avatar != null || this.usuario.avatar != undefined) {
+          datos["oldfile"] = this.usuario.avatar;
+        }
+      }
+      if (this.profileForm.get('nickname').invalid) {
+        cambios = false;
+      }
+      if (cambios) {
+
+        this.bar.start();
+        this.userService.updateProfile(datos)
+          .subscribe();
+      }
+    }else{
+      this.snackBar.open('Comprueba los campos', "Cerrar", { duration: 4000, panelClass: 'snackBarWrong' });
     }
 
-    if (this.file != null || this.file != undefined) {
-      datos["file"] = this.file;
-      cambios = true;
-      if (this.usuario.avatar != null || this.usuario.avatar != undefined) {
-        datos["oldfile"] = this.usuario.avatar;
-      }
-    }
-    if (this.profileForm.get('nickname').invalid) {
-      cambios = false;
-    }
-    if (cambios) {
-      this.bar.start();
-      this.userService.updateProfile(datos)
-        .subscribe();
-    }
+
   }
 
   onFileChange(event) {
@@ -111,7 +125,7 @@ export class EditProfileComponent implements OnInit {
     this.file = this.fileService.prepareFile(rawFile);
     this.textInput = this.file != null ? this.file.name : "Sube aquí tu nuevo avatar.";
     if (this.file == null) {
-      this.notifyService.notify("Los formatos aceptados son PNG,JPG,JPEG", "error");
+      this.snackBar.open('Los formatos aceptados son PNG,JPG,JPEG', "Cerrar", { duration: 5000, panelClass: 'snackBarWrong' });
       this.profileForm.get("avatar").reset();
     }
   }

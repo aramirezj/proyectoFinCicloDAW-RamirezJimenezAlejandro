@@ -1,7 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService as AuthWeb } from '../services/auth.service';
 import { FormControl, Validators, FormGroup } from '@angular/forms';
-import { ErrorStateMatcher } from '@angular/material';
+import { ErrorStateMatcher, MatSnackBar } from '@angular/material';
 import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService, GoogleLoginProvider } from 'angular-6-social-login';
 import { socialLoginService } from '../services/socialLogin.service';
@@ -28,7 +28,8 @@ export class LoginComponent implements OnInit {
     private socialLoginService: socialLoginService,
     private authService: AuthWeb,
     private router2: Router,
-    private router: ActivatedRoute
+    private router: ActivatedRoute,
+    private snackBar: MatSnackBar
   ) { }
 
   ngOnInit() {
@@ -37,7 +38,7 @@ export class LoginComponent implements OnInit {
       this.gestionaPagina();
     })
   }
-  ngOnDestroy(){
+  ngOnDestroy() {
     this.subsRouter.unsubscribe();
   }
 
@@ -96,6 +97,8 @@ export class LoginComponent implements OnInit {
             this.router2.navigate(['/ver/todos']);
           };
         })
+    } else {
+      this.snackBar.open('Comprueba que todos los campos son validos', "Cerrar", { duration: 4000, panelClass: 'snackBar' });
     }
   }
 

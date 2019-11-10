@@ -25,18 +25,18 @@ export class QuizComponent implements OnInit {
   constructor(
     private QuizService: QuizService,
     private authService: AuthService,
-    private fileService:FileService,
+    private fileService: FileService,
     public dialog: MatDialog
   ) { }
 
   ngOnInit() {
     this.id = this.quizz.id;
     this.isCreador = this.quizz.creador == this.authService.getAuthUserId() ? true : false;
-    this.usuario = new Usuario(this.quizz.creador,null,this.quizz.nickname,null);
+    this.usuario = new Usuario(this.quizz.creador, null, this.quizz.nickname, null);
     this.estrellas = this.quizz.estrellas / this.quizz.votantes;
     this.estrellas = isNaN(this.estrellas) ? 0 : Math.round(this.estrellas);
+    this.quizz.image = this.quizz.image == null ? JSON.parse(this.quizz.contenido).image : this.quizz.image;
 
-    this.quizz.image = JSON.parse(this.quizz.contenido).image;
     this.quizz.image = this.quizz.image == null ? "hehexd.jpg" : this.fileService.obtenerUrl(this.quizz.image);
 
     this.urlClick = this.quizz.privado != null ? this.quizz.privado : this.id;

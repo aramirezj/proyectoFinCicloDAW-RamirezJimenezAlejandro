@@ -1,96 +1,94 @@
-<div class="col-md-12 box" *ngIf="this.loaded">
-  <div class="panel panel-default">
-    <div class="panel-heading">
-      Editar perfil
-    </div>
-    <div class="panel-body">
-      <form class="example-form" [formGroup]="this.profileForm" (ngSubmit)="editProfile()">
-        <mat-form-field class="example-full-width">
-          <input matInput placeholder="Nombre" formControlName="nombre" [errorStateMatcher]="matcher"
-            pattern="[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ][A-Za-z0-9áéíóúÁÉÍÓÚñÑ _-]*" autocomplete="name">
-          <mat-hint></mat-hint>
-          <mat-error *ngIf="profileForm.get('nombre').hasError('required')">
-            El nombre es <strong>obligatorio</strong>
-          </mat-error>
-          <mat-error
-            *ngIf="!profileForm.get('nombre').hasError('required')  && profileForm.get('nombre').hasError('minlength')">
-            El nombre debe tener un mínimo de <strong>3 caracteres</strong>
-          </mat-error>
-          <mat-error
-            *ngIf="!profileForm.get('nombre').hasError('required')  && profileForm.get('nombre').hasError('maxlength')">
-            El nombre debe tener un máximo de <strong>20 caracteres</strong>
-          </mat-error>
-          <mat-error *ngIf="profileForm.get('nombre').hasError('pattern')">
-            Solo puede tener <strong>letras, números y guiones</strong>
-          </mat-error>
-        </mat-form-field>
-        <mat-form-field class="example-full-width">
-          <input (focusout)="checkUsed();" matInput placeholder="Nombre de usuario" formControlName="nickname"
-            [errorStateMatcher]="matcher" pattern="[a-zA-Z0-9][A-Za-z0-9_-]*" autocomplete="nickname">
-          <mat-hint>Será el nombre que verán los otros usuarios</mat-hint>
-          <mat-error *ngIf="profileForm.get('nickname').hasError('required')">
-            El nombre de usuario es <strong>obligatorio</strong>
-          </mat-error>
-          <mat-error
-            *ngIf="!profileForm.get('nickname').hasError('required') && profileForm.get('nickname').hasError('minlength')">
-            El nombre de usuario tiene un mínimo de <strong>4 caracteres</strong>
-          </mat-error>
-          <mat-error
-            *ngIf="!profileForm.get('nickname').hasError('required') && profileForm.get('nickname').hasError('maxlength')">
-            El nombre de usuario tiene un máximo de <strong>15 caracteres</strong>
-          </mat-error>
-          <mat-error *ngIf="profileForm.get('nickname').hasError('incorrect')">
-            El nombre de usuario ya esta usado.
-          </mat-error>
-          <mat-error *ngIf="profileForm.get('nickname').hasError('pattern')">
-            Solo puede tener <strong>letras, números y guiones</strong>
-          </mat-error>
-        </mat-form-field>
+<div class="containerForm">
+  <h3>Editar perfil</h3>
+  <div class="panel-body">
+    <form class="example-form" [formGroup]="this.profileForm" (ngSubmit)="editProfile()">
+      <mat-form-field class="example-full-width">
+        <input matInput placeholder="Nombre" formControlName="nombre" [errorStateMatcher]="matcher"
+          pattern="[a-zA-Z0-9áéíóúÁÉÍÓÚñÑ][A-Za-z0-9áéíóúÁÉÍÓÚñÑ _-]*" autocomplete="name">
+        <mat-hint></mat-hint>
+        <mat-error *ngIf="profileForm.get('nombre').hasError('required')">
+          El nombre es <strong>obligatorio</strong>
+        </mat-error>
+        <mat-error
+          *ngIf="!profileForm.get('nombre').hasError('required')  && profileForm.get('nombre').hasError('minlength')">
+          El nombre debe tener un mínimo de <strong>3 caracteres</strong>
+        </mat-error>
+        <mat-error
+          *ngIf="!profileForm.get('nombre').hasError('required')  && profileForm.get('nombre').hasError('maxlength')">
+          El nombre debe tener un máximo de <strong>20 caracteres</strong>
+        </mat-error>
+        <mat-error *ngIf="profileForm.get('nombre').hasError('pattern')">
+          Solo puede tener <strong>letras, números y guiones</strong>
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field class="example-full-width">
+        <input (focusout)="checkUsed();" matInput placeholder="Nombre de usuario" formControlName="nickname"
+          [errorStateMatcher]="matcher" pattern="[a-zA-Z0-9][A-Za-z0-9_-]*" autocomplete="nickname">
+        <mat-hint>Será el nombre que verán los otros usuarios</mat-hint>
+        <mat-error *ngIf="profileForm.get('nickname').hasError('required')">
+          El nombre de usuario es <strong>obligatorio</strong>
+        </mat-error>
+        <mat-error
+          *ngIf="!profileForm.get('nickname').hasError('required') && profileForm.get('nickname').hasError('minlength')">
+          El nombre de usuario tiene un mínimo de <strong>4 caracteres</strong>
+        </mat-error>
+        <mat-error
+          *ngIf="!profileForm.get('nickname').hasError('required') && profileForm.get('nickname').hasError('maxlength')">
+          El nombre de usuario tiene un máximo de <strong>15 caracteres</strong>
+        </mat-error>
+        <mat-error *ngIf="profileForm.get('nickname').hasError('incorrect')">
+          El nombre de usuario ya esta usado.
+        </mat-error>
+        <mat-error *ngIf="profileForm.get('nickname').hasError('pattern')">
+          Solo puede tener <strong>letras, números y guiones</strong>
+        </mat-error>
+      </mat-form-field>
 
-        <mat-form-field class="example-full-width">
-          <input type="password" matInput placeholder="Contraseña antigua" formControlName="oldPass"
-            [errorStateMatcher]="matcher" autocomplete="current-password">
-          <mat-hint></mat-hint>
-          <mat-error *ngIf="profileForm.get('oldPass').hasError('minlength')">
-            La contraseña debe tener <strong>6 caracteres como mínimo</strong>
-          </mat-error>
-          <mat-error *ngIf="profileForm.get('oldPass').hasError('maxlength')">
-            La contraseña debe tener <strong>30 caracteres como máximo</strong>
-          </mat-error>
-          <mat-error *ngIf="profileForm.get('oldPass').hasError('required')">
-            La contraseña es <strong>obligatoria</strong>
-          </mat-error>
-        </mat-form-field>
-        <mat-form-field class="example-full-width">
-          <input type="password" matInput placeholder="Contraseña nueva" formControlName="newPass"
-            [errorStateMatcher]="matcher" autocomplete="new-password">
-          <mat-hint></mat-hint>
-          <mat-error *ngIf="profileForm.get('newPass').hasError('minlength')">
-            La contraseña debe tener <strong>6 caracteres como mínimo</strong>
-          </mat-error>
-          <mat-error *ngIf="profileForm.get('newPass').hasError('required')">
-            La contraseña es <strong>obligatoria</strong>
-          </mat-error>
-        </mat-form-field>
+      <mat-form-field class="example-full-width">
+        <input type="password" matInput placeholder="Contraseña antigua" formControlName="oldPass"
+          [errorStateMatcher]="matcher" autocomplete="current-password">
+        <mat-hint></mat-hint>
+        <mat-error *ngIf="profileForm.get('oldPass').hasError('minlength')">
+          La contraseña debe tener <strong>6 caracteres como mínimo</strong>
+        </mat-error>
+        <mat-error *ngIf="profileForm.get('oldPass').hasError('maxlength')">
+          La contraseña debe tener <strong>30 caracteres como máximo</strong>
+        </mat-error>
+        <mat-error *ngIf="profileForm.get('oldPass').hasError('required')">
+          La contraseña es <strong>obligatoria</strong>
+        </mat-error>
+      </mat-form-field>
+      <mat-form-field class="example-full-width">
+        <input type="password" matInput placeholder="Contraseña nueva" formControlName="newPass"
+          [errorStateMatcher]="matcher" autocomplete="new-password">
+        <mat-hint></mat-hint>
+        <mat-error *ngIf="profileForm.get('newPass').hasError('minlength')">
+          La contraseña debe tener <strong>6 caracteres como mínimo</strong>
+        </mat-error>
+        <mat-error *ngIf="profileForm.get('newPass').hasError('required')">
+          La contraseña es <strong>obligatoria</strong>
+        </mat-error>
+      </mat-form-field>
 
-        <div class="input-group">
-          <input type="text" [value]="textInput" class="form-control" readonly>
-          <div class="input-group-btn">
-            <span class="fileUpload btn btn-success">
-              <span class="upl" id="upload">Subir imagen</span>
-              <input type="file" class="upload up" accept="image/*" (change)="fileChangeEvent($event)" />
-            </span>
-          </div>
+      <div class="input-group">
+        <input type="text" [value]="textInput" class="form-control" readonly>
+        <div class="input-group-btn">
+          <span class="fileUpload btn btn-success">
+            <span class="upl" id="upload">Subir imagen</span>
+            <input type="file" class="upload up" accept="image/*" (change)="fileChangeEvent($event)" />
+          </span>
         </div>
-        <button mat-raised-button color="primary">Guardar cambios</button>
-      </form>
+      </div>
+      <br>
+      <button mat-raised-button color="primary">Guardar cambios</button>
+    </form>
 
-      <image-cropper style="width:50%;float:left;" [imageChangedEvent]="imageChangedEvent" [maintainAspectRatio]="true"
-        [aspectRatio]="1 / 1" [resizeToWidth]="150" format="jpeg" outputType="both" roundCropper="true" autoCrop="false"
-        (imageCropped)="imageCropped($event)" (loadImageFailed)="loadImageFailed()"></image-cropper>
-
-      <img style="float:left;" [src]="croppedImage" style="border-radius: 50%" />
-      <button mat-raised-button color="warn" *ngIf="imageChangedEvent" (click)="recortar()">Recortar</button>
-    </div>
+    <br>
+    <button mat-raised-button color="warn" *ngIf="imageChangedEvent" (click)="recortar()">Recortar</button>
   </div>
+  <image-cropper style="width:50%;float:left;" [imageChangedEvent]="imageChangedEvent" [maintainAspectRatio]="true"
+    [aspectRatio]="1 / 1" [resizeToWidth]="150" format="jpeg" outputType="both" roundCropper="true" autoCrop="false"
+    (imageCropped)="imageCropped($event)" (loadImageFailed)="loadImageFailed()"></image-cropper>
+
+  <img style="float:left;" [src]="croppedImage" style="border-radius: 50%" />
 </div>

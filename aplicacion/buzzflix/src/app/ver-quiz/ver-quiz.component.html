@@ -1,6 +1,5 @@
-<div class="col-md-12" *ngIf="this.quiz && this.isLoaded && !this.resultado">
+<div *ngIf="this.quiz && this.isLoaded && !this.resultado">
   <div class="panel-body">
-    {{quiz.tipo}}
     <div *ngIf="quiz.tipo==1">
       <div class="cajaPregunta" *ngFor="let pregunta of this.quiz.preguntas;let i = index">
         <h4 [id]="'p'+i">{{pregunta.enunciado}}</h4>
@@ -32,8 +31,8 @@
   </div>
 </div>
 
-<div class="text-center" *ngIf="quiz && quiz.tipo==1">
-  <mat-card *ngIf="resultado" class="example-card">
+<div class="text-center" *ngIf="quiz && quiz.tipo==1 && resultado">
+  <mat-card class="example-card">
     <mat-card-header>
       <mat-card-title class="mat-card-header-text">{{this.solucionado.titulo}}
         <p style="display: inline;" role="button">
@@ -49,16 +48,17 @@
       </p>
     </mat-card-content>
     <mat-card-actions>
-
-      <a id="shareme" [href]="this.urlShare" target="_blank">
-        <i role="button" class="fab fa-twitter pull-right"></i>
+      <a id="shareme" style="float:right" [href]="this.urlShare" target="_blank">
+        <i role="button" class="fab fa-twitter"></i>
       </a>
       <app-votar [id]="this.quiz.id"></app-votar>
     </mat-card-actions>
   </mat-card>
+  <br>
+  <app-quiz class="quizModera" [quizz]="quiz"></app-quiz>
 </div>
 <!--Resultado puntuación-->
-<div class="text-center" *ngIf="quiz && quiz.tipo==2">
+<div class="text-center" *ngIf="quiz && quiz.tipo==2  && resultado">
   <mat-card *ngIf="resultado" class="example-card">
     <mat-card-header>
       <mat-card-title class="mat-card-header-text">{{quiz.titulo}}
@@ -69,9 +69,9 @@
 
       ¡Obtuviste {{this.aciertos}} de {{this.quiz.preguntas.length}}!
       <div class="progress-wrapper">
-        <round-progress style="margin: auto;" [current]="this.aciertos" [max]="this.quiz.preguntas.length" [color]="'#5a458d'"
-          [background]="'#eaeaea'" [radius]="100" [stroke]="40" [semicircle]="false" [rounded]="true"
-          [clockwise]="true" [responsive]="false" [duration]="2000" [animation]="'easeInOutQuart'"
+        <round-progress style="margin: auto;" [current]="this.aciertos" [max]="this.quiz.preguntas.length"
+          [color]="'#5a458d'" [background]="'#eaeaea'" [radius]="100" [stroke]="30" [semicircle]="false"
+          [rounded]="true" [clockwise]="true" [responsive]="false" [duration]="2000" [animation]="'easeInOutQuart'"
           [animationDelay]="0">
         </round-progress>
         <div class="text">{{this.porcentaje}}%</div>
@@ -79,7 +79,7 @@
       <p class="descSolu">
         {{this.solucionado.descripcion}}
       </p>
-      
+
     </mat-card-content>
     <mat-card-actions>
 
@@ -89,6 +89,7 @@
       <app-votar [id]="this.quiz.id"></app-votar>
     </mat-card-actions>
   </mat-card>
+  <app-quiz class="quizModera" [quizz]="quiz"></app-quiz>
 </div>
 
 <p class="empty" *ngIf="this.quiz==null && this.isLoaded">Lo sentimos, el Quiz al que intenta acceder no existe o aún

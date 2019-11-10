@@ -1,4 +1,4 @@
-@import "../../variables.scss";
+@import "../../estilos/variables.scss";
 
 .progress-wrapper{
   position: relative;
@@ -14,7 +14,7 @@
   width: 100%;
   z-index: 1;
   font-weight: bold;
-  font-size: 6vh;
+  font-size: 5vh;
 }
 //Apartado de las preguntas
 .clear {
@@ -113,7 +113,7 @@ mat-icon {
 .example-card {
   margin: auto;
   max-width: 400px;
-  background-color: #cbddd6 !important;
+  background-color: $fondoSuave !important;
 }
 .mat-card-header-text,
 mat-card-header,
@@ -147,6 +147,17 @@ i {
   }
 }
 
+
+::ng-deep .quizModera {
+  .quiz {
+    margin: auto !important;
+    float: none !important;
+  }
+  img {
+    pointer-events: none;
+    cursor: default;
+  }
+}
 
 
 

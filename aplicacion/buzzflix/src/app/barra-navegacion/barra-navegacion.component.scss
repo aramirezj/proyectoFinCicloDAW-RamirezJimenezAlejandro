@@ -1,0 +1,76 @@
+@import "../../estilos/colores.scss";
+//Estilos de fabrica de la barra de navegación
+.sidenav-container {
+  height: 100vh;
+  background: $fondoWeb;
+}
+.sidenav {
+  width: 9.95vw;
+  background: $fondoWeb;
+  border: 0.05vw solid rgb(56, 68, 77);
+}
+.sidenav .mat-toolbar {
+  background: inherit;
+}
+
+.mat-toolbar.mat-primary {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+//Reinicios de estilos
+::ng-deep .mat-expansion-panel-body,
+.mat-expansion-panel-header {
+  padding: 0 !important;
+}
+::ng-deep .mat-list-item-content,
+.mat-expansion-panel-header-title {
+  padding: 1vw;
+}
+
+//Estilos propios
+a {
+  font-weight: bold;
+}
+.webContainer {
+  padding: 2.5vw;
+}
+mat-toolbar {
+  background: $fondoWeb !important;
+  border-top: 0.05vw solid rgb(56, 68, 77);
+  border-bottom: 0.05vw solid rgb(56, 68, 77);
+}
+mat-expansion-panel {
+  background-color: $fondoWeb;
+}
+
+::ng-deep mat-expansion-panel-header:hover {
+  background-color: $fondoSuave !important;
+  border-radius: 99999px !important;
+}
+
+img {
+  width: 8vw;
+}
+
+.elementoBarra {
+  margin-bottom: 1vh;
+}
+.elementoBarra:hover {
+  background-color: $fondoSuave;
+  border-radius: 99999px;
+}
+mat-icon {
+  margin-right: 0.5vw;
+}
+
+//Querys responsive
+@media (max-width: 800px) {
+  .sidenav {
+    width: 50vw;
+  }
+  img {
+    width: 35vw;
+  }
+}

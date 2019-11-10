@@ -7,6 +7,7 @@ import { NotifyService } from './notify.service';
 import { RestService } from './rest.service';
 import { isPlatformBrowser } from '@angular/common';
 import { AuthService as OAuth} from 'angular-6-social-login';
+import { MatSnackBar } from '@angular/material';
 
 @Injectable()
 export class AuthService {
@@ -15,7 +16,8 @@ export class AuthService {
         private router: Router,
         private notifyService: NotifyService,
         private restService: RestService,
-        public OAuth: OAuth
+        public OAuth: OAuth,
+        private snackBar:MatSnackBar
     ) {
 
     }
@@ -82,7 +84,7 @@ export class AuthService {
             this.restService.peticionHttp(url, body).subscribe(response => {
                 switch (response.auth) {
                     case 0://Datos correctos
-                        this.notifyService.notify("Has iniciado sesión correctamente", "success");
+                    this.snackBar.open('Has iniciado sesión correctamente', "Cerrar", { duration: 3000, panelClass: 'snackBar' });
                         if (isPlatformBrowser(this.platformId)) {
                             localStorage.setItem("token", response.token);
                         }
@@ -91,7 +93,7 @@ export class AuthService {
                         observer.complete();
                         break;
                     case 1://Datos incorrectos/no existe
-                        this.notifyService.notify("Datos incorrectos", "error");
+                    this.snackBar.open('Datos incorrectos', "Cerrar", { duration: 3000, panelClass: 'snackBarWrong' });
                         observer.next(null);
                         break;
                     case 2://Le queda confirmar el correo
