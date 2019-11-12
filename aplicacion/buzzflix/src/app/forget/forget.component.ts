@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../services/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
 import { FormGroup, FormControl, Validators} from '@angular/forms';
-import { NotifyService } from '../services/notify.service';
 import { Subscription } from 'rxjs/internal/Subscription';
 import { MatSnackBar } from '@angular/material';
 
@@ -18,7 +17,6 @@ export class ForgetComponent implements OnInit {
   subsRouter: Subscription;
   constructor(
     private authService: AuthService,
-    private notifyService: NotifyService,
     private routerMV: Router,
     private router: ActivatedRoute,
     private snackBar:MatSnackBar
@@ -63,7 +61,7 @@ export class ForgetComponent implements OnInit {
       this.authService.forgetPassword(email, password,this.confirmacion)
         .subscribe((res) => {
           if (res) {
-            this.notifyService.notify("La contraseña se ha restablecido con exito.", "success");
+            this.snackBar.open('La contraseña se ha restablecido con exito.', "Cerrar", { duration: 4000, panelClass: 'snackBarSuccess' });
             this.routerMV.navigate(['/auth/login']);
           } else {
             this.mensaje = "Hemos enviado un correo a la dirección que ha proporcionado para la recuperación de su contraseña."
@@ -71,7 +69,7 @@ export class ForgetComponent implements OnInit {
 
         })
     }else{
-      this.snackBar.open('Comprueba que todos los campos son validos', "Cerrar", { duration: 4000, panelClass: 'snackBar' });
+      this.snackBar.open('Comprueba que todos los campos son validos', "Cerrar", { duration: 4000, panelClass: 'snackBarWrong' });
     }
   }
 

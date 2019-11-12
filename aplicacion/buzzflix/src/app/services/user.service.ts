@@ -5,7 +5,6 @@ import { CONFIG } from './../config/config';
 import { Usuario } from '../modelo/Usuario';
 import { NgProgress } from 'ngx-progressbar';
 import { Quiz } from '../modelo/Quiz';
-import { NotifyService } from './notify.service';
 
 import { finalize } from 'rxjs/operators';
 import { Logro } from '../modelo/Logro';
@@ -13,6 +12,7 @@ import { BehaviorSubject } from 'rxjs';
 import { RestService } from './rest.service';
 import { isPlatformBrowser } from '@angular/common';
 import { FileService } from './file.service';
+import { MatSnackBar } from '@angular/material';
 @Injectable()
 export class UserService {
     public idPaquete = new BehaviorSubject(0);
@@ -22,9 +22,9 @@ export class UserService {
         @Inject(PLATFORM_ID) private platformId: Object,
         private authService: AuthService,
         private bar: NgProgress,
-        private notifyService: NotifyService,
         private restService: RestService,
-        private fileService:FileService
+        private fileService: FileService,
+        private snackBar: MatSnackBar
     ) {
         this.userProfileUpdated = new EventEmitter();
     }
@@ -63,7 +63,7 @@ export class UserService {
                 observer.complete();
             })
         });
-    }   
+    }
     getLogros(nick: string): Observable<Array<Logro>> {
         let url = `${CONFIG.apiUrl}usuario/${nick}/logros`;
         return Observable.create(observer => {
@@ -133,7 +133,7 @@ export class UserService {
             this.restService.peticionHttp(url, body, "put").subscribe(response => {
                 this.bar.done();
                 if (response.status == "Wrong password") {
-                    this.notifyService.notify("La contraseña antigua es erronea.", "error");
+                    this.snackBar.open('La contraseña antigua es erronea.', "Cerrar", { duration: 4000, panelClass: 'snackBarWrong' });
                     return this.authService.getAuthUser();
                 }
 
@@ -154,15 +154,14 @@ export class UserService {
                                 if (OLDUSUARIO.avatar != null) {
                                     this.borraImagen(OLDUSUARIO.avatar);
                                 }
-
                             }
-                            this.notifyService.notify("¡Usuario actualizado con exito!", "success");
+                            this.snackBar.open('¡Usuario actualizado con exito!', "Cerrar", { duration: 4000, panelClass: 'snackBarSuccess' });
                             this.userProfileUpdated.emit(aux);
                             return aux;
                         })
                     ).subscribe()
                 } else {
-                    this.notifyService.notify("¡Usuario actualizado con exito!", "success");
+                    this.snackBar.open('¡Usuario actualizado con exito!', "Cerrar", { duration: 4000, panelClass: 'snackBarSuccess' });
                     this.userProfileUpdated.emit(aux);
                     return aux;
                 }

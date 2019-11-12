@@ -3,7 +3,6 @@ import { Injectable } from '@angular/core';
 import { AuthService } from './auth.service';
 import { CONFIG } from './../config/config';
 import { Quiz } from '../modelo/Quiz';
-import { NotifyService } from './notify.service';
 import { RestService } from './rest.service';
 import { finalize } from 'rxjs/operators';
 import { NgProgress } from 'ngx-progressbar';
@@ -14,10 +13,9 @@ export class QuizService {
     constructor(
         private authService: AuthService,
         private restService: RestService,
-        private notifyService: NotifyService,
         private fileService: FileService,
         private bar: NgProgress,
-        private snackBar:MatSnackBar
+        private snackBar: MatSnackBar
     ) {
     }
 
@@ -98,7 +96,7 @@ export class QuizService {
         let url = `${CONFIG.apiUrl}vota`;
         let body = { origen: id, quizz: quizz, cantidad: n };
         if (id == 0) {
-            this.notifyService.notify("Lo sentimos, debes iniciar sesión para poder votar", "error");
+            this.snackBar.open('Lo sentimos, debes iniciar sesión para poder votar', "Cerrar", { duration: 4000, panelClass: 'snackBarWrong' });
             return Observable.create(observer => {
                 observer.next(false)
                 observer.complete();
@@ -106,8 +104,7 @@ export class QuizService {
         } else {
             return Observable.create(observer => {
                 this.restService.peticionHttp(url, body).subscribe(response => {
-                    this.snackBar.open('Has votado correctamente. ¡Gracias!', "Cerrar", { duration: 21000, panelClass: 'snackBarSuccess' });
-                    //this.notifyService.notify("Has votado correctamente, ¡Gracias!", "success");
+                    this.snackBar.open('Has votado correctamente. ¡Gracias!', "Cerrar", { duration: 1000, panelClass: 'snackBarSuccess' });
                     observer.next(true)
                     observer.complete();
                 })
@@ -207,7 +204,7 @@ export class QuizService {
 
         return Observable.create(observer => {
             this.restService.peticionHttp(url, body).subscribe(response => {
-                this.notifyService.notify("Has borrado tu quizz correctamente, una gran perdida...", "success");
+                this.snackBar.open('Has borrado tu quiz correctamente, una gran perdida...', "Cerrar", { duration: 4000, panelClass: 'snackBarSuccess' });
                 this.deleteImages(quiz);
                 location.reload();
                 observer.next()

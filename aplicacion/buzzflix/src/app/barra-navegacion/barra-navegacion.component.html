@@ -27,7 +27,7 @@
       </div>
       <div class="elementoBarra">
         <a mat-list-item *ngIf="!isLoggedIn()" [routerLink]="['auth/register']">
-          <mat-icon>fiber_new</mat-icon>Registrate
+          <mat-icon>fiber_new</mat-icon>Registrarse
         </a>
       </div>
       <div class="elementoBarra">
@@ -40,7 +40,7 @@
           <mat-icon>directions_run</mat-icon>Cerrar sesión
         </a>
       </div>
-      <div class="elementoBarra">
+      <div class="elementoBarra"  style="margin-right:1vh!important;">
         <mat-accordion (click)="$event.stopPropagation()">
           <mat-expansion-panel (opened)="panelOpenState2 = true" (closed)="panelOpenState2 = false">
             <mat-expansion-panel-header>

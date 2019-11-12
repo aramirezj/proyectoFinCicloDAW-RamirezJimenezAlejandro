@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
 import { Quiz } from '../modelo/Quiz';
 import { QuizService } from '../services/quiz.service';
-import { NotifyService } from '../services/notify.service';
 import { UserService } from '../services/user.service';
 import { FileService } from '../services/file.service';
+import { MatSnackBar } from '@angular/material';
 
 export interface Section {
   name: string;
@@ -39,7 +39,7 @@ export class ModeracionComponent {
   constructor(
     private QuizService: QuizService,
     private fileService: FileService,
-    private notifyService: NotifyService,
+    private snackBar: MatSnackBar,
     private userService: UserService
   ) { }
 
@@ -55,9 +55,12 @@ export class ModeracionComponent {
             quizz = JSON.parse(resp[i]["contenido"]);
             quizz.id = resp[i].id;
             quizz.titulo = resp[i].titulo;
+            quizz.tipo = resp[i].tipo;
             this.quizzes.push(quizz);
           }
+          console.log(this.quizzes)
           if (this.quizzes[0].tipo == 1) {
+
             for (let i = 0; i < this.quizzes[0].soluciones.length; i++) {
               let preurl = this.quizzes[0].soluciones[i].image;
               let newurl = this.fileService.obtenerUrl(preurl);
@@ -82,10 +85,8 @@ export class ModeracionComponent {
       .subscribe();
     this.indice++;
     if (this.indice == this.quizzes.length) {
-      this.notifyService.notify("¡Gracias por contribuir en la web! Ya no quedan más para moderar, ¿Por qué no creas el tuyo propio?", "success")
+      this.snackBar.open('¡Gracias!', "Cerrar", { duration: 4000, panelClass: 'snackBarWrong' });
       this.quizzes = null;
-    } else {
-      this.notifyService.notify("¡Gracias por contribuir en la web! ¡A por el siguiente!", "success")
     }
   }
   controlImagenes(n: number) {

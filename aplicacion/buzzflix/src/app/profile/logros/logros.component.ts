@@ -23,7 +23,7 @@ export class LogrosComponent implements OnInit {
           this.listaLogros = logros;
           for (let logro of this.listaLogros) {
             logro.src = "assets/logros/logro" + logro.id + ".png";
-            logro.fecha = logro.fecha == null ? "Aun no conseguido" : logro.fecha;
+            logro.fecha = logro.fecha == null ? "Aún no conseguido" : logro.fecha;
           }
         });
     })
@@ -32,7 +32,7 @@ export class LogrosComponent implements OnInit {
     this.subsRouter.unsubscribe();
   }
   isPendiente(logro: Logro) {
-    return logro.fecha == "Aun no conseguido" ?
+    return logro.fecha == "Aún no conseguido" ?
       "card-img-top pendiente" :
       "card-img-top";
   }

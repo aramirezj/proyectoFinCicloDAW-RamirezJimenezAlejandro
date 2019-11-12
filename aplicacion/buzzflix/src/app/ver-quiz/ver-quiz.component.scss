@@ -44,6 +44,10 @@ mat-icon {
   background-color: red !important;
 }
 
+mat-icon:hover{
+  cursor: pointer;
+}
+
 .cajaPregunta {
   text-align: center;
   width: 100%;
@@ -114,13 +118,6 @@ mat-icon {
   margin: auto;
   max-width: 400px;
   background-color: $fondoSuave !important;
-}
-.mat-card-header-text,
-mat-card-header,
-mat-card-title {
-  width: 100% !important;
-  margin-left: 0px !important;
-  text-align: center !important;
 }
 mat-card-actions {
   min-height: 3em;

@@ -1,10 +1,10 @@
 import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
-import { NotifyService } from './notify.service';
 import { NgProgress } from 'ngx-progressbar';
 import { Router } from '@angular/router';
 import { isPlatformBrowser } from '@angular/common';
+import { MatSnackBar } from '@angular/material';
 
 @Injectable()
 export class RestService {
@@ -12,7 +12,7 @@ export class RestService {
     constructor(
         @Inject(PLATFORM_ID) private platformId: Object,
         private http: HttpClient,
-        private notifyService: NotifyService,
+        private snackBar:MatSnackBar,
         private bar: NgProgress,
         private router: Router
     ) {
@@ -51,7 +51,7 @@ export class RestService {
     gestionError(error: any) {
         this.bar.done();
         if (error.status == 500) {
-            this.notifyService.notify("Error en el servidor", "error");
+            this.snackBar.open('Error en el servidor.', "Cerrar", { duration: 4000, panelClass: 'snackBarWrong' });
         } else if (error.status == 403) {
             if (isPlatformBrowser(this.platformId)) {
                 localStorage.removeItem("usuario");
@@ -59,7 +59,7 @@ export class RestService {
             }
             this.router.navigate(['/auth/login']);
         } else if (error.status == 422) {
-            this.notifyService.notify("Hubo un error, comprueba que todos los campos son validos", "error");
+            this.snackBar.open('Hubo un error, comprueba que todos los campos son válidos.', "Cerrar", { duration: 4000, panelClass: 'snackBarWrong' });
         }
     }
 

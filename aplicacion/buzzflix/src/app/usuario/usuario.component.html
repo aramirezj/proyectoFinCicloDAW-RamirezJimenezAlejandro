@@ -1,5 +1,1 @@
-<div class="panel panel-default" *ngIf="usuario">
-    <div class="panel-heading">
-          <a [routerLink]="['/perfil',this.usuario.nickname]">@{{this.usuario.nickname}}</a>
-    </div>
-  </div>
+<a [routerLink]="['/perfil',this.usuario.nickname]">@{{this.usuario.nickname}}</a>

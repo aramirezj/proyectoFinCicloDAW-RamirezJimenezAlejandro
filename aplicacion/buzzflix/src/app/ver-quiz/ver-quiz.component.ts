@@ -31,8 +31,10 @@ export class VerQuizComponent implements OnInit {
   urlImg: string | any
   quizForm: FormGroup
   subsRouter: Subscription
-  aciertos:number
-  porcentaje:number
+  aciertos: number
+  porcentaje: number
+  colorResu:string
+  mensajeFinal:string
   constructor(
     private authService: AuthService, //Usado en vista
     private quizService: QuizService,
@@ -116,6 +118,7 @@ export class VerQuizComponent implements OnInit {
     }
     let porcentaje = Math.round((this.aciertos * 100) / this.quiz.preguntas.length);
     this.porcentaje = porcentaje;
+    this.colorResu = this.porcentaje > 49 ? "limegreen" : "e14705";
     return porcentaje == 100 ? 4 : porcentaje > 75 ? 3 : porcentaje > 50 ? 2 : porcentaje > 25 ? 1 : 0;
   }
 
@@ -129,7 +132,10 @@ export class VerQuizComponent implements OnInit {
     }
     this.resultado = true;
     let preUrl = window.location.href;
-    this.urlShare = "https://twitter.com/intent/tweet?text=¡Obtuve%20" + this.solucionado.titulo + "!%20" + preUrl + " vía @hasquiz";
+
+    this.mensajeFinal = this.quiz.tipo == 1 ? this.solucionado.titulo : this.aciertos + " aciertos de " + this.quiz.preguntas.length;
+
+    this.urlShare = "https://twitter.com/intent/tweet?text=¡Obtuve%20" + this.mensajeFinal + "!%20" + preUrl + " vía @hasquiz";
   }
 
   getQuiz() {
@@ -170,7 +176,7 @@ export class VerQuizComponent implements OnInit {
 
     dialogConfig.data = {
       id: 1,
-      title: 'Si crees que este quiz incluye contenido abusivo o imagenes que incitan al odio, puedes reportarlo y será investigado.'
+      title: 'Si crees que este quiz incluye contenido abusivo o imágenes que incitan al odio, puedes reportarlo y será investigado.'
     };
 
     const dialogRef = this.dialog.open(DialogboxComponent, dialogConfig);
@@ -191,6 +197,10 @@ export class VerQuizComponent implements OnInit {
       pregunta.eleccion = null;
     }
     this.resultado = false;
+  }
+
+  volver() {
+    window.history.back();
   }
 
 

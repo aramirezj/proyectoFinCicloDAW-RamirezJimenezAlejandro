@@ -1,8 +1,8 @@
 @import "../../estilos/variables.scss";
 
 .quiz {
-  margin: 1vw;
-  width: 40vw;
+  margin: $marginQuiz;
+  width: $sizeQuiz;
   height: 55vh;
   float: left;
   transition-delay: 0.1s;
@@ -20,7 +20,6 @@ img{
 }
 //Boton del quiz
 button {
-  height: 4vh;
   float:left;
   background-color: $fondoSuave !important;
   color: white !important;
@@ -36,7 +35,7 @@ button {
   font-size: 3vh;
 }
 a{
-  color:$naranjaRetro;
+  color:white;
   font-weight: bold;
 }
 a:hover{

@@ -1,14 +1,14 @@
 @import "../../../estilos/variables.scss";
-//84 VW libre
+//80 VW libre
 .logroBox {
-  width: 84vw;
-  padding: 3vw;
+  width: $sizeLogroBox;
+  padding: $paddingLogroBox;
 }
-//79vw
+//74vw
 .logro {
-  margin-left: 2vw;
-  margin-right: 2vw;
-  width: 20vw;
+  margin-left: $marginLogro;
+  margin-right: $marginLogro;
+  width: $sizeLogro;
   float: left;
 }
 .img{

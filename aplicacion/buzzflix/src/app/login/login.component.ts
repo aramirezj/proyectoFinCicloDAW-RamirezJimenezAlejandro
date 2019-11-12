@@ -98,7 +98,7 @@ export class LoginComponent implements OnInit {
           };
         })
     } else {
-      this.snackBar.open('Comprueba que todos los campos son validos', "Cerrar", { duration: 4000, panelClass: 'snackBar' });
+      this.snackBar.open('Comprueba que todos los campos son validos', "Cerrar", { duration: 4000, panelClass: 'snackBarWrong' });
     }
   }
 

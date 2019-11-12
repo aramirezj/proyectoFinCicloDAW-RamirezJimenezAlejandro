@@ -2,10 +2,10 @@
   <h2>Inicio de sesión</h2>
   <div class="panel-body">
     <p *ngIf="this.confirmacion=='waiting'" style=color:#529f82;>Le hemos enviado un correo a su
-      dirección de correo electronico, para completar el registro.</p>
+      dirección de correo electrónico, para completar el registro.</p>
     <form class="example-form" [formGroup]="this.loginForm" (ngSubmit)="onSubmit()">
       <mat-form-field>
-        <input matInput placeholder="Correo electronico" required formControlName="email" [errorStateMatcher]="matcher"
+        <input matInput placeholder="Correo electrónico" required formControlName="email" [errorStateMatcher]="matcher"
           autocomplete="email">
         <mat-hint></mat-hint>
         <mat-error *ngIf="loginForm.get('email').hasError('email') && !loginForm.get('email').hasError('required')">

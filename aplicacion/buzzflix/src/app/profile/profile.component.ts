@@ -125,7 +125,7 @@ export class ProfileComponent implements OnInit {
 
     dialogConfig.data = {
       id: 1,
-      title: 'Si crees que este perfil incluye contenido abusivo o imagenes que incitan al odio, puedes reportarlo y será investigado.'
+      title: 'Si crees que este perfil incluye contenido abusivo o imágenes que incitan al odio, puedes reportarlo y será investigado.'
     };
 
     const dialogRef = this.dialog.open(DialogboxComponent, dialogConfig);

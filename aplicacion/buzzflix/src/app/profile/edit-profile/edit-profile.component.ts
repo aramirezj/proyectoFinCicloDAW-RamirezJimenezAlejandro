@@ -2,7 +2,6 @@ import { Component, OnInit, Inject, ViewChild } from '@angular/core';
 import { Usuario } from 'src/app/modelo/Usuario';
 import { AuthService } from './../../services/auth.service';
 import { UserService } from 'src/app/services/user.service';
-import { NotifyService } from 'src/app/services/notify.service';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { NgProgress } from 'ngx-progressbar';
 import { FileService } from 'src/app/services/file.service';

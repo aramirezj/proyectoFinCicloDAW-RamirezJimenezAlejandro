@@ -1,19 +1,19 @@
 import {Injectable } from '@angular/core';
 import { Router,CanActivate } from '@angular/router';
 import { AuthService } from '../services/auth.service';
-import { NotifyService } from '../services/notify.service';
+import { MatSnackBar } from '@angular/material';
 @Injectable()
 export class AuthGuard implements CanActivate{
     constructor(
         private authService:AuthService,
         private router:Router,
-        private notifyService: NotifyService
+        private snackBar:MatSnackBar
     ){}
     canActivate(){
        if(this.authService.isLoggedIn()){
         return true;
        }else{
-        this.notifyService.notify("Debes iniciar sesión antes","error");
+        this.snackBar.open('Debes iniciar sesión antes', "Cerrar", { duration: 4000, panelClass: 'snackBarWrong' });
         this.router.navigate(['/auth/login']);
         return false;
        }

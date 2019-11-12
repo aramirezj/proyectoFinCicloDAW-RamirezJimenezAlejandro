@@ -5,6 +5,7 @@ import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
 import { DialogboxComponent } from '../dialogbox/dialogbox.component';
 import { AuthService } from '../services/auth.service';
 import { FileService } from '../services/file.service';
+import { MatSnackBar } from '@angular/material';
 @Component({
   selector: 'app-quiz',
   templateUrl: './quiz.component.html',
@@ -26,6 +27,7 @@ export class QuizComponent implements OnInit {
     private QuizService: QuizService,
     private authService: AuthService,
     private fileService: FileService,
+    private snackBar:MatSnackBar,
     public dialog: MatDialog
   ) { }
 

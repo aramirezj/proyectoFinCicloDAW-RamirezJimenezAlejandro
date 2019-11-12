@@ -31,12 +31,12 @@
   <div class="soluciones">
     <mat-card [class]="quizzes[indice].tipo==1?'example-card pers':'example-card punt'" *ngFor="let solucion of this.quizzes[this.indice].soluciones;let i = index">
       <mat-card-header>
-        <mat-card-title class="mat-card-header-text">{{solucion.titulo}}</mat-card-title>
+        <mat-card-title>{{solucion.titulo}}</mat-card-title>
       </mat-card-header>
       <img alt="Imagen de la solución" mat-card-image *ngIf="this.imagenes[this.indiceImagenes] | async; let url"
         [src]="url" width="200px">
       {{this.controlImagenes(1)}}
-      <div class="progress-wrapper">
+      <div class="progress-wrapper" *ngIf="quizzes[indice].tipo==2">
         <round-progress style="margin: auto;" [current]="solucion.rango" [max]="100" [color]="'#5a458d'"
           [background]="'#eaeaea'" [radius]="100" [stroke]="30" [semicircle]="false" [rounded]="true" [clockwise]="true"
           [responsive]="false" [duration]="2000" [animation]="'easeInOutQuart'" [animationDelay]="0">

@@ -1,11 +1,12 @@
 @import "../../estilos/colores.scss";
+@import "../../estilos/variables.scss";
 //Estilos de fabrica de la barra de navegación
 .sidenav-container {
-  height: 100vh;
   background: $fondoWeb;
+  height: 100%;
 }
 .sidenav {
-  width: 9.95vw;
+  width: $sizeSidenav;
   background: $fondoWeb;
   border: 0.05vw solid rgb(56, 68, 77);
 }
@@ -27,6 +28,9 @@
 ::ng-deep .mat-list-item-content,
 .mat-expansion-panel-header-title {
   padding: 1vw;
+}
+::ng-deep .mat-expansion-panel-header-description,.mat-expansion-panel-header-title{
+  margin-right: 0!important;
 }
 
 //Estilos propios
@@ -51,12 +55,9 @@ mat-expansion-panel {
 }
 
 img {
-  width: 8vw;
+  width: 12vw;
 }
 
-.elementoBarra {
-  margin-bottom: 1vh;
-}
 .elementoBarra:hover {
   background-color: $fondoSuave;
   border-radius: 99999px;

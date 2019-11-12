@@ -1,6 +1,6 @@
 @import "../../estilos/variables.scss";
-*{
-  margin:auto;
+* {
+  margin: auto;
 }
 .box {
   font-size: 1.75em;
@@ -23,10 +23,10 @@ mat-icon,
   color: white;
 }
 mat-expansion-panel {
-  background: $fondoSuave!important;
+  background: $fondoSuave !important;
 }
-mat-expansion-panel:not(.mat-expanded):not([aria-disabled=true]) mat-expansion-panel-header:hover{
-  background: $fondoSuave!important;
+mat-expansion-panel:not(.mat-expanded):not([aria-disabled="true"]) mat-expansion-panel-header:hover {
+  background: $fondoSuave !important;
 }
 .mat-list-base .mat-list-item .mat-line {
   white-space: normal !important;
@@ -108,7 +108,15 @@ mat-expansion-panel:not(.mat-expanded):not([aria-disabled=true]) mat-expansion-p
 .clear {
   clear: both;
 }
-
+::ng-deep .mat-card-header-text,
+mat-card-title {
+  width: 100% !important;
+  margin-left: 0px !important;
+  margin-right: 0px !important;
+  margin-bottom: 0px !important;
+  padding: 0.5vh;
+  text-align: center !important;
+}
 .acciones {
   width: 75%;
   min-height: 200px;
@@ -119,26 +127,24 @@ button {
   font-size: 4vh;
   padding: 3vh;
 }
-.soluciones{
-  margin:auto;
-  width: 100%;
+.soluciones {
+  width: $sizeLogroBox;
+  padding: $paddingLogroBox;
 }
 .example-card {
-  background-color: $fondoWeb !important;
-  color: black;
-  width: 300px;
-  max-width: 300px;
-  margin-bottom: 2vh;
-}
-.pers:nth-child(even) {
+  background-color: $fondoSuave !important;
+  width: $sizeLogro;
+  margin: $marginLogro;
   float: left;
+  text-align: center;
 }
-.pers:nth-child(odd) {
-  float: right;
+img {
+  max-width: $sizeLogro;
 }
-.punt{
-  float:left;
-  margin:1vh;
+
+.punt {
+  float: left;
+  margin: 1vh;
 }
 
 img {
@@ -167,13 +173,12 @@ mat-card-title {
   }
 }
 
-
-.progress-wrapper{
+.progress-wrapper {
   position: relative;
-  margin:5vh!important;
+  margin: 5vh !important;
 }
 
-.progress-wrapper .text{
+.progress-wrapper .text {
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
@@ -184,10 +189,28 @@ mat-card-title {
   font-weight: bold;
   font-size: 2.5vh;
 }
-round-progress{
-  width: 100px!important;
-  height: 100px!important;
+round-progress {
+  width: 100px !important;
+  height: 100px !important;
 }
-
-
-
+.descSolu {
+  padding: 1vh;
+}
+@media (max-width: 800px) {
+  .example-card {
+    width: 80vw;
+  }
+  img {
+    max-width: 80vw;
+  }
+  .cajaRespuesta {
+    width: 100%;
+    min-height: 0;
+  }
+  .cajaPregunta {
+    h4 {
+      padding: 10%;
+      border-radius: 50%;
+    }
+  }
+}

@@ -3,7 +3,6 @@ import { Injectable, Inject, PLATFORM_ID } from '@angular/core';
 import { CONFIG } from '../config/config';
 import { Router } from '@angular/router'
 import { Usuario } from '../modelo/Usuario';
-import { NotifyService } from './notify.service';
 import { RestService } from './rest.service';
 import { isPlatformBrowser } from '@angular/common';
 import { AuthService as OAuth} from 'angular-6-social-login';
@@ -14,7 +13,6 @@ export class AuthService {
     constructor(
         @Inject(PLATFORM_ID) private platformId: Object,
         private router: Router,
-        private notifyService: NotifyService,
         private restService: RestService,
         public OAuth: OAuth,
         private snackBar:MatSnackBar
@@ -65,7 +63,7 @@ export class AuthService {
         return Observable.create(observer => {
             this.restService.peticionHttp(url, body).subscribe(response => {
                 if (!response.auth) {
-                    this.notifyService.notify("Ya existe una cuenta con ese correo", "error");
+                    this.snackBar.open('Ya existe una cuenta con ese correo', "Cerrar", { duration: 4000, panelClass: 'snackBarWrong' });
                     observer.next(null)
                     return null;
                 }
@@ -84,7 +82,7 @@ export class AuthService {
             this.restService.peticionHttp(url, body).subscribe(response => {
                 switch (response.auth) {
                     case 0://Datos correctos
-                    this.snackBar.open('Has iniciado sesión correctamente', "Cerrar", { duration: 3000, panelClass: 'snackBar' });
+                    this.snackBar.open('Has iniciado sesión correctamente', "Cerrar", { duration: 4000, panelClass: 'snackBarSuccess' });
                         if (isPlatformBrowser(this.platformId)) {
                             localStorage.setItem("token", response.token);
                         }
@@ -111,7 +109,7 @@ export class AuthService {
         return Observable.create(observer => {
             this.restService.peticionHttp(url, body).subscribe(response => {
                 if (response.auth) {
-                    this.notifyService.notify("Has iniciado sesión correctamente", "success");
+                    this.snackBar.open('Has iniciado sesión correctamente', "Cerrar", { duration: 4000, panelClass: 'snackBarSuccess' });
                     let aux: Usuario = response.respuesta;
                     if (isPlatformBrowser(this.platformId)) {
                         localStorage.setItem("token", response.token);
@@ -166,7 +164,7 @@ export class AuthService {
                 console.log('User signed out.');
               });*/
         }
-        this.notifyService.notify("Has cerrado la sesión correctamente", "success");
+        this.snackBar.open('Has cerrado sesión correctamente', "Cerrar", { duration: 4000, panelClass: 'snackBar' });
         this.router.navigate(['/auth/login']);
     }
     logUserIn(user: Usuario): boolean {
