@@ -1,4 +1,4 @@
-import { Component, OnInit, Inject, PLATFORM_ID } from '@angular/core';
+import { Component, OnInit, Inject, PLATFORM_ID, ViewChild } from '@angular/core';
 import { FormGroup, FormControl, Validators, FormArray } from '@angular/forms'
 import { QuizService } from '../services/quiz.service';
 import { Solucion } from '../modelo/Solucion';
@@ -10,7 +10,7 @@ import { Respuesta } from '../modelo/Respuesta';
 import { Afinidad } from '../modelo/Afinidad';
 import { Quiz } from '../modelo/Quiz';
 import { NotifyService } from '../services/notify.service';
-import { ErrorStateMatcher, MatSnackBar } from '@angular/material';
+import { ErrorStateMatcher, MatSnackBar, MatStepper } from '@angular/material';
 import { Section } from '../moderacion/moderacion.component';
 import { FileService } from '../services/file.service';
 import { isPlatformBrowser } from '@angular/common';
@@ -26,6 +26,9 @@ import { DialogboxComponent } from '../dialogbox/dialogbox.component';
   styleUrls: ['./create-quiz.component.scss']
 })
 export class CreateQuizComponent implements OnInit {
+  @ViewChild(MatStepper, { static: true }) stepper: MatStepper;
+
+
   panelOpenState = false;
   correctas: Section[] = [
     {
@@ -78,6 +81,7 @@ export class CreateQuizComponent implements OnInit {
 
   //Atributos Quiz Puntuacion
   quizFormPunt: FormGroup; //Formulario
+  quizPers: Quiz;
   quizPunt: Quiz; //Clase principal
   quizCookiePunt: Quiz = null; //Cookie 
   showPreguntas: boolean = false;
@@ -208,14 +212,14 @@ export class CreateQuizComponent implements OnInit {
 
   createForm() {
     let titulo = this.quizCookie != null ? this.quizCookie.titulo : null;
-    let cp = this.quizCookie != null ? this.quizCookie.preguntas.length : null;
-    let cs = this.quizCookie != null ? this.quizCookie.soluciones.length : null;
+    let cp = this.quizCookie != null ? this.quizCookie.preguntas.length : 4;
+    let cs = this.quizCookie != null ? this.quizCookie.soluciones.length : 2;
 
     this.quizzForm = new FormGroup({
-      titulo: new FormControl(titulo, [Validators.required, Validators.minLength(10), Validators.maxLength(75)]),
+      titulo: new FormControl(titulo, [Validators.minLength(10), Validators.maxLength(75)]),
       cp: new FormControl(cp, [Validators.required, Validators.min(4), Validators.max(10)]),
       cs: new FormControl(cs, [Validators.required, Validators.min(2), Validators.max(5)]),
-      banner: new FormControl(null, [Validators.required]),
+      banner: new FormControl(null, []),
       privado: new FormControl(null, [])
     });
     if (this.quizCookie != null) {
@@ -231,7 +235,27 @@ export class CreateQuizComponent implements OnInit {
 
 
     if (!this.quizzForm.invalid) {
-      this.aux = this.quizzForm.get('cs').value;
+      let grupo: any;
+      this.quizPers = new Quiz(null, null, null, null, null, null, null, null, null, 1);
+      this.quizPers.generaSolucionesPers(this.quizzForm.get('cs').value);
+      for (let solucion of this.quizPers.soluciones) {
+        let titulo: string = "st" + solucion.id;
+        let descripcion: string = "sd" + solucion.id;
+        let image: string = "si" + solucion.id;
+
+        grupo = [
+          { name: titulo, control: new FormControl(null, [Validators.required, Validators.maxLength(50)]) },
+          { name: descripcion, control: new FormControl(null, [Validators.maxLength(125)]) },
+          { name: image, control: new FormControl(null, [Validators.required]) },
+        ]
+        grupo.forEach(f => {
+          this.quizzForm.addControl(f.name, f.control)
+          this.quizzForm.controls[f.name].updateValueAndValidity();
+        });
+      }
+      this.firstStep = true;
+      this.stepper.next();
+      /*this.aux = this.quizzForm.get('cs').value;
       this.quizzForm.value.privado;
       if (this.aux > 1 && this.aux < 6) {
         this.reseteaCondRespuestas();
@@ -262,8 +286,8 @@ export class CreateQuizComponent implements OnInit {
         this.bar.done();
       } else {
         this.notifyService.notify("El máximo de soluciones son 5, y el mínimo son 2", "error");
-      }
-    }else{
+      }*/
+    } else {
       this.quizzForm.markAllAsTouched();
       this.snackBar.open('Comprueba que todos los campos son validos', "Cerrar", { duration: 4000, panelClass: 'snackBarWrong' });
     }

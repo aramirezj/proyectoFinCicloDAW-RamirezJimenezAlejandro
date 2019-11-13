@@ -25,7 +25,6 @@ export class AppComponent {
   notificaciones: Section[];
   icono: string;
   panelOpenState = false;
-  panelOpenState2 = false;
   correctas: Section[] = [
   ];
   constructor(

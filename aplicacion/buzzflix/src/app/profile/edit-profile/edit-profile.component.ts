@@ -6,7 +6,7 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { NgProgress } from 'ngx-progressbar';
 import { FileService } from 'src/app/services/file.service';
 import { ImageCroppedEvent, ImageCropperComponent } from 'ngx-image-cropper';
-import { MatSnackBar } from '@angular/material';
+import { MatSnackBar, ErrorStateMatcher } from '@angular/material';
 @Component({
   selector: 'app-edit-profile',
   templateUrl: './edit-profile.component.html',
@@ -20,6 +20,7 @@ export class EditProfileComponent implements OnInit {
   loaded: boolean = false;
   imageChangedEvent: any = '';
   croppedImage: any = '';
+  matcher = new ErrorStateMatcher();
   @ViewChild(ImageCropperComponent, { static: false }) imageCropper: ImageCropperComponent;
 
   constructor(

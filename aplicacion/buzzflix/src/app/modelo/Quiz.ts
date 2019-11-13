@@ -17,6 +17,14 @@ export class Quiz{
     ){
         
     }
+
+    generaSolucionesPers(cantidad:number){
+        this.soluciones = [];
+        for(let i = 0;i<cantidad;i++){
+            let solucion = new Solucion(i,null,null,null,null);
+            this.soluciones.push(solucion);
+        }
+    }
     generaPreguntas(cantidad: number) {
         this.preguntas = [];
         for (let i = 0; i < cantidad; i++) {
