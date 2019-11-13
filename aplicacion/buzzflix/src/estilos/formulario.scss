@@ -33,6 +33,10 @@ mat-hint {
 .forgetPassword:hover {
   text-decoration: underline !important;
 }
+
+.clear{
+  clear:both;
+}
 //Para los autocompletado cabrones
 input:-webkit-autofill,
 input:-webkit-autofill:hover,

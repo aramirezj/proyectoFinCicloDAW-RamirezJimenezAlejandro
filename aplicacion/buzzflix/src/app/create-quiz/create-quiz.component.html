@@ -15,13 +15,12 @@
 
 
 <div *ngIf="this.quizPersonalidad">
-
-  <mat-horizontal-stepper labelPosition="bottom" #stepper>
-    <mat-step>
-      <ng-template matStepLabel>Creación del Quiz</ng-template>
-
-      <div class='containerForm'>
-        <form enctype="multipart/form-data" [formGroup]="quizzForm" (ngSubmit)="onSubmit()">
+  <form enctype="multipart/form-data" [formGroup]="quizzForm" (ngSubmit)="onSubmit()">
+    <mat-horizontal-stepper labelPosition="bottom" #stepper>
+      <!--Primer bloque del formulario-->
+      <mat-step>
+        <ng-template matStepLabel>Creación del Quiz</ng-template>
+        <div class='containerForm'>
           <mat-accordion>
             <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
               <mat-expansion-panel-header>
@@ -101,22 +100,187 @@
             Soluciones</button>
           <button type="button" style="float:right;" mat-raised-button color="warn" (click)="reiniciaQuiz()">Reiniciar
             Quiz</button>
-        </form>
-      </div>
+        </div>
+      </mat-step>
+      <!--Segundo bloque del formulario-->
+      <!--SOLUCIONES-->
+      <mat-step>
+        <ng-template matStepLabel>Soluciones</ng-template>
+        <div class='containerForm' *ngIf="quizPers.soluciones==null">
+          <h4>Debes generar las soluciones antes</h4>
+          <button mat-button mat-raised-button color="primary" matStepperPrevious>Volver</button>
+        </div>
+        <div *ngIf="quizPers.soluciones!=null" class="text-center">
+          <h2 class="text-center">Soluciones</h2>
+          <div class="soluciones">
+            <div *ngFor="let solucion of quizPers.soluciones">
+              <mat-card>
+                <mat-card-title>
+                  <div class="cardBox">
+                    <mat-form-field>
+                      <input matInput type="text" placeholder="Nombre de la solución"
+                        [formControlName]="'st'+solucion.id" [errorStateMatcher]="matcher">
+                      <mat-error
+                        *ngIf="quizzForm.get('st'+solucion.id).hasError('required') && quizzForm.get('st'+solucion.id).touched">
+                        Los titulos son <strong>obligatorios para generar las preguntas</strong>
+                      </mat-error>
+                      <mat-error
+                        *ngIf="quizzForm.get('st'+solucion.id).hasError('maxlength') && quizzForm.get('st'+solucion.id).touched">
+                        El máximo de caracteres es <strong>50</strong>
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                </mat-card-title>
+                <mat-card-content>
 
-    </mat-step>
-    <mat-step>
-      <ng-template matStepLabel>Generar Soluciones</ng-template>
-      <p>Hellothere</p>
-    </mat-step>
-    <mat-step>
-      <ng-template matStepLabel>Generar Preguntas</ng-template>
-    </mat-step>
-  </mat-horizontal-stepper>
+                  <input type="text" style="display:none" class="form-control" placeholder="Imagen de la solución"
+                    readonly>
+                  <div class="input-group-btn" style="text-align: center;">
+                    <span style="margin-top: 1vh;margin-bottom: 2vh;"
+                      [className]="'fileUpload btn btn-success ' + (errores.indexOf('si'+(solucion.id)) != -1 ? 'error' : '')"
+                      [id]="solucion.id">
+                      <span class="upl">Subir imagen</span>
+                      <input type="file" class="upload up" accept="image/*" (change)="onFileChanged($event,solucion.id)"
+                        [formControlName]="'si'+solucion.id" />
+                    </span>
+                  </div>
+                  <mat-error *ngIf="this.errores.indexOf('si'+solucion.id)!=-1">La imagen es obligatoria</mat-error>
+                  <div style="text-align: center;">
+                    <img *ngIf="this.srcFiles[solucion.id]" mat-card-image style="color:black"
+                      [src]="this.srcFiles[solucion.id]">
+                  </div>
+                  <div class="cardBox">
+                    <mat-form-field>
+                      <input matInput type="text" placeholder="Explicación de la solución (opcional)"
+                        [formControlName]="'sd'+solucion.id" [errorStateMatcher]="matcher">
+                      <mat-error
+                        *ngIf="quizzForm.get('sd'+solucion.id).hasError('maxlength') && quizzForm.get('sd'+solucion.id).touched">
+                        El máximo de caracteres es <strong>125</strong>
+                      </mat-error>
+                    </mat-form-field>
+                  </div>
+                </mat-card-content>
+              </mat-card>
+            </div>
+          </div>
+          <button type="button" mat-raised-button color="primary" (click)="generaPreguntas()">
+            Generar Preguntas</button>
+        </div>
+      </mat-step>
+      <!--Tercer bloque del formulario-->
+      <!--PREGUNTAS-->
+      <mat-step>
+        <ng-template matStepLabel>Preguntas</ng-template>
+        <div class='containerForm' *ngIf="quizPers.preguntas==null">
+          <h4>Debes generar las preguntas antes</h4>
+          <button mat-button mat-raised-button color="primary" matStepperPrevious>Volver</button>
+        </div>
+        <div *ngIf="quizPers.preguntas!=null" class="text-center">
+          <h2 class="text-center">Preguntas</h2>
+          <div class="preguntas">
+            <div class="cajaPregunta" *ngFor="let pregunta of quizPers.preguntas">
+              <div class="contPre">
+                <p class="text-center">Pregunta numero {{(pregunta.id+1)}}</p>
+                <div class="cardBox">
+                  <mat-form-field>
+                    <input type="text" matInput placeholder="Enunciado" [formControlName]="'pt'+pregunta.id"
+                      [errorStateMatcher]="matcher">
+                    <mat-error
+                      *ngIf="quizzForm.get('pt'+pregunta.id).hasError('required') && quizzForm.get('pt'+pregunta.id).touched">
+                      El enunciado de la pregunta es <strong>obligatoria</strong>
+                    </mat-error>
+                    <mat-error
+                      *ngIf="quizzForm.get('pt'+pregunta.id).hasError('maxlength') && quizzForm.get('pt'+pregunta.id).touched">
+                      El máximo de caracteres es <strong>125</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+                <div class="cardBox">
+                  <mat-form-field>
+                    <input matInput type="number" placeholder="Cantidad respuestas"
+                      [formControlName]="'pcr'+pregunta.id" [errorStateMatcher]="matcher">
+                    <mat-error
+                      *ngIf="quizzForm.get('pcr'+pregunta.id).hasError('required') && quizzForm.get('pcr'+pregunta.id).touched">
+                      El campo es <strong>obligatorio</strong>
+                    </mat-error>
+                    <mat-error
+                      *ngIf="quizzForm.get('pcr'+pregunta.id).hasError('min') && quizzForm.get('pcr'+pregunta.id).touched">
+                      El mínimo de respuestas es <strong>2</strong>
+                    </mat-error>
+                    <mat-error
+                      *ngIf="quizzForm.get('pcr'+pregunta.id).hasError('max') && quizzForm.get('pcr'+pregunta.id).touched">
+                      El máximo de respuestas es <strong>20</strong>
+                    </mat-error>
+                  </mat-form-field>
+                </div>
+                <button style="margin-top:1vw;background-color: mediumvioletred;" type="button" mat-raised-button
+                  color="accent" (click)="generaRespuestas(pregunta)">Generar
+                  respuestas</button>
+              </div>
+              <!--SE INICIAN LAS RESPUESTAS DE CADA PREGUNTA-->
+              <div class="respuestas">
+                <div class="cajaRespuesta" *ngFor="let respuesta of pregunta.respuestas">
+                  <div class="respBox">
+                    <mat-form-field>
+
+                      <input type="text" matInput placeholder="Respuesta"
+                        [formControlName]="'r'+respuesta.id+'p'+pregunta.id" [errorStateMatcher]="matcher">
+                      <mat-error
+                        *ngIf="quizzForm.get('r'+respuesta.id+'p'+pregunta.id).hasError('required') && quizzForm.get('r'+respuesta.id+'p'+pregunta.id).touched">
+                        El campo es <strong>obligatorio</strong>
+                      </mat-error>
+                      <mat-error
+                        *ngIf="quizzForm.get('r'+respuesta.id+'p'+pregunta.id).hasError('maxlength') && quizzForm.get('r'+respuesta.id+'p'+pregunta.id).touched">
+                        El máximo de caracteres es <strong>70</strong>
+                      </mat-error>
+                    </mat-form-field>
+
+                   <!-- <div class="respBox">
+                      <mat-form-field>
+                        <div class="form-group afinidad-box" *ngFor="let x of [].constructor(this.maxs); let p = index">
+                          <label for="exampleFormControlSelect1">Afinidad para
+                            '{{this.quizzForm.get('st'+(p+1)).value}}'</label>
+                          <select *ngIf="this.quizCookie==null || this.quizCookie.preguntas[i].respuestas[(n-1)]==null "
+                            [id]="generaIdRR('p',i,'rs',n,'a',p)" [formControlName]="generaIdRR('p',i,'rs',n,'a',p)"
+                            class="form-control" id="exampleFormControlSelect1">
+                            <option *ngFor="let q of [0,1,2,3,4,5,6,7,8,9,10]; let l = index">{{q}}</option>
+                          </select>
+                          <select *ngIf="this.quizCookie!=null && this.quizCookie.preguntas[i].respuestas[(n-1)]!=null"
+                            [id]="generaIdRR('p',i,'rs',n,'a',p)" [formControlName]="generaIdRR('p',i,'rs',n,'a',p)"
+                            class="form-control" id="exampleFormControlSelect1">
+                            <option *ngFor="let q of [0,1,2,3,4,5,6,7,8,9,10]; let l = index"
+                              [selected]="this.quizCookie.preguntas[i].respuestas[(n-1)].afinidades[p].cantidad==q">
+                              {{q}}
+                            </option>
+                          </select>
+                        </div>
+                      </mat-form-field>
+                    </div>-->
+
+                  </div>
+                </div>
+                <div class="clear"></div>
+              </div>
+
+            </div>
+          </div>
+        </div>
+      </mat-step>
+    </mat-horizontal-stepper>
+  </form>
+
+
+
+
+
+
 
   <div class="panel-body">
     <form enctype="multipart/form-data" [formGroup]="quizzForm" (ngSubmit)="onSubmit()">
-      <div class='containerForm'>
+
+
+
+      <!--<div class='containerForm'>
         <mat-accordion>
           <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
             <mat-expansion-panel-header>
@@ -198,29 +362,10 @@
           Soluciones</button>
         <button type="button" style="float:right;" mat-raised-button color="warn" (click)="reiniciaQuiz()">Reiniciar
           Quiz</button>
-      </div>
+      </div>-->
       <!-- FORMULARIO DE SOLUCIONES -->
       <div *ngIf="firstStep" class="solu-box">
-        <h2 class="text-center">Soluciones</h2>
-        <!-- Soluciones -->
 
-        <div class="soluciones">
-          <div *ngFor="let solucion of quizPers.soluciones">
-            <mat-card>
-              <mat-card-title>
-                <div class="basicBox">
-                  <mat-form-field>
-                    <input matInput type="text" placeholder="Nombre de la solución" [formControlName]="'st'+solucion.id"
-                      [errorStateMatcher]="matcher">
-                  </mat-form-field>
-                </div>
-              </mat-card-title>
-              <mat-card-content>
-                <p>Hehehe</p>
-              </mat-card-content>
-            </mat-card>
-          </div>
-        </div>
 
 
 
@@ -277,8 +422,8 @@
         <!--Fin soluciones-->
 
         <div class="form-group text-center">
-          <button *ngIf="firstStep" type="button" mat-raised-button color="warn" (click)="generaPreguntas()"
-            [disabled]="!firstStep">Generar Preguntas</button>
+          <!--<button *ngIf="firstStep" type="button" mat-raised-button color="warn" (click)="generaPreguntas()"
+            [disabled]="!firstStep">Generar Preguntas</button>-->
         </div>
       </div>
 

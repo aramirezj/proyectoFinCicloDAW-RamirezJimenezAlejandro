@@ -1,23 +1,37 @@
 @import "../../estilos/variables.scss";
 @import "../../estilos/formulario.scss";
-//54VW libres
-.basicBox{
+
+.basicBox {
   width: 56vw;
   padding: 1vw;
   display: flex;
   flex-direction: column;
   margin-bottom: 1vh;
 }
+.cardBox {
+  width: 50vw;
+  padding: 1vw;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1vh;
+}
+
+.respBox {
+  width: 24vw;
+  padding: 1vw;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1vh;
+}
 //54VW libres
-.twoInput{
+.twoInput {
   width: 28vw;
-  float:left;
+  float: left;
 }
 
 .mat-hint {
   font-size: 75%;
 }
-
 
 //Para el input file
 .fileUpload {
@@ -36,34 +50,113 @@
   filter: alpha(opacity=0);
 }
 
-.soluciones{
-}
 //Carta de la solución
-mat-card{
-  margin:auto;
+mat-card {
+  margin: auto;
   background-color: $fondoSuave;
-  width: 60vw;
+  width: 54vw;
+  padding: 2vw;
+  margin-bottom: 3vh;
+}
+img {
+  max-width: 30vw;
 }
 
+//Estilos de las preguntas y respuestas
+.respuestas {
+  padding: 2vw;
+}
 
+.cajaPregunta {
+  text-align: center;
+  width: 54vw;
+  margin: auto;
+  margin-bottom: 3vh;
+
+  .contPre {
+    padding: 2vw;
+    margin-bottom: 2vh;
+  }
+
+  .cajaRespuesta {
+    width: 24vw;
+    float: left;
+    //margin: 1vw;
+    p {
+      font-weight: bold;
+      color: white;
+      //font-size: 1.5vw;
+      margin: auto;
+      text-transform: initial;
+      padding: 5%;
+      margin-right: 1%;
+      transition: width 0.2s, height 0.2s, transform 0.2s;
+    }
+    p:hover {
+      transform: scale(1.05);
+      color: #dde19c;
+    }
+    p::first-letter {
+      text-transform: uppercase;
+    }
+  }
+}
+.cajaPregunta:nth-child(even) {
+  .contPre {
+    background-color: $fondoSuave;
+  }
+  .cajaRespuesta {
+    background-color: $fondoSuave;
+  }
+}
+.cajaPregunta:nth-child(odd) {
+  .contPre {
+    background-color: $verdeRetro;
+  }
+
+  .cajaRespuesta {
+    background-color: $verdeRetro;
+  }
+}
+
+.cajaRespuesta:nth-child(odd) {
+  margin-right: 2vw;
+}
+.cajaRespuesta:nth-child(odd) {
+  //float: right;
+}
+
+.afinidad-box {
+  width: 45%;
+  margin: auto;
+  label {
+    //font-size: 0.6em;
+  }
+}
+.afinidad-box:nth-child(even) {
+  float: left;
+}
+.afinidad-box:nth-child(odd) {
+  float: right;
+}
 
 //Stepper
-mat-horizontal-stepper{
+mat-horizontal-stepper {
   background: none;
 }
-::ng-deep .mat-horizontal-stepper-header-container{
+::ng-deep .mat-horizontal-stepper-header-container {
   background-color: $fondoSuave;
 }
-::ng-deep .mat-step-label{
-  color:white!important;
+::ng-deep .mat-step-label {
+  color: white !important;
 }
-::ng-deep .mat-horizontal-content-container{
+::ng-deep .mat-horizontal-content-container {
   margin-top: 2vh;
 }
 
 //Expansion panel
-mat-panel-title{
-  color:white;
+mat-panel-title {
+  color: white;
 }
 mat-expansion-panel {
   background: $fondoSuave !important;
@@ -89,7 +182,6 @@ mat-expansion-panel:not(.mat-expanded):not([aria-disabled="true"]) mat-expansion
 ::ng-deep .mat-slider-thumb-label-text {
   opacity: 1 !important;
 }
-
 
 /*
 .error {
@@ -141,7 +233,7 @@ img {
   padding: 5%;
 }
 
-.resp-box {
+.cajaRespuesta {
   padding: 10px;
   color: white;
   font-weight: bold;
@@ -258,7 +350,7 @@ option {
   input::first-letter {
     text-transform: uppercase;
   }
-  .resp-box {
+  .cajaRespuesta {
     width: 46%;
     float: left;
     margin: 1vw;
@@ -288,7 +380,7 @@ option {
   input {
     background-color: $fondoSuave;
   }
-  .resp-box {
+  .cajaRespuesta {
     background-color: $fondoSuave;
     input {
       background-color: $fondoSuave;
@@ -302,7 +394,7 @@ option {
   input {
     background-color: $verdeRetro;
   }
-  .resp-box {
+  .cajaRespuesta {
     background-color: $verdeRetro;
     input {
       background-color: $verdeRetro;
@@ -310,10 +402,10 @@ option {
   }
 }
 
-.resp-box:nth-child(even) {
+.cajaRespuesta:nth-child(even) {
   float: left;
 }
-.resp-box:nth-child(odd) {
+.cajaRespuesta:nth-child(odd) {
   float: right;
 }
 
