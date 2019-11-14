@@ -1,10 +1,13 @@
 <h1>Creación de quiz</h1>
-<h2 class="empty text-center">Antes de empezar, tienes dos tipos de quizzes que puedes crear:</h2>
-<div class="text-center">
-  <button type="button" mat-raised-button color="warn" (click)="openDialog(0)">Personalidad</button>
-  <button type="button" mat-raised-button color="warn" (click)="openDialog(1)">Puntuación</button>
+<div *ngIf="!quizPersonalidad && !quizPuntuacion">
+  <h2 class="empty text-center">Antes de empezar, tienes dos tipos de quizzes que puedes crear:</h2>
+  <div class="text-center">
+    <button type="button" mat-raised-button color="warn" (click)="openDialog(0)">Personalidad</button>
+    <button type="button" mat-raised-button color="warn" (click)="openDialog(1)">Puntuación</button>
+  </div>
 </div>
-<br>
+
+
 
 
 
@@ -181,7 +184,7 @@
             <div class="cajaPregunta" *ngFor="let pregunta of quizPers.preguntas">
               <div class="contPre">
                 <p class="text-center">Pregunta numero {{(pregunta.id+1)}}</p>
-                <div class="cardBox">
+                <div class="questionBox">
                   <mat-form-field>
                     <input type="text" matInput placeholder="Enunciado" [formControlName]="'pt'+pregunta.id"
                       [errorStateMatcher]="matcher">
@@ -195,7 +198,7 @@
                     </mat-error>
                   </mat-form-field>
                 </div>
-                <div class="cardBox">
+                <div class="questionBox">
                   <mat-form-field>
                     <input matInput type="number" placeholder="Cantidad respuestas"
                       [formControlName]="'pcr'+pregunta.id" [errorStateMatcher]="matcher">
@@ -222,7 +225,6 @@
                 <div class="cajaRespuesta" *ngFor="let respuesta of pregunta.respuestas">
                   <div class="respBox">
                     <mat-form-field>
-
                       <input type="text" matInput placeholder="Respuesta"
                         [formControlName]="'r'+respuesta.id+'p'+pregunta.id" [errorStateMatcher]="matcher">
                       <mat-error
@@ -234,36 +236,30 @@
                         El máximo de caracteres es <strong>70</strong>
                       </mat-error>
                     </mat-form-field>
-
-                   <!-- <div class="respBox">
-                      <mat-form-field>
-                        <div class="form-group afinidad-box" *ngFor="let x of [].constructor(this.maxs); let p = index">
-                          <label for="exampleFormControlSelect1">Afinidad para
-                            '{{this.quizzForm.get('st'+(p+1)).value}}'</label>
-                          <select *ngIf="this.quizCookie==null || this.quizCookie.preguntas[i].respuestas[(n-1)]==null "
-                            [id]="generaIdRR('p',i,'rs',n,'a',p)" [formControlName]="generaIdRR('p',i,'rs',n,'a',p)"
-                            class="form-control" id="exampleFormControlSelect1">
-                            <option *ngFor="let q of [0,1,2,3,4,5,6,7,8,9,10]; let l = index">{{q}}</option>
-                          </select>
-                          <select *ngIf="this.quizCookie!=null && this.quizCookie.preguntas[i].respuestas[(n-1)]!=null"
-                            [id]="generaIdRR('p',i,'rs',n,'a',p)" [formControlName]="generaIdRR('p',i,'rs',n,'a',p)"
-                            class="form-control" id="exampleFormControlSelect1">
-                            <option *ngFor="let q of [0,1,2,3,4,5,6,7,8,9,10]; let l = index"
-                              [selected]="this.quizCookie.preguntas[i].respuestas[(n-1)].afinidades[p].cantidad==q">
-                              {{q}}
-                            </option>
-                          </select>
-                        </div>
-                      </mat-form-field>
-                    </div>-->
-
+                  </div>
+                  <label>Afinidades</label>
+                  <div class="afinidad-box" *ngFor="let afinidad of respuesta.afinidades" style="margin-bottom: 7.5vh;">
+                    <div class="respBox">
+                      <mat-slider [min]="0" [max]="10" [thumbLabel]="true"
+                        [formControlName]="'p'+pregunta.id+'r'+respuesta.id+'a'+quizPers.soluciones[afinidad.ids].id">
+                      </mat-slider>
+                      <mat-hint>Afinidad para
+                        '{{quizPers.soluciones[afinidad.ids].titulo}}'
+                      </mat-hint>
+                    </div>
                   </div>
                 </div>
                 <div class="clear"></div>
               </div>
-
             </div>
           </div>
+        </div>
+      </mat-step>
+      <mat-step>
+        <ng-template matStepLabel>Finalizar</ng-template>
+        <div class='containerForm' *ngIf="quizzForm.invalid || quizPers!=null">
+          <h4>El quiz aún esta incompleto.</h4>
+          <button mat-button mat-raised-button color="primary" matStepperPrevious>Volver</button>
         </div>
       </mat-step>
     </mat-horizontal-stepper>

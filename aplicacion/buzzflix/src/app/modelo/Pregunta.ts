@@ -9,10 +9,11 @@ export class Pregunta {
 
     }
 
-    generaRespuestas(cantidad: number) {
+    generaRespuestas(cantidad: number,cantidadSolu:number) {
         this.respuestas = [];
         for (let i = 0; i < cantidad; i++) {
             let respuesta = new Respuesta(i, null, this.id, null, null);
+            respuesta.generaAfinidades(i,cantidadSolu);
             this.respuestas.push(respuesta);
         }
     }

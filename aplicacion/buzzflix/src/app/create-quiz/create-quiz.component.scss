@@ -16,12 +16,15 @@
   margin-bottom: 1vh;
 }
 
+.questionBox{
+  width: 66vw;
+}
+
 .respBox {
-  width: 24vw;
-  padding: 1vw;
+  width: 30vw;
   display: flex;
   flex-direction: column;
-  margin-bottom: 1vh;
+  margin-bottom: 2vh;
 }
 //54VW libres
 .twoInput {
@@ -69,7 +72,7 @@ img {
 
 .cajaPregunta {
   text-align: center;
-  width: 54vw;
+  width: 70vw;
   margin: auto;
   margin-bottom: 3vh;
 
@@ -79,7 +82,8 @@ img {
   }
 
   .cajaRespuesta {
-    width: 24vw;
+    width: 32vw;
+    padding: 1vw;
     float: left;
     //margin: 1vw;
     p {
@@ -127,17 +131,16 @@ img {
 }
 
 .afinidad-box {
-  width: 45%;
   margin: auto;
   label {
     //font-size: 0.6em;
   }
 }
 .afinidad-box:nth-child(even) {
-  float: left;
+  //float: left;
 }
 .afinidad-box:nth-child(odd) {
-  float: right;
+  //float: right;
 }
 
 //Stepper

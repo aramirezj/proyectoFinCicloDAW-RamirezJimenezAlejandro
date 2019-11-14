@@ -300,6 +300,13 @@ export class CreateQuizComponent implements OnInit {
   //Generación de las preguntas por el boton
   generaPreguntas(cookie?: boolean) {
     if (!this.quizzForm.invalid) {
+
+      for (let solucion of this.quizPers.soluciones) {
+        solucion.titulo = this.quizzForm.get('st' + solucion.id).value;
+        solucion.image = this.quizzForm.get('si' + solucion.id).value;
+        solucion.descripcion = this.quizzForm.get('sd' + solucion.id).value
+      }
+
       this.quizPers.generaPreguntas(this.quizzForm.get('cp').value);
       let grupo: any;
 
@@ -378,16 +385,17 @@ export class CreateQuizComponent implements OnInit {
   generaRespuestas(pregunta: Pregunta, cookie?: boolean) {
 
     if (!this.quizzForm.get('pt' + pregunta.id).invalid && !this.quizzForm.get('pcr' + pregunta.id).invalid) {
-      pregunta.generaRespuestas(this.quizzForm.get('pcr' + pregunta.id).value);
+      pregunta.generaRespuestas(this.quizzForm.get('pcr' + pregunta.id).value,this.quizPers.soluciones.length);
+      console.log(this.quizPers)
       let grupo: any;
       for (let respuesta of pregunta.respuestas) {
 
         let titulo: string = "r" + respuesta.id + "p" + pregunta.id;
-        let a1: string = "p" + pregunta.id + "rs" + respuesta.id + "a" + 1;
-        let a2: string = "p" + pregunta.id + "rs" + respuesta.id + "a" + 2;
-        let a3: string = "p" + pregunta.id + "rs" + respuesta.id + "a" + 3;
-        let a4: string = "p" + pregunta.id + "rs" + respuesta.id + "a" + 4;
-        let a5: string = "p" + pregunta.id + "rs" + respuesta.id + "a" + 5;
+        let a1: string = "p" + pregunta.id + "r" + respuesta.id + "a" + 0;
+        let a2: string = "p" + pregunta.id + "r" + respuesta.id + "a" + 1;
+        let a3: string = "p" + pregunta.id + "r" + respuesta.id + "a" + 2;
+        let a4: string = "p" + pregunta.id + "r" + respuesta.id + "a" + 3;
+        let a5: string = "p" + pregunta.id + "r" + respuesta.id + "a" + 4;
 
         grupo = [
           { name: titulo, control: new FormControl(null, []) },
@@ -650,7 +658,7 @@ export class CreateQuizComponent implements OnInit {
     let afinidades: Array<Afinidad> = []
     let cs = this.quizzForm.value.cs;
     for (let i = 1; i <= cs; i++) {
-      let afinidad: Afinidad = new Afinidad(idr, i, null);
+      let afinidad: Afinidad = new Afinidad(idr, i, null, null);
       afinidad.cantidad = this.quizzForm.value['p' + idp + 'rs' + idr + 'a' + i];
       if (afinidad.cantidad == null) {
         afinidad.cantidad = 0;
