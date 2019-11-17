@@ -13,13 +13,9 @@
 
 <!-- Apartado de la creación de un Quiz de PERSONALIDAD -->
 
-
-
-
-
 <div *ngIf="this.quizPersonalidad">
   <form enctype="multipart/form-data" [formGroup]="quizzForm" (ngSubmit)="onSubmit()">
-    <mat-horizontal-stepper labelPosition="bottom" #stepper>
+    <mat-horizontal-stepper labelPosition="bottom" #stepper (selectionChange)="goFinalizar($event)">
       <!--Primer bloque del formulario-->
       <mat-step>
         <ng-template matStepLabel>Creación del Quiz</ng-template>
@@ -149,8 +145,8 @@
                   </div>
                   <mat-error *ngIf="this.errores.indexOf('si'+solucion.id)!=-1">La imagen es obligatoria</mat-error>
                   <div style="text-align: center;">
-                    <img *ngIf="this.srcFiles[solucion.id]" mat-card-image style="color:black"
-                      [src]="this.srcFiles[solucion.id]">
+                    <img *ngIf="this.srcFiles[(solucion.id+1)]" mat-card-image style="color:black"
+                      [src]="this.srcFiles[(solucion.id+1)]">
                   </div>
                   <div class="cardBox">
                     <mat-form-field>
@@ -183,7 +179,7 @@
           <div class="preguntas">
             <div class="cajaPregunta" *ngFor="let pregunta of quizPers.preguntas">
               <div class="contPre">
-                <p class="text-center">Pregunta numero {{(pregunta.id+1)}}</p>
+                <p class="text-center">Pregunta número {{(pregunta.id+1)}}</p>
                 <div class="questionBox">
                   <mat-form-field>
                     <input type="text" matInput placeholder="Enunciado" [formControlName]="'pt'+pregunta.id"
@@ -252,6 +248,8 @@
                 <div class="clear"></div>
               </div>
             </div>
+            <button type="button" mat-raised-button color="primary" matStepperNext (click)="goFinalizar()">
+              Finalizar</button>
           </div>
         </div>
       </mat-step>

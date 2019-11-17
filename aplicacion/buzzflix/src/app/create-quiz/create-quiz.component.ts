@@ -104,6 +104,7 @@ export class CreateQuizComponent implements OnInit {
   }
 
 
+
   convertImageToCanvas(image) {
     var canvas = document.createElement("canvas");
     canvas.width = image.width;
@@ -148,10 +149,8 @@ export class CreateQuizComponent implements OnInit {
 
   onFileChanged(event: any, posicion: number) {
     let banner = posicion == 100 ? true : false;
-    posicion = posicion == 100 ? 0 : posicion;
+    posicion = posicion == 100 ? 0 : (posicion + 1);
     let file = event.target.files[0];
-    console.log(file);
-    console.log(posicion)
     if (this.fileService.formatoValido(file) != null) {
       let b64 = null;
       var myReader: FileReader = new FileReader();
@@ -163,7 +162,6 @@ export class CreateQuizComponent implements OnInit {
           let fileReady = this.fileService.prepareFile(fileNormal);
           this.files[posicion] = fileReady;
           this.names[posicion] = fileReady.name;
-          console.log(this.files)
           let aBorrar = banner ? 'banner' : 'si' + posicion;
           this.errores.splice(this.errores.indexOf(aBorrar), 1)
         })
@@ -257,38 +255,7 @@ export class CreateQuizComponent implements OnInit {
         });
       }
       this.stepper.next();
-      /*this.aux = this.quizzForm.get('cs').value;
-      this.quizzForm.value.privado;
-      if (this.aux > 1 && this.aux < 6) {
-        this.reseteaCondRespuestas();
-        this.secondStep = false;
-        this.bar.start();
-        let grupo: any
-        this.aux = cookie ? this.quizCookie.soluciones.length : this.aux;
-        for (let i = 1; i <= this.aux; i++) {
-          let titulo: string = "st" + i;
-          let descripcion: string = "sd" + i;
-          let image: string = "si" + i;
 
-          let tituloC = cookie ? this.quizCookie.soluciones[(i - 1)].titulo : null;
-          let descripcionC = cookie ? this.quizCookie.soluciones[(i - 1)].descripcion : null;
-
-          grupo = [
-            { name: titulo, control: new FormControl(tituloC, [Validators.required, Validators.maxLength(50)]) },
-            { name: descripcion, control: new FormControl(descripcionC, [Validators.maxLength(125)]) },
-            { name: image, control: new FormControl(null, [Validators.required]) },
-          ]
-          grupo.forEach(f => {
-            this.quizzForm.addControl(f.name, f.control)
-            this.quizzForm.controls[f.name].updateValueAndValidity();
-          });
-        }
-        this.firstStep = true;
-        this.max = this.quizzForm.get('cs').value;
-        this.bar.done();
-      } else {
-        this.notifyService.notify("El máximo de soluciones son 5, y el mínimo son 2", "error");
-      }*/
     } else {
       this.quizzForm.markAllAsTouched();
       this.snackBar.open('Comprueba que todos los campos son validos', "Cerrar", { duration: 4000, panelClass: 'snackBarWrong' });
@@ -328,55 +295,6 @@ export class CreateQuizComponent implements OnInit {
       this.quizzForm.markAllAsTouched();
       this.snackBar.open('Comprueba que todos los campos son validos', "Cerrar", { duration: 4000, panelClass: 'snackBarWrong' });
     }
-
-
-    /*
-        let verdad = true;
-        for (let i = 1; i <= this.quizzForm.get('cs').value; i++) {
-          if (this.quizzForm.get('st' + i).status == "INVALID") {
-            verdad = false;
-          }
-        }
-        this.aux = cookie ? this.quizCookie.preguntas.length : this.quizzForm.get('cp').value;
-        if (verdad) {
-          if (this.aux > 1 && this.aux < 11) {
-            this.bar.start();
-            this.reseteaFullRespuestas();
-            let grupo: any
-            for (let i = 1; i <= this.aux; i++) {
-              let titulo: string = "pt" + i;
-              let cantidad: string = "pcr" + i;
-              let tituloC = cookie ? this.quizCookie.preguntas[(i - 1)].enunciado : null;
-              let cantidadC = cookie ? this.quizCookie.preguntas[(i - 1)].respuestas.length : null;
-    
-              grupo = [
-                { name: titulo, control: new FormControl(tituloC, [Validators.required, Validators.maxLength(125)]) },
-                { name: cantidad, control: new FormControl(cantidadC, [Validators.required, Validators.min(2), Validators.max(20)]) }
-              ]
-              grupo.forEach(f => {
-                this.quizzForm.addControl(f.name, f.control);
-                this.quizzForm.controls[f.name].updateValueAndValidity();
-                let eje = i;
-                eje--;
-                this.verdades[eje].creada = true;
-              });
-    
-              if (cookie) {
-                if (this.quizCookie.preguntas[(i - 1)].respuestas.length > 0) {
-                  this.generaRespuestas(i, true);
-                }
-              }
-    
-            }
-            this.secondStep = true;
-            this.maxp = cookie ? this.quizCookie.preguntas.length : this.quizzForm.get('cp').value;
-            this.bar.done();
-          } else {
-            this.notifyService.notify("El máximo de preguntas son 10, y el mínimo son 2", "error");
-          }
-        } else {
-          this.notifyService.notify("Por favor, rellena al menos los titulos de las soluciones (máximo 50 caracteres)", "error");
-        }*/
   }
 
 
@@ -385,8 +303,7 @@ export class CreateQuizComponent implements OnInit {
   generaRespuestas(pregunta: Pregunta, cookie?: boolean) {
 
     if (!this.quizzForm.get('pt' + pregunta.id).invalid && !this.quizzForm.get('pcr' + pregunta.id).invalid) {
-      pregunta.generaRespuestas(this.quizzForm.get('pcr' + pregunta.id).value,this.quizPers.soluciones.length);
-      console.log(this.quizPers)
+      pregunta.generaRespuestas(this.quizzForm.get('pcr' + pregunta.id).value, this.quizPers.soluciones.length);
       let grupo: any;
       for (let respuesta of pregunta.respuestas) {
 
@@ -398,7 +315,7 @@ export class CreateQuizComponent implements OnInit {
         let a5: string = "p" + pregunta.id + "r" + respuesta.id + "a" + 4;
 
         grupo = [
-          { name: titulo, control: new FormControl(null, []) },
+          { name: titulo, control: new FormControl(null, [Validators.required, Validators.maxLength(100)]) },
           { name: a1, control: new FormControl(null, []) },
           { name: a2, control: new FormControl(null, []) },
           { name: a3, control: new FormControl(null, []) },
@@ -416,79 +333,51 @@ export class CreateQuizComponent implements OnInit {
       this.quizzForm.markAllAsTouched();
       this.snackBar.open('Comprueba que todos los campos son validos', "Cerrar", { duration: 4000, panelClass: 'snackBarWrong' });
     }
+  }
 
+  compruebaRespCreadas() {
+    for (let pregunta of this.quizPers.preguntas) {
+      if (pregunta.respuestas == null) {
+        return false;
+      }
+    }
+    return true;
+  }
 
+  goFinalizar(event) {
+    let pos = event != null ? event.selectedIndex : 3;
+    if (pos == 3 || event == null) {
+      if (!this.quizzForm.invalid && this.quizPers != null) {
+        if (this.quizPers.soluciones != null && this.quizPers.preguntas != null) {
+          if (this.compruebaRespCreadas()) {
+            this.quizPers.titulo = this.quizzForm.get('titulo').value;
+            this.quizPers.image = this.names[0];
 
+            for (let solucion of this.quizPers.soluciones) {
+              solucion.titulo = this.quizzForm.get('st' + solucion.id).value;
+              solucion.image = this.names[(solucion.id + 1)];
+              solucion.descripcion = this.quizzForm.get('sd' + solucion.id).value
+            }
 
-    /* if (!cookie) { this.guardaCookie() };
-     this.maxs = this.quizzForm.get('cs').value;
-     this.maxr = this.quizzForm.value["pcr" + id];
-     if (this.quizzForm.get('pt' + id).status == "INVALID") {
-       this.notifyService.notify("Los titulos de las preguntas son obligatorios", "error");
-     } else {
-       if (this.maxr < 21 && this.maxr > 1) {
-         this.thirdStep = true;
-         this.reseteaRespuestas(id);
-         this.bar.start();
-         let grupo: any;
-         let listita = [];
- 
-         let aux = cookie ? this.quizCookie.preguntas[(id - 1)].respuestas.length : this.maxr;
- 
-         for (let i = 1; i <= aux; i++) {
-           let titulo: string = "r" + i + "p" + id;
-           let a1: string = "p" + id + "rs" + i + "a" + 1;
-           let a2: string = "p" + id + "rs" + i + "a" + 2;
-           let a3: string = "p" + id + "rs" + i + "a" + 3;
-           let a4: string = "p" + id + "rs" + i + "a" + 4;
-           let a5: string = "p" + id + "rs" + i + "a" + 5;
-           let tituloC = cookie ? this.quizCookie.preguntas[(id - 1)].respuestas[(i - 1)].enunciado : null;
-           let a1C = cookie && this.quizCookie.preguntas[(id - 1)].respuestas[(i - 1)].afinidades[0] != null ? this.quizCookie.preguntas[(id - 1)].respuestas[(i - 1)].afinidades[0].cantidad : 0;
-           let a2C = cookie && this.quizCookie.preguntas[(id - 1)].respuestas[(i - 1)].afinidades[1] != null ? this.quizCookie.preguntas[(id - 1)].respuestas[(i - 1)].afinidades[1].cantidad : 0;
-           let a3C = cookie && this.quizCookie.preguntas[(id - 1)].respuestas[(i - 1)].afinidades[2] != null ? this.quizCookie.preguntas[(id - 1)].respuestas[(i - 1)].afinidades[2].cantidad : 0;
-           let a4C = cookie && this.quizCookie.preguntas[(id - 1)].respuestas[(i - 1)].afinidades[3] != null ? this.quizCookie.preguntas[(id - 1)].respuestas[(i - 1)].afinidades[3].cantidad : 0;
-           let a5C = cookie && this.quizCookie.preguntas[(id - 1)].respuestas[(i - 1)].afinidades[4] != null ? this.quizCookie.preguntas[(id - 1)].respuestas[(i - 1)].afinidades[4].cantidad : 0;
- 
-           grupo = [
-             { name: titulo, control: new FormControl(tituloC, []) },
-             { name: a1, control: new FormControl(a1C, []) },
-             { name: a2, control: new FormControl(a2C, []) },
-             { name: a3, control: new FormControl(a3C, []) },
-             { name: a4, control: new FormControl(a4C, []) },
-             { name: a5, control: new FormControl(a5C, []) },
-           ]
-           grupo.forEach(f => {
-             this.quizzForm.addControl(f.name, f.control)
-             if (f.name[0] == "r") {
-               this.quizzForm.controls[f.name].setValidators([Validators.required, Validators.maxLength(70)]);
-             }
- 
-             this.quizzForm.controls[f.name].updateValueAndValidity();
-             let eje = i;
-             eje--;
-             let aux2 = id;
-             aux2--;
-             this.verdades[aux2].respuestas[eje].generado = true;
-             listita.push(eje);
-           });
- 
-         }
-         let aux3 = id;
-         aux3--;
-         this.generaArray(aux3);
-         for (let x = 0; x < listita.length; x++) {
-           let aux2 = id;
-           aux2--;
-           this.verdades[aux2].respuestas[listita[x]] = { generado: true, mostrado: true }
-         }
-         this.maxr = cookie ? this.quizCookie.preguntas[(id - 1)].respuestas.length : this.quizzForm.get('pcr' + id).value;
-         this.bar.done();
-         this.quizzForm.updateValueAndValidity();
- 
-       } else {
-         this.notifyService.notify("El máximo de respuestas es 20 y el mínimo 2, ¿Razonable no?", "error");
-       }
-  }*/
+            for (let pregunta of this.quizPers.preguntas) {
+              pregunta.enunciado = this.quizzForm.get('pt' + pregunta.id).value;
+              for (let respuesta of pregunta.respuestas) {
+                respuesta.enunciado = this.quizzForm.get('r' + respuesta.id + 'p' + pregunta.id).value;
+                for (let afinidad of respuesta.afinidades) {
+                  afinidad.cantidad = this.quizzForm.get('p' + pregunta.id + 'r' + respuesta.id + 'a' + afinidad.id).value;
+                }
+              }
+            }
+          } else {
+            this.snackBar.open('Debes generar todas las respuestas', "Cerrar", { duration: 4000, panelClass: 'snackBarWrong' });
+          }
+        }
+      } else {
+        this.quizzForm.markAllAsTouched();
+        this.snackBar.open('Te has dejado algún campo sin rellenar correctamente', "Cerrar", { duration: 4000, panelClass: 'snackBarWrong' });
+      }
+    }
+
   }
 
 
