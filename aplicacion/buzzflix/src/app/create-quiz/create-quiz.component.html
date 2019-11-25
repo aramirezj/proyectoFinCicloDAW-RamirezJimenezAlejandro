@@ -255,7 +255,11 @@
       </mat-step>
       <mat-step>
         <ng-template matStepLabel>Finalizar</ng-template>
-        <div class='containerForm' *ngIf="quizzForm.invalid || quizPers!=null">
+        <div class='containerForm' *ngIf="quizzForm.invalid || !quizPersFin">
+          <h4>El quiz aún esta incompleto.</h4>
+          <button mat-button mat-raised-button color="primary" matStepperPrevious>Volver</button>
+        </div>
+        <div class='containerForm' *ngIf="!quizzForm.invalid && quizPersFin">
           <h4>El quiz aún esta incompleto.</h4>
           <button mat-button mat-raised-button color="primary" matStepperPrevious>Volver</button>
         </div>

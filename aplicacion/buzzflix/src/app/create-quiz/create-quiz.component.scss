@@ -64,6 +64,9 @@ mat-card {
 img {
   max-width: 30vw;
 }
+.mat-card-image:first-child{
+  margin-top:0px!important;
+}
 
 //Estilos de las preguntas y respuestas
 .respuestas {
@@ -85,6 +88,7 @@ img {
     width: 32vw;
     padding: 1vw;
     float: left;
+    margin-bottom: 2vh;
     //margin: 1vw;
     p {
       font-weight: bold;

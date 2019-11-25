@@ -78,7 +78,7 @@ export class CreateQuizComponent implements OnInit {
 
   public quizPersonalidad: boolean = false;
   public quizPuntuacion: boolean = false;
-
+  quizPersFin: boolean = false;
   //Atributos Quiz Puntuacion
   quizFormPunt: FormGroup; //Formulario
   quizPers: Quiz;
@@ -219,10 +219,10 @@ export class CreateQuizComponent implements OnInit {
     let cs = this.quizCookie != null ? this.quizCookie.soluciones.length : 2;
 
     this.quizzForm = new FormGroup({
-      titulo: new FormControl(titulo, [Validators.minLength(10), Validators.maxLength(75)]),
+      titulo: new FormControl(titulo, [Validators.required, Validators.minLength(10), Validators.maxLength(75)]),
       cp: new FormControl(cp, [Validators.required, Validators.min(4), Validators.max(10)]),
       cs: new FormControl(cs, [Validators.required, Validators.min(2), Validators.max(5)]),
-      banner: new FormControl(null, []),
+      banner: new FormControl(null, [Validators.required]),
       privado: new FormControl(null, [])
     });
     if (this.quizCookie != null) {
@@ -266,14 +266,19 @@ export class CreateQuizComponent implements OnInit {
 
   //Generación de las preguntas por el boton
   generaPreguntas(cookie?: boolean) {
-    if (!this.quizzForm.invalid) {
 
-      for (let solucion of this.quizPers.soluciones) {
+    let verdad = true;
+    for (let solucion of this.quizPers.soluciones) {
+      if (this.quizzForm.get('st' + solucion.id).value != null && this.quizzForm.get('si' + solucion.id).value != null) {
         solucion.titulo = this.quizzForm.get('st' + solucion.id).value;
         solucion.image = this.quizzForm.get('si' + solucion.id).value;
-        solucion.descripcion = this.quizzForm.get('sd' + solucion.id).value
+        solucion.descripcion = this.quizzForm.get('sd' + solucion.id).value;
+      } else {
+        verdad = false;
       }
+    }
 
+    if (verdad) {
       this.quizPers.generaPreguntas(this.quizzForm.get('cp').value);
       let grupo: any;
 
@@ -299,7 +304,6 @@ export class CreateQuizComponent implements OnInit {
 
 
   //Generación de las respuestas por el boton
-
   generaRespuestas(pregunta: Pregunta, cookie?: boolean) {
 
     if (!this.quizzForm.get('pt' + pregunta.id).invalid && !this.quizzForm.get('pcr' + pregunta.id).invalid) {
@@ -368,6 +372,8 @@ export class CreateQuizComponent implements OnInit {
                 }
               }
             }
+            this.quizPersFin = true;
+            console.log(this.findInvalidControlsRecursive(this.quizzForm))
           } else {
             this.snackBar.open('Debes generar todas las respuestas', "Cerrar", { duration: 4000, panelClass: 'snackBarWrong' });
           }
