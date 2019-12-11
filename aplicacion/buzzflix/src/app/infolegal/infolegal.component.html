@@ -1,8 +1,6 @@
-<div class="container">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="panel panel-default">
-                <div class="panel-heading">{{this.titulos[this.opcion]}}</div>
+<div class="webContainer">
+
+                <h1>{{this.titulos[this.opcion]}}</h1>
 
                 <div class="panel-body" *ngIf="this.opcion=='privacidad'">
                     <h2>1. ¿Qué son las cookies?</h2>
@@ -165,7 +163,4 @@
                 <div class="panel-body" *ngIf="this.opcion=='redes'">Por ahora solo tenemos Twitter <a class="correo"
                         target="_blank" href="https://twitter.com/hasquiz">@hasquiz</a> ¡No dudes en seguirnos para
                     enterarte de lo último!</div>
-            </div>
-        </div>
     </div>
-</div>

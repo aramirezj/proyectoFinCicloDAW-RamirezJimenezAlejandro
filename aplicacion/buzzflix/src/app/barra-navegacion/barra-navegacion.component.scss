@@ -50,17 +50,31 @@ mat-expansion-panel {
 }
 
 ::ng-deep mat-expansion-panel-header:hover {
-  background-color: $fondoSuave !important;
-  border-radius: 99999px !important;
+  .mat-content{
+   // .mat-expansion-panel-header-title{
+     a{
+      color:$naranjaRetro;
+     }
+    //}
+  }
+}
+a:hover{
+color:$naranjaRetro!important;
 }
 
 img {
   width: 12vw;
 }
 
-.elementoBarra:hover {
-  background-color: $fondoSuave;
-  border-radius: 99999px;
+::ng-deep.elementoBarra:hover {
+   .mat-list-item-content{
+    color:$naranjaRetro!important;
+  }
+  mat-icon{
+    color:$naranjaRetro!important;
+  }
+
+  
 }
 mat-icon {
   margin-right: 0.5vw;
