@@ -183,7 +183,7 @@ export class CreateQuizComponent implements OnInit {
 
   iniciaQuizPersonalidad() {
 
-    this.quizPers = new Quiz(null, null, null, null, null, null, null, null, null, 1);
+    this.quizPers = new Quiz(null, null, null, null, null, null, null, 0, null, 1);
 
     this.quizPersonalidad = true;
     this.quizPuntuacion = false;
@@ -372,6 +372,7 @@ export class CreateQuizComponent implements OnInit {
                 }
               }
             }
+            console.log(this.quizPers)
             this.quizPersFin = true;
             console.log(this.findInvalidControlsRecursive(this.quizzForm))
           } else {
@@ -564,15 +565,17 @@ export class CreateQuizComponent implements OnInit {
   }
   //Envio de formulario
   onSubmit() {
-    let titulo = this.quizzForm.value.titulo;
     let privado: string = null;
     if (this.quizzForm.value.privado) {
       privado = this.makeId();
     }
 
     if (this.authService.isLoggedIn()) {
-      this.quizz = new Quiz(null, this.authService.getAuthUserId(), null, titulo, this.files[0].name, this.preparaSoluciones(), this.preparaPreguntas(), 0, null, 1);
-      this.QuizService.createQuiz(this.quizz, this.files, privado)
+      //this.quizz = new Quiz(null, this.authService.getAuthUserId(), null, titulo, this.files[0].name, this.preparaSoluciones(), this.preparaPreguntas(), 0, null, 1);
+      this.quizPers.creador = this.authService.getAuthUserId();
+      this.quizPers.image = this.files[0].name;
+    
+      this.QuizService.createQuiz(this.quizPers, this.files, privado)
         .subscribe(resp => {
           if (isPlatformBrowser(this.platformId)) {
             localStorage.removeItem("quizCookie");

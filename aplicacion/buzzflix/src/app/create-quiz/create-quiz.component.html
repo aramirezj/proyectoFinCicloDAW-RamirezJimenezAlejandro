@@ -14,7 +14,7 @@
 <!-- Apartado de la creación de un Quiz de PERSONALIDAD -->
 
 <div *ngIf="this.quizPersonalidad">
-  <form enctype="multipart/form-data" [formGroup]="quizzForm" (ngSubmit)="onSubmit()">
+  <form enctype="multipart/form-data" [formGroup]="quizzForm">
     <mat-horizontal-stepper labelPosition="bottom" #stepper (selectionChange)="goFinalizar($event)">
       <!--Primer bloque del formulario-->
       <mat-step>
@@ -260,8 +260,11 @@
           <button mat-button mat-raised-button color="primary" matStepperPrevious>Volver</button>
         </div>
         <div class='containerForm' *ngIf="!quizzForm.invalid && quizPersFin">
-          <h4>El quiz aún esta incompleto.</h4>
-          <button mat-button mat-raised-button color="primary" matStepperPrevious>Volver</button>
+          <p>Tu quiz esta completo y correcto, ahora puedes publicarlo y pasará a moderación, donde la comunidad de
+            usuarios
+            comprobará que cumple con las normas mencionadas anteriormente, y de ser así, será accesible para todo el
+            mundo.</p>
+          <button mat-button mat-raised-button color="primary" (click)="compruebaValidaciones()">Finalizar</button>
         </div>
       </mat-step>
     </mat-horizontal-stepper>

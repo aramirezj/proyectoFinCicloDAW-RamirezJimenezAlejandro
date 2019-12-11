@@ -49,12 +49,14 @@ mat-icon:hover{
 }
 
 .cajaPregunta {
+  width: 80vw;
   text-align: center;
-  width: 100%;
+  margin: auto;
+  margin-bottom: 7.5vh;
   h4 {
     color: white;
     font-size: 5vh;
-    padding: 4%;
+    padding: 1vw;
     font-weight: bold;
   }
   h4::first-letter {
@@ -62,14 +64,12 @@ mat-icon:hover{
   }
   div {
     p {
-      width: 100%;
-      height: 100%;
       font-weight: bold;
       color: white;
       font-size: 4vh;
       margin: auto;
       text-transform: initial;
-      padding: 5%;
+      padding: 2vw;
       transition: width 0.2s, height 0.2s, transform 0.2s;
     }
     p:hover {
@@ -100,18 +100,17 @@ mat-icon:hover{
 
 .cajaRespuesta {
   background-color: $verdeRetro;
-  width: 45%;
+  width: 39vw;
   min-height: 25vh;
   float: left;
   align-content: center;
   margin-bottom: 1vh;
 }
-.cajaRespuesta:nth-child(even) {
-  float: left;
+
+.cajaRespuesta:nth-child(odd){
+  margin-right: 2vw;
 }
-.cajaRespuesta:nth-child(odd) {
-  float: right;
-}
+
 //Apartado de las preguntas
 //Apartado de la solución mostrada
 .example-card {

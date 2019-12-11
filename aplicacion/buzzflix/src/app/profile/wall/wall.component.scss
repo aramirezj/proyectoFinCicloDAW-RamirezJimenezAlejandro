@@ -1,11 +1,19 @@
-  
-  @media (max-width: 800px) {
-    .padreQuiz {
-      float: none;
-    }
-    .cajaQuiz {
-      width: 100%;
-      min-height: initial;
-      float: none;
-    }
+.padreQuiz {
+  float: left;
+}
+.cajaQuiz {
+  padding: 1vw;
+  min-height: 65vh;
+  float: left;
+}
+
+@media (max-width: 800px) {
+  .padreQuiz {
+    float: none;
   }
+  .cajaQuiz {
+    width: 100%;
+    min-height: initial;
+    float: none;
+  }
+}

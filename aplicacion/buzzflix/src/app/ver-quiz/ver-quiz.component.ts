@@ -141,7 +141,9 @@ export class VerQuizComponent implements OnInit {
   getQuiz() {
     this.quizService.getQuizz(this.rawid)
       .subscribe(resp => {
+        console.log(resp)
         this.quiz = resp;
+        console.log(this.quiz)
         if (this.quiz != null) {
           this.id = this.quiz.id;
           this.generaFormulario();
