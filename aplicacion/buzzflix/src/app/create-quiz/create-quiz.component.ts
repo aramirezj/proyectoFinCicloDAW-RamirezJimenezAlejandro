@@ -79,12 +79,12 @@ export class CreateQuizComponent implements OnInit {
   public quizPersonalidad: boolean = false;
   public quizPuntuacion: boolean = false;
   quizPersFin: boolean = false;
+  quizPuntFin: boolean = false;
   //Atributos Quiz Puntuacion
   quizFormPunt: FormGroup; //Formulario
   quizPers: Quiz;
   quizPunt: Quiz; //Clase principal
   quizCookiePunt: Quiz = null; //Cookie 
-  showPreguntas: boolean = false;
   correctasPunt: Section[] = [
     { name: 'La opción de Quiz privado, permite que el quiz no vaya a moderación ni se publique, solo tendrás acceso desde tu perfil y podrás compartirlo con tus amigos' },
     { name: 'Si no eliges la opción de privado, el quiz pasará a Moderación, donde otros usuarios votaran tu quiz, y cuando pasen 24 horas se decidirá si se publica o no. ' }
@@ -189,7 +189,6 @@ export class CreateQuizComponent implements OnInit {
     this.quizPuntuacion = false;
     this.quizPunt = null;
     this.quizCookiePunt = null;
-    this.showPreguntas = false;
     this.files = [];
     this.srcFiles = [];
     this.max = 0;
@@ -236,7 +235,12 @@ export class CreateQuizComponent implements OnInit {
   //Generación de las soluciones al pulsar el boton
   generaSoluciones(cookie?: boolean) {
 
-    if (!this.quizzForm.invalid) {
+    if (!cookie) {
+      this.quizPers = new Quiz(null, null, null, this.quizzForm.get('titulo').value, null, null, null, 0, null, 1)
+    }
+
+
+    if (!this.quizzForm.invalid || cookie) {
       let grupo: any;
       this.quizPers.generaSolucionesPers(this.quizzForm.get('cs').value);
       for (let solucion of this.quizPers.soluciones) {
@@ -244,9 +248,13 @@ export class CreateQuizComponent implements OnInit {
         let descripcion: string = "sd" + solucion.id;
         let image: string = "si" + solucion.id;
 
+
+        let tituloC: string = cookie ? this.quizCookie.soluciones[solucion.id].titulo : null;
+        let descripcionC: string = cookie ? this.quizCookie.soluciones[solucion.id].descripcion : null;
+
         grupo = [
-          { name: titulo, control: new FormControl(null, [Validators.maxLength(50)]) },
-          { name: descripcion, control: new FormControl(null, [Validators.maxLength(125)]) },
+          { name: titulo, control: new FormControl(tituloC, [Validators.maxLength(50)]) },
+          { name: descripcion, control: new FormControl(descripcionC, [Validators.maxLength(125)]) },
           { name: image, control: new FormControl(null, []) },
         ]
         grupo.forEach(f => {
@@ -254,11 +262,17 @@ export class CreateQuizComponent implements OnInit {
           this.quizzForm.controls[f.name].updateValueAndValidity();
         });
       }
-      this.stepper.next();
+      console.log(this.quizPers);
+
+      if (!cookie) {
+        this.guardaCookie();
+        this.stepper.next();
+      }
+
 
     } else {
       this.quizzForm.markAllAsTouched();
-      this.snackBar.open('Comprueba que todos los campos son validos', "Cerrar", { duration: 4000, panelClass: 'snackBarWrong' });
+      this.snackBar.open('Comprueba que todos los campos son validzos', "Cerrar", { duration: 4000, panelClass: 'snackBarWrong' });
     }
 
   }
@@ -267,18 +281,9 @@ export class CreateQuizComponent implements OnInit {
   //Generación de las preguntas por el boton
   generaPreguntas(cookie?: boolean) {
 
-    let verdad = true;
-    for (let solucion of this.quizPers.soluciones) {
-      if (this.quizzForm.get('st' + solucion.id).value != null && this.quizzForm.get('si' + solucion.id).value != null) {
-        solucion.titulo = this.quizzForm.get('st' + solucion.id).value;
-        solucion.image = this.quizzForm.get('si' + solucion.id).value;
-        solucion.descripcion = this.quizzForm.get('sd' + solucion.id).value;
-      } else {
-        verdad = false;
-      }
-    }
 
-    if (verdad) {
+
+    if (this.quizPers.soluciones != null) {
       this.quizPers.generaPreguntas(this.quizzForm.get('cp').value);
       let grupo: any;
 
@@ -295,10 +300,13 @@ export class CreateQuizComponent implements OnInit {
           this.quizzForm.controls[f.name].updateValueAndValidity();
         });
       }
-      this.stepper.next();
+      if (!cookie) {
+        this.guardaCookie();
+        this.stepper.next();
+      }
     } else {
       this.quizzForm.markAllAsTouched();
-      this.snackBar.open('Comprueba que todos los campos son validos', "Cerrar", { duration: 4000, panelClass: 'snackBarWrong' });
+      this.snackBar.open('Comprueba que todos los campos son validxos', "Cerrar", { duration: 4000, panelClass: 'snackBarWrong' });
     }
   }
 
@@ -335,17 +343,29 @@ export class CreateQuizComponent implements OnInit {
       }
     } else {
       this.quizzForm.markAllAsTouched();
-      this.snackBar.open('Comprueba que todos los campos son validos', "Cerrar", { duration: 4000, panelClass: 'snackBarWrong' });
+      this.snackBar.open('Comprueba que todos los campos son validoscc', "Cerrar", { duration: 4000, panelClass: 'snackBarWrong' });
     }
   }
 
   compruebaRespCreadas() {
-    for (let pregunta of this.quizPers.preguntas) {
-      if (pregunta.respuestas == null) {
-        return false;
+
+    if (this.quizPers != null) {
+      for (let pregunta of this.quizPers.preguntas) {
+        if (pregunta.respuestas == null) {
+          return false;
+        }
       }
+      return true;
+    } else if (this.quizPunt) {
+      for (let pregunta of this.quizPunt.preguntas) {
+        if (pregunta.respuestas == null) {
+          return false;
+        }
+      }
+      return true;
     }
-    return true;
+
+
   }
 
   goFinalizar(event) {
@@ -388,43 +408,43 @@ export class CreateQuizComponent implements OnInit {
   }
 
 
+  goFinalizarPunt(event) {
+    let pos = event != null ? event.selectedIndex : 3;
+    if (pos == 3 || event == null) {
+      if (!this.quizFormPunt.invalid && this.quizPunt != null) {
+        if (this.quizPunt.soluciones != null && this.quizPunt.preguntas != null) {
+          if (this.compruebaRespCreadas()) {
+            this.quizPunt.titulo = this.quizFormPunt.get('titulo').value;
+            this.quizPunt.image = this.names[0];
 
+            for (let solucion of this.quizPunt.soluciones) {
+              solucion.descripcion = this.quizFormPunt.get('sd' + solucion.id).value
+            }
 
+            for (let pregunta of this.quizPunt.preguntas) {
+              pregunta.enunciado = this.quizFormPunt.get('pt' + pregunta.id).value;
+              for (let respuesta of pregunta.respuestas) {
+                respuesta.enunciado = this.quizFormPunt.get('r' + respuesta.id + 'p' + pregunta.id).value;
+              }
+            }
 
-  //Reseteo las respuestas de cierta pregunta
-  reseteaRespuestas(id: number) {
-    id--;
-    for (let i = 0; i < 10; i++) {
-      this.verdades[id].respuestas[i] = { generado: false, mostrado: false };
-    }
-  }
-  //Reseteo todas las respuestas de todas las preguntas dejando las preguntas creadas
-  reseteaCondRespuestas() {
-    for (let i = 0; i < 10; i++) {
-      if (this.verdades[i].creada) {
-        this.verdades[i] = { creada: true, respuestas: [] };
+            this.quizPuntFin = true;
+          } else {
+            this.snackBar.open('Debes generar todas las respuestas', "Cerrar", { duration: 4000, panelClass: 'snackBarWrong' });
+          }
+        }
       } else {
-        this.verdades[i] = { creada: false, respuestas: [] };
+        this.quizFormPunt.markAllAsTouched();
+        this.snackBar.open('Te has dejado algún campo sin rellenar correctamente', "Cerrar", { duration: 4000, panelClass: 'snackBarWrong' });
       }
-    }
 
-    for (let i = 0; i < 10; i++) {
-      for (let j = 0; j < 20; j++) {
-        this.verdades[i].respuestas[j] = { generado: false, mostrado: false };
-      }
     }
+    console.log(this.findInvalidControlsRecursive(this.quizFormPunt))
+
   }
-  //Reseteo todas las preguntas y respuestas
-  reseteaFullRespuestas() {
-    for (let i = 0; i < 10; i++) {
-      this.verdades[i] = { creada: false, respuestas: [] };
-    }
-    for (let i = 0; i < 10; i++) {
-      for (let j = 0; j < 20; j++) {
-        this.verdades[i].respuestas[j] = { generado: false, mostrado: false };
-      }
-    }
-  }
+
+
+
   //Busqueda de controles con errores
   findInvalidControlsRecursive(formToInvestigate: FormGroup | FormArray): string[] {
     var invalidControls: string[] = [];
@@ -447,24 +467,14 @@ export class CreateQuizComponent implements OnInit {
     this.errores = this.findInvalidControlsRecursive(this.quizzForm);
     this.quizzForm.markAllAsTouched();
     this.estado = !this.quizzForm.invalid;
-    let minimo = this.compruebaRespuestasMinimas();
-    if (this.estado && minimo) {
+    if (this.estado) {
       this.onSubmit();
     } else {
       this.notifyService.notify("No dejes ningún campo vacio", "error");
     }
   }
 
-  compruebaRespuestasMinimas() {
-    let verdad = true;
-    for (let i = 0; i < this.verdades.length; i++) {
-      if (this.verdades[i].creada) {
-        if (!this.verdades[i].respuestas[1].mostrado)
-          verdad = false;
-      }
-    }
-    return verdad;
-  }
+
 
 
 
@@ -473,31 +483,6 @@ export class CreateQuizComponent implements OnInit {
     var text = Math.random().toString(36).substring(2);
     return text;
   }
-  generaId(letra: string, i: number) {
-    i++;
-    return letra + i;
-  }
-
-  generaIdR(letra1: string, id1: number, letra2: string, id2: number) {
-    id2++;
-    return letra1 + id1 + letra2 + id2;
-  }
-  generaIdRR(letra0: string, id0: number, letra1: string, id1: number, letra2: string, id2: number) {
-    id2++;
-    id0++;
-    return letra0 + id0 + letra1 + id1 + letra2 + id2;
-  }
-
-  //Genera Array para el maximo de las respuestas
-  generaArray(pos: number) {
-    let aux = this.maxr + 1;
-    let array = Array(aux).fill(0).map((x, i) => i);
-    array.shift();
-    this.learray[pos] = array;
-  }
-
-
-
 
   //Preparo las soluciones para el modelo Quizz
   preparaSoluciones(cookie?: boolean): Array<Solucion> {
@@ -574,7 +559,7 @@ export class CreateQuizComponent implements OnInit {
       //this.quizz = new Quiz(null, this.authService.getAuthUserId(), null, titulo, this.files[0].name, this.preparaSoluciones(), this.preparaPreguntas(), 0, null, 1);
       this.quizPers.creador = this.authService.getAuthUserId();
       this.quizPers.image = this.files[0].name;
-    
+
       this.QuizService.createQuiz(this.quizPers, this.files, privado)
         .subscribe(resp => {
           if (isPlatformBrowser(this.platformId)) {
@@ -592,11 +577,12 @@ export class CreateQuizComponent implements OnInit {
 
 
   guardaCookie() {
-    let quizCookie: Quiz;
+    console.log(this.quizPers);
+    /*let quizCookie: Quiz;
     quizCookie = new Quiz(null, this.authService.getAuthUserId(), null, this.quizzForm.value.titulo, null,
-      this.preparaSoluciones(true), this.preparaPreguntas(), 0, null, 1); 1
+      this.preparaSoluciones(true), this.preparaPreguntas(), 0, null, 1); 1*/
     if (isPlatformBrowser(this.platformId)) {
-      localStorage.setItem("quizCookie", JSON.stringify(quizCookie));
+      localStorage.setItem("quizCookie", JSON.stringify(this.quizPers));
     }
   }
   reiniciaQuiz() {
@@ -673,12 +659,12 @@ export class CreateQuizComponent implements OnInit {
   iniciaQuizPuntuacion() {
     this.reiniciaQuiz();
     this.quizPersonalidad = false;
+    this.quizPunt = new Quiz(null, null, null, null, null, null, null, 0, null, 2);
     if (isPlatformBrowser(this.platformId)) {
       this.quizCookiePunt = JSON.parse(localStorage.getItem("quizCookiePunt"));
       localStorage.removeItem("quizCookie");
     }
     this.createFormPunt();
-
   }
 
   reiniciaQuizPunt() {
@@ -687,7 +673,6 @@ export class CreateQuizComponent implements OnInit {
     this.srcFiles = [];
     this.quizPunt = null;
     this.quizCookiePunt = null;
-    this.showPreguntas = false;
     this.quizFormPunt.reset();
     this.createFormPunt();
     this.quizFormPunt.updateValueAndValidity();
@@ -710,15 +695,16 @@ export class CreateQuizComponent implements OnInit {
 
   createFormPunt() {
     let titulo = this.quizCookiePunt != null ? this.quizCookiePunt.titulo : null;
-    let cp = this.quizCookiePunt != null ? this.quizCookiePunt.preguntas.length : null;
+    let cp = this.quizCookiePunt != null ? this.quizCookiePunt.preguntas.length : 5;
 
     this.quizFormPunt = new FormGroup({
       titulo: new FormControl(titulo, [Validators.required, Validators.minLength(10), Validators.maxLength(75)]),
-      cp: new FormControl(cp, [Validators.required, Validators.min(5), Validators.max(20)]),
+      cp: new FormControl(cp, [Validators.min(5), Validators.max(20)]),
       banner: new FormControl(null, [Validators.required]),
       privado: new FormControl(null, [])
     });
     this.quizPuntuacion = true;
+    console.log(this.quizPuntuacion)
     if (this.quizCookiePunt) {
       this.generaPreguntasPuntForm(true);
       this.generaSolucionesPuntForm(true);
@@ -728,24 +714,21 @@ export class CreateQuizComponent implements OnInit {
 
 
   generaPreguntasPuntForm(cookie?: boolean) {
-    let cantidad = 0;
     if (cookie) {
       this.quizPunt = new Quiz(null, null, null, this.quizFormPunt.get('titulo').value, null, this.quizCookiePunt.soluciones, this.quizCookiePunt.preguntas, 0, null, 2)
     } else {
       this.quizPunt = new Quiz(null, null, null, this.quizFormPunt.get('titulo').value, null, null, null, 0, null, 2)
       this.quizPunt.generaPreguntas(this.quizFormPunt.get('cp').value);
     }
-    cantidad = this.quizPunt.preguntas.length;
 
-    if (cantidad > 1 && cantidad < 11) {
+    if (this.quizPunt.preguntas.length > 1 && this.quizPunt.preguntas.length < 11) {
       this.bar.start();
       let grupo: any
-      for (let i = 0; i < cantidad; i++) {
+      for (let i = 0; i < this.quizPunt.preguntas.length; i++) {
         let titulo: string = "pt" + i;
         let cantidad: string = "pcr" + i;
         let tituloC = cookie ? this.quizCookiePunt.preguntas[i].enunciado : null;
         let cantidadC = cookie && this.quizCookiePunt.preguntas[i].respuestas != null ? this.quizCookiePunt.preguntas[i].respuestas.length : null;
-
         grupo = [
           { name: titulo, control: new FormControl(tituloC, [Validators.required, Validators.maxLength(125)]) },
           { name: cantidad, control: new FormControl(cantidadC, [Validators.required, Validators.min(2), Validators.max(20)]) }
@@ -759,9 +742,12 @@ export class CreateQuizComponent implements OnInit {
           this.generaRespuestasPunt(i, true);
         }
 
+
+      }
+      if (!cookie) {
+        this.stepper.next();
       }
 
-      this.showPreguntas = true;
       this.bar.done();
     } else {
       this.notifyService.notify("El máximo de preguntas son 10, y el mínimo son 2", "error");
@@ -826,6 +812,7 @@ export class CreateQuizComponent implements OnInit {
     this.quizFormPunt.updateValueAndValidity();
     this.bar.done();
 
+
   }
 
   compruebaValidacionesPunt() {
@@ -867,8 +854,6 @@ export class CreateQuizComponent implements OnInit {
   onSubmitPunt() {
     if (this.compruebaValidacionesPunt()) {
       this.guardaProgresoPunt();
-
-
       let privado: string = null;
       if (this.quizFormPunt.value.privado) {
         privado = this.makeId();

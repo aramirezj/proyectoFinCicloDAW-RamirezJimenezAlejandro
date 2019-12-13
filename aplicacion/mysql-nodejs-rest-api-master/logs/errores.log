@@ -1835,3 +1835,18 @@
        at F:\Escritorio\proyectoFinCicloDAW-RamirezJimenezAlejandro\aplicacion\mysql-nodejs-rest-api-master\node_modules\express\lib\router\index.js:281:22 code: 'PROTOCOL_ENQUEUE_AFTER_FATAL_ERROR', fatal: false },
   Componente: 'Query Controller',
   timestamp: '2019-11-13T17:54:23.943Z' }
+{ level: 'error',
+  message:
+   { Error: Cannot enqueue Query after fatal error.
+       at Protocol._validateEnqueue (C:\Users\aramirezj\Desktop\proyectoFinCicloDAW-RamirezJimenezAlejandro\aplicacion\mysql-nodejs-rest-api-master\node_modules\mysql\lib\protocol\Protocol.js:212:16)
+       at Protocol._enqueue (C:\Users\aramirezj\Desktop\proyectoFinCicloDAW-RamirezJimenezAlejandro\aplicacion\mysql-nodejs-rest-api-master\node_modules\mysql\lib\protocol\Protocol.js:138:13)
+       at Connection.query (C:\Users\aramirezj\Desktop\proyectoFinCicloDAW-RamirezJimenezAlejandro\aplicacion\mysql-nodejs-rest-api-master\node_modules\mysql\lib\Connection.js:201:25)
+       at QueryController.ejecutaConsulta (C:\Users\aramirezj\Desktop\proyectoFinCicloDAW-RamirezJimenezAlejandro\aplicacion\mysql-nodejs-rest-api-master\src\controllers\queryController.js:24:25)
+       at router.get (C:\Users\aramirezj\Desktop\proyectoFinCicloDAW-RamirezJimenezAlejandro\aplicacion\mysql-nodejs-rest-api-master\src\routes\usuarios.js:324:16)
+       at Layer.handle [as handle_request] (C:\Users\aramirezj\Desktop\proyectoFinCicloDAW-RamirezJimenezAlejandro\aplicacion\mysql-nodejs-rest-api-master\node_modules\express\lib\router\layer.js:95:5)
+       at next (C:\Users\aramirezj\Desktop\proyectoFinCicloDAW-RamirezJimenezAlejandro\aplicacion\mysql-nodejs-rest-api-master\node_modules\express\lib\router\route.js:137:13)
+       at Route.dispatch (C:\Users\aramirezj\Desktop\proyectoFinCicloDAW-RamirezJimenezAlejandro\aplicacion\mysql-nodejs-rest-api-master\node_modules\express\lib\router\route.js:112:3)
+       at Layer.handle [as handle_request] (C:\Users\aramirezj\Desktop\proyectoFinCicloDAW-RamirezJimenezAlejandro\aplicacion\mysql-nodejs-rest-api-master\node_modules\express\lib\router\layer.js:95:5)
+       at C:\Users\aramirezj\Desktop\proyectoFinCicloDAW-RamirezJimenezAlejandro\aplicacion\mysql-nodejs-rest-api-master\node_modules\express\lib\router\index.js:281:22 code: 'PROTOCOL_ENQUEUE_AFTER_FATAL_ERROR', fatal: false },
+  Componente: 'Query Controller',
+  timestamp: '2019-12-11T18:16:22.574Z' }

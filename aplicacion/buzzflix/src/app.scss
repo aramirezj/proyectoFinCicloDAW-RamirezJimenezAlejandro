@@ -18,6 +18,21 @@
   margin-left: 15vw!important;
 }
 
+.btn-success{
+  background-color: darkgreen!important;
+  border-color:darkgreen!important;
+}
+.btn-success:hover{
+  background-color: #28a745!important;
+  border-color: #28a745!important;
+}
+
+@media (max-width: 800px) {
+  .snackBar,.snackBarWrong,.snackBarSuccess{
+    margin: 5vw!important;
+  }
+}
+
 
 @font-face {
   font-family: 'retroFont';
