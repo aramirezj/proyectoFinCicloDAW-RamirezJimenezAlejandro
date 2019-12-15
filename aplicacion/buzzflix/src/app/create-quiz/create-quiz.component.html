@@ -12,7 +12,6 @@
 
 
 <!-- Apartado de la creación de un Quiz de PERSONALIDAD -->
-
 <div *ngIf="this.quizPersonalidad">
   <form enctype="multipart/form-data" [formGroup]="quizzForm">
     <mat-horizontal-stepper labelPosition="bottom" #stepper (selectionChange)="goFinalizar($event)">
@@ -104,12 +103,6 @@
       </mat-step>
 
 
-
-
-
-
-
-
       <!--Segundo bloque del formulario-->
       <!--SOLUCIONES-->
       <mat-step>
@@ -183,7 +176,7 @@
           <h4>Debes generar las preguntas antes</h4>
           <button mat-button mat-raised-button color="primary" matStepperPrevious>Volver</button>
         </div>
-        <div *ngIf="quizPers.preguntas!=null" class="text-center">
+        <div *ngIf="quizPers.preguntas!=null && !isLoading" class="text-center">
           <h2 class="text-center">Preguntas</h2>
           <div class="preguntas">
             <div class="cajaPregunta" *ngFor="let pregunta of quizPers.preguntas">
@@ -226,7 +219,7 @@
                   respuestas</button>
               </div>
               <!--SE INICIAN LAS RESPUESTAS DE CADA PREGUNTA-->
-              <div class="respuestas">
+              <div class="respuestas" *ngIf="!isLoading">
                 <div class="cajaRespuesta" *ngFor="let respuesta of pregunta.respuestas">
                   <div class="respBox">
                     <mat-form-field>
@@ -248,8 +241,7 @@
                       <mat-slider [min]="0" [max]="10" [thumbLabel]="true"
                         [formControlName]="'p'+pregunta.id+'r'+respuesta.id+'a'+quizPers.soluciones[afinidad.ids].id">
                       </mat-slider>
-                      <mat-hint>Afinidad para
-                        '{{quizPers.soluciones[afinidad.ids].titulo}}'
+                      <mat-hint>Afinidad para <span style="color:white!important;font-weight: bold;">'{{quizPers.soluciones[afinidad.ids].titulo}}'</span>
                       </mat-hint>
                     </div>
                   </div>
@@ -269,10 +261,7 @@
           <button mat-button mat-raised-button color="primary" matStepperPrevious>Volver</button>
         </div>
         <div class='containerForm' *ngIf="!quizzForm.invalid && quizPersFin">
-          <p>Tu quiz esta completo y correcto, ahora puedes publicarlo y pasará a moderación, donde la comunidad de
-            usuarios
-            comprobará que cumple con las normas mencionadas anteriormente, y de ser así, será accesible para todo el
-            mundo.</p>
+          <p>{{quizzForm.value.privado ? textoPrivado : textoPublico}}</p>
           <button mat-button mat-raised-button color="primary" (click)="compruebaValidaciones()">Finalizar</button>
         </div>
       </mat-step>
@@ -450,7 +439,8 @@
               <div class="clear"></div>
             </div>
           </div>
-          <button type="button" mat-raised-button color="primary" matStepperNext (click)="generaSolucionesPuntForm()">Generar
+          <button type="button" mat-raised-button color="primary" matStepperNext
+            (click)="generaSolucionesPuntForm()">Generar
             Soluciones</button>
         </div>
       </mat-step>
@@ -483,23 +473,25 @@
               </mat-error>
             </mat-form-field>
           </div>
+          <button type="button" mat-raised-button color="primary" matStepperNext (click)="goFinalizarPunt()">
+            Finalizar</button>
         </div>
       </mat-step>
       <!--Bloque de finalizar quiz de puntuación -->
       <mat-step>
-          <ng-template matStepLabel>Finalizar</ng-template>
-          <div class='containerForm' *ngIf="quizFormPunt.invalid || !quizPuntFin">
-            <h4>El quiz aún esta incompleto.</h4>
-            <button mat-button mat-raised-button color="primary" matStepperPrevious>Volver</button>
-          </div>
-          <div class='containerForm' *ngIf="!quizFormPunt.invalid && quizPuntFin">
-            <p>Tu quiz esta completo y correcto, ahora puedes publicarlo y pasará a moderación, donde la comunidad de
-              usuarios
-              comprobará que cumple con las normas mencionadas anteriormente, y de ser así, será accesible para todo el
-              mundo.</p>
-            <button mat-button mat-raised-button color="primary" (click)="onSubmitPunt()">Finalizar</button>
-          </div>
-        </mat-step>
+        <ng-template matStepLabel>Finalizar</ng-template>
+        <div class='containerForm' *ngIf="quizFormPunt.invalid || !quizPuntFin">
+          <h4>El quiz aún esta incompleto.</h4>
+          <button mat-button mat-raised-button color="primary" matStepperPrevious>Volver</button>
+        </div>
+        <div class='containerForm' *ngIf="!quizFormPunt.invalid && quizPuntFin">
+          <p>Tu quiz esta completo y correcto, ahora puedes publicarlo y pasará a moderación, donde la comunidad de
+            usuarios
+            comprobará que cumple con las normas mencionadas anteriormente, y de ser así, será accesible para todo el
+            mundo.</p>
+          <button mat-button mat-raised-button color="primary" (click)="onSubmitPunt()">Finalizar</button>
+        </div>
+      </mat-step>
 
     </mat-horizontal-stepper>
 
