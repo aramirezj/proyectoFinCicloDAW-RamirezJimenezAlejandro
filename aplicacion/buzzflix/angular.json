@@ -58,6 +58,10 @@
                   "type": "initial",
                   "maximumWarning": "5mb",
                   "maximumError": "10mb"
+                },
+                {
+                  "type": "anyComponentStyle",
+                  "maximumWarning": "6kb"
                 }
               ]
             }
@@ -124,7 +128,8 @@
                   "replace": "src/environments/environment.ts",
                   "with": "src/environments/environment.prod.ts"
                 }
-              ]
+              ],
+              "optimization": true
             }
           }
         }
@@ -159,5 +164,8 @@
       }
     }
   },
-  "defaultProject": "buzzflix"
+  "defaultProject": "buzzflix",
+  "cli": {
+    "analytics": "4d986897-98c6-4312-8e0d-a67a5af1ead2"
+  }
 }
