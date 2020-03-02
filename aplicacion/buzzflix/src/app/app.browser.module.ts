@@ -137,7 +137,7 @@ registerLocaleData(localePy, 'es');
     }),
     HttpClientModule,
     AppRoutingModule,
-    RouterModule.forRoot(ROUTES, { onSameUrlNavigation: 'reload' }),
+    RouterModule.forRoot(ROUTES, { onSameUrlNavigation: 'reload', initialNavigation: 'enabled' }),
     ScrollToModule.forRoot(),
     FormsModule,
     ReactiveFormsModule,
