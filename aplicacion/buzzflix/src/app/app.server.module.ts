@@ -11,8 +11,8 @@ import { ModuleMapLoaderModule } from '@nguniversal/module-map-ngfactory-loader'
     AppBrowserModule,
     ServerModule,
     ModuleMapLoaderModule,
-    ServerTransferStateModule,
+    ServerTransferStateModule
   ],
-  bootstrap: [AppComponent],
+  bootstrap: [AppComponent]
 })
 export class AppServerModule {}
