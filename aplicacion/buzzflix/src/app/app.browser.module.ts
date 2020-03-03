@@ -83,8 +83,9 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatIconModule } from '@angular/material/icon';
 import { MatListModule } from '@angular/material/list';
 
+import {TransferHttpCacheModule} from '@nguniversal/common';
 
-
+import { StateTransferInitializerModule } from './dom-content-loaded.module';
 
 export function socialConfigs() {
   const config = new AuthServiceConfig(
@@ -135,9 +136,10 @@ registerLocaleData(localePy, 'es');
     BrowserModule.withServerTransition({
       appId: 'ng-universal-demystified'
     }),
+    TransferHttpCacheModule,
     HttpClientModule,
     AppRoutingModule,
-    RouterModule.forRoot(ROUTES, { onSameUrlNavigation: 'reload', initialNavigation: 'enabled' }),
+    RouterModule.forRoot(ROUTES, { onSameUrlNavigation: 'reload' }),
     ScrollToModule.forRoot(),
     FormsModule,
     ReactiveFormsModule,
@@ -155,7 +157,8 @@ registerLocaleData(localePy, 'es');
     MatButtonModule,
     MatSidenavModule,
     MatIconModule,
-    MatListModule
+    MatListModule,
+    StateTransferInitializerModule
   ],
   exports: [RouterModule],
   providers: [

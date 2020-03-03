@@ -98,6 +98,7 @@
     "webpack-cli": "^3.3.11",
     "webpack-node-externals": "^1.7.2",
     "ws": "^7.2.1",
-    "xhr2": "^0.2.0"
+    "xhr2": "^0.2.0",
+    "xmlhttprequest": "^1.8.0"
   }
 }
