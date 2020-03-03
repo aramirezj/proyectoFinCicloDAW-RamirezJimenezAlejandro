@@ -6,11 +6,12 @@
   },
   "files": [
     "main.server.ts",
-    "server.ts"
+    "../server.ts"
   ],
   "angularCompilerOptions": {
     "entryModule": "./app/app.server.module#AppServerModule"
-  },
+  }
+,
   "include": [
     "src/**/*.d.ts"
   ]

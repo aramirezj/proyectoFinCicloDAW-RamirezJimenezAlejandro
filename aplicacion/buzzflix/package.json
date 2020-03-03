@@ -41,6 +41,7 @@
     "@ng-toolkit/universal": "^7.1.2",
     "@nguniversal/common": "9.0.1",
     "@nguniversal/express-engine": "9.0.1",
+    "@nguniversal/module-map-ngfactory-loader": "^8.2.6",
     "@nicky-lenaers/ngx-scroll-to": "^3.0.1",
     "angular-6-social-login": "^1.1.1",
     "angular-svg-round-progressbar": "^3.0.1",
