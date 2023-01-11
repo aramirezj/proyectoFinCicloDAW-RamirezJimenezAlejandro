@@ -1,0 +1,91 @@
+@import "../../estilos/colores.scss";
+@import "../../estilos/variables.scss";
+//Estilos de fabrica de la barra de navegación
+.sidenav-container {
+  background: $fondoWeb;
+  height: 100%;
+}
+.sidenav {
+  width: $sizeSidenav;
+  background: $fondoWeb;
+  border: 0.05vw solid rgb(56, 68, 77);
+}
+.sidenav .mat-toolbar {
+  background: inherit;
+}
+
+.mat-toolbar.mat-primary {
+  position: sticky;
+  top: 0;
+  z-index: 1;
+}
+
+//Reinicios de estilos
+::ng-deep .mat-expansion-panel-body,
+.mat-expansion-panel-header {
+  padding: 0 !important;
+}
+::ng-deep .mat-list-item-content,
+.mat-expansion-panel-header-title {
+  padding: 1vw;
+}
+::ng-deep .mat-expansion-panel-header-description,.mat-expansion-panel-header-title{
+  margin-right: 0!important;
+}
+
+//Estilos propios
+a {
+  font-weight: bold;
+}
+.webContainer {
+  padding: $paddingContainer;
+}
+mat-toolbar {
+  background: $fondoWeb !important;
+  border-top: 0.05vw solid rgb(56, 68, 77);
+  border-bottom: 0.05vw solid rgb(56, 68, 77);
+}
+mat-expansion-panel {
+  background-color: $fondoWeb;
+}
+
+::ng-deep mat-expansion-panel-header:hover {
+  .mat-content{
+   // .mat-expansion-panel-header-title{
+     a{
+      color:$naranjaRetro;
+     }
+    //}
+  }
+}
+a:hover{
+color:$naranjaRetro!important;
+}
+
+img {
+  width: 12vw;
+}
+
+::ng-deep.elementoBarra:hover {
+   .mat-list-item-content{
+    color:$naranjaRetro!important;
+  }
+  mat-icon{
+    color:$naranjaRetro!important;
+  }
+
+  
+}
+mat-icon {
+  margin-right: 0.5vw;
+}
+
+//Querys responsive
+@media (max-width: 800px) {
+  .sidenav {
+    width: 50vw;
+  }
+  img {
+    width: 35vw;
+  }
+}

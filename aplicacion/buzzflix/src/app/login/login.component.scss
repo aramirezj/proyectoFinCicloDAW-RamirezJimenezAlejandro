@@ -1,18 +1,1 @@
-.panel{
-  margin: 1em;
-  font-size: 1.5em;
-  font-weight: bold;
-}
-.example-full-width {
-    width: 100%;
-}
-mat-form-field{
-  margin-bottom: 1%;
-}
-.forgetPassword{
-  color:initial!important;
-  text-transform: initial!important;
-}
-.forgetPassword:hover{
-  text-decoration: underline!important;
-}
+@import "../../estilos/formulario.scss";

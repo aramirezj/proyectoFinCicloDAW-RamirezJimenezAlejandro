@@ -2,13 +2,12 @@ import { Injectable} from '@angular/core';
 import { CONFIG } from './../config/config';
 import { AuthService } from './auth.service';
 import { Observable } from 'rxjs';
-import 'rxjs/add/operator/map';
 import { RestService } from './rest.service';
 @Injectable()
 export class FollowService {
     constructor(
         private authService: AuthService,
-        private restService: RestService,
+        private restService: RestService
     ) {
     }
 

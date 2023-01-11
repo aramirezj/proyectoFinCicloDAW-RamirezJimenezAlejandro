@@ -1,0 +1,99 @@
+<div *ngIf="this.quiz && this.isLoaded && !this.resultado">
+  <div class="panel-body">
+    <div *ngIf="quiz.tipo==1">
+      <div class="cajaPregunta" *ngFor="let pregunta of this.quiz.preguntas;let i = index">
+        <h4 [id]="'p'+i">{{pregunta.enunciado}}</h4>
+        <div class="clear"></div>
+        <div [id]="i+''+j"
+          [className]="pregunta.eleccion == respuesta ? 'cajaRespuesta activado' :  pregunta.eleccion!= null ?  'cajaRespuesta desactivado' : 'cajaRespuesta'"
+          *ngFor="let respuesta of pregunta.respuestas;let j=index" (click)="seleccion(pregunta,respuesta)"
+          [ngx-scroll-to]="'#'+i+''+j">
+          <p>{{respuesta.enunciado}}</p>
+        </div>
+        <div class="clear"></div>
+      </div>
+    </div>
+    <div *ngIf="quiz.tipo==2">
+      <div class="cajaPregunta" *ngFor="let pregunta of this.quiz.preguntas;let i = index">
+        <h4 [id]="'p'+i">{{pregunta.enunciado}}</h4>
+        <div class="clear"></div>
+        <div [id]="i+''+j"
+          [className]="pregunta.eleccion == respuesta && respuesta.correcta ? 'cajaRespuesta activado correcta' :  pregunta.eleccion == respuesta && !respuesta.correcta ?  'cajaRespuesta activado incorrecta' : pregunta.eleccion!= null ?  'cajaRespuesta desactivado' : 'cajaRespuesta'"
+          *ngFor="let respuesta of pregunta.respuestas;let j=index" (click)="seleccion(pregunta,respuesta)"
+          [ngx-scroll-to]="'#'+i+''+j">
+          <p>{{respuesta.enunciado}}</p>
+        </div>
+        <div class="clear"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="text-center" *ngIf="quiz && quiz.tipo==1 && resultado">
+  <mat-card class="example-card">
+    <mat-card-header>
+      <mat-card-title class="mat-card-header-text">{{this.solucionado.titulo}}
+        <p style="display: inline;" role="button">
+          <mat-icon style="float:left;" (click)="volver()">keyboard_backspace</mat-icon>
+          <mat-icon (click)="reiniciaQuiz()">refresh</mat-icon>
+          <mat-icon (click)="openDialog()" *ngIf="this.authService.isLoggedIn()" mat-list-icon>report_problem</mat-icon>
+        </p>
+      </mat-card-title>
+    </mat-card-header>
+    <img alt="Imagen de la solucion adquirida" mat-card-image *ngIf="urlImg | async; let url" [src]="url" width="200px">
+    <mat-card-content>
+      <p class="descSolu">
+        {{this.solucionado.descripcion}}
+      </p>
+    </mat-card-content>
+    <mat-card-actions>
+      <a id="shareme" style="float:right" [href]="this.urlShare" target="_blank">
+        <i role="button" class="fab fa-twitter"></i>
+      </a>
+      <app-votar [id]="this.quiz.id"></app-votar>
+    </mat-card-actions>
+  </mat-card>
+  <br>
+</div>
+<!--Resultado puntuación-->
+<div class="text-center" *ngIf="quiz && quiz.tipo==2  && resultado">
+  <mat-card *ngIf="resultado" class="example-card">
+    <mat-card-header>
+      <mat-card-title class="mat-card-header-text">{{quiz.titulo}}<p style="display: inline;" role="button">
+          <mat-icon style="float:left;" (click)="volver()">keyboard_backspace</mat-icon>
+          <mat-icon (click)="reiniciaQuiz()">refresh</mat-icon>
+          <mat-icon (click)="openDialog()" *ngIf="this.authService.isLoggedIn()" mat-list-icon>report_problem</mat-icon>
+        </p>
+      </mat-card-title>
+    </mat-card-header>
+    <mat-card-content>
+      ¡Obtuviste {{this.aciertos}} de {{this.quiz.preguntas.length}}!
+      <div class="progress-wrapper">
+        <round-progress style="margin: auto;" [current]="this.aciertos" [max]="this.quiz.preguntas.length"
+          [color]="colorResu" [background]="'#271553'" [radius]="100" [stroke]="30" [semicircle]="false"
+          [rounded]="true" [clockwise]="true" [responsive]="false" [duration]="2000" [animation]="'easeInOutQuart'"
+          [animationDelay]="0">
+        </round-progress>
+        <div class="text">{{this.porcentaje}}%</div>
+      </div>
+      <p class="descSolu">
+        {{this.solucionado.descripcion}}
+      </p>
+
+    </mat-card-content>
+    <mat-card-actions>
+      <a id="shareme" style="float:right" [href]="this.urlShare" target="_blank">
+        <i role="button" class="fab fa-twitter"></i>
+      </a>
+      <app-votar [id]="this.quiz.id"></app-votar>
+    </mat-card-actions>
+  </mat-card>
+</div>
+
+<p class="empty" *ngIf="this.quiz==null && this.isLoaded">Lo sentimos, el Quiz al que intenta acceder no existe o aún
+  no ha sido
+  publicado.
+  <mat-icon style="font-size: 1.2em;">
+    sentiment_very_dissatisfied
+  </mat-icon>
+</p>

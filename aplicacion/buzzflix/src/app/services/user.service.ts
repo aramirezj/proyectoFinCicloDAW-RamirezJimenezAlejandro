@@ -1,43 +1,32 @@
 import { Observable } from 'rxjs';
-import { Injectable, EventEmitter } from '@angular/core';
+import { Injectable, EventEmitter, Inject, PLATFORM_ID } from '@angular/core';
 import { AuthService } from './auth.service';
 import { CONFIG } from './../config/config';
 import { Usuario } from '../modelo/Usuario';
 import { NgProgress } from 'ngx-progressbar';
-import { Quizz } from '../modelo/Quizz';
-import { NotifyService } from './notify.service';
-import { Image } from '../modelo/Image';
-import { AngularFirestore, AngularFirestoreCollection } from '@angular/fire/firestore';
-import * as firebase from 'firebase';
-import 'firebase/firestore';
-import { AngularFireStorage } from 'angularfire2/storage';
+import { Quiz } from '../modelo/Quiz';
+
 import { finalize } from 'rxjs/operators';
 import { Logro } from '../modelo/Logro';
 import { BehaviorSubject } from 'rxjs';
 import { RestService } from './rest.service';
-
+import { isPlatformBrowser } from '@angular/common';
+import { FileService } from './file.service';
+import { MatSnackBar } from '@angular/material';
 @Injectable()
 export class UserService {
     public idPaquete = new BehaviorSubject(0);
     currentMessage = this.idPaquete.asObservable();
     public userProfileUpdated: EventEmitter<Usuario>
-    model: Image;
-    imagesRef: AngularFirestoreCollection<Image>;
-    image: Observable<Image[]>;
-    successMsg = 'Data successfully saved.';
     constructor(
+        @Inject(PLATFORM_ID) private platformId: Object,
         private authService: AuthService,
         private bar: NgProgress,
-        private notifyService: NotifyService,
         private restService: RestService,
-        private firestore: AngularFirestore,
-        private afStorage: AngularFireStorage
+        private fileService: FileService,
+        private snackBar: MatSnackBar
     ) {
         this.userProfileUpdated = new EventEmitter();
-        this.imagesRef = this.firestore.collection<Image>('imagenes');
-        this.model = {
-            name: ''
-        }
     }
     changeMessage(id: number): void {
         this.idPaquete.next(id)
@@ -66,8 +55,8 @@ export class UserService {
         });
     }
 
-    getUserWall(id: number): Observable<Array<Quizz>> {
-        let url = `${CONFIG.apiUrl}usuario/${id}/wall`;
+    getUserWall(nickname: string): Observable<Array<Quiz>> {
+        let url = `${CONFIG.apiUrl}usuario/${nickname}/wall`;
         return Observable.create(observer => {
             this.restService.peticionHttp(url).subscribe(response => {
                 observer.next(response.respuesta)
@@ -75,8 +64,8 @@ export class UserService {
             })
         });
     }
-    getLogros(id: number): Observable<Array<Logro>> {
-        let url = `${CONFIG.apiUrl}usuario/${id}/logros`;
+    getLogros(nick: string): Observable<Array<Logro>> {
+        let url = `${CONFIG.apiUrl}usuario/${nick}/logros`;
         return Observable.create(observer => {
             this.restService.peticionHttp(url).subscribe(response => {
                 observer.next(response.respuesta)
@@ -96,8 +85,8 @@ export class UserService {
         });
     }
 
-    getUserById(id: number): Observable<Usuario> {  //PROTEGIDO
-        let url = `${CONFIG.apiUrl}usuario/${id}`;
+    getUserByNickname(nickname: string): Observable<Usuario> {  //PROTEGIDO
+        let url = `${CONFIG.apiUrl}usuario/${nickname}`;
 
         return Observable.create(observer => {
             this.restService.peticionHttp(url).subscribe(response => {
@@ -107,7 +96,7 @@ export class UserService {
         });
 
     }
-    getUsuarios(nombre: String): Observable<Array<Usuario>> {  //PROTEGIDO
+    getUsuarios(nombre: string): Observable<Array<Usuario>> {  //PROTEGIDO
         let url = `${CONFIG.apiUrl}usuarios/${nombre}`;
         nombre = nombre == "" ? "EVERYTHINGPLEASE" : nombre;
 
@@ -128,53 +117,61 @@ export class UserService {
         if (datos["nombre"] == undefined) {
             datos["nombre"] = OLDUSUARIO.name;
         }
+        if (datos["nickname"] == undefined) {
+            datos["nickname"] = OLDUSUARIO.nickname;
+        }
 
         let url = `${CONFIG.apiUrl}usuario/actualizar/${id}`;
         let body = {
             name: datos["nombre"],
+            nickname: datos["nickname"],
             oldpass: datos["oldpass"],
             newpass: datos["newpass"],
             avatar: avatar
         };
-
         return Observable.create(observer => {
             this.restService.peticionHttp(url, body, "put").subscribe(response => {
                 this.bar.done();
                 if (response.status == "Wrong password") {
-                    this.notifyService.notify("La contraseña antigua es erronea.", "error");
+                    this.snackBar.open('La contraseña antigua es erronea.', "Cerrar", { duration: 4000, panelClass: 'snackBarWrong' });
                     return this.authService.getAuthUser();
                 }
 
                 let aux = this.authService.getAuthUser();
                 aux.name = datos["nombre"];
+                aux.nickname = datos["nickname"];
                 aux.avatar = avatar;
-                localStorage.setItem("usuario", JSON.stringify(aux));
+                if (isPlatformBrowser(this.platformId)) {
+                    localStorage.setItem("usuario", JSON.stringify(aux));
+                }
 
                 if (file != undefined) {
-                    let ref = this.afStorage.ref(avatar);
+                    let ref = this.fileService.obtenerReferencia(avatar);
                     const uploadTask = ref.put(file);
                     uploadTask.snapshotChanges().pipe(
                         finalize(() => {
                             if (datos["oldfile"] != undefined && datos["oldfile"] != "") {
-                                this.borraImagen(datos["oldfile"]);
+                                if (OLDUSUARIO.avatar != null) {
+                                    this.borraImagen(OLDUSUARIO.avatar);
+                                }
                             }
-                            this.notifyService.notify("¡Usuario actualizado con exito!", "success");
+                            this.snackBar.open('¡Usuario actualizado con exito!', "Cerrar", { duration: 4000, panelClass: 'snackBarSuccess' });
                             this.userProfileUpdated.emit(aux);
                             return aux;
                         })
                     ).subscribe()
                 } else {
-                    this.notifyService.notify("¡Usuario actualizado con exito!", "success");
+                    this.snackBar.open('¡Usuario actualizado con exito!', "Cerrar", { duration: 4000, panelClass: 'snackBarSuccess' });
                     this.userProfileUpdated.emit(aux);
                     return aux;
                 }
-                observer.next(response.respuesta)
+                //observer.next(response.respuesta)
                 observer.complete();
             })
         });
     }
     borraImagen(avatar: string): void {
-        this.afStorage.ref(avatar).delete();
+        this.fileService.deleteImg(avatar);
     }
 
 }

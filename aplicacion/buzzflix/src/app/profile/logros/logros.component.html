@@ -1,12 +1,13 @@
-<div class="col-md-4" *ngFor="let logro of this.listaLogros">
-  <div class="card mb-2">
-    <img [alt]="'Logro '+logro.nombre" (mouseover)="setGif(logro.id)" [id]="'img'+logro.id" (mouseleave)="deleteGif(logro.id)" [class]="isPendiente(logro)" [src]="'assets/logros/logro'+logro.id+'.png'" width="100"/>
+<div class="logroBox">
+  <div class="logro" *ngFor="let logro of this.listaLogros">
+    <img [alt]="'Logro '+logro.nombre" (mouseover)="setGif(logro)" (mouseleave)="deleteGif(logro)"
+      [class]="isPendiente(logro)" [src]="logro.src" width="100" />
     <div class="card-body">
       <h4 class="card-title">{{logro.nombre}}</h4>
       <p class="card-text">{{logro.descripcion}}</p>
       <p class="card-text">
-        <span *ngIf="logro.fecha=='Aun no conseguido'" class="textoPendiente">{{logro.fecha}}</span>
-        <span *ngIf="logro.fecha!='Aun no conseguido'">Conseguido el {{logro.fecha | date}}</span>
+        <span *ngIf="logro.fecha=='Aún no conseguido'" class="textoPendiente">{{logro.fecha}}</span>
+        <span *ngIf="logro.fecha!='Aún no conseguido'">Conseguido el {{logro.fecha | date}}</span>
       </p>
     </div>
   </div>

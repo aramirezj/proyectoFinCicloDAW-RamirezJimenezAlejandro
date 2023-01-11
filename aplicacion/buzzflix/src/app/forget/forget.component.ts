@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 import { AuthService } from '../services/auth.service';
 import { ActivatedRoute, Router } from '@angular/router';
-import { FormGroup, FormControl, Validators, Form } from '@angular/forms';
-import { NotifyService } from '../services/notify.service';
+import { FormGroup, FormControl, Validators} from '@angular/forms';
+import { Subscription } from 'rxjs/internal/Subscription';
+import { MatSnackBar } from '@angular/material';
 
 @Component({
   selector: 'app-forget',
@@ -11,20 +12,20 @@ import { NotifyService } from '../services/notify.service';
 })
 export class ForgetComponent implements OnInit {
   forgetForm: FormGroup;
-  confirmacion: String;
-  mensaje: String;
+  confirmacion: string;
+  mensaje: string;
+  subsRouter: Subscription;
   constructor(
     private authService: AuthService,
-    private notifyService: NotifyService,
     private routerMV: Router,
-    private router: ActivatedRoute
+    private router: ActivatedRoute,
+    private snackBar:MatSnackBar
   ) {
     this.mensaje = "Le enviaremos un correo a su dirección para restablecer la contraseña.";
   }
 
   ngOnInit() {
-
-    this.router.params.subscribe((params) => {
+    this.subsRouter = this.router.params.subscribe((params) => {
       this.confirmacion = params['confirmacion'];
       if (this.confirmacion != null) {
         this.createForm(true);
@@ -33,6 +34,10 @@ export class ForgetComponent implements OnInit {
         this.createForm(false);
       }
     })
+  }
+
+  ngOnDestroy(){
+    this.subsRouter.unsubscribe();
   }
 
   createForm(opcion: Boolean) {
@@ -51,18 +56,20 @@ export class ForgetComponent implements OnInit {
 
   onSubmit(opcion: Boolean) {
     if (!this.forgetForm.invalid) {
-      let password: String = opcion ? this.forgetForm.get('firstPass').value : null;
-      let email: String = opcion ? null : this.forgetForm.get('email').value;
+      let password: string = opcion ? this.forgetForm.get('firstPass').value : null;
+      let email: string = opcion ? null : this.forgetForm.get('email').value;
       this.authService.forgetPassword(email, password,this.confirmacion)
         .subscribe((res) => {
           if (res) {
-            this.notifyService.notify("La contraseña se ha restablecido con exito.", "success");
+            this.snackBar.open('La contraseña se ha restablecido con exito.', "Cerrar", { duration: 4000, panelClass: 'snackBarSuccess' });
             this.routerMV.navigate(['/auth/login']);
           } else {
             this.mensaje = "Hemos enviado un correo a la dirección que ha proporcionado para la recuperación de su contraseña."
           }
 
         })
+    }else{
+      this.snackBar.open('Comprueba que todos los campos son validos', "Cerrar", { duration: 4000, panelClass: 'snackBarWrong' });
     }
   }
 

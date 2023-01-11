@@ -1,3 +1,6 @@
+@import "../../../estilos/formulario.scss";
+
+
 .fileUpload {
   position: relative;
   overflow: hidden;
@@ -13,7 +16,7 @@
   opacity: 0;
   filter: alpha(opacity=0);
 }
-
+/*
 .panel{
   margin: 1em;
   font-size: 1.5em;
@@ -28,3 +31,4 @@ mat-form-field{
 button{
   margin-top: 2%;
 }
+*/

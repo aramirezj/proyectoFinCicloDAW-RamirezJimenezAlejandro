@@ -1,0 +1,159 @@
+@import "../../estilos/variables.scss";
+
+.progress-wrapper{
+  position: relative;
+  margin:5vh!important;
+}
+
+.progress-wrapper .text{
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  -webkit-transform: translateY(-50%);
+  text-align: center;
+  width: 100%;
+  z-index: 1;
+  font-weight: bold;
+  font-size: 5vh;
+}
+//Apartado de las preguntas
+.clear {
+  clear: both;
+}
+.panel-body {
+  padding: 0px !important;
+}
+mat-icon {
+  float: right;
+  //color: $naranjaRetro !important;
+  font-size: 1.25em;
+}
+::ng-deep .mat-card-header-text {
+  width: 100% !important;
+  margin: 0% !important;
+}
+
+.desactivado {
+  background-color: rgb(88, 87, 87) !important;
+}
+//Quiz puntuación
+.correcta {
+  background-color: limegreen !important;
+}
+.incorrecta {
+  background-color: red !important;
+}
+
+mat-icon:hover{
+  cursor: pointer;
+}
+
+.cajaPregunta {
+  width: 80vw;
+  text-align: center;
+  margin: auto;
+  margin-bottom: 7.5vh;
+  h4 {
+    color: white;
+    font-size: 5vh;
+    padding: 1vw;
+    font-weight: bold;
+  }
+  h4::first-letter {
+    text-transform: uppercase;
+  }
+  div {
+    p {
+      font-weight: bold;
+      color: white;
+      font-size: 4vh;
+      margin: auto;
+      text-transform: initial;
+      padding: 2vw;
+      transition: width 0.2s, height 0.2s, transform 0.2s;
+    }
+    p:hover {
+      transform: scale(1.05);
+      color: #dde19c;
+    }
+    p::first-letter {
+      text-transform: uppercase;
+    }
+  }
+}
+.cajaPregunta:nth-child(even) {
+  h4 {
+    background-color: $fondoSuave;
+  }
+  div {
+    background-color: $fondoSuave;
+  }
+}
+.cajaPregunta:nth-child(odd) {
+  h4 {
+    background-color: $verdeRetro;
+  }
+  div {
+    background-color: $verdeRetro;
+  }
+}
+
+.cajaRespuesta {
+  background-color: $verdeRetro;
+  width: 39vw;
+  min-height: 25vh;
+  float: left;
+  align-content: center;
+  margin-bottom: 1vh;
+}
+
+.cajaRespuesta:nth-child(odd){
+  margin-right: 2vw;
+}
+
+//Apartado de las preguntas
+//Apartado de la solución mostrada
+.example-card {
+  margin: auto;
+  max-width: 400px;
+  background-color: $fondoSuave !important;
+}
+mat-card-actions {
+  min-height: 3em;
+}
+i {
+  font-size: 3em;
+  color: #1da1f2;
+}
+.descSolu {
+  font-size: 1.2em;
+  text-align: justify;
+}
+
+@media (max-width: 800px) {
+  .cajaRespuesta {
+    width: 100%;
+    min-height: 0;
+  }
+  .cajaPregunta {
+    h4 {
+      padding: 10%;
+      border-radius: 50%;
+    }
+  }
+}
+
+
+::ng-deep .quizModera {
+  .quiz {
+    margin: auto !important;
+    float: none !important;
+  }
+  img {
+    pointer-events: none;
+    cursor: default;
+  }
+}
+
+
+

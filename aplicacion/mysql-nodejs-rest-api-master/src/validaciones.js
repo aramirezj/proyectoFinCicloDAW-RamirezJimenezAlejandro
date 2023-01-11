@@ -5,11 +5,23 @@ let validaciones = [];
 validaciones["registro"] = [
     check('email').isEmail(),
     check('email').isLength({ max: 50 }),
-    check('name').isLength({ min: 4 }),
-    check('name').isLength({ max: 20 }),
+    check('name').isLength({ min: 5 }),
+    check('name').isLength({ max: 30 }),
+    check('name').matches(/^[\u00F1\u00d1A-Za-záéíóúÁÉÍÓÚ _-]*[\u00F1\u00d1A-Za-záéíóúÁÉÍÓÚ][\u00F1\u00d1A-Za-záéíóúÁÉÍÓÚ _-]*$/, 'g'),
+    check('nickname').isLength({ min: 5 }),
+    check('nickname').isLength({ max: 15 }),
+    check('nickname').matches(/^([0-9A-z\ \_]+[0-9a-zA-\s])$/, 'g'),
     check('password').isLength({ min: 6 }),
     check('password').isLength({ max: 30 }),
     check('confirm').trim()
+];
+validaciones["editar"] = [
+    check('name').isLength({ min: 4 }),
+    check('name').isLength({ max: 30 }),
+    check('name').matches(/^[\u00F1\u00d1A-Za-záéíóúÁÉÍÓÚ _-]*[\u00F1\u00d1A-Za-záéíóúÁÉÍÓÚ][\u00F1\u00d1A-Za-záéíóúÁÉÍÓÚ _-]*$/, 'g'),
+    check('nickname').isLength({ min: 5 }),
+    check('nickname').isLength({ max: 15 }),
+    check('nickname').matches(/^([0-9A-z\ \_]+[0-9a-zA-\s])$/, 'g'),
 ];
 validaciones["login"] = [
     check('email').isEmail(),
@@ -17,15 +29,14 @@ validaciones["login"] = [
     check('password').isLength({ min: 6 }),
     check('password').isLength({ max: 30 })
 ];
-validaciones["editar"] = [
-    check('name').isLength({ min: 4 }),
-    check('name').isLength({ max: 20 }),
-];
+
 validaciones["creaQuiz"] = [
     check('titulo').isLength({ min: 10 }),
     check('titulo').isLength({ max: 75 }),
+    check('titulo').matches(/^[\u00F1\u00d10-9A-Za-záéíóúÁÉÍÓÚ¡!?¿ ]*[\u00F1\u00d10-9A-Za-záéíóúÁÉÍÓÚ¡!?¿][\u00F1\u00d10-9A-Za-záéíóúÁÉÍÓÚ¡!?¿ ]*$/, 'g'),
     check('creador').isNumeric(),
-    check('contenido').isLength({ max: 20000 })
+    check('contenido').isLength({ max: 20000 }),
+    check('tipo').isNumeric()
 ];
 validaciones["reporte"] = [
     check('destino').isNumeric(),
@@ -50,8 +61,7 @@ validaciones["vota"] = [
     check("cantidad").isNumeric()
 ]
 validaciones["stats"] = [ //isFollowing también
-    check("origen").isNumeric(),
-    check("destino").isNumeric()
+  
 ]
 
 

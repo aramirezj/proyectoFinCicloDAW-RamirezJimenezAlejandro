@@ -1,11 +1,18 @@
+<h1 class="seccion">{{this.encabezado}}</h1>
+
+<h1 *ngIf="this.opcion=='todos'" class="empty" style="font-size:1.5em;">Bienvenido a la nueva página web de quizzes,
+  donde podrás realizar los
+  quizzes de la comunidad, compartirlos y crear los tuyos propios una vez te hayas registrado.</h1>
 <div *ngIf="!quizzs && this.isLoaded">
-  <p class="empty">En este apartado verás los quizzes que los usuarios a los que sigues van creando. ¡Prueba a seguir a un par de usuarios!</p>
+  <h5>En este apartado verás los quizzes que los usuarios a los que sigues van creando. ¡Prueba a seguir a
+    un par de usuarios!</h5>
+  <app-buscador></app-buscador>
 </div>
 <div class="padreQuiz" *ngIf="quizzs && this.isLoaded">
   <div class="cajaQuiz" *ngFor="let quizz of quizzs">
-    <app-quizz [quizz]="quizz"></app-quizz>
+    <app-quiz [quizz]="quizz"></app-quiz>
   </div>
   <div style="clear:both;"></div>
-  <mat-paginator [length]="this.totalQuizzes" [pageSize]="10" (page)="pageEvent = $event;muevoPagina()">
-  </mat-paginator>
+  <!-- <mat-paginator [length]="this.totalQuizzes" [pageSize]="10" (page)="pageEvent = $event;muevoPagina()">
+  </mat-paginator>-->
 </div>

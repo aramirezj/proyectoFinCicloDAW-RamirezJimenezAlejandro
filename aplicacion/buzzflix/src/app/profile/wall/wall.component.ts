@@ -1,40 +1,38 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { UserService } from 'src/app/services/user.service';
-import { Quizz } from 'src/app/modelo/Quizz';
 import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs/internal/Subscription';
 
 @Component({
   selector: 'app-wall',
   templateUrl: './wall.component.html',
   styleUrls: ['./wall.component.scss']
 })
-export class WallComponent implements OnInit {
-  public quizzs
-  public id: number
+export class WallComponent {
+  quizzes;
+  nickname: string;
   isLoaded: boolean = false;
+  subsRouter: Subscription;
   constructor(
     private userService: UserService,
     private router: ActivatedRoute
-
   ) { }
 
   ngOnInit() {
-    this.router.params.subscribe(params => {
-      this.id = +params['id']
-      if(isNaN(this.id)){
-        this.userService.currentMessage.subscribe(message => this.id = message)
-      }
+    this.subsRouter = this.router.parent.params.subscribe((params) => {
+      this.nickname = params["nickname"];
       this.getUserWall();
     })
-
+  }
+  ngOnDestroy() {
+    this.subsRouter.unsubscribe();
   }
 
   getUserWall() {
-    this.userService.getUserWall(this.id)
+    this.userService.getUserWall(this.nickname)
       .subscribe(resp => {
-        this.quizzs = resp;
+        this.quizzes = resp;
         this.isLoaded = true;
       })
   }
-
 }

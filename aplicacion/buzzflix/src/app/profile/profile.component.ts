@@ -1,20 +1,20 @@
-import { Component, OnInit, ViewChild} from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { Component, OnInit, ViewChild, Inject} from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 import { UserService } from '../services/user.service';
 import { Usuario } from '../modelo/Usuario';
 import { AuthService } from '../services/auth.service';
-import { AngularFireStorage } from 'angularfire2/storage';
-import * as firebase from 'firebase';
-import 'firebase/firestore';
 import { LogrosComponent } from './logros/logros.component';
 import { MatDialog, MatDialogConfig } from "@angular/material/dialog";
 import { DialogboxComponent } from '../dialogbox/dialogbox.component';
+import { FileService } from '../services/file.service';
+import { Subscription } from 'rxjs/internal/Subscription';
 @Component({
   selector: 'app-profile',
   templateUrl: './profile.component.html',
   styleUrls: ['./profile.component.scss']
 })
 export class ProfileComponent implements OnInit {
+  nickname:string;
   id: number
   usuario: Usuario
   followers: number;
@@ -27,23 +27,28 @@ export class ProfileComponent implements OnInit {
   showEditar: boolean=true; //Para gestionar el cambio de boton
   showLogros:boolean=true;
   showWall:boolean=false;
+  subsRouter:Subscription
   @ViewChild(LogrosComponent,{static: false}) child;
   constructor(
     private router: ActivatedRoute,
+    private router2: Router,
     private userService: UserService,
     private authService: AuthService,
-    private afStorage: AngularFireStorage,
+    private fileService:FileService,
     public dialog: MatDialog
   ) {
     this.userService.userProfileUpdated.subscribe((usuario) => {
       this.usuario = usuario;
       if (this.usuario.avatar == "" || this.usuario.avatar == null) {
-        this.usuario.avatar = this.afStorage.ref("hehexd.PNG").getDownloadURL();
+        this.usuario.avatar = this.fileService.obtenerUrl("hehexd.PNG");
       } else if (typeof this.usuario.avatar == "string") {
-        this.usuario.avatar = this.afStorage.ref(this.usuario.avatar).getDownloadURL();
+        this.usuario.avatar = this.fileService.obtenerUrl(this.usuario.avatar);
       }
       this.cargaStats();
+      this.router2.navigate(['perfil/' + this.usuario.nickname,"edit"]);
+      this.gestionaPosicion();
     })
+  
   }
 
   isAuthUserProfile(): boolean {
@@ -60,24 +65,29 @@ export class ProfileComponent implements OnInit {
 
   ngOnInit() {
     this.gestionaPosicion();
-    
-    this.router.params.subscribe((params) => {
-      this.id = +params['id'];
-      this.userService.changeMessage(this.id);
-      this.userService.getUserById(this.id)
+    this.usuario=null;
+    this.subsRouter = this.router.params.subscribe((params) => {
+      this.nickname = params['nickname'];
+      this.userService.getUserByNickname(this.nickname)
         .subscribe((usuario) => {
+          this.userService.changeMessage(usuario.id);
           this.usuario = usuario;
+          this.id=this.usuario.id;
           if (this.usuario.avatar == "" || this.usuario.avatar == null) {
             this.usuario.avatar = "hehexd.PNG";
           }
-          this.usuario.avatar = this.afStorage.ref(this.usuario.avatar).getDownloadURL();
+          this.usuario.avatar = this.fileService.obtenerUrl(this.usuario.avatar);
           this.cargaStats();
         })
     })
   }
+
+  ngOnDestroy(){
+    this.subsRouter.unsubscribe();
+  }
   //Función que cargará la cantidad de seguidores,seguidos y logros obtenidos.
   cargaStats() {
-    this.userService.getUserStats(this.id)
+    this.userService.getUserStats(this.usuario.id)
       .subscribe((resp) => {
         this.follows = resp["seguidos"];
         this.followers = resp["seguidores"];
@@ -115,7 +125,7 @@ export class ProfileComponent implements OnInit {
 
     dialogConfig.data = {
       id: 1,
-      title: 'Si crees que este perfil incluye contenido abusivo o imagenes que incitan al odio, puedes reportarlo y será investigado.'
+      title: 'Si crees que este perfil incluye contenido abusivo o imágenes que incitan al odio, puedes reportarlo y será investigado.'
     };
 
     const dialogRef = this.dialog.open(DialogboxComponent, dialogConfig);

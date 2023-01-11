@@ -1,5 +1,7 @@
-@import "../../variables.scss";
-
+@import "../../estilos/variables.scss";
+* {
+  margin: auto;
+}
 .box {
   font-size: 1.75em;
   padding: 1.5%;
@@ -21,10 +23,10 @@ mat-icon,
   color: white;
 }
 mat-expansion-panel {
-  background: $fondoSuave!important;
+  background: $fondoSuave !important;
 }
-mat-expansion-panel:not(.mat-expanded):not([aria-disabled=true]) mat-expansion-panel-header:hover{
-  background: $fondoSuave!important;
+mat-expansion-panel:not(.mat-expanded):not([aria-disabled="true"]) mat-expansion-panel-header:hover {
+  background: $fondoSuave !important;
 }
 .mat-list-base .mat-list-item .mat-line {
   white-space: normal !important;
@@ -35,12 +37,14 @@ mat-expansion-panel:not(.mat-expanded):not([aria-disabled=true]) mat-expansion-p
 }
 
 .cajaPregunta {
+  width: 80vw;
   text-align: center;
-  width: 100%;
+  margin: auto;
+  margin-bottom: 7.5vh;
   h4 {
     color: white;
     font-size: 5vh;
-    padding: 4%;
+    padding: 1vw;
     font-weight: bold;
   }
   h4::first-letter {
@@ -48,14 +52,12 @@ mat-expansion-panel:not(.mat-expanded):not([aria-disabled=true]) mat-expansion-p
   }
   div {
     p {
-      width: 100%;
-      height: 100%;
       font-weight: bold;
       color: white;
       font-size: 4vh;
       margin: auto;
       text-transform: initial;
-      padding: 5%;
+      padding: 2vw;
       transition: width 0.2s, height 0.2s, transform 0.2s;
     }
     p:hover {
@@ -86,13 +88,18 @@ mat-expansion-panel:not(.mat-expanded):not([aria-disabled=true]) mat-expansion-p
 
 .cajaRespuesta {
   background-color: $verdeRetro;
-  width: 45%;
-  min-height: 100%;
+  width: 39vw;
+  min-height: 25vh;
   float: left;
-  margin-top: 1%;
-  margin-right: 2%;
-  margin-left: 2%;
+  align-content: center;
+  margin-bottom: 1vh;
 }
+
+.cajaRespuesta:nth-child(odd){
+  margin-right: 2vw;
+}
+
+
 
 .boxEnunciado {
   margin: auto;
@@ -106,7 +113,15 @@ mat-expansion-panel:not(.mat-expanded):not([aria-disabled=true]) mat-expansion-p
 .clear {
   clear: both;
 }
-
+::ng-deep .mat-card-header-text,
+mat-card-title {
+  width: 100% !important;
+  margin-left: 0px !important;
+  margin-right: 0px !important;
+  margin-bottom: 0px !important;
+  padding: 0.5vh;
+  text-align: center !important;
+}
 .acciones {
   width: 75%;
   min-height: 200px;
@@ -117,18 +132,24 @@ button {
   font-size: 4vh;
   padding: 3vh;
 }
-
+.soluciones {
+  width: $sizeLogroBox;
+  padding: $paddingLogroBox;
+}
 .example-card {
-  background-color: #cbddd6 !important;
-  color: black;
-  max-width: 500px;
-  margin-bottom: 2vh;
-}
-.example-card:nth-child(even) {
+  background-color: $fondoSuave !important;
+  width: $sizeLogro;
+  margin: $marginLogro;
   float: left;
+  text-align: center;
 }
-.example-card:nth-child(odd) {
-  float: right;
+img {
+  max-width: $sizeLogro;
+}
+
+.punt {
+  float: left;
+  margin: 1vh;
 }
 
 img {
@@ -145,16 +166,10 @@ mat-card-title {
   margin: auto;
   float: left;
 }
-.seccion {
-  font-size: 2em;
-  color:white;
-  font-weight: bold;
-}
+
 ::ng-deep .quizModera {
-  .card {
-    width: 50% !important;
+  .quiz {
     margin: auto !important;
-    margin-bottom: 2vh!important;
     float: none !important;
   }
   img {
@@ -163,4 +178,44 @@ mat-card-title {
   }
 }
 
+.progress-wrapper {
+  position: relative;
+  margin: 5vh !important;
+}
 
+.progress-wrapper .text {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  -webkit-transform: translateY(-50%);
+  text-align: center;
+  width: 100%;
+  z-index: 1;
+  font-weight: bold;
+  font-size: 2.5vh;
+}
+round-progress {
+  width: 100px !important;
+  height: 100px !important;
+}
+.descSolu {
+  padding: 1vh;
+}
+@media (max-width: 800px) {
+  .example-card {
+    width: 80vw;
+  }
+  img {
+    max-width: 80vw;
+  }
+  .cajaRespuesta {
+    width: 100%;
+    min-height: 0;
+  }
+  .cajaPregunta {
+    h4 {
+      padding: 10%;
+      border-radius: 50%;
+    }
+  }
+}

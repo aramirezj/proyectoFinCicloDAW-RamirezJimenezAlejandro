@@ -2,12 +2,11 @@ import { RegistroComponent } from '../registro/registro.component';
 import { LoginComponent } from '../login/login.component';
 import { AuthGuard } from '../guards/auth.guard';
 import { AuthedGuard } from '../guards/authed.guard';
-import { CanActivate } from '@angular/router/';
 import { ProfileComponent } from '../profile/profile.component';
 import { WallComponent } from './../profile/wall/wall.component';
 import { EditProfileComponent } from './../profile/edit-profile/edit-profile.component';
-import { CreateQuizzComponent } from '../create-quizz/create-quizz.component';
-import { VerQuizzComponent } from '../ver-quizz/ver-quizz.component';
+import { CreateQuizComponent } from '../create-quiz/create-quiz.component';
+import { VerQuizComponent } from '../ver-quiz/ver-quiz.component';
 import { ExploradorComponent } from '../explorador/explorador.component';
 import { ModeracionComponent } from '../moderacion/moderacion.component';
 import { NotFoundComponent } from '../not-found/not-found.component';
@@ -42,12 +41,12 @@ export const ROUTES = [
         canActivate: [AuthedGuard]
     },
     {
-        path: 'crear/quizz',
-        component: CreateQuizzComponent,
-        canActivate: [AuthGuard]
+        path: 'crear/quiz',
+        component: CreateQuizComponent,
+        canActivate: []
     },
     {
-        path: 'usuario/perfil/:id',
+        path: 'perfil/:nickname',
         component: ProfileComponent,
         children: [{
             path: '',
@@ -64,8 +63,8 @@ export const ROUTES = [
         }]
     },
     {
-        path: 'ver/quizz/:id',
-        component: VerQuizzComponent
+        path: 'quiz/:id',
+        component: VerQuizComponent
     },
     {
         path: 'info/:opcion',

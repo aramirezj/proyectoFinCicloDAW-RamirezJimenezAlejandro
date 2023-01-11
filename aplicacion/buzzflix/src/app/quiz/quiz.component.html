@@ -1,0 +1,21 @@
+<div class="quiz" *ngIf="quizz && usuario">
+  <img alt="Imagen principal del quiz" [routerLink]="['/quiz/',urlName]" role="button"
+    *ngIf="this.quizz.image | async; let url" [src]="url" class="card-img-top">
+  <div class="card-body">
+    <h4 class="card-title" role="button" [routerLink]="['/quiz/',urlName]">{{quizz.titulo}}</h4>
+    <span *ngFor="let item of [].constructor(estrellas)" class="fa fa-star checked"></span>
+    <span *ngFor="let item of [].constructor(5-estrellas)" class="fa fa-star"></span>({{quizz.estrellas}})
+    <p class="card-text" style="text-align:left" *ngIf="!this.isCreador && this.usuario.nickname">Autor: <a
+        [routerLink]="['/perfil',usuario.nickname]">@{{this.usuario.nickname}}</a><span class="pullRight">Fecha:
+        {{this.quizz.fechacreacion | date}}</span></p><br>
+    <button mat-raised-button color="primary" [matMenuTriggerFor]="menu" *ngIf="this.isCreador">Acciones</button>
+    <div style="clear:both;"></div>
+    <mat-menu #menu="matMenu">
+      <button class="botonMenu" mat-menu-item (click)="openDialog();">Eliminar</button>
+      <button class="botonMenu" mat-menu-item (click)="cambiar()" *ngIf="this.quizz.privado==null">Privatizar</button>
+      <button class="botonMenu" mat-menu-item (click)="cambiar()" *ngIf="this.quizz.privado!=null">Desprivatizar</button>
+      <button class="botonMenu" mat-menu-item ngxClipboard (click)="this.snackBar.open('¡Enlace copiado!', 'Cerrar', { duration: 2000, panelClass: 'snackBarSuccess' });"
+        [cbContent]="'https://www.hasquiz.com/quiz/'+this.urlName">Copiar URL</button>
+    </mat-menu>
+  </div>
+</div>

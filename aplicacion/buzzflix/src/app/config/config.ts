@@ -1,3 +1,3 @@
 export const CONFIG = {
-    apiUrl: window.location.protocol+"//"+window.location.hostname+":4201/api/"
+    apiUrl: "http://localhost:4201/api/"
 }

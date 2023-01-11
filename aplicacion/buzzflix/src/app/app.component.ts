@@ -5,7 +5,6 @@ import { FormGroup, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { UserService } from './services/user.service';
 import { MatMenuTrigger } from '@angular/material/menu';
-import * as $ from 'jquery';
 export interface Section {
   name: string;
 }
@@ -16,46 +15,41 @@ export interface Section {
 })
 export class AppComponent {
   @ViewChild(MatMenuTrigger, { static: true }) trigger: MatMenuTrigger;
+  @ViewChild('cookieLaw', { static: true }) cookieLawEl: any;
 
+  private cookieLawSeen: boolean;
   public miniForm: FormGroup
-  public miniForm2: FormGroup
   usuario: Usuario
   showSU: boolean = false;
   vacio: boolean = false;
   notificaciones: Section[];
   icono: string;
   panelOpenState = false;
-  panelOpenState2 = false;
   correctas: Section[] = [
   ];
   constructor(
     private fb: FormBuilder,
     private authService: AuthService,
     private userService: UserService,
-    private router: Router,
+    private router: Router
   ) {
-    this.miniForm = this.fb.group({
-      nombre: ['', [
-      ]]
-    })
+    this.miniForm = this.fb.group({nombre: ['', []]});
     this.userService.userProfileUpdated.subscribe((usuario) => {
       this.usuario = usuario;
     })
   }
 
+  public seeCookie(evt: any) {
+    this.cookieLawSeen = evt;
+    this.cookieLawEl.dismiss();
+  }
 
   ngOnInit() {
+    this.cookieLawSeen = this.cookieLawEl.cookieLawSeen;
     this.usuario = this.authService.getAuthUser();
     this.notificaciones = [];
     this.obtenerNotificaciones();
 
-  }
-
-  changeColor() {
-
-    $(".mat-menu-content").css("background-color", "#5a458d");
-    $(".mat-menu-content").css("color", "white");
-    $(".mat-menu-panel").css("min-width", "350px");
   }
 
   onSubmit() {
@@ -88,11 +82,7 @@ export class AppComponent {
               }
               this.notificaciones.push(section);
             }
-            if (this.notificaciones.length > 9) {
-              this.icono = "filter_9_plus";
-            } else {
-              this.icono = "filter_" + this.notificaciones.length;
-            }
+            this.icono = this.notificaciones.length > 9 ? "filter_9_plus" : "filter_" + this.notificaciones.length;
           }
         }))
     }
@@ -106,11 +96,7 @@ export class AppComponent {
     if (this.notificaciones.length == 0) {
       this.vacio = true;
     } else {
-      if (this.notificaciones.length > 9) {
-        this.icono = "filter_9_plus";
-      } else {
-        this.icono = "filter_" + this.notificaciones.length;
-      }
+      this.icono = this.notificaciones.length > 9 ? "filter_9_plus" : "filter_" + this.notificaciones.length;
     }
   }
 }

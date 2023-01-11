@@ -1,0 +1,94 @@
+<ng-progress [color]="'orange'"></ng-progress>
+<mat-sidenav-container class="sidenav-container">
+  <mat-sidenav #drawer class="sidenav" fixedInViewport [attr.role]="(isHandset$ | async) ? 'dialog' : 'navigation'"
+    [mode]="(isHandset$ | async) ? 'over' : 'side'" [opened]="(isHandset$ | async) === false">
+    <mat-toolbar><img src="assets/logo.png" alt="Logo de la web" role="button" [routerLink]="['ver/seguidos']">
+    </mat-toolbar>
+    <mat-nav-list>
+      <div class="elementoBarra">
+        <a mat-list-item [routerLink]="['ver/todos']">
+          <mat-icon>panorama</mat-icon>Todos los quizzes
+        </a>
+      </div>
+      <div class="elementoBarra">
+        <a mat-list-item [routerLink]="['crear/quiz']">
+          <mat-icon>fiber_new</mat-icon>Crear quiz
+        </a>
+      </div>
+      <div class="elementoBarra">
+        <a mat-list-item *ngIf="isLoggedIn()" [routerLink]="['moderacion']">
+          <mat-icon>people_alt</mat-icon>Moderación
+        </a>
+      </div>
+      <div class="elementoBarra">
+        <a mat-list-item *ngIf="!isLoggedIn()" [routerLink]="['auth/login']">
+          <mat-icon>account_circle</mat-icon>Iniciar sesión
+        </a>
+      </div>
+      <div class="elementoBarra">
+        <a mat-list-item *ngIf="!isLoggedIn()" [routerLink]="['auth/register']">
+          <mat-icon>fiber_new</mat-icon>Registrarse
+        </a>
+      </div>
+      <div class="elementoBarra">
+        <a mat-list-item *ngIf="isLoggedIn() && usuario" [routerLink]="['perfil',this.usuario.nickname]">
+          <mat-icon>account_circle</mat-icon> Mi perfil
+        </a>
+      </div>
+      <div class="elementoBarra">
+        <a mat-list-item *ngIf="isLoggedIn()" (click)="authService.logout()">
+          <mat-icon>directions_run</mat-icon>Cerrar sesión
+        </a>
+      </div>
+      <div style="margin-right:1vh!important;">
+        <mat-accordion (click)="$event.stopPropagation()">
+          <mat-expansion-panel (opened)="panelOpenState = true" (closed)="panelOpenState = false">
+            <mat-expansion-panel-header>
+              <mat-panel-title>
+                <mat-icon>contact_support</mat-icon> <span class="titleAc" role="button" mat-button><a>Acerca de Hasquiz</a>
+                </span>
+              </mat-panel-title>
+              <mat-panel-description>
+              </mat-panel-description>
+            </mat-expansion-panel-header>
+            <mat-list>
+              <div class="elementoBarra">
+                <a mat-list-item [routerLink]="['/info','redes']">
+                  <mat-icon>share</mat-icon>Redes sociales
+                </a>
+              </div>
+              <div class="elementoBarra">
+                <a mat-list-item [routerLink]="['/info','contacto']">
+                  <mat-icon>feedback</mat-icon>Contacto
+                </a>
+              </div>
+              <div class="elementoBarra">
+                <a mat-list-item [routerLink]="['/info','terminos']">
+                  <mat-icon>info</mat-icon>Terminos de uso
+                </a>
+              </div>
+              <div class="elementoBarra">
+                <a mat-list-item [routerLink]="['/info','privacidad']">
+                  <mat-icon>lock</mat-icon>Politica de privacidad
+                </a>
+              </div>
+            </mat-list>
+          </mat-expansion-panel>
+        </mat-accordion>
+      </div>
+    </mat-nav-list>
+  </mat-sidenav>
+  <mat-sidenav-content>
+    <mat-toolbar color="primary">
+      <button type="button" aria-label="Toggle sidenav" mat-icon-button (click)="drawer.toggle()"
+        *ngIf="isHandset$ | async">
+        <mat-icon aria-label="Side nav toggle icon">menu</mat-icon>
+      </button>
+      <span>Inicio</span>
+    </mat-toolbar>
+    <div class="webContainer">
+      <router-outlet></router-outlet>
+    </div>
+
+  </mat-sidenav-content>
+</mat-sidenav-container>

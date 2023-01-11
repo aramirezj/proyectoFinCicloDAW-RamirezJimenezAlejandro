@@ -13,49 +13,30 @@ const listaValidaciones = require('../validaciones');
 
 app.use(cors())
 
-router.get("/api/userImages", express.static(path.join(__dirname, "../userImages")));
+// Para ver si un nickname esta pillado
+router.get('/api/checkNickname/:nombre', listaValidaciones["texto"], (req, res) => {
+  //console.log("Petición para ver si un nick esta pillado");
+  if (!queryService.compruebaErrores(req, res)) {
+    let { nombre } = req.params;
+    nombre = nombre.toLowerCase();
+    queryService.ejecutaConsulta("checkNickname", [nombre], res, function (rows) {
+      if (rows) {
+        res.send({ status: '200', respuesta: rows.length > 0 })
+      };
+    });
 
-
-
-router.post("/api/upload/user", (req, res,next) => {
-  console.log("peticion para subir una imagen")
-  console.log(req.file)
-    const tempPath = req.file.path;
-    const targetPath = path.join(__dirname, "../userImages/image.png");
-
-    if (path.extname(req.file.originalname).toLowerCase() === ".png") {
-      fs.rename(tempPath, targetPath, err => {
-        if (err) return handleError(err, res);
-
-        res
-          .status(200)
-          .contentType("text/plain")
-          .end("File uploaded!");
-      });
-    } else {
-      fs.unlink(tempPath, err => {
-        if (err) return handleError(err, res);
-
-        res
-          .status(403)
-          .contentType("text/plain")
-          .end("Only .png files are allowed!");
-      });
-    }
   }
-);
-
-
-
+});
 
 
 //Petición para registrar un usuario .
 router.post('/api/register', listaValidaciones["registro"], (req, res, next) => {
   console.log("Petición de registro de un usuario")
   if (!queryService.compruebaErrores(req, res)) {
-    let { name, email, password, confirm } = req.body;
+    let { name, nickname, email, password, confirm } = req.body;
+    nickname = nickname.toLowerCase();
     password = tokenService.encripta(password);
-    queryService.ejecutaConsulta("registro", [name, email, password, confirm], res,
+    queryService.ejecutaConsulta("registro", [name, nickname, email, password, confirm], res,
       function (rows) {
         if (rows) {
           mailService.correoRegistro(email, confirm)
@@ -72,20 +53,53 @@ router.post('/api/authenticate', listaValidaciones["login"], (req, res, next) =>
     password = tokenService.encripta(password);
     queryService.ejecutaConsulta("login", [email, password], res, function (rows) {
       if (rows) {
-        if (rows.length > 0) {//Datos correctos
-          res.send({ auth: true, token: tokenService.creaToken(rows[0].id), respuesta: rows[0] });
+        if (rows.length > 0) {//Ha encontrado datos
+          let token = rows[0].confirmado == 1 ? tokenService.creaToken(rows[0].id) : null;
+          let auth = rows[0].confirmado == 1 ? 0 : 2;
+          res.send({ auth: auth, token: token, respuesta: rows[0] });
         } else {//Datos incorrectos
-          res.send({ auth: false });
+          res.send({ auth: 1 });
         }
       }
     });
   }
 });
-
+//Petición para iniciar/registrar un usuario mediente RED SOCIAL
+router.post('/api/socialLogin', (req, res, next) => {
+  console.log("Petición de inicio/registro social de un usuario")
+  //if (!queryService.compruebaErrores(req, res)) {
+  let { id, email, nombre, origen } = req.body;
+  queryService.ejecutaConsulta("checkSocialUser", [id, email], res,
+    function (rows) {
+      if (rows) {
+        if (rows.length == 0) { //Registro usuario
+          let nickname = Math.floor((Math.random() * 100) + 1)+""+Math.floor((Math.random() * 100) + 1)+email.split("@")[0];
+          nickname= nickname.slice(0,15);
+          queryService.ejecutaConsulta("setSocialUser", [nickname, nombre, email, origen, id], res,
+            function (rows) {
+              if (rows) {
+                res.send({ auth: true, token: tokenService.creaToken(rows.insertId), id: rows.insertId,nickname:nickname });
+              }
+            })
+        } else {
+          queryService.ejecutaConsulta("loginSocialUser", [email, id], res,
+            function (rows) {
+              if (rows) {
+                if (rows.length > 0) {
+                  res.send({ auth: true, token: tokenService.creaToken(rows[0].id), respuesta: rows[0] });
+                }
+              }
+            })
+        }
+      }
+    });
+  //}
+});
 //Petición para registrar un usuario .
 router.post('/api/confirma', (req, res, next) => {
   console.log("Petición para confirmar el correo de un usuario")
   let { confirmacion } = req.body;
+  console.log(confirmacion)
   queryService.ejecutaConsulta("confirmaEmail", [confirmacion], res,
     function (rows) {
       if (rows) {
@@ -129,18 +143,21 @@ router.put('/api/usuario/actualizar/:id', listaValidaciones["editar"], (req, res
   if (!queryService.compruebaErrores(req, res)) {
     let permiso = tokenService.verificaToken(req.headers, res);
     if (permiso) {
-      let { name, oldpass, newpass, avatar } = req.body;
-      const { id } = req.params; 3
+      let { name, nickname, oldpass, newpass, avatar } = req.body;
+      const { id } = req.params;
       //Logro 1 (Nuevo outfit)
-      queryService.ejecutaConsulta("getUsuario", [id], res, function (rows) {
+      queryService.ejecutaConsulta("getUsuarioById", [id], res, function (rows) {
         if (rows) {
-          logroService.logroAvatar(permiso, avatar, rows[0].avatar, res);//Logro 1
+          if (rows.length > 0) {
+            logroService.logroAvatar(permiso, avatar, rows[0].avatar, res);
+          }
+
         }
       })
       //Logro 1 (Nuevo outfit)
 
-      if (oldpass == undefined || newpass == undefined) {//Modificamos solo nombre y avatar
-        queryService.ejecutaConsulta("editarPerfil1", [name, avatar, id], res, function (rows) {
+      if (oldpass == undefined || newpass == undefined) {//Modificamos solo nombre,nick y avatar
+        queryService.ejecutaConsulta("editarPerfil1", [name, nickname, avatar, id], res, function (rows) {
           if (rows) {
             res.send({ status: '200' });
           }
@@ -200,11 +217,11 @@ router.post('/api/reportar', listaValidaciones["reporte"], (req, res) => {
 
 });
 // Obtener los logros de un usuario (PROTECTED)
-router.get('/api/usuario/:id/logros', listaValidaciones["numerico"], (req, res) => {
+router.get('/api/usuario/:nickname/logros', (req, res) => {
   console.log("Obtener logros de un usuario")
   if (!queryService.compruebaErrores(req, res)) {
-    const { id } = req.params;
-    queryService.ejecutaConsulta("buscaLogros", [id], res, function (rows) {
+    const { nickname } = req.params;
+    queryService.ejecutaConsulta("buscaLogros", [nickname], res, function (rows) {
       if (rows) {
         res.send({ status: '200', respuesta: rows });
       }
@@ -226,16 +243,16 @@ router.get('/api/usuario/notificaciones', (req, res) => {
 });
 
 // Obtener un usuario (UNPROTECTED)
-router.get('/api/usuario/:id', listaValidaciones["numerico"], (req, res) => {
-  console.log("Obtener un usuario mediante una id")
-  if (!queryService.compruebaErrores(req, res)) {
-    const { id } = req.params;
-    queryService.ejecutaConsulta("getUsuario", [id], res, function (rows) {
-      if (rows) {
-        res.send({ status: '200', respuesta: rows[0] })
-      };
-    });
-  }
+router.get('/api/usuario/:nickname', (req, res) => {
+  console.log("Obtener un usuario mediante un nickname")
+  //if (!queryService.compruebaErrores(req, res)) {
+  const { nickname } = req.params;
+  queryService.ejecutaConsulta("getUsuario", [nickname], res, function (rows) {
+    if (rows) {
+      res.send({ status: '200', respuesta: rows[0] })
+    };
+  });
+  //}
 });
 // Obtener varios usuarios según nombre (PROTECTED)
 router.get('/api/usuarios/:nombre', listaValidaciones["texto"], (req, res) => {
@@ -253,18 +270,30 @@ router.get('/api/usuarios/:nombre', listaValidaciones["texto"], (req, res) => {
   }
 });
 //Obtener todos los quizz de alguien (SEMI-PROTECTED)
-router.get('/api/usuario/:id/wall', listaValidaciones["numerico"], (req, res) => {
+router.get('/api/usuario/:nickname/wall', (req, res) => {
   console.log("Obtener todos los quizz de un perfil")
-  if (!queryService.compruebaErrores(req, res)) {
-    const { id } = req.params;
-    let permiso = tokenService.verificaToken(req.headers, res, true);
-    let query = permiso == id ? "getUsuarioWallPrivate" : "getUsuarioWallPublic"
-    queryService.ejecutaConsulta(query, [id], res, function (rows) {
-      if (rows) {
-        res.send({ respuesta: rows });
+  //if (!queryService.compruebaErrores(req, res)) {
+  const { nickname } = req.params;
+  let permiso = tokenService.verificaToken(req.headers, res, true);
+
+  queryService.ejecutaConsulta("getUsuario", [nickname], res, function (rows) {
+    if (rows) {
+      if (rows.length > 0) {
+        let id = rows[0].id;
+        let query = permiso == id ? "getUsuarioWallPrivate" : "getUsuarioWallPublic"
+        queryService.ejecutaConsulta(query, [id], res, function (rows) {
+          if (rows) {
+            res.send({ respuesta: rows });
+          }
+        });
+      } else {
+        res.send({ respuesta: null });
       }
-    });
-  }
+    };
+  });
+
+
+  //}
 });
 //Obtener los quizzes de todos los seguidos (UNPROTECTED)
 router.get('/api/quizz/:id/seguidos/:cadena', (req, res) => {
@@ -356,7 +385,7 @@ router.post('/api/modera', listaValidaciones["modera"], (req, res) => {
                             logroService.logroUsuarios(creador, res);//Para el logro 8 (Diana)
 
                             if (rows5) {
-                              res.send({ status: '200' });
+                              res.send({ status: '200', deleted: false });
                             }
                           });
                         }
@@ -366,22 +395,22 @@ router.post('/api/modera', listaValidaciones["modera"], (req, res) => {
                 } else {//Si quiero BORRAR el quiz
                   queryService.ejecutaConsulta("setModerar4", [quizz], res, function (rows6) {
                     if (rows6) {
-                      queryService.ejecutaConsulta("setModerar6", [quizz], res, function (rows7) {
-                        if (rows7) {
-                          logroService.incrementaLogro(permiso, 4, 0, 1, res); //Para el logro 4 (Kami)
-                          let mensajito = "Lo sentimos, su Quiz " + titulo + " no ha superado el proceso de moderación, revisa los criterios e intentalo de nuevo.";
-                          queryService.ejecutaConsulta("setModerar7", [creador, mensajito], res, function (rows8) {
-                            res.send({ status: '200' });
-                          });
-                        }
-                      })
+                      //queryService.ejecutaConsulta("setModerar6", [quizz], res, function (rows7) {
+                      // if (rows7) {
+                      logroService.incrementaLogro(permiso, 4, 0, 1, res); //Para el logro 4 (Kami)
+                      let mensajito = "Lo sentimos, su Quiz " + titulo + " no ha superado el proceso de moderación, revisa los criterios e intentalo de nuevo.";
+                      queryService.ejecutaConsulta("setModerar7", [creador, mensajito], res, function (rows8) {
+                        res.send({ status: '200', deleted: true });
+                      });
+                      // }
+                      //})
                     }
                   });
                 }
               } else {//SI NO SOY ADMINISTRADOR, GUARDO ACCIÓN MODERAR
                 queryService.ejecutaConsulta("setModerar8", [quizz, usuario, decision], res, function (rows8) {
                   logroService.incrementaLogro(permiso, 7, 1, 0, res);
-                  res.send({ status: '200' });
+                  res.send({ status: '200', deleted: false });
                 });
               }
             }
@@ -421,13 +450,13 @@ router.post('/api/usuario/stats', listaValidaciones["stats"], (req, res) => {
 
 
 //Peticion para crear un quiz (PROTECTED)
-router.post('/api/creaQuizz', listaValidaciones["creaQuiz"], (req, res, next) => {
+router.post('/api/creaQuiz', listaValidaciones["creaQuiz"], (req, res, next) => {
   console.log("Petición para crear un quiz")
   if (!queryService.compruebaErrores(req, res)) {
     let permiso = tokenService.verificaToken(req.headers, res);
     if (permiso) {
-      const { creador, titulo, contenido, fecha, privado } = req.body;
-      queryService.ejecutaConsulta("setQuiz", [creador, titulo, contenido, fecha, privado], res, function (rows) {
+      const { creador, titulo, contenido, fecha, privado, banner,tipo } = req.body;
+      queryService.ejecutaConsulta("setQuiz", [creador, titulo, contenido, fecha, privado, banner,tipo], res, function (rows) {
         if (rows) {
           logroService.logroUsuarios(); //Logro 6
           res.send({ respuesta: rows.insertId });
@@ -440,10 +469,12 @@ router.post('/api/creaQuizz', listaValidaciones["creaQuiz"], (req, res, next) =>
 //Peticion para borrar un quizz (PROTECTED)
 router.post('/api/borraQuiz', (req, res, next) => {
   console.log("Petición para borrar un quiz")
-  const { id } = req.body;
+  const { id, admin } = req.body;
   let permiso = tokenService.verificaToken(req.headers, res);
   if (permiso) {
-    queryService.ejecutaConsulta("deleteQuiz", [id, permiso], res, function (rows) {
+    let query = admin ? "deleteQuizByAdmin" : "deleteQuiz";
+    console.log(query)
+    queryService.ejecutaConsulta(query, [id, permiso], res, function (rows) {
       if (rows) {
         res.send({ status: '200' });
       }

@@ -1,4 +1,29 @@
-@import "../../../variables.scss";
+@import "../../../estilos/variables.scss";
+//80 VW libre
+.logroBox {
+  width: $sizeLogroBox;
+  padding: $paddingLogroBox;
+}
+//74vw
+.logro {
+  margin-left: $marginLogro;
+  margin-right: $marginLogro;
+  width: $sizeLogro;
+  float: left;
+}
+.img{
+  width: 20vw;
+}
+.pendiente {
+  -webkit-filter: grayscale(100%);
+  filter: grayscale(100%);
+}
+.textoPendiente {
+  color: $naranjaRetro;
+  font-weight: bold;
+}
+
+/*
 .card {
   margin: auto;
   background: none;
@@ -25,20 +50,13 @@
   color: $naranjaRetro;
   font-weight: bold;
 }
-@media (max-width: 1200px) {
-  img {
-    max-width: initial;
-    max-height: initial;
+*/
+@media (max-width: 800px) {
+  .logro {
+    width: 79vw;
+    margin-bottom: 15vh;
   }
-  .card-img-top {
-    max-width: 100%;
-    max-height: 100%;
-  }
-  .card {
-    max-width: 100%;
-    max-height: 100%;
-  }
-  .card-body{
-      min-height: initial;
+  .img{
+    width: 20vw;
   }
 }

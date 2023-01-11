@@ -1,11 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from '../services/user.service';
 import { ActivatedRoute, Router, NavigationEnd } from '@angular/router';
-import { NotifyService } from '../services/notify.service';
 import { Usuario } from '../modelo/Usuario';
-import { Quizz } from '../modelo/Quizz';
-import { QuizzService } from '../services/quizz.service';
+import { Quiz } from '../modelo/Quiz';
+import { QuizService } from '../services/quiz.service';
 import { FormGroup, Validators, FormControl } from '@angular/forms';
+import { Subscription } from 'rxjs/internal/Subscription';
 
 @Component({
   selector: 'app-buscador',
@@ -13,16 +13,17 @@ import { FormGroup, Validators, FormControl } from '@angular/forms';
   styleUrls: ['./buscador.component.scss']
 })
 export class BuscadorComponent implements OnInit {
-  busquedaForm:FormGroup;
-  aBuscar: String;
+  busquedaForm: FormGroup;
+  aBuscar: string;
   usuarios: Array<Usuario> = [];
-  quizzes: Array<Quizz> = [];
+  quizzes: Array<Quiz> = [];
   navigationSubscription;
-  isLoaded: boolean = false
+  isLoaded: boolean = false;
+  subsRouter: Subscription;
   constructor(
     private router2: Router,
     private router: ActivatedRoute,
-    private quizzService: QuizzService,
+    private QuizService: QuizService,
     private userService: UserService
   ) {
     this.isLoaded = false;
@@ -34,35 +35,39 @@ export class BuscadorComponent implements OnInit {
   }
 
   ngOnInit() {
-    this.router.params.subscribe((params) => {
+    this.subsRouter = this.router.params.subscribe((params) => {
       this.aBuscar = params['nombre'];
-      if (this.aBuscar != null) {
-        this.getQuizzes();
-        this.getUsuarios();
-      }else{
-        this.createForm();
-      }
+      this.createForm();
+      this.getQuizzes();
+      this.getUsuarios();
 
     })
   }
 
-  initialiseInvites() {
-    this.router.params.subscribe((params) => {
+  ngOnDestroy() {
+    this.subsRouter.unsubscribe();
+  }
+
+  initialiseInvites() { //Para en la misma ruta ir actualizando la busqueda
+    this.subsRouter = this.router.params.subscribe((params) => {
       this.aBuscar = params['nombre'];
     })
   }
 
-  createForm(){
+  createForm() {
     this.busquedaForm = new FormGroup({
-      busqueda: new FormControl(null, [Validators.required,Validators.minLength(1)])
+      busqueda: new FormControl(this.aBuscar, [])
     });
   }
-  onSubmit(){
-    this.router2.navigate(['buscador/' + this.busquedaForm.get('busqueda').value]);
+  onSubmit() {
+    if (this.busquedaForm.get('busqueda').value.length > 0) {
+      this.router2.navigate(['buscador/' + this.busquedaForm.get('busqueda').value]);
+    }
+
   }
 
   getQuizzes() {
-    this.quizzService.getQuizzes(this.aBuscar)
+    this.QuizService.getQuizzes(this.aBuscar)
       .subscribe(resp => {
         this.quizzes = resp;
         this.isLoaded = true;

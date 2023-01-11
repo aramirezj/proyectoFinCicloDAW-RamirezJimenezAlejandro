@@ -1,41 +1,48 @@
 import { Component, OnInit } from '@angular/core';
 import { UserService } from 'src/app/services/user.service';
 import { Logro } from 'src/app/modelo/Logro';
-import { PrettyDatePipe } from '../../pipes/pretty-date.pipe';
-import * as $ from 'jquery';
+import { ActivatedRoute } from '@angular/router';
+import { Subscription } from 'rxjs/internal/Subscription';
 @Component({
   selector: 'app-logros',
   templateUrl: './logros.component.html',
   styleUrls: ['./logros.component.scss']
 })
 export class LogrosComponent implements OnInit {
-  public listaLogros: Array<Logro>;
-  public id: number;
+  listaLogros: Array<Logro>;
+  id: number;
+  subsRouter: Subscription;
   constructor(
     private userService: UserService,
+    private router: ActivatedRoute
   ) { }
   ngOnInit() {
-    this.userService.currentMessage.subscribe(message => this.id = message)
-    this.userService.getLogros(this.id)
-      .subscribe((logros) => {
-        this.listaLogros = logros;
-        for (let logro of this.listaLogros) {
-          if (logro.fecha == null) {
-            logro.fecha = "Aun no conseguido";
+    this.subsRouter = this.router.parent.params.subscribe((params) => {
+      this.userService.getLogros(params["nickname"])
+        .subscribe((logros) => {
+          this.listaLogros = logros;
+          for (let logro of this.listaLogros) {
+            logro.src = "assets/logros/logro" + logro.id + ".png";
+            logro.fecha = logro.fecha == null ? "Aún no conseguido" : logro.fecha;
           }
-        }
-      });
+        });
+    })
+  }
+  ngOnDestroy() {
+    this.subsRouter.unsubscribe();
   }
   isPendiente(logro: Logro) {
-    return logro.fecha == "Aun no conseguido" ?
+    return logro.fecha == "Aún no conseguido" ?
       "card-img-top pendiente" :
       "card-img-top";
   }
-  setGif(idLogro) {
-    $("#img"+idLogro)[0].setAttribute("src", "assets/logros/logro"+idLogro+".gif");
+  setGif(logro) {
+    let splitted = logro.src.split(".");
+    logro.src = splitted[0] + ".gif";
   }
-  deleteGif(idLogro) {
-    $("#img"+idLogro)[0].setAttribute("src", "assets/logros/logro"+idLogro+".png");
+  deleteGif(logro) {
+    let splitted = logro.src.split(".");
+    logro.src = splitted[0] + ".png";
   }
 }
 

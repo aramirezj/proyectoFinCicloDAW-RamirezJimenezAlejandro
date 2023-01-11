@@ -1,13 +1,166 @@
-<div class="container">
-    <div class="row">
-        <div class="col-md-12">
-            <div class="panel panel-default">
-                    <div class="panel-heading">{{this.titulos[this.opcion]}}</div>
-                    <div *ngIf="this.opcion==1" class="panel-body">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</div>
-                    <div *ngIf="this.opcion==2" class="panel-body">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.</div>
-                    <div class="panel-body" *ngIf="this.opcion==3">Si quieres contactar con Hasquiz, tanto como para reportar un error, como para dudas, o para comentarnos que vendría bien en la web, dispones del siguiente correo: <br><a class="correo" href="mailto:general@hasquiz.com">general@hasquiz.com</a></div>
-                    <div class="panel-body" *ngIf="this.opcion==4">Por ahora solo tenemos Twitter <a class="correo" target="_blank" href="https://twitter.com/hasquiz">@hasquiz</a>  ¡No dudes en seguirnos para enterarte de lo último!</div> 
+<div class="webContainer">
+
+                <h1>{{this.titulos[this.opcion]}}</h1>
+
+                <div class="panel-body" *ngIf="this.opcion=='privacidad'">
+                    <h2>1. ¿Qué son las cookies?</h2>
+                    <p>Las cookies son pequeños archivos de datos que se envían al ordenador del Usuario, teléfono móvil
+                        u otro dispositivo de acceso cuando visita una página web y que permiten obtener y recopilar
+                        información relativa a su navegación información sobre su navegación y pueden incluso reconocer
+                        su ordenador o dispositivo</p>
+                    <p>Las cookies son esenciales para el funcionamiento de Internet, aportando innumerables ventajas en
+                        la prestación de servicios interactivos, facilitando la navegación y usabilidad de las páginas
+                        web. Las cookies no pueden dañar tu equipo del y que estén activadas ayuda a identificar y
+                        resolver errores en los accesos a las páginas web o sus servicios.</p>
+                    <p>Hasquiz utiliza cookies para recopilar información sobre la utilización de la misma por parte de
+                        los usuarios y mejorar la experiencia de navegación. Mediante el uso y la navegación por la Web
+                        los usuarios aceptan y consienten que Hasquiz almacene cookies en su ordenador o dispositivo
+                        electrónico con las finalidades anteriormente citadas. Así mismo, reconoces conocer la
+                        posibilidad de rechazar el tratamiento de tales datos o información rechazando el uso de cookies
+                        dejando de navegar por la web.</p>
+                    <p>En cumplimiento del Art. 22.2 de la Ley de Servicios de la Sociedad de la Información y siguiendo
+                        las directrices de la Agencia Española de Protección de Datos, procedemos a detallar el uso de
+                        cookies que hace Hasquiz con el fin de informarte con la máxima exactitud posible.</p>
+                    <h2>2. ¿Qué cookies utiliza Hasquiz?</h2>
+                    <h3>Cookies propias:</h3>
+                    <p>• Cookies técnicas: Son aquéllas que permiten al usuario la navegación a través de una página
+                        web, plataforma o aplicación y la utilización de las diferentes opciones o servicios que en ella
+                        existan como, por ejemplo, controlar el tráfico y la comunicación de datos, identificar la
+                        sesión, acceder a partes de acceso restringido, recordar los elementos que integran un pedido,
+                        realizar el proceso de compra de un pedido, realizar la solicitud de inscripción o participación
+                        en un evento, utilizar elementos de seguridad durante la navegación, almacenar contenidos para
+                        la difusión de videos o sonido o compartir contenidos a través de redes sociales.</p>
+                    <p>• Cookies de personalización: Son aquéllas que permiten al usuario acceder al servicio con
+                        algunas características de carácter general predefinidas en función de una serie de criterios en
+                        el terminal del usuario como por ejemplo serian el idioma, el tipo de navegador a través del
+                        cual accede al servicio, la configuración regional desde donde accede al servicio, etc.</p>
+                    <h3>Cookies de terceros:</h3>
+                    <p>Google Analytics es un servicio analítico de web prestado por Google, Inc. con domicilio en los
+                        Estados Unidos con sede central en 1600 Amphitheatre Parkway, Mountain View, California 94043.
+                        Para la prestación de estos servicios, estos utilizan cookies que recopilan la información,
+                        incluida la dirección IP del usuario, que será transmitida, tratada y almacenada por Google en
+                        los términos fijados en la Web Google.com. Incluyendo la posible transmisión de dicha
+                        información a terceros por razones de exigencia legal o cuando dichos terceros procesen la
+                        información por cuenta de Google.</p>
+                    <a class="correo"
+                        href="https://developers.google.com/analytics/devguides/collection/analyticsjs/cookie-usage">Uso de cookies</a>
+                    <p>El usuario puede revocar su consentimiento para el uso de cookies en su navegador a través de las
+                        opciones del desarrollador del navegador que esté utilizando, o bien instalando un sistema de
+                        rechazo (“opt-out”) a través de los enlaces de algunos terceros que instalan cookies en la
+                        página web.</p>
+                    <p>Opt-out de Google Analytics: <a class="correo"
+                            href="https://tools.google.com/dlpage/gaoptout?hl=None">https://tools.google.com/dlpage/gaoptout?hl=None</a>
+                    </p>
+                    <h3>Cookies de Redes sociales:</h3>
+                    <p>Cada red social utiliza sus propias cookies con la finalidad de que el Usuario pueda compartir
+                        información o actividad en ellas.</p>
+                    <h2>3. Bloqueo de cookies</h2>
+                    <p>Puedes permitir, bloquear o eliminar las cookies instaladas en tu equipo mediante la
+                        configuración de las opciones del navegador instalado en tu ordenador siguiendo las
+                        instrucciones:</p>
+                    <ul>
+                        <li>Google Chrome: Herramientas → Configuración → Mostrar opciones avanzadas → configuración de
+                            contenido → Cookies → Bloquear los datos de sitios y las cookies de terceros</li>
+                        <li>Mozilla Firefox: Herramientas → Opciones → Privacidad → Historial → Usar una configuración
+                            personalizada para el historial (desmarcar todas las casillas).</li>
+                        <li>Internet Explorer: Herramientas → Opciones de Internet → Privacidad → Configuración para la
+                            zona de Internet (subir la barra de navegación hasta Bloquear todas las cookies).</li>
+                        <li>Safari: Edición → Preferencias → Privacidad → Bloquear cookies (seleccionar “siempre”).</li>
+                    </ul>
+                    <p>O bien a traves de los siguientes enlaces</p>
+                    <ul>
+                        <li><a class="correo"
+                                href="http://windows.microsoft.com/es-es/windows7/how-to-manage-cookies-in-internet-explorer-9">Configuración
+                                de cookies en Internet Explorer</a></li>
+                        <li><a class="correo" href="https://support.google.com/chrome/answer/95647?hl=es">Configuración
+                                de cookies en Chrome</a></li>
+                        <li><a class="correo"
+                                href="https://support.mozilla.org/es/kb/habilitar-y-deshabilitar-cookies-que-los-sitios-we">Configuración
+                                de cookies en Firefox</a></li>
+                        <li><a class="correo" href="https://support.apple.com/kb/PH17191?locale=es_ES">Configuración de
+                                cookies en Safari</a></li>
+                    </ul>
+                    <p>Así mismo, la mayoría de navegadores permiten activar un modo privado mediante el cual las
+                        cookies se borran siempre después de la visita.</p>
+                    <p>Finalmente, Hasquiz se reserva el derecho a modificar en cualquier momento la Política de
+                        cookies. Por ello, los Usuarios deberán consultar periódicamente la Política de cookies.</p>
+                    <p>Si tienes dudas sobre nuestra política de cookies puedes ponerte en contacto con nosotros a
+                        través de los canales habituales.</p>
                 </div>
-        </div>
+
+
+
+
+                <div class="panel-body" *ngIf="this.opcion=='terminos'">
+                    <h2>1. Introducción</h2>
+                    <p>Las presentes condiciones generales de uso de la página web, regulan los términos y condiciones
+                        de acceso y uso de www.hasquiz.com, propiedad de Alejandro Ramírez Jiménez, con domicilio en
+                        Sevilla, Calle San vicente de Paul , en adelante, «la Empresa», que el usuario del Portal deberá
+                        de leer y
+                        aceptar para usar todos los servicios e información que se facilitan desde el portal. El mero
+                        acceso y/o utilización del portal, de todos o parte de sus contenidos y/o servicios significa la
+                        plena aceptación de las presentes condiciones generales de uso. </p>
+                    <h2>2. Condiciones de uso</h2>
+                    <p>Las presentes condiciones generales de uso del portal regulan el acceso y la utilización del
+                        portal, incluyendo los contenidos y los servicios puestos a disposición de los usuarios en y/o a
+                        través del portal, bien por el portal, bien por sus usuarios, bien por terceros. No obstante, el
+                        acceso y la utilización de ciertos contenidos y/o servicios puede encontrarse sometido a
+                        determinadas condiciones específicas.</p>
+                    <h2>3. Modificaciones</h2>
+                    <p>La empresa se reserva la facultad de modificar en cualquier momento las condiciones generales de
+                        uso del portal. En todo caso, se recomienda que consulte periódicamente los presentes términos
+                        de uso del portal, ya que pueden ser modificados.</p>
+                    <h2>4. Obligaciones del Usuario</h2>
+                    <p>
+                        El usuario deberá respetar en todo momento los términos y condiciones establecidos en las
+                        presentes condiciones generales de uso del portal. De forma expresa el usuario manifiesta que
+                        utilizará el portal de forma diligente y asumiendo cualquier responsabilidad que pudiera
+                        derivarse del incumplimiento de las normas.
+
+                        Así mismo, el usuario no podrá utilizar el portal para transmitir, almacenar, divulgar promover
+                        o distribuir datos o contenidos que sean portadores de virus o cualquier otro código
+                        informático, archivos o programas diseñados para interrumpir, destruir o perjudicar el
+                        funcionamiento de cualquier programa o equipo informático o de telecomunicaciones.
+                        Hasquiz se reserva el derecho de suspender las cuentas que sean sospechosas de subir contenido
+                        ofensivo y/o no apto para todos los públicos.
+                    </p>
+                    <h2>5. Responsabilidad del portal</h2>
+                    <p>El usuario conoce y acepta que el portal no otorga ninguna garantía de cualquier naturaleza, ya
+                        sea expresa o implícita, sobre los datos, contenidos, información y servicios que se incorporan
+                        y ofrecen desde el Portal.
+
+                        Exceptuando los casos que la Ley imponga expresamente lo contrario, y exclusivamente con la
+                        medida y extensión en que lo imponga, el Portal no garantiza ni asume responsabilidad alguna
+                        respecto a los posibles daños y perjuicios causados por el uso y utilización de la información,
+                        datos y servicios del Portal.
+
+                        En todo caso, el Portal excluye cualquier responsabilidad por los daños y perjuicios que puedan
+                        deberse a la información y/o servicios prestados o suministrados por terceros diferentes de la
+                        Empresa. Toda responsabilidad será del tercero ya sea proveedor o colaborador.</p>
+                    <h2>6. Propiedad intelectual e industrial</h2>
+                    <p>Todos los contenidos, marcas, logos, dibujos, documentación, programas informáticos o cualquier
+                        otro elemento susceptible de protección por la legislación de propiedad intelectual o
+                        industrial, que sean accesibles en el portal corresponden exclusivamente a la empresa o a sus
+                        legítimos titulares y quedan expresamente reservados todos los derechos sobre los mismos.
+
+                        En cualquier caso, el portal se reserva todos los derechos sobre los contenidos, información
+                        datos y servicios que ostente sobre los mismos. El portal no concede ninguna licencia o
+                        autorización de uso al usuario sobre sus contenidos, datos o servicios, distinta de la que
+                        expresamente se detalle en las presentes condiciones generales de uso del portal.</p>
+                    <h2>7. Legislación aplicable, jurisdicción competente y notificaciones</h2>
+                    <p>Las presentes condiciones se rigen y se interpretan de acuerdo con las Leyes de España. Para
+                        cualquier reclamación serán competentes los juzgados y tribunales de Sevilla. Todas
+                        las notificaciones, requerimientos, peticiones y otras comunicaciones que el Usuario desee
+                        efectuar a la Empresa titular del Portal deberán realizarse por escrito y se entenderá que han
+                        sido correctamente realizadas cuando hayan sido recibidas en la siguiente dirección Calle San
+                        Vicente de Paul Nº 56.</p>
+                </div>
+
+                <div class="panel-body" *ngIf="this.opcion=='contacto'">Si quieres contactar con Hasquiz, tanto como
+                    para reportar un error, como para dudas, o para comentarnos que vendría bien en la web, dispones del
+                    siguiente correo: <br><a class="correo" href="mailto:general@hasquiz.com">general@hasquiz.com</a>
+                </div>
+                <div class="panel-body" *ngIf="this.opcion=='redes'">Por ahora solo tenemos Twitter <a class="correo"
+                        target="_blank" href="https://twitter.com/hasquiz">@hasquiz</a> ¡No dudes en seguirnos para
+                    enterarte de lo último!</div>
     </div>
-</div>
